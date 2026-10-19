@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:c3b7b4b3299273575643b0d0dc864de770cf543bafa3fad6560e98f1037bf186",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T3.md#LEDGER-T3-R1",
+        "originalId": "LEDGER-T3-R1",
+        "document": "requirements/T3.md",
+        "location": "L9",
+        "revision": "sha256:c3b7b4b3299273575643b0d0dc864de770cf543bafa3fad6560e98f1037bf186",
+        "contentDigest": "sha256:4b2394014932c2d29110f865a6052e85c4932c7a7c064a2f4787d4783cb9f067"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-T3-R1",
+        "COHORT-T3"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T3.md#LEDGER-T3-R2",
+        "originalId": "LEDGER-T3-R2",
+        "document": "requirements/T3.md",
+        "location": "L18",
+        "revision": "sha256:c3b7b4b3299273575643b0d0dc864de770cf543bafa3fad6560e98f1037bf186",
+        "contentDigest": "sha256:c0f6f2b362c2b393299bcad9e471fe45e1268dc596293098547f907851f7fed1"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-T3-IDEMPOTENCY-KEY",
+        "VERIFY-T3-R2",
+        "COHORT-T3"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-T3-IDEMPOTENCY-KEY",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T3.md#LEDGER-T3-R2"
+      ],
+      "dependsOn": [],
+      "justification": "idempotency keyed by period id with the first summary kept in ledger state"
+    },
+    {
+      "id": "VERIFY-T3-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3.md#LEDGER-T3-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-T3-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3.md#LEDGER-T3-R2"
+      ],
+      "dependsOn": [
+        "DEC-T3-IDEMPOTENCY-KEY"
+      ]
+    },
+    {
+      "id": "COHORT-T3",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T3.md#LEDGER-T3-R1",
+        "requirements/T3.md#LEDGER-T3-R2"
+      ],
+      "dependsOn": [
+        "DEC-T3-IDEMPOTENCY-KEY"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:b02d0d90aea09265aec90982b0cc09fbfa8ddcb9d954adf84279eb56f3726eec",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T2.md#LEDGER-T2-R1",
+        "originalId": "LEDGER-T2-R1",
+        "document": "requirements/T2.md",
+        "location": "L7",
+        "revision": "sha256:b02d0d90aea09265aec90982b0cc09fbfa8ddcb9d954adf84279eb56f3726eec",
+        "contentDigest": "sha256:02ffd3279a7f9b2ac66db82b4edefda8cd17c0b3c4a39d65a771242cc1452772"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-T2-R1",
+        "COHORT-T2"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2.md#LEDGER-T2-R2",
+        "originalId": "LEDGER-T2-R2",
+        "document": "requirements/T2.md",
+        "location": "L13",
+        "revision": "sha256:b02d0d90aea09265aec90982b0cc09fbfa8ddcb9d954adf84279eb56f3726eec",
+        "contentDigest": "sha256:4781248c2d8561f546f4b751c2222ba4f15ebb683b85efe55e83127f62a0bef7"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-T2-ERROR-ORDER",
+        "VERIFY-T2-R2",
+        "COHORT-T2"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2.md#LEDGER-T2-R3",
+        "originalId": "LEDGER-T2-R3",
+        "document": "requirements/T2.md",
+        "location": "L22",
+        "revision": "sha256:b02d0d90aea09265aec90982b0cc09fbfa8ddcb9d954adf84279eb56f3726eec",
+        "contentDigest": "sha256:9658cfdfb3890b572ae956616400c4dac6c4c8ec6ccfabe00a363a04ece6829e"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "INV-T2-CONSERVATION",
+        "VERIFY-T2-R3",
+        "COHORT-T2"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-T2-ERROR-ORDER",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T2.md#LEDGER-T2-R2"
+      ],
+      "dependsOn": [],
+      "justification": "refusal order: amount, source, destination, same account, funds"
+    },
+    {
+      "id": "INV-T2-CONSERVATION",
+      "kind": "invariant",
+      "requirementKeys": [
+        "requirements/T2.md#LEDGER-T2-R3"
+      ],
+      "dependsOn": [],
+      "justification": "sum of balances unchanged by any transfer"
+    },
+    {
+      "id": "VERIFY-T2-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#LEDGER-T2-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-T2-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#LEDGER-T2-R2"
+      ],
+      "dependsOn": [
+        "DEC-T2-ERROR-ORDER"
+      ]
+    },
+    {
+      "id": "VERIFY-T2-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#LEDGER-T2-R3"
+      ],
+      "dependsOn": [
+        "INV-T2-CONSERVATION"
+      ]
+    },
+    {
+      "id": "COHORT-T2",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T2.md#LEDGER-T2-R1",
+        "requirements/T2.md#LEDGER-T2-R2",
+        "requirements/T2.md#LEDGER-T2-R3"
+      ],
+      "dependsOn": [
+        "DEC-T2-ERROR-ORDER",
+        "INV-T2-CONSERVATION"
+      ]
+    }
+  ]
+}

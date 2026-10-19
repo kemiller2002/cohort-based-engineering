@@ -120,4 +120,14 @@ tests (`oracle/Tn/`) are never copied into a workspace.
 
 ## Amendments
 
-None at registration.
+**A1 (2026-10-19, after A/B/C treatment binaries were downloaded, before any treatment case
+ran).** The v3.15.0 tag points to `df6a8cbe23c2cd4d22980bded3cff4da2a0141cf` ("final checkpoint
+and completion", the child of the `73f95ec` release commit registered above); asset
+`praxis-linux-x64.tar.gz` sha256 `bf135fa626be82c3e5fc0c2220005ae87aacf93d427eaee45780cfde1d2336cc`,
+checked against `native-checksums.txt`. It was published 2026-10-19T21:41Z, inside the
+fallback deadline, so the fallback did not apply.
+
+**A2 (2026-10-19, before any D trial).** D fixtures (`fixtures/d/`), contracts and harness were
+authored after this preregistration and before any D trial; their digests are pinned per run
+in `run.json` (`fixtureDigest`, `oracleDigest`, `acceptanceCriteriaDigest`). Contract digests
+(Ordo and Praxis agree): T1 `sha256:d3984004...`, T2 `sha256:040a4e2b...`, T3 `sha256:d2dc5040...`.

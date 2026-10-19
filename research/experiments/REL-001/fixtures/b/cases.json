@@ -1,0 +1,115 @@
+{
+  "schema": "cbe.rel-001.b-cases/1",
+  "note": "contract 'ordo:NAME' = Ordo examples/ecir/consumer/NAME at e6fe390; otherwise a fixture in this directory (authored for REL-001 where Ordo's corpus lacks the case). deemedValid is the experiment's classification, fixed before any case ran. invalidityLayer: 'contract' = the contract alone is invalid (Ordo admission should refuse); 'reference' = the contract is self-consistent but the work authority references it wrongly (only Praxis can refuse); 'workflow' = valid ecir/1, but completing the named requirement is invalid.",
+  "cases": [
+    {
+      "name": "B1-valid",
+      "contract": "ordo:valid-contract.json",
+      "deemedValid": true,
+      "class": "valid",
+      "rationale": "Ordo golden valid contract",
+      "invalidityLayer": "contract"
+    },
+    {
+      "name": "B2a-nonexistent-decision-in-contract",
+      "contract": "ordo:dangling-decision-contract.json",
+      "deemedValid": false,
+      "class": "nonexistent decision",
+      "rationale": "requirement links DEC-GHOST, which is not a node",
+      "invalidityLayer": "contract"
+    },
+    {
+      "name": "B2b-nonexistent-decision-required",
+      "contract": "ordo:valid-contract.json",
+      "requiredDecisionIds": [
+        "DEC-GHOST"
+      ],
+      "deemedValid": false,
+      "class": "nonexistent decision",
+      "rationale": "work authority requires a decision the admitted contract does not contain",
+      "invalidityLayer": "reference"
+    },
+    {
+      "name": "B3a-wrong-node-kind-required-as-decision",
+      "contract": "ordo:valid-contract.json",
+      "requiredDecisionIds": [
+        "COHORT-CONFIRM"
+      ],
+      "deemedValid": false,
+      "class": "incorrect decision node type",
+      "rationale": "the required decision ID exists but is a cohort node",
+      "invalidityLayer": "reference"
+    },
+    {
+      "name": "B3b-decision-node-retyped",
+      "contract": "decision-retyped-contract.json",
+      "requiredDecisionIds": [
+        "DEC-CONFIRM"
+      ],
+      "deemedValid": false,
+      "class": "incorrect decision node type",
+      "rationale": "DEC-CONFIRM is typed invariant; work requires it as a decision",
+      "invalidityLayer": "reference"
+    },
+    {
+      "name": "B3c-unknown-node-kind",
+      "contract": "unknown-node-kind-contract.json",
+      "deemedValid": false,
+      "class": "incorrect decision node type",
+      "rationale": "node kind 'decison' is not an ecir/1 kind",
+      "invalidityLayer": "contract"
+    },
+    {
+      "name": "B4-unsupported-version",
+      "contract": "ordo:unsupported-version-contract.json",
+      "deemedValid": false,
+      "class": "unsupported version",
+      "rationale": "schemaVersion ecir/2",
+      "invalidityLayer": "contract"
+    },
+    {
+      "name": "B5a-unresolved-dependency",
+      "contract": "ordo:dangling-dependency-contract.json",
+      "deemedValid": false,
+      "class": "unresolved dependency",
+      "rationale": "VERIFY-CONFIRM depends on DEC-RETIRED, which is not a node",
+      "invalidityLayer": "contract"
+    },
+    {
+      "name": "B5b-unresolved-requirement-completed",
+      "contract": "unresolved-requirement-contract.json",
+      "deemedValid": false,
+      "class": "unresolved dependency",
+      "rationale": "the requirement being completed has disposition unresolved (open conflict); completing it is invalid",
+      "invalidityLayer": "workflow"
+    },
+    {
+      "name": "B6a-contradictory-decisions",
+      "contract": "contradictory-decisions-contract.json",
+      "deemedValid": false,
+      "class": "contradictory decisions",
+      "rationale": "DEC-ALLOW-REOPEN and DEC-FORBID-REOPEN contradict; CONFLICT-REOPEN has no resolution",
+      "invalidityLayer": "contract"
+    },
+    {
+      "name": "B6b-contradictory-decisions-resolution-required",
+      "contract": "contradictory-decisions-contract.json",
+      "requiredConflictResolutionIds": [
+        "CONFLICT-REOPEN"
+      ],
+      "deemedValid": false,
+      "class": "contradictory decisions",
+      "rationale": "as B6a, and the work authority requires the conflict to be resolved",
+      "invalidityLayer": "contract"
+    },
+    {
+      "name": "B7-stale-pin",
+      "contract": "ordo:valid-contract.json",
+      "expectedDigest": "sha256:2f972025b57040eb60fb4b76a4c672c228c8129b29f517bb279789d21568ecd7",
+      "deemedValid": false,
+      "class": "stale contract",
+      "rationale": "pinned digest is the previous revision",
+      "invalidityLayer": "contract"
+    }
+  ]
+}
