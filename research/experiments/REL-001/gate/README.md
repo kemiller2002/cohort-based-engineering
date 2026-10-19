@@ -1,6 +1,6 @@
 # REL-001 completion gate
 
-`gate-report.json` (`cbe.rel-001.gate-report/1`) is the machine-readable gate. **Result
+`gate-report.json` (`cbe.rel-001.gate-report/1`) is the machine-readable gate. **Current result (2026-10-19T22:20Z): FAIL (O2, REL-GATE-002)**. It passed at 21:45Z against released Praxis 3.15.0 + Dokimos 0.6.0, then Experiment B (results/b) showed contradictory decisions and unresolved conflicts reach verified completion (`evidence/evidence-binding-repro-v3.15.0.jsonl`); the earlier evaluation is kept under `history`. **First result
 (2026-10-19): FAIL, so the experiment was not started.** 12 conditions pass, 3 fail and 1 is blocked.
 
 The failure is in completion evidence binding (P4, D2). The released Praxis 3.14.0 and
