@@ -1,0 +1,79 @@
+{
+  "schema": "cbe.rel-001.preregistration/1",
+  "experimentId": "REL-001",
+  "protocol": "protocol/run-01.md",
+  "registeredAt": "2026-10-19",
+  "precedesAllRuns": true,
+  "minimumEligibleRunsPerArm": 6,
+  "pins": {
+    "baseline": {
+      "praxis": { "release": "v3.12.0", "commit": "6e2d1f938f0cf9e57b415a732ded6b624e41e9ca", "asset": "praxis-linux-x64.tar.gz", "sha256": "59d1f09fe6e768e4753de04033485fffeaffb1be0c30cc5c82e6b973229c2f3f", "checksums": "native-checksums.txt" },
+      "ordo": null,
+      "dokimos": null
+    },
+    "treatment": {
+      "praxis": { "release": "v3.15.0", "commit": "73f95ecb2b27b32706593bc74e4ae2b496fe4850", "asset": "praxis-linux-x64.tar.gz", "sha256": "recorded from native-checksums.txt at download, before any treatment case", "checksums": "native-checksums.txt", "fallback": "If v3.15.0 is not published by 2026-10-19T22:10Z, Experiments A and B use v3.14.0 (59223f514dfb7429b699350bb20e6e3572a81e7f) and Experiment C is reported BLOCKED (3.14.0 fails gate P4)." },
+      "dokimos": { "release": "dokimos-v0.6.0", "commit": "828208f46b7d1073534bd02873d6298b62ad1de2", "asset": "dokimos-linux-x64.tar.gz", "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b" },
+      "ordo": { "release": null, "commit": "e6fe390e47bf1d6d777017ced0b381f1c7d6acf7", "cli": "sde (src/Sde.Cli) built from a git-archive copy of the pinned commit", "wire": "ecir/1" }
+    },
+    "toolchain": { "dotnetSdk": "10.0.402", "runtimes": ["Microsoft.NETCore.App 8.0.32", "Microsoft.NETCore.App 10.0.13"], "python": "3.13.16" }
+  },
+  "hypotheses": {
+    "H1": { "statement": "Treatment reduces total tokens per independently verified requirement by >= 20% vs baseline.", "metric": "tokensPerVerifiedRequirement", "threshold": -0.20, "experiment": "D" },
+    "H2": { "statement": "Treatment reduces rework frequency by >= 30% vs baseline.", "metric": "reworkFrequency", "threshold": -0.30, "experiment": "D" },
+    "H3": { "statement": "Treatment does not increase escaped defects vs baseline.", "metric": "escapedDefects", "threshold": 0, "experiment": "D" },
+    "HA": { "statement": "Treatment: zero duplicate active owners, zero stale completions accepted, zero lost work across all A cases. Baseline: more than one process reports ownership of the same item in the concurrent start cases.", "experiment": "A" },
+    "HB": { "statement": "Treatment: every invalid contract/decision case is refused before any completion is recorded (Praxis), and the valid contract proceeds. Ordo's own sde ecir check refuses every contract-intrinsic invalid case; any invalid case Ordo admits is reported as a finding. Baseline: every input, valid or invalid, reaches a recorded completion.", "experiment": "B" },
+    "HC": { "statement": "Treatment: only the validate-run-backed, in-lease, revision-matching case is verified; missing, forged, replayed, stale and mis-bound evidence are all refused. Baseline: work complete --evidence accepts every case.", "experiment": "C" }
+  },
+  "rolloutTargets": {
+    "duplicateActiveClaims": 0,
+    "invalidAcceptedDecisions": 0,
+    "unverifiedCompletions": 0,
+    "tokensPerVerifiedRequirementRelativeChange": -0.20,
+    "reworkFrequencyRelativeChange": -0.30,
+    "escapedDefectsIncrease": 0,
+    "note": "Targets are hypotheses, not results. A cost or token gain never overrides a failed gate."
+  },
+  "experimentD": {
+    "tasks": [
+      { "taskId": "T1", "complexity": "low", "requirementIds": ["LEDGER-T1-R1"] },
+      { "taskId": "T2", "complexity": "medium", "requirementIds": ["LEDGER-T2-R1", "LEDGER-T2-R2", "LEDGER-T2-R3"] },
+      { "taskId": "T3", "complexity": "medium", "requirementIds": ["LEDGER-T3-R1", "LEDGER-T3-R2"], "designDecision": "DEC-T3-IDEMPOTENCY-KEY" }
+    ],
+    "arms": ["baseline", "treatment"],
+    "replicates": 2,
+    "runs": 12,
+    "randomization": {
+      "seed": 20261019,
+      "algorithm": "harness/d/randomize.py: blocks (task, replicate) shuffled with random.Random(seed).shuffle, then arm order within each block shuffled with the same generator",
+      "order": ["T3-r2-baseline", "T3-r2-treatment", "T1-r2-baseline", "T1-r2-treatment", "T2-r2-treatment", "T2-r2-baseline", "T1-r1-baseline", "T1-r1-treatment", "T2-r1-treatment", "T2-r1-baseline", "T3-r1-treatment", "T3-r1-baseline"]
+    },
+    "cache": "cold: every run in a fresh session and fresh workspace",
+    "concurrency": 1,
+    "retryPolicy": { "maxAttempts": 3, "description": "at most 3 completion attempts per run in both arms" },
+    "timeBudgetMinutes": 45
+  },
+  "exclusionRules": [
+    "X1 setup: harness/d/setup.sh fails before the agent starts -> status aborted, rerun with a new runId that supersedes it; not scored.",
+    "X2 served model differs from configured model or from the paired run -> pair excluded from paired comparison; both runs reported.",
+    "X3 instrumentation incomplete (token buckets unavailable/partial) -> instrumentation.status incomplete; reported, excluded from token/cost comparisons, never imputed.",
+    "X4 oracle contamination: any oracle test file found in the workspace or history -> status excluded.",
+    "X5 time budget exceeded or agent gives up -> status failed (NOT excluded); counted with zero verified requirements and ratio null."
+  ],
+  "scoringOracle": {
+    "description": "Hidden xUnit tests in fixtures/d/oracle/Tn, never copied into agent workspaces, run by harness/d/score.sh against the run's final commit. Same oracle for both arms.",
+    "verifiedRequirement": "requirement whose oracle tests all pass at the final commit AND the run recorded a completion (baseline: work complete; treatment: complete-verified outcome verified)",
+    "escapedDefect": "requirement the run recorded as completed whose oracle tests fail at the final commit",
+    "rework": "completion attempts beyond the first + reverted commits (git revert or reset of a committed change) observed in the run repository",
+    "testRuns": "treatment: work.validation.observed events; baseline and both arms additionally: dotnet test invocations recorded by the harness wrapper"
+  },
+  "analysis": {
+    "perTrialTable": true,
+    "perArmMedians": ["tokensPerVerifiedRequirement", "reworkFrequency", "escapedDefects", "elapsedMs", "testRuns"],
+    "pairing": "(task, replicate) block; difference = treatment - baseline",
+    "bootstrap": { "enabledIf": "eligible pairs >= 6", "resamples": 10000, "seed": 20261019, "interval": "percentile 95%" },
+    "otherwise": "descriptive only; no inferential claim",
+    "experimentsABC": "deterministic case tables; counts per arm; no inference"
+  }
+}
