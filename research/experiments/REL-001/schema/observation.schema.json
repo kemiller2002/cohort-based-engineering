@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cbe.rel-001.observation/1",
+  "title": "REL-001 run observation",
+  "description": "One run of one task in one arm. Unavailable values are null with availability 'unavailable', never 0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "experimentId", "runId", "arm", "scenario", "replicate", "status", "task", "environment", "model", "cache", "concurrency", "retryPolicy", "instrumentation", "report", "metrics", "gates"],
+  "properties": {
+    "schema": { "const": "cbe.rel-001.observation/1" },
+    "experimentId": { "const": "REL-001" },
+    "runId": { "type": "string", "pattern": "^REL-001-[A-Za-z0-9-]+$" },
+    "supersedes": { "type": ["string", "null"] },
+    "arm": { "enum": ["baseline", "treatment"] },
+    "scenario": { "enum": ["nominal", "duplicate-claim", "stale-completion", "expired-lease", "failure-injection"] },
+    "replicate": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["completed", "failed", "aborted", "excluded"] },
+    "statusReason": { "type": ["string", "null"] },
+    "exclusion": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["rule", "decidedBeforeScoring"],
+      "properties": { "rule": { "type": "string" }, "decidedBeforeScoring": { "type": "boolean" } }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taskId", "requirementIds", "acceptanceCriteriaDigest", "complexity"],
+      "properties": {
+        "taskId": { "type": "string" },
+        "requirementIds": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "acceptanceCriteriaDigest": { "$ref": "#/$defs/sha256" },
+        "complexity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["class", "basis"],
+          "properties": { "class": { "enum": ["low", "medium", "high"] }, "basis": { "type": "string" } }
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositories", "tools", "enforcement"],
+      "properties": {
+        "repositories": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["name", "commit"],
+            "properties": { "name": { "type": "string" }, "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" } }
+          }
+        },
+        "tools": { "type": "object", "description": "Tool name -> exact version (praxis, ordo, dokimos, dotnet, runtime CLI).", "additionalProperties": { "type": "string" } },
+        "enforcement": {
+          "type": "object", "additionalProperties": false,
+          "required": ["ordoContracts", "praxisOwnership", "dokimosVerification"],
+          "properties": { "ordoContracts": { "type": "boolean" }, "praxisOwnership": { "type": "boolean" }, "dokimosVerification": { "type": "boolean" } }
+        }
+      }
+    },
+    "model": {
+      "type": "object", "additionalProperties": false,
+      "required": ["provider", "configuredModel", "servedModels", "configurationDigest"],
+      "properties": {
+        "provider": { "type": "string" },
+        "configuredModel": { "type": "string" },
+        "servedModels": { "type": "array", "items": { "type": "string" }, "description": "Distinct message.model values observed; a mismatch with the paired run invalidates the pair." },
+        "configurationDigest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "cache": {
+      "type": "object", "additionalProperties": false, "required": ["state"],
+      "properties": { "state": { "enum": ["cold", "warm"] }, "note": { "type": ["string", "null"] } }
+    },
+    "concurrency": {
+      "type": "object", "additionalProperties": false, "required": ["agents"],
+      "properties": { "agents": { "type": "integer", "minimum": 1 } }
+    },
+    "retryPolicy": {
+      "type": "object", "additionalProperties": false, "required": ["maxAttempts"],
+      "properties": { "maxAttempts": { "type": "integer", "minimum": 1 }, "description": { "type": ["string", "null"] } }
+    },
+    "instrumentation": {
+      "type": "object", "additionalProperties": false, "required": ["status", "missing"],
+      "properties": {
+        "status": { "enum": ["complete", "incomplete"] },
+        "missing": { "type": "array", "items": { "type": "string" }, "description": "Metric names that were unavailable or partial." }
+      }
+    },
+    "report": {
+      "type": "object", "additionalProperties": false, "required": ["schema", "schemaVersion", "sha256"],
+      "properties": {
+        "schema": { "const": "praxis.telemetry-reliability-report" },
+        "schemaVersion": { "const": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "priceTable": {
+          "type": ["object", "null"], "additionalProperties": false,
+          "required": ["source", "version", "effectiveDate"],
+          "properties": { "source": { "type": "string" }, "version": { "type": "string" }, "effectiveDate": { "type": "string" } }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tokensInput", "tokensOutput", "tokensCacheRead", "tokensCacheWrite", "tokensTotal", "costEstimated", "costBilled", "verifiedRequirements", "costPerVerifiedRequirement", "tokensPerVerifiedRequirement", "firstPassVerificationRate", "reworkFrequency", "completionRejectionFrequency", "duplicateOwnershipAttempts", "staleWriteRejections", "elapsedMs", "activeMs", "toolCalls", "testRuns", "escapedDefects"],
+      "properties": {
+        "tokensInput": { "$ref": "#/$defs/metric" },
+        "tokensOutput": { "$ref": "#/$defs/metric" },
+        "tokensCacheRead": { "$ref": "#/$defs/metric" },
+        "tokensCacheWrite": { "$ref": "#/$defs/metric" },
+        "tokensTotal": { "$ref": "#/$defs/metric" },
+        "costEstimated": { "$ref": "#/$defs/metric" },
+        "costBilled": { "$ref": "#/$defs/metric" },
+        "verifiedRequirements": { "$ref": "#/$defs/metric" },
+        "costPerVerifiedRequirement": { "$ref": "#/$defs/metric" },
+        "tokensPerVerifiedRequirement": { "$ref": "#/$defs/metric" },
+        "firstPassVerificationRate": { "$ref": "#/$defs/metric" },
+        "reworkFrequency": { "$ref": "#/$defs/metric" },
+        "completionRejectionFrequency": { "$ref": "#/$defs/metric" },
+        "duplicateOwnershipAttempts": { "$ref": "#/$defs/metric" },
+        "staleWriteRejections": { "$ref": "#/$defs/metric" },
+        "elapsedMs": { "$ref": "#/$defs/metric" },
+        "activeMs": { "$ref": "#/$defs/metric" },
+        "toolCalls": { "$ref": "#/$defs/metric" },
+        "testRuns": { "$ref": "#/$defs/metric" },
+        "escapedDefects": { "$ref": "#/$defs/metric" }
+      }
+    },
+    "gates": {
+      "type": "object", "additionalProperties": false,
+      "required": ["duplicateActiveClaims", "invalidAcceptedDecisions", "unverifiedCompletions"],
+      "description": "RES-REL-008 counts for this run; null when not measurable (baseline has no claim primitive).",
+      "properties": {
+        "duplicateActiveClaims": { "type": ["integer", "null"], "minimum": 0 },
+        "invalidAcceptedDecisions": { "type": ["integer", "null"], "minimum": 0 },
+        "unverifiedCompletions": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "metric": {
+      "type": "object", "additionalProperties": false,
+      "required": ["availability", "value", "unit"],
+      "properties": {
+        "availability": { "enum": ["available", "partial", "unavailable"] },
+        "value": { "type": ["number", "null"] },
+        "unit": { "type": "string" },
+        "numerator": { "type": ["number", "null"] },
+        "denominator": { "type": ["number", "null"] },
+        "basis": { "enum": ["estimated", "billed", null] }
+      },
+      "if": { "properties": { "availability": { "const": "unavailable" } } },
+      "then": { "properties": { "value": { "type": "null" } } },
+      "else": { "properties": { "value": { "type": "number" } } }
+    }
+  }
+}
