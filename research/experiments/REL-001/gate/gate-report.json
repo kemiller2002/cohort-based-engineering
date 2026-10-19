@@ -1,0 +1,205 @@
+{
+  "schema": "cbe.rel-001.gate-report/1",
+  "experiment": "REL-001",
+  "evaluatedAt": "2026-10-19",
+  "gate": "FAIL",
+  "decision": "Experiment not started: completion gate failed (P4, D2; I2 blocked; I3 fails as a consequence).",
+  "pins": {
+    "praxis": {
+      "release": "v3.14.0",
+      "commit": "59223f514dfb7429b699350bb20e6e3572a81e7f",
+      "asset": "praxis-linux-x64.tar.gz",
+      "sha256": "e6a875e8d34ed8d17f2ca72395c82dd154ff9fc1865a8ce54160e9953b29835f"
+    },
+    "dokimos": {
+      "release": "dokimos-v0.6.0",
+      "commit": "828208f46b7d1073534bd02873d6298b62ad1de2",
+      "asset": "dokimos-linux-x64.tar.gz",
+      "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b"
+    },
+    "ordo": {
+      "release": null,
+      "commit": "e6fe390e47bf1d6d777017ced0b381f1c7d6acf7",
+      "note": "contract consumed as ecir/1 wire format; channel pins Ordo 1.8.2 whose wire code is unchanged (ordo#98)"
+    },
+    "cohort-based-engineering": {
+      "commit": "808eafaea58fa266e78755218eb4542c86f49705"
+    }
+  },
+  "conditions": [
+    {
+      "id": "P1",
+      "system": "praxis",
+      "condition": "Atomic work claims prevent concurrent ownership",
+      "status": "PASS",
+      "evidence": [
+        "praxis#273 (7221045)",
+        "evidence/praxis-tests.txt: work claims 31/31 (memory, file, git-ref races: exactly one winner)",
+        "praxis docs/work-claims.md scenario 2"
+      ]
+    },
+    {
+      "id": "P2",
+      "system": "praxis",
+      "condition": "Stale writes and expired claims are rejected",
+      "status": "PASS",
+      "evidence": [
+        "evidence/praxis-tests.txt: work claims 31/31 (STALE_REVISION, STALE_GENERATION, EXPIRED, late completion refused)"
+      ]
+    },
+    {
+      "id": "P3",
+      "system": "praxis",
+      "condition": "State transitions are idempotent",
+      "status": "PASS",
+      "evidence": [
+        "evidence/praxis-tests.txt: work claims (re-sent acquisition, replayed completion, idempotent event sink)"
+      ]
+    },
+    {
+      "id": "P4",
+      "system": "praxis",
+      "condition": "Completion requires revision-specific verification evidence",
+      "status": "FAIL",
+      "evidence": [
+        "evidence/evidence-binding-repro.jsonl: released Praxis 3.14.0 + Dokimos 0.6.0 return verified (exit 0) for a failing test log and for an unrelated file",
+        "praxis src/Praxis.Infrastructure/Work/FileWorkClaims.fs observeEvidence: existence + sha256 only",
+        "praxis src/Praxis.Domain/Work/CompletionGate.fs authority: every observed file asserted Status=passed at the verification revision; no freshness members",
+        "blocker: praxis .praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md -> work item PRAXIS-REL-005"
+      ]
+    },
+    {
+      "id": "P5",
+      "system": "praxis",
+      "condition": "Agent usage and execution costs can be attributed to work items",
+      "status": "PASS",
+      "evidence": [
+        "evidence/praxis-tests.txt: reliability: 9/9",
+        "praxis EXE-20261019T155503978Z-978f54a3 carries ingested provider usage for PRAXIS-REL-001",
+        "caveat: cost requires a caller-supplied price table; automatic transcript ingestion is PRAXIS-REL-004"
+      ]
+    },
+    {
+      "id": "O1",
+      "system": "ordo",
+      "condition": "Versioned constructibility contracts are supported",
+      "status": "PASS",
+      "evidence": [
+        "ordo#98 (e6fe390); evidence/ordo-tests.txt 536 passed, 1 skipped",
+        "unsupported-version fixture refused (ORDO.CONTRACT.UNSUPPORTED_SCHEMA)"
+      ]
+    },
+    {
+      "id": "O2",
+      "system": "ordo",
+      "condition": "Invalid decisions and dependencies are rejected before execution",
+      "status": "PASS",
+      "evidence": [
+        "ordo examples/ecir/consumer: dangling decision/dependency, cyclic, self, duplicate node, invalid supersession, nonreciprocal link, missing disposition node refused",
+        "evidence/praxis-tests.txt: reliability pipeline scenario 6 (stale contract refused before verification)"
+      ]
+    },
+    {
+      "id": "O3",
+      "system": "ordo",
+      "condition": "Contract validation is deterministic",
+      "status": "PASS",
+      "evidence": [
+        "ordo canonical digest order-independent (reordered fixture identical digest)",
+        "evidence/praxis-tests.txt: ordo contract 11/11 incl. determinism and hostile-input cases"
+      ]
+    },
+    {
+      "id": "O4",
+      "system": "ordo",
+      "condition": "Consumer compatibility fixtures pass",
+      "status": "PASS",
+      "evidence": [
+        "evidence/praxis-tests.txt: ordo contract 11/11; Praxis reproduces every fixture digest and verdict and agrees with the vendored Ordo 1.8.2 binary"
+      ]
+    },
+    {
+      "id": "D1",
+      "system": "dokimos",
+      "condition": "Independent completion verification is operational",
+      "status": "PASS",
+      "evidence": [
+        "dokimos-v0.6.0 released (828208f); evidence/dokimos-tests.txt completion core 42/42, cli 36/36"
+      ]
+    },
+    {
+      "id": "D2",
+      "system": "dokimos",
+      "condition": "Missing, replayed, and stale evidence is rejected",
+      "status": "FAIL",
+      "evidence": [
+        "Dokimos alone: PASS (MISSING/REPLAYED_PACKET/EVIDENCE_STALE/STALE_LEASE tests)",
+        "End to end: FAIL, Praxis never supplies freshness members, so stale evidence is accepted (evidence/evidence-binding-repro.jsonl)"
+      ]
+    },
+    {
+      "id": "D3",
+      "system": "dokimos",
+      "condition": "Verification receipts are reproducible",
+      "status": "PASS",
+      "evidence": [
+        "dokimos completion tests: byte-stable receipts for reordered equivalent inputs"
+      ]
+    },
+    {
+      "id": "D4",
+      "system": "dokimos",
+      "condition": "Praxis can enforce the verification result",
+      "status": "PASS",
+      "evidence": [
+        "evidence/praxis-tests.txt: reliability pipeline scenarios 1,5,7 (real Dokimos); plain work complete refused for claimed items (PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED)",
+        "note: enforcement is real but the verified assertion is not (see P4)"
+      ]
+    },
+    {
+      "id": "I1",
+      "system": "integration",
+      "condition": "All three systems use compatible contracts",
+      "status": "PASS",
+      "evidence": [
+        "praxis.completion-packet/1 + dokimos.completion-authority/1 + ecir/1; packet digest parity proven against the real Dokimos CLI",
+        "distribution pending: conditor#105 (Conditor 0.10.7) and echelon-registry#86 open; echelon-current still pins Praxis 3.12.0 / Dokimos 0.2.0"
+      ]
+    },
+    {
+      "id": "I2",
+      "system": "integration",
+      "condition": "A complete requirement can travel through intake, claim, implementation, verification, and completion",
+      "status": "BLOCKED",
+      "evidence": [
+        "mechanically executes (reliability pipeline scenario 1 from an admitted ecir/1 contract)",
+        "blocked by P4: the verification step accepts evidence that does not prove the requirement",
+        "no requirement from a real Praxis intake has completed through complete-verified (0 verified requirements)"
+      ]
+    },
+    {
+      "id": "I3",
+      "system": "integration",
+      "condition": "No unresolved blocking failures remain",
+      "status": "FAIL",
+      "evidence": [
+        "P4 and D2 fail; I2 blocked"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "id": "REL-GATE-001",
+      "repository": "kemiller2002/praxis",
+      "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
+      "workItem": "PRAXIS-REL-005",
+      "conditions": [
+        "P4",
+        "D2",
+        "I2",
+        "I3"
+      ]
+    }
+  ],
+  "rerun": "Re-evaluate by running scripts/gate-evidence-binding.sh against the newest release assets plus the listed suites; before filing a blocker, search .praxis/inbox, .praxis/processed and .ros/work/queue.json for its id (REL-GATE-*) and the linked work item."
+}

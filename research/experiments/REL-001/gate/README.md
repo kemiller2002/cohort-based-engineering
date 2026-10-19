@@ -1,0 +1,32 @@
+# REL-001 completion gate
+
+`gate-report.json` (`cbe.rel-001.gate-report/1`) is the machine-readable gate. **Result
+(2026-10-19): FAIL, so the experiment was not started.** 12 conditions pass, 3 fail and 1 is blocked.
+
+The failure is in completion evidence binding (P4, D2). The released Praxis 3.14.0 and
+Dokimos 0.6.0 accept a failing test log, and a file that is not a test report at all, as
+verified completion evidence. Praxis asserts every evidence file it can hash as *passed at
+the verification revision*, and it never sends the freshness members that Dokimos supports.
+Dokimos's own checks are sound, but they check an assertion Praxis never established. Running
+Experiments C and D on this pipeline would measure a verification step that cannot fail
+for bad evidence, so their results would be invalid.
+
+The blocker is filed in the Praxis intake as
+`.praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md` (kemiller2002/praxis),
+and it links the existing work item PRAXIS-REL-005.
+
+## Reproduce
+
+    scripts/gate-evidence-binding.sh PRAXIS_BIN DOKIMOS_BIN ORDO_CONTRACT WORKDIR
+
+Run it with the release assets `praxis-linux-x64.tar.gz` (v3.14.0) and `dokimos-linux-x64.tar.gz`
+(dokimos-v0.6.0), after checking them against the releases' checksum files. Use Ordo's
+`examples/ecir/consumer/valid-contract.json` as the contract. Each case prints one JSON line;
+both currently report `"outcome": "verified"`. `evidence/` holds that output and the suite
+results behind the PASS conditions.
+
+## Rerunning
+
+Re-evaluate the gate from the newest releases. Before filing any blocker, search Praxis
+`.praxis/inbox`, `.praxis/processed` and `.ros/work/queue.json` for its `REL-GATE-*` id and the
+linked work item, so that a rerun never duplicates intake.
