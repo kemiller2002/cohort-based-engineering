@@ -57,7 +57,7 @@ cp "$FIX/tasks/$TASK/requirement.md" "$REPO/requirements/$TASK.md"
 cp "$FIX/tasks/$TASK/starter-tests.fs" "$REPO/tests/Ledger.Tests/${TASK}StarterTests.fs"
 if [ "$ARM" = treatment ]; then
   cp "$FIX/tasks/$TASK/contract.json" "$REPO/contract.json"
-  write_authority "$REPO/authority.json"
+  write_authority "$REPO/authority.json" "$(contract_decisions "$REPO/contract.json")"  # amendment A2
   # The contract must be admitted by Ordo AND Praxis before the run is usable.
   "$SDE" ecir check --blueprint "$REPO/contract.json" --json > "$RUN_DIR/logs/setup-ordo-check.json" || { echo "Ordo refused the contract" >&2; exit 3; }
   "$PRAXIS" ordo contract check --contract "$REPO/contract.json" > "$RUN_DIR/logs/setup-praxis-check.txt" 2>&1 || { echo "Praxis refused the contract" >&2; exit 3; }
@@ -76,6 +76,8 @@ INITIAL=$(git -C "$REPO" rev-parse HEAD)
 # --- brief
 KEYS=$(jq -r '.requirements[].source.key' "$FIX/tasks/$TASK/contract.json")
 REQ_ARGS=$(printf '%s\n' $KEYS | sed 's/^/--requirement /' | paste -sd' ')
+DECS=$(jq -r '.nodes[] | select(.kind=="decision") | .id' "$FIX/tasks/$TASK/contract.json")
+[ -n "$DECS" ] && REQ_ARGS="$REQ_ARGS $(printf '%s\n' $DECS | sed 's/^/--decision /' | paste -sd' ')"  # amendment A2
 {
 cat <<EOF
 # Agent brief: $RUN_ID

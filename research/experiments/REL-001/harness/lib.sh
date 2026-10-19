@@ -62,6 +62,10 @@ write_authority() {
   jq -n --argjson dec "${2:-[]}" --argjson cr "${3:-[]}" '{OrdoContractVersion:"",OrdoContractDigest:"",SupportedOrdoContractVersions:["ecir/1"],RequiredRequirementIds:[],RequiredDecisionIds:$dec,RequiredConflictResolutionIds:$cr,RequiredValidationNames:["unit-tests"],RequiredEvidenceIds:["EV-TESTS"]}' > "$1"
 }
 
+# contract_decisions FILE -> JSON array of the contract's decision node IDs. Amendment A2: the HOST
+# authority authorizes these (Praxis >= 3.16.0 requires host-authorized decisions for readiness).
+contract_decisions() { jq -c '[.nodes[]? | select(.kind=="decision") | .id]' "$1" 2>/dev/null || echo '[]'; }
+
 # contract_keys FILE -> --requirement args for every requirement key in an ecir/1 contract.
 contract_req_args() { jq -r '.requirements[]?.source.key | "--requirement\n" + .' "$1" 2>/dev/null || true; }
 
@@ -90,12 +94,14 @@ t_validate() { local dir="$1" actor="$2" id="$3" tok="$4" gen="$5"; shift 5
   if [ -n "$EVPATH" ] && [ "${EVPATH#/}" = "$EVPATH" ]; then EVPATH="$dir/$EVPATH"; fi; }
 # t_complete DIR ACTOR ID TOKEN GEN EVIDENCE-PATH [CONTRACT] [AUTHORITY] [extra args...]
 t_complete() { local dir="$1" actor="$2" id="$3" tok="$4" gen="$5" ev="$6" contract="${7:-$VALID_CONTRACT}" auth="${8:-}"; shift 8 2>/dev/null || shift $#
-  if [ -z "$auth" ]; then auth="$RUN_DIR/inputs/authority.json"; [ -f "$auth" ] || write_authority "$auth"; fi
+  if [ -z "$auth" ]; then auth="$RUN_DIR/inputs/authority.json"; [ -f "$auth" ] || write_authority "$auth" "$(contract_decisions "$contract")"; fi
   local sha vrev; sha=${T_COMMIT:-$(git -C "$dir" rev-parse HEAD)}; vrev=${T_VREV:-$sha}
   local -a reqs; mapfile -t reqs < <(contract_req_args "$contract")
   [ ${#reqs[@]} -gt 0 ] || reqs=(--requirement "requirements/domain.md#R-001")
+  # Amendment A2: the packet cites each decision the host authority authorized.
+  local -a decs; mapfile -t decs < <(jq -r '(.RequiredDecisionIds // [])[] | "--decision\n" + .' "$auth" 2>/dev/null)
   set +e; OUT=$(cd "$dir" && PRAXIS_ACTOR="$actor" "$PRAXIS" work complete-verified --id "$id" --token "$tok" --generation "$gen" \
-     --commit "$sha" --verification-revision "$vrev" --authority "$auth" --ordo-contract "$contract" "${reqs[@]}" \
+     --commit "$sha" --verification-revision "$vrev" --authority "$auth" --ordo-contract "$contract" "${reqs[@]}" "${decs[@]}" \
      --validation unit-tests=passed:EV-TESTS ${ev:+--evidence "EV-TESTS=$ev"} "$@" 2>&1); RC=$?; set -e; }
 # claim_state DIR ID -> compact JSON of the current claim record.
 claim_state() { (cd "$1" && "$PRAXIS" work claims "$2" 2>/dev/null) | jq -c '(.claim // .claims[0] // .) | {status, effectiveStatus, generation, revision, holder: (.holder.claimant // null), pendingPacketDigest, consumed: (.consumedPacketDigests|length? // null), completed: (.completion != null)}' 2>/dev/null || echo null; }

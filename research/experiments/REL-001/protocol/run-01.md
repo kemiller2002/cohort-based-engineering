@@ -131,3 +131,25 @@ fallback deadline, so the fallback did not apply.
 authored after this preregistration and before any D trial; their digests are pinned per run
 in `run.json` (`fixtureDigest`, `oracleDigest`, `acceptanceCriteriaDigest`). Contract digests
 (Ordo and Praxis agree): T1 `sha256:d3984004...`, T2 `sha256:040a4e2b...`, T3 `sha256:d2dc5040...`.
+
+**A2 (2026-10-19T23:00Z, after A/B/C results on Praxis 3.15.0, before any Experiment D trial).**
+Experiment B (findings B5b, B6a) showed that contradictory decisions and unresolved conflicts reached
+verified completion. The completion gate was re-evaluated to FAIL (condition O2), and the fix
+REL-GATE-002 (ordo PR, praxis PRAXIS-REL-008) makes completion require execution *readiness*
+for the completed requirements. Decisions in scope must be authorized by the **host authority
+file** (`RequiredDecisionIds`), never by the agent's packet. The treatment binary therefore
+changes from Praxis 3.15.0 to **3.16.0**, pinned by release asset sha256 once it is published.
+Harness changes, applied to the treatment arm only, because the baseline (3.12.0) has no
+authority input:
+- `lib.sh`: the default authority authorizes the contract's decision nodes (`contract_decisions`),
+  and `t_complete` cites each authorized decision with `--decision`.
+- `fixtures/b/cases.json`: B1-valid now has `requiredDecisionIds: ["DEC-CONFIRM"]`. This is what
+  makes it valid in the deployed protocol. Every invalid case keeps its original inputs and
+  expectation.
+- `d/setup.sh`, `d/smoke-agent.sh` and the agent brief: the authority authorizes the task
+  contract's decisions, and the completion command cites them.
+- `gate/scripts/gate-evidence-binding.sh`: the authority authorizes DEC-CONFIRM, and completions
+  cite it.
+Experiments A, B and C are re-run for the treatment arm on 3.16.0. The 3.15.0 results are kept,
+not overwritten, as the pre-fix observation (the run ids differ). Hypotheses, metrics,
+randomization, the D task set and the D order are unchanged.

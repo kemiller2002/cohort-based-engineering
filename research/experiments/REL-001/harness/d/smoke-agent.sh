@@ -21,7 +21,7 @@ else
   cp "$REL/fixtures/d/reference/Domain.fs" "$REL/fixtures/d/reference/Ledger.fs" src/Ledger/
   git add -A -- src tests && git commit -qm "$ITEM: reference solution (harness check)"
   RESULT=$(praxis work validate-run --id "$ITEM" --token "$TOK" --generation 1 --validation unit-tests --evidence-id EV-TESTS -- dotnet test Ledger.slnx | jq -r .resultPath)
-  mapfile -t REQS < <(jq -r '.requirements[].source.key | "--requirement\n" + .' contract.json)
+  mapfile -t REQS < <(jq -r '(.requirements[].source.key | "--requirement\n" + .), (.nodes[] | select(.kind=="decision") | "--decision\n" + .id)' contract.json)
   praxis work complete-verified --id "$ITEM" --token "$TOK" --generation 1 --commit "$(git rev-parse HEAD)" --verification-revision "$(git rev-parse HEAD)" \
     --authority authority.json --ordo-contract contract.json "${REQS[@]}" --validation unit-tests=passed:EV-TESTS --evidence "EV-TESTS=$RESULT" | jq -c '{outcome, codes}'
 fi
