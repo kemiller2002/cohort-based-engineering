@@ -62,9 +62,8 @@ else
         --validation unit-tests=passed:EV-TESTS --evidence "EV-TESTS=$RES" "${STORE[@]}" ;;
     echelon-optimized)
       step praxis work claim --id "$ITEM" --token "$TOKEN" --lease-seconds "$LEASE_SECONDS" "${STORE[@]}"
-      [ "$AGENTS" -eq 2 ] && step praxis work claim --id "$ITEM" --token "$TOKEN" --lease-seconds "$LEASE_SECONDS"
       apply_reference
-      step praxis work verify --id "$ITEM" --token "$TOKEN"
+      step praxis work verify --id "$ITEM" --token "$TOKEN" "${STORE[@]}"
       step praxis work complete-verified --id "$ITEM" --token "$TOKEN" "${STORE[@]}" ;;
   esac
   if [ "$AGENTS" -eq 2 ]; then

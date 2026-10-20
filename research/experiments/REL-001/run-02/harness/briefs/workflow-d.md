@@ -8,10 +8,10 @@ not edit them.
 
 1. Claim the work item (keep the token; the lease covers the time budget):
    `praxis work claim --id {{ITEM}} --token {{TOKEN}} --lease-seconds 3600{{STORE}}`
-{{D_LOCAL_CLAIM}}2. Implement the requirement and its tests.
+2. Implement the requirement and its tests.
 3. Commit: `git add -A && git commit -m "{{ITEM}}: ..."` (verification refuses a dirty
    worktree, untracked files included).
-4. Verify: `praxis work verify --id {{ITEM}} --token {{TOKEN}}`. The host verifier runs the
+4. Verify: `praxis work verify --id {{ITEM}} --token {{TOKEN}}{{STORE}}`. The host verifier runs the
    tests at `HEAD` and returns signed receipts.
 5. Complete: `praxis work complete-verified --id {{ITEM}} --token {{TOKEN}}{{STORE}}`. It derives
    everything else from the claim, the receipts and the host files, and records a

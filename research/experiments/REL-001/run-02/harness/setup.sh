@@ -158,15 +158,9 @@ for n in $(jq -r '.[].name' <<<"$WS_JSON"); do
   [ "$ARM" = echelon-optimized ] && TEMPLATES+=("$H2/briefs/workflow-d.md")
   TEMPLATES+=("$H2/briefs/outcome.md")
   ATTEMPTS=""; is_echelon "$ARM" && ATTEMPTS="- At most 3 completion attempts (each \`praxis work complete-verified\` invocation counts)."
-  LOCAL_CLAIM=""
-  [ "$ARM" = echelon-optimized ] && [ "$AGENTS" -eq 2 ] && LOCAL_CLAIM="   Once that claim is yours, claim the item in your local store too, with the same token
-   (\`praxis work verify\` and the host verifier read the local claim store):
-   \`praxis work claim --id $ITEM --token $TOKEN --lease-seconds 3600\`
-"
   jq -n --arg REPO "$REPO" --arg ENV "$W/env.sh" --arg ITEM "$ITEM" --arg TASK "$TASK" --arg WORKSPACE "$W" \
     --arg ATTEMPTS_LINE "$ATTEMPTS" --arg DIRECTIVES "$W/DIRECTIVES.md" --arg CONTRACT "$HI/contract.json" \
-    --arg AUTHORITY "$HI/authority.json" --arg TOKEN "$TOKEN" --arg STORE "$STORE" --arg REQ_ARGS "$REQ_ARGS" \
-    --arg D_LOCAL_CLAIM "$LOCAL_CLAIM" '$ARGS.named' > "$HS/brief-values-$n.json"
+    --arg AUTHORITY "$HI/authority.json" --arg TOKEN "$TOKEN" --arg STORE "$STORE" --arg REQ_ARGS "$REQ_ARGS" '$ARGS.named' > "$HS/brief-values-$n.json"
   python3 -I "$H2/render-brief.py" "$HS/brief-values-$n.json" "${TEMPLATES[@]}" > "$W/AGENT_BRIEF.md"
   BRIEFS=$(jq -c --arg n "$n" --arg w "$W" --arg r "$REPO" --arg b "$W/AGENT_BRIEF.md" --arg bs "$(sha "$W/AGENT_BRIEF.md")" --arg t "$TOKEN" \
     --argjson tpl "$(printf '%s\n' "${TEMPLATES[@]}" | xargs -n1 basename | jq -R . | jq -sc .)" \

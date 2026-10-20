@@ -1,5 +1,6 @@
 // REL-001 run-01: deterministic summary of one deterministic experiment (A, B or C).
-// Usage: dotnet fsi harness/summarize.fsx a|b|c
+// Usage: dotnet fsi harness/summarize.fsx a|b|c [TAG]
+// TAG (amendment A5): summarize results/<exp>/treatment-TAG.jsonl into summary-TAG.json instead.
 // Reads results/<exp>/{baseline,treatment}.jsonl (cbe.rel-001.case-result/1) and writes
 // results/<exp>/summary.json. Counts only; no inference. Blocked and not-applicable cases
 // are listed, never counted as passing.
@@ -10,6 +11,8 @@ open System.Text.Json.Nodes
 
 let exp = (fsi.CommandLineArgs |> Array.tryItem 1 |> Option.defaultValue "a").ToLowerInvariant()
 let dir = Path.Combine(__SOURCE_DIRECTORY__, "..", "results", exp)
+let tag = fsi.CommandLineArgs |> Array.tryItem 2
+let treatmentFile = match tag with Some t -> $"treatment-{t}" | None -> "treatment"
 let gateMetrics =
     match exp with
     | "a" -> [ "duplicateActiveOwners"; "staleCompletionsAccepted"; "lostWork" ]
@@ -68,10 +71,10 @@ let summary =
     o [ "schema", s "cbe.rel-001.experiment-summary/1"
         "experiment", s (exp.ToUpperInvariant())
         "protocol", s "protocol/run-01.md"
-        "sources", a [ s $"results/{exp}/baseline.jsonl"; s $"results/{exp}/treatment.jsonl" ]
-        "arms", o [ "baseline", armSummary "baseline"; "treatment", armSummary "treatment" ]
+        "sources", a [ s $"results/{exp}/baseline.jsonl"; s $"results/{exp}/{treatmentFile}.jsonl" ]
+        "arms", o [ "baseline", armSummary "baseline"; "treatment", armSummary treatmentFile ]
         "note", s "Deterministic conformance cases; counts only, no inference. matchesPrediction compares each case with the preregistered HA/HB/HC prediction for that arm." ]
 
-let out = Path.Combine(dir, "summary.json")
+let out = Path.Combine(dir, (match tag with Some t -> $"summary-{t}.json" | None -> "summary.json"))
 File.WriteAllText(out, summary.ToJsonString(JsonSerializerOptions(WriteIndented = true)).Replace("\r\n", "\n") + "\n")
 printfn "wrote %s" out

@@ -6,7 +6,7 @@
 #   lostWork  1 when the item ends neither completed nor recoverable by a new worker
 source "$(dirname "$0")/../lib.sh"
 arm_init "$1"
-OUT_FILE="$REL/results/a/$ARM.jsonl"; mkdir -p "$(dirname "$OUT_FILE")"; : > "$OUT_FILE"
+OUT_FILE="$REL/results/a/$ARM${REL001_RESULTS_TAG:+-$REL001_RESULTS_TAG}.jsonl"; mkdir -p "$(dirname "$OUT_FILE")"; : > "$OUT_FILE"  # A5: REL001_RESULTS_TAG names a re-run file, never overwriting
 K=8; CLONES=4; ROUNDS="${ROUNDS:-5}"
 
 # race N CMD-FN: N background workers block on a barrier file, then run "CMD-FN i" together.
