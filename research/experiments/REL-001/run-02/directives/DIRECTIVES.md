@@ -1,9 +1,6 @@
-# Echelon engineering directives (REL-001 run-02 pack)
+# Engineering directives
 
-Assembled verbatim from Echelon documents for arms B, C and D of REL-001 run-02.
-Headings of the form `## From ...` are added by the assembler; every other line is
-copied unchanged from the source named in the heading. Sources, digests and every
-removed passage are listed in `PROVENANCE.md`.
+Documents, records or tools these directives mention that are not in your repository do not exist for this task.
 
 ## From praxis: `AGENTS.md`
 
@@ -31,6 +28,31 @@ Apply, in descending order: explicit user instruction; applicable safety, legal,
 ## Handoff
 
 For substantial work, record: objective; work completed; files changed; decisions and assumptions; tests run and results; evidence added; unresolved questions; risks; and next recommended action. A capable successor must be able to continue without the originating conversation.
+
+## From praxis: `docs/00-governance/Engineering-Standards.md`
+
+Prefer clarity over cleverness, simple solutions before abstractions, explicit contracts, reversible evolution, and evidence-driven architecture. Treat accessibility, security, privacy, and maintainability as product qualities. Test in proportion to risk. Measure performance before optimizing it.
+
+- Keep structure predictable and ownership discoverable. Do not add unexplained generated files, secrets, duplicate canonical documents, or dead code without a recorded reason.
+- Make small, cohesive changes; preserve unrelated and uncommitted user work; document migrations and generated-artifact workflows.
+- Use clear names, cohesive modules, explicit contracts and error handling, and limited hidden state.
+- Avoid speculative abstractions. Prefer code whose behavior can be reasoned about locally.
+- Comments explain intent, constraints, or why—not syntax already visible.
+- Validate inputs and failure paths at trust boundaries; choose safe defaults.
+
+Establish a baseline before modification when practical. Select tests according to failure mode and risk:
+
+- unit tests for local logic and edge cases;
+- integration tests for component and external-boundary contracts;
+- end-to-end tests for critical user journeys;
+- accessibility tests plus appropriate human review for affected interfaces;
+- visual tests for consequential rendering behavior;
+- performance tests for measured budgets or suspected regressions;
+- security-focused tests and review for trust boundaries and sensitive changes.
+
+Run the narrowest useful checks during iteration and the affected broader suite before completion. Never infer coverage from unrelated tests. Record skipped, unavailable, flaky, or failing checks and their implications.
+
+A change is done when its acceptance criteria are met; relevant checks pass; failures and skipped checks are explained; affected documentation and traceability are updated; no known high-severity regression remains; unrelated user work is preserved; the final implementation state is durably recoverable (committed, pushed, and recorded as a verified durable checkpoint) rather than existing only in one executor's environment; and a capable successor can understand the resulting state and remaining risk.
 
 ## From praxis: `docs/agent-mistake-prevention.md`
 
