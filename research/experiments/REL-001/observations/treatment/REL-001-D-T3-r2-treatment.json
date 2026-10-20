@@ -1,0 +1,234 @@
+{
+  "schema": "cbe.rel-001.observation/1",
+  "experimentId": "REL-001",
+  "runId": "REL-001-D-T3-r2-treatment",
+  "supersedes": null,
+  "arm": "treatment",
+  "scenario": "nominal",
+  "replicate": 1,
+  "status": "completed",
+  "statusReason": null,
+  "exclusion": null,
+  "task": {
+    "taskId": "T3",
+    "requirementIds": [
+      "LEDGER-T3-R1",
+      "LEDGER-T3-R2"
+    ],
+    "acceptanceCriteriaDigest": "c3b7b4b3299273575643b0d0dc864de770cf543bafa3fad6560e98f1037bf186",
+    "complexity": {
+      "class": "medium",
+      "basis": "preregistered task class (protocol/run-01.md)"
+    }
+  },
+  "environment": {
+    "repositories": [
+      {
+        "name": "rel001-d-fixture",
+        "commit": "6b460724788c85925517d05f1f1257c929d944fe"
+      },
+      {
+        "name": "cohort-based-engineering",
+        "commit": "b5d72bf04e96e74eb4aabe17a2cb46d6205892df"
+      }
+    ],
+    "tools": {
+      "praxis": "3.16.0",
+      "dotnet": "10.0.402",
+      "dokimos": "0.6.0",
+      "ordo": "bb43c26c106f4cbe972234636c5c67edc235c188"
+    },
+    "enforcement": {
+      "ordoContracts": true,
+      "praxisOwnership": true,
+      "dokimosVerification": true
+    }
+  },
+  "model": {
+    "provider": "anthropic",
+    "configuredModel": "claude-opus-5-5",
+    "servedModels": [],
+    "configurationDigest": "60adeb4389807b0ef40d8ca2979103ae18869be2ed1539b9fbd60289b4c00e83"
+  },
+  "cache": {
+    "state": "cold",
+    "note": null
+  },
+  "concurrency": {
+    "agents": 1
+  },
+  "retryPolicy": {
+    "maxAttempts": 3,
+    "description": "at most 3 completion attempts (preregistered)"
+  },
+  "instrumentation": {
+    "status": "incomplete",
+    "missing": [
+      "costEstimated",
+      "costBilled"
+    ]
+  },
+  "report": {
+    "schema": "praxis.telemetry-reliability-report",
+    "schemaVersion": 1,
+    "sha256": "5f21f34e267020fb19201a2fb546a767de65ff62b6837cdb44e86fbb12bcb9bc",
+    "priceTable": null
+  },
+  "metrics": {
+    "tokensInput": {
+      "availability": "available",
+      "value": 22,
+      "unit": "tokens",
+      "numerator": 11,
+      "denominator": 11
+    },
+    "tokensOutput": {
+      "availability": "available",
+      "value": 282,
+      "unit": "tokens",
+      "numerator": 11,
+      "denominator": 11
+    },
+    "tokensCacheRead": {
+      "availability": "available",
+      "value": 604812,
+      "unit": "tokens",
+      "numerator": 11,
+      "denominator": 11
+    },
+    "tokensCacheWrite": {
+      "availability": "available",
+      "value": 24276,
+      "unit": "tokens",
+      "numerator": 11,
+      "denominator": 11
+    },
+    "tokensTotal": {
+      "availability": "available",
+      "value": 629392,
+      "unit": "tokens",
+      "numerator": 11,
+      "denominator": 11
+    },
+    "costEstimated": {
+      "availability": "unavailable",
+      "value": null,
+      "unit": "USD",
+      "basis": "estimated"
+    },
+    "costBilled": {
+      "availability": "unavailable",
+      "value": null,
+      "unit": "USD",
+      "basis": "billed"
+    },
+    "verifiedRequirements": {
+      "availability": "available",
+      "value": 2,
+      "unit": "requirements"
+    },
+    "costPerVerifiedRequirement": {
+      "availability": "unavailable",
+      "value": null,
+      "unit": "USD/requirement",
+      "basis": "estimated"
+    },
+    "tokensPerVerifiedRequirement": {
+      "availability": "available",
+      "value": 314696.0,
+      "unit": "tokens/requirement",
+      "numerator": 629392,
+      "denominator": 2
+    },
+    "firstPassVerificationRate": {
+      "availability": "available",
+      "value": 1.0,
+      "unit": "ratio"
+    },
+    "reworkFrequency": {
+      "availability": "available",
+      "value": 0,
+      "unit": "events"
+    },
+    "completionRejectionFrequency": {
+      "availability": "available",
+      "value": 0.0,
+      "unit": "ratio",
+      "numerator": 0,
+      "denominator": 1
+    },
+    "duplicateOwnershipAttempts": {
+      "availability": "available",
+      "value": 0,
+      "unit": "attempts"
+    },
+    "staleWriteRejections": {
+      "availability": "available",
+      "value": 0,
+      "unit": "rejections"
+    },
+    "elapsedMs": {
+      "availability": "available",
+      "value": 128000,
+      "unit": "ms"
+    },
+    "activeMs": {
+      "availability": "unavailable",
+      "value": null,
+      "unit": "ms"
+    },
+    "toolCalls": {
+      "availability": "available",
+      "value": 11,
+      "unit": "calls"
+    },
+    "testRuns": {
+      "availability": "available",
+      "value": 2,
+      "unit": "runs"
+    },
+    "escapedDefects": {
+      "availability": "available",
+      "value": 0,
+      "unit": "defects"
+    }
+  },
+  "gates": {
+    "duplicateActiveClaims": 0,
+    "invalidAcceptedDecisions": 0,
+    "unverifiedCompletions": 0
+  },
+  "scoring": {
+    "finalCommit": "83390d0db43d8e470ec9905c5b5b273a7b81090a",
+    "uncommittedTrackedChanges": 0,
+    "oracleExit": 0,
+    "oracleBuilt": true,
+    "oracleDigest": "262ebe75b88c837f84a5aada5e4d945ebfbbdd3597360053f835b3344163e16b",
+    "requirements": {
+      "LEDGER-T3-R1": {
+        "tests": 2,
+        "passed": 2,
+        "pass": true
+      },
+      "LEDGER-T3-R2": {
+        "tests": 3,
+        "passed": 3,
+        "pass": true
+      }
+    },
+    "recordedCompletion": true,
+    "verified": true,
+    "escapedDefect": false,
+    "completionAttempts": 1,
+    "rejections": 0,
+    "validateRuns": 1,
+    "testRuns": 2,
+    "rework": {
+      "total": 0,
+      "extraCompletionAttempts": 0,
+      "revertCommits": 0,
+      "resets": 0
+    },
+    "oracleContamination": false
+  }
+}

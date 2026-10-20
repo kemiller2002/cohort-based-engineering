@@ -172,3 +172,17 @@ How the D trials are run, fixed before the first trial:
   marks a run contaminated when the agent's own transcripts reference the oracle directory or modules.
 - **Budget enforcement:** the orchestrator records `logs/agent.json {startedAt, endedAt}`. A trial
   still running at 45 minutes is stopped and scored under X5 (failed, not excluded).
+
+**A4 (2026-10-20T01:15Z, after the first D trial was scored and before any second trial or comparison).**
+The first trial (T3-r2-baseline) showed that `praxis telemetry reliability-report` left every one of
+the run's provider observations unattributed (`no-execution-for-session`). Sub-agent transcripts carry
+the orchestrating session's ID, and the run's execution record has no session binding, so session-window
+attribution (R3) cannot separate trials. Each run's `transcripts/` directory holds only that trial's
+agent, so `score.sh` now counts every deduplicated observation the report finds there, attributed plus
+unattributed, as the run's tokens. The values are Praxis's own measured sums; nothing is estimated.
+Tool calls are counted as unique `tool_use` ids in the run's transcripts.
+Transcript output tokens are a lower bound, because entries are written before streaming completes. The
+orchestrator therefore also records the harness's per-agent figures in `logs/agent.json`
+(`subagentTokens`, `toolUses`, `durationMs`) as a secondary measurement. That record is reported, never
+substituted for the primary one. Trial 1 was re-scored with the same `score.sh` that scores every later
+trial.

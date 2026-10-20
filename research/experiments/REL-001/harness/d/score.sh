@@ -79,6 +79,8 @@ if [ -z "$REPORT" ] && [ -n "$TRANSCRIPTS" ]; then
   REPORT="$SC/reliability-report.json"
   (cd "$REPO" && "$TREATMENT_PRAXIS" telemetry reliability-report --transcripts "$TRANSCRIPTS" --out "$REPORT" >/dev/null)
 fi
+TOOL_CALLS=None
+if [ -n "$TRANSCRIPTS" ]; then TOOL_CALLS=$(cat "$TRANSCRIPTS"/*.jsonl | jq -r 'select(.type=="assistant") | .message.content[]? | select(.type=="tool_use") | .id' 2>/dev/null | sort -u | wc -l); fi
 ELAPSED_PY=${elapsed/null/None}
 plainCompleted=$(cnt work.completed); verifiedEvents=$(cnt work.completion.verified)
 freshAcq=0; [ -f "$EV" ] && freshAcq=$(grep '"type":"work.claim.acquired"' "$EV" | grep "$ITEM" | grep -vc '"recovered":true' || true)
@@ -106,9 +108,13 @@ def rep(path):
         node = (node or {}).get(k) if isinstance(node, dict) else None
     return node if isinstance(node, dict) else None
 def tok(name):
-    r = rep("usage.tokens." + name)
-    if not r or r.get("availability") == "unavailable": return m(None, "tokens")
-    return m(r.get("value"), "tokens", r.get("availability"))
+    # Amendment A4: the transcript directory holds only this run's agent, so every
+    # deduplicated provider observation in it is the run's, attributed by Praxis or not.
+    parts = [r for r in (rep("usage.tokens." + name), rep("usage.unattributed.tokens." + name))
+             if r and r.get("availability") != "unavailable" and r.get("value") is not None]
+    if not parts: return m(None, "tokens")
+    return m(sum(r["value"] for r in parts), "tokens", "available",
+             sum(r.get("numerator") or 0 for r in parts), sum(r.get("denominator") or 0 for r in parts))
 tokens = {k: tok(k) for k in ["input", "output", "cacheRead", "cacheWrite", "total"]}
 missing = [k for k, v in [("tokensInput", tokens["input"]), ("tokensOutput", tokens["output"]), ("tokensCacheRead", tokens["cacheRead"]),
            ("tokensCacheWrite", tokens["cacheWrite"]), ("tokensTotal", tokens["total"])] if v["availability"] != "available"]
@@ -149,7 +155,7 @@ obs = {
     "completionRejectionFrequency": m(rejections / attempts, "ratio", None, rejections, attempts) if attempts else m(None, "ratio"),
     "duplicateOwnershipAttempts": m($claimRejected, "attempts") if treat else m(None, "attempts"),
     "staleWriteRejections": m($staleRej, "rejections") if treat else m(None, "rejections"),
-    "elapsedMs": m($ELAPSED_PY, "ms"), "activeMs": m(None, "ms"), "toolCalls": m(None, "calls"),
+    "elapsedMs": m($ELAPSED_PY, "ms"), "activeMs": m(None, "ms"), "toolCalls": m($TOOL_CALLS, "calls"),
     "testRuns": m(test_runs, "runs"), "escapedDefects": m(escaped, "defects")},
   # gates: duplicate active claims = fresh (non-recovery) acquisitions beyond the first; invalid accepted
   # decisions = 0 only because setup.sh refuses a contract either Ordo or Praxis does not admit;
