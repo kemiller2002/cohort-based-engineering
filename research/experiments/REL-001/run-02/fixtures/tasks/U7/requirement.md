@@ -1,7 +1,7 @@
 # U7: Tiered interest accrual at period close
 
-Category: complex. Requirements: LEDGER-U7-R1, LEDGER-U7-R2,
-LEDGER-U7-R3. Decision: DEC-U7-MARGINAL-TIERS.
+Requirements: LEDGER-U7-R1, LEDGER-U7-R2, LEDGER-U7-R3.
+Decision: DEC-U7-MARGINAL-TIERS.
 
 Savings accounts earn interest once per closed accounting period, at rates
 that depend on the balance. Add to `src/Ledger/Domain.fs`:

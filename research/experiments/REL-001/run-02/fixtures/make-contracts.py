@@ -43,7 +43,7 @@ NODES = {
         ("COHORT-U4", "cohort", ["R1", "R2"], ["DEC-U4-SHARED-VIEW"], None),
     ],
     "U5": [
-        ("DEC-U5-BATCH-ATOMICITY", "decision", ["R2"], [], "a batch is computed on the current state and committed once"),
+        ("DEC-U5-BATCH-ATOMICITY", "decision", ["R2"], [], "the store applies a batch all-or-nothing"),
         ("INV-U5-ALL-OR-NOTHING", "invariant", ["R1", "R2"], [], "a refused batch records no posting"),
         ("VERIFY-U5-R1", "verificationObligation", ["R1"], ["INV-U5-ALL-OR-NOTHING"], None),
         ("VERIFY-U5-R2", "verificationObligation", ["R2"], ["DEC-U5-BATCH-ATOMICITY", "INV-U5-ALL-OR-NOTHING"], None),
@@ -56,7 +56,7 @@ NODES = {
         ("COHORT-U6", "cohort", ["R1", "R2"], ["DEC-U6-FREEZE-SCOPE"], None),
     ],
     "U7": [
-        ("DEC-U7-MARGINAL-TIERS", "decision", ["R2"], [], "interest is marginal per tier (docs/design/interest.md)"),
+        ("DEC-U7-MARGINAL-TIERS", "decision", ["R2"], [], "binding rule in docs/design/interest.md"),
         ("VERIFY-U7-R1", "verificationObligation", ["R1"], [], None),
         ("VERIFY-U7-R2", "verificationObligation", ["R2"], ["DEC-U7-MARGINAL-TIERS"], None),
         ("VERIFY-U7-R3", "verificationObligation", ["R3"], ["DEC-U7-MARGINAL-TIERS"], None),

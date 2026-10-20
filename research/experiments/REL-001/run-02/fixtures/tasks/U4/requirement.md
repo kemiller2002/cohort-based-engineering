@@ -1,7 +1,6 @@
 # U4: Recent activity, then reversals
 
-Category: moderate. Requirements: LEDGER-U4-R1, LEDGER-U4-R2.
-Decision: DEC-U4-SHARED-VIEW.
+Requirements: LEDGER-U4-R1, LEDGER-U4-R2. Decision: DEC-U4-SHARED-VIEW.
 
 This work has two steps. Implement LEDGER-U4-R1 first, then LEDGER-U4-R2.
 The work is complete only when both are implemented and all tests pass at

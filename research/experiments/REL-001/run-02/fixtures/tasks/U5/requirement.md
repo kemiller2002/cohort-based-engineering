@@ -1,7 +1,6 @@
 # U5: Batch transfers
 
-Category: moderate. Requirements: LEDGER-U5-R1, LEDGER-U5-R2.
-Decision: DEC-U5-BATCH-ATOMICITY.
+Requirements: LEDGER-U5-R1, LEDGER-U5-R2. Decision: DEC-U5-BATCH-ATOMICITY.
 
 Payroll submits many transfers at once, and a batch must never be half
 applied. Add to `src/Ledger/Domain.fs`:
@@ -44,10 +43,14 @@ the same batch.
 ## LEDGER-U5-R2
 
 `Store.transferBatch batch store` is all-or-nothing on the store (decision
-DEC-U5-BATCH-ATOMICITY): when the batch succeeds, all of its postings are
-committed; when it is refused, it returns the same error as
-`Ledger.transferBatch` and the store's state is exactly what it was before
-the call, with no instruction of the batch committed.
+DEC-U5-BATCH-ATOMICITY):
+
+- when the batch succeeds, all of its postings are committed, and
+  `Store.balance` reports every account's balance including them;
+- when it is refused, it returns the same error as `Ledger.transferBatch`,
+  and the store's state is exactly what it was before the call: no
+  instruction of the batch is committed, `Store.current` lists the same
+  postings and `Store.balance` reports the same balances as before.
 
 Acceptance criteria: each statement above holds; existing public signatures
 in `src/Ledger` are kept; all tests pass with `dotnet test Ledger.slnx`.

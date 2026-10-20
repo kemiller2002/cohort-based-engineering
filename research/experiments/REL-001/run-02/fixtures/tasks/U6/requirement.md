@@ -1,7 +1,6 @@
 # U6: Freezing accounts
 
-Category: adversarial. Requirements: LEDGER-U6-R1, LEDGER-U6-R2.
-Decision: DEC-U6-FREEZE-SCOPE.
+Requirements: LEDGER-U6-R1, LEDGER-U6-R2. Decision: DEC-U6-FREEZE-SCOPE.
 
 Compliance needs to stop money leaving an account under investigation. Add
 a case `AccountFrozen of AccountId` to `LedgerError` in

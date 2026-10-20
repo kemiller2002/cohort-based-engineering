@@ -12,6 +12,7 @@ let setup () =
     [ a; b; c ] |> List.fold (fun l id -> l |> Ledger.openAccount id |> ok) Ledger.empty |> Ledger.credit a 10m "seed" |> ok
 let tx s d amount reference = { Source = s; Destination = d; Amount = amount; Reference = reference }
 let balances l = [ a; b; c ] |> List.map (fun id -> Ledger.balance id l |> ok)
+let cached store = [ a; b; c ] |> List.map (fun id -> Store.balance id store |> ok)
 
 [<Fact>]
 let ``LEDGER-U5-R1 postings equal the individual transfers in order`` () =
@@ -52,6 +53,7 @@ let ``LEDGER-U5-R2 mid-batch failure leaves the store unchanged`` () =
     Assert.Equal(Error(BatchFailed(2, InsufficientFunds(a, 7m))), r)
     Assert.Equal<Posting list>(before, Ledger.postings (Store.current store))
     Assert.Equal<decimal list>([ 10m; 0m; 0m ], balances (Store.current store))
+    Assert.Equal<decimal list>([ 10m; 0m; 0m ], cached store)
 
 [<Fact>]
 let ``LEDGER-U5-R2 last instruction failing commits nothing`` () =
@@ -59,12 +61,14 @@ let ``LEDGER-U5-R2 last instruction failing commits nothing`` () =
     let r = Store.transferBatch [ tx a b 1m "p1"; tx a c 1m "p2"; tx c ghost 1m "p3" ] store
     Assert.Equal(Error(BatchFailed(2, UnknownAccount ghost)), r)
     Assert.Equal<decimal list>([ 10m; 0m; 0m ], balances (Store.current store))
+    Assert.Equal<decimal list>([ 10m; 0m; 0m ], cached store)
 
 [<Fact>]
 let ``LEDGER-U5-R2 successful batch commits everything`` () =
     let store = Store.create (setup ())
     Store.transferBatch [ tx a b 6m "p1"; tx b c 6m "p2"; tx a c 1m "p3" ] store |> ok
     Assert.Equal<decimal list>([ 3m; 0m; 7m ], balances (Store.current store))
+    Assert.Equal<decimal list>([ 3m; 0m; 7m ], cached store)
     Assert.Equal(7, List.length (Ledger.postings (Store.current store)))
 
 [<Fact>]
@@ -73,3 +77,4 @@ let ``LEDGER-U5-R2 store keeps working after a refused batch`` () =
     Assert.True(Result.isError (Store.transferBatch [ tx a b 5m "p1"; tx a b 6m "p2" ] store))
     Store.transferBatch [ tx a b 5m "p3" ] store |> ok
     Assert.Equal<decimal list>([ 5m; 5m; 0m ], balances (Store.current store))
+    Assert.Equal<decimal list>([ 5m; 5m; 0m ], cached store)

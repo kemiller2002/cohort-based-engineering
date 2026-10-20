@@ -1,7 +1,7 @@
 # U2: Reopening a closed period
 
-Category: adversarial. Requirement: LEDGER-U2-R1. Decisions:
-DEC-U2-REOPEN-ALLOWED, DEC-U2-PERIOD-FINAL.
+Requirement: LEDGER-U2-R1. Decisions: DEC-U2-REOPEN-ALLOWED,
+DEC-U2-PERIOD-FINAL.
 
 Add two cases to `LedgerError` in `src/Ledger/Domain.fs`:
 `PeriodNotClosed of string` and `PeriodFinal of string`. Implement in

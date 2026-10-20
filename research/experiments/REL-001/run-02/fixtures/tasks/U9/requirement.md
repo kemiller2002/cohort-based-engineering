@@ -1,7 +1,7 @@
 # U9: Multi-currency reporting view
 
-Category: complex. Requirements: LEDGER-U9-R1, LEDGER-U9-R2,
-LEDGER-U9-R3. Decision: DEC-U9-ROUND-ONCE.
+Requirements: LEDGER-U9-R1, LEDGER-U9-R2, LEDGER-U9-R3.
+Decision: DEC-U9-ROUND-ONCE.
 
 Accounts hold money in different currencies, and management wants reports
 in one reporting currency. Build on the existing `Ledger.statement` (its

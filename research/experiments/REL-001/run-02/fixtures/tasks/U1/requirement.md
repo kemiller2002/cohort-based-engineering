@@ -1,6 +1,6 @@
 # U1: Manual balance adjustments
 
-Category: simple. Requirement: LEDGER-U1-R1.
+Requirement: LEDGER-U1-R1.
 
 Operations staff need to correct balances by hand. Add an adjustment
 direction to `src/Ledger/Domain.fs`:

@@ -1,7 +1,6 @@
 # U3: Shared fee split across accounts
 
-Category: adversarial. Requirements: LEDGER-U3-R1, LEDGER-U3-R2.
-Decision: DEC-U3-ROUNDING.
+Requirements: LEDGER-U3-R1, LEDGER-U3-R2. Decision: DEC-U3-ROUNDING.
 
 A fee shared by several accounts (for example a joint custody fee) is split
 between them and charged to each. Implement in `src/Ledger/Ledger.fs`:
@@ -24,6 +23,10 @@ records no posting at all, when (checked in this order):
 3. an account's balance is less than its share (LEDGER-U3-R2):
    `Error (InsufficientFunds (id, share))` for the first such account in
    list order.
+
+Every account's existence is checked, in list order, before any account's
+funds: an unknown account anywhere in the list is reported even when an
+earlier account is short of funds.
 
 Otherwise it records, in list order, one posting of `-share` per account,
 with `reference`, dated with the ledger's business date. A share of 0.00

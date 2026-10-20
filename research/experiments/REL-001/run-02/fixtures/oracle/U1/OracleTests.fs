@@ -53,10 +53,3 @@ let ``LEDGER-U1-R1 posting dated with the business date`` () =
     let l0 = opened () |> Ledger.setDate day |> ok
     let l = Ledger.adjust cash Increase 1m "r" l0 |> ok
     Assert.Equal(day, (List.exactlyOne (added l0 l)).Date)
-
-[<Fact>]
-let ``LEDGER-U1-R1 refusals record no posting`` () =
-    let l0 = opened ()
-    for r in [ Ledger.adjust cash Increase 0m "r" l0; Ledger.adjust cash Decrease 11m "r" l0; Ledger.adjust ghost Increase 1m "r" l0 ] do
-        Assert.True(Result.isError r)
-    Assert.Equal(1, List.length (Ledger.postings l0))

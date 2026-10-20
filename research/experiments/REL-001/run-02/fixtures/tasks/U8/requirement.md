@@ -1,6 +1,6 @@
 # U8: Account statement for a date range
 
-Category: simple. Requirement: LEDGER-U8-R1.
+Requirement: LEDGER-U8-R1.
 
 Customers ask for a statement of one account between two dates. Add to
 `src/Ledger/Domain.fs`:

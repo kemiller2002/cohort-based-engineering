@@ -75,3 +75,17 @@ let ``the store commits successful operations only`` () =
     Store.transfer cash savings 4m "t" store |> ok
     Assert.Equal(Ok 6m, Ledger.balance cash (Store.current store))
     Assert.Equal(Ok 4m, Ledger.balance savings (Store.current store))
+    Assert.Equal(Ok 6m, Store.balance cash store)
+    Assert.Equal(Ok 4m, Store.balance savings store)
+
+[<Fact>]
+let ``the store's balance cache follows every operation`` () =
+    let store = Store.create (opened () |> Ledger.credit cash 3m "seed" |> ok)
+    Assert.Equal(Ok 3m, Store.balance cash store)
+    Store.openAccount (AccountId "new") store |> ok
+    Store.credit (AccountId "new") 2m "c" store |> ok
+    Store.debit cash 1m "d" store |> ok
+    Assert.Equal(Error(InsufficientFunds(cash, 5m)), Store.debit cash 5m "d" store)
+    Assert.Equal(Ok 2m, Store.balance (AccountId "new") store)
+    Assert.Equal(Ok 2m, Store.balance cash store)
+    Assert.Equal(Error(UnknownAccount(AccountId "ghost")), Store.balance (AccountId "ghost") store)
