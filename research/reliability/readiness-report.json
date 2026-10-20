@@ -1,0 +1,173 @@
+{
+  "schema": "cbe.reliability-readiness/1",
+  "evaluatedAt": "2026-10-20T23:30Z",
+  "evaluator": "Echelon research program, Worker A (reliability completion)",
+  "pins": {
+    "praxis": {
+      "main": "4ade512",
+      "release": "v3.17.0",
+      "releaseCommit": "aea29b4a",
+      "assetSha256": "4c0819aba084387545d5ac72d073abfdfc44c06e2225550e2be8c3babd0da23e",
+      "binarySha256": "a5ec4a149be18731ab56010905900df39aa314b5f241091476e8c360ceaa83f6"
+    },
+    "dokimos": {
+      "main": "04b5f85",
+      "release": "dokimos-v0.7.0",
+      "assetSha256": "369917447350acd76b4e7d7a805abd9cfefbefa1922845e301052b9b82430a13",
+      "binarySha256": "2f8ca8f96efc443cdf5f9eec805aaacb748c73bb947bd4a44b76dc482aa73f2b"
+    },
+    "ordo": {
+      "main": "bb43c26",
+      "release": "v1.17.0",
+      "assetSha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d"
+    },
+    "run02Snapshot": {
+      "branch": "claude/echelon-reliability-integration-g8x7vn",
+      "commit": "c8da63f",
+      "access": "read-only worktree; not modified"
+    }
+  },
+  "conditions": [
+    {
+      "id": "F1-attested-forgery-refused",
+      "description": "In attested mode, forged store results+events, self-signed receipts, receipts signed with another key under the trusted keyid, and genuine failing receipts cannot complete an item; a genuine passing receipt completes.",
+      "mandatory": true,
+      "status": "PASS",
+      "evidence": [
+        "research/reliability/evidence/results-v3.17.0-rerun.jsonl (re-run of gate-evidence-binding-v317.sh from snapshot c8da63f on the pinned release binaries, scratch dir /home/user/wt/worker-a/run1): GATE-A1 RECEIPT_MISSING, GATE-A1-derived EVIDENCE_MISSING, GATE-A2/-derived RECEIPT_UNTRUSTED_KEY, GATE-A2B/-derived RECEIPT_INVALID_SIGNATURE, GATE-A3 RECEIPT_NOT_PASSED, GATE-A4 verified clean; identical to snapshot gate/evidence/evidence-binding-repro-v3.17.0.jsonl",
+        "praxis src/Praxis.Domain/Work/VerificationReceipt.fs:79-84 (codes), :283 verifySignature, :346 check",
+        "praxis src/Praxis.Domain/Work/CompletionGate.fs:110 isAttested, :311 ValidatedEvidence.attest",
+        "praxis tests/Praxis.Tests/AttestedCompletionTests.fs:221,235,250,266,275,528",
+        "dokimos src/Dokimos.Core/CompletionAttestationBinding.fs:101-107; tests/Dokimos.Core.Tests/CompletionAttestationTests.fs; tests/Dokimos.Cli.Tests/CompletionAttestedCliTests.fs:159"
+      ],
+      "notes": "Holds only against a forger who does not control the authority file or the repository policy; see F1-agent-cannot-fabricate-attestation."
+    },
+    {
+      "id": "F1-agent-cannot-fabricate-attestation",
+      "description": "An implementation agent (repository writer running complete-verified) cannot produce an attested verified completion without a genuine host-verifier run.",
+      "mandatory": true,
+      "status": "FAIL",
+      "evidence": [
+        "research/reliability/evidence/probes-v3.17.0.jsonl (research/reliability/scripts/probes.sh, released Praxis 3.17.0 + Dokimos 0.7.0)",
+        "PROBE-1 (control): keyless authority under requireAttestedEvidence -> rejected PRX.COMPLETION.ATTESTATION_REQUIRED",
+        "PROBE-3: agent commits ros.json without requireAttestedEvidence + keyless authority + forged store result/event -> exit 0 verified, identity consistent/clean",
+        "PROBE-4-derived: requireAttestedEvidence unchanged; receipt self-signed with an agent key; authority pinning that key -> exit 0 verified (Praxis and Dokimos)",
+        "praxis src/Praxis.Infrastructure/Work/FileWorkClaims.fs:251 readProtocolFlag reads ros.json from the worktree being completed",
+        "praxis src/Praxis.Infrastructure/Work/FileDerivedCompletion.fs:260-266 (authority from --authority or PRAXIS_COMPLETION_AUTHORITY), :308 readAuthorityInput (no trust-root pinning)",
+        "snapshot run-02/harness/setup.sh: host files under /tmp/claude-0/rel002/host/RUNID owned by the same uid as the agent; authority path exported to the agent in env.sh; verifier key in memory of a same-uid process (setsid praxis verifier serve)",
+        "snapshot run-02/harness/score.py:466-582: X6 compares host-file digests only; no check of receipt keyid vs run.json verifier.keyId, of the effective authority path, or of ros.json edits",
+        "praxis docs/verified-completion-rollout.md gate item 7 (trust root) is an operational requirement, not enforced in code"
+      ],
+      "notes": "No run-02 arm-D observation shows an attempt (every D run: 1 verify call, 1 verifier test run, 0 rejections, X6 untampered), but the harness could not have detected PROBE-3/PROBE-4-style fabrication. Draft requirement: /home/user/wt/worker-a/inbox-drafts/2026-10-20-REL-GATE-004-attested-trust-root-not-enforced.md."
+    },
+    {
+      "id": "REL-GATE-003-resolved",
+      "description": "requireVerifiedCompletion implies requireAttestedEvidence unless allowUnattestedEvidence is set; completions are labelled attested/unattested.",
+      "mandatory": true,
+      "status": "FAIL",
+      "evidence": [
+        "praxis main 4ade512: no allowUnattestedEvidence and no attested/unattested completion label anywhere in src/ (grep); ATTESTATION_REQUIRED raised only from requireAttestedEvidence (src/Praxis.Infrastructure/Work/FileDerivedCompletion.fs:250,311-317)",
+        "praxis .praxis/inbox/documents/2026-10-20-REL-GATE-003-non-attested-forgery.md: queued, no work item in .ros/work/queue.json",
+        "research/reliability/evidence/probes-v3.17.0.jsonl PROBE-2: ros.json {requireVerifiedCompletion:true} + keyless authority + forged store evidence -> exit 0 verified",
+        "research/reliability/evidence/results-v3.17.0-rerun.jsonl GATE-3: non-attested forgery verified (exit 0), reproduces the snapshot result"
+      ],
+      "notes": "Not implemented or claimed by this worker."
+    },
+    {
+      "id": "F2-agent-attribution",
+      "description": "Provider usage is attributed per agent within one orchestrating session, reproducibly and without double counting.",
+      "mandatory": true,
+      "status": "PASS",
+      "evidence": [
+        "praxis src/Praxis.Domain/Telemetry/AgentBinding.fs:40-84 (praxis.agent-binding/1, AgentAttribution.resolve)",
+        "praxis tests/Praxis.Tests/TelemetryAgentAttributionTests.fs:81,140,158,269,279",
+        "snapshot run-02/harness/trial.sh finish: one binding per agent id, scoped to run/workspace",
+        "snapshot run-02/observations/echelon-optimized/REL-001-R2-U6-r1-echelon-optimized.json run02.tokens.attribution: 2/2 agents found, 0 unattributed, conservationBalanced true, 21 duplicate entries excluded; all 10 D observations report attribution via --agent-binding"
+      ],
+      "notes": "Output tokens remain a lower bound (Claude Code transcripts); instrumentation status 'incomplete' because tokensOutput/costEstimated are partial."
+    },
+    {
+      "id": "F3-clean-commit-identity",
+      "description": "Verified completion references exactly the validated commit, the worktree ends clean, and HEAD differs from the verified commit only in .ros/.",
+      "mandatory": true,
+      "status": "PASS",
+      "evidence": [
+        "praxis src/Praxis.Infrastructure/Work/FileDerivedCompletion.fs:91,123,197-224 (CompletionIdentity, IDENTITY_VIOLATED, .ros/-only rule); src/Praxis.Infrastructure/Work/TrustedVerifier.fs:439 worktreeStatus",
+        "praxis tests/Praxis.Tests/AttestedCompletionTests.fs:275,330",
+        "snapshot run-02 observations echelon-optimized: 9/9 completing workspaces identity consistent, changedPaths [.ros/events/events.jsonl], clean, independent check onlyRos=true; U2-r3 correctly blocked (no completion)",
+        "results-v3.17.0-rerun.jsonl GATE-A4/GATE-5 identity consistent, clean"
+      ],
+      "notes": "In U6-r1/U6-r2 the non-completing agent-1 workspace reports IDENTITY_VIOLATED (its HEAD holds unpushed source changes after agent-2 completed); this is a workspace-hygiene signal in the two-agent task, not a defect of the completing identity."
+    },
+    {
+      "id": "F4-derived-completion-args",
+      "description": "complete-verified --id --token alone derives all other arguments; explicit flags must equal derived values.",
+      "mandatory": true,
+      "status": "PASS",
+      "evidence": [
+        "praxis src/Praxis.Application/Work/DerivedCompletion.fs:54,98-182 (derive, MismatchCode)",
+        "praxis tests/Praxis.Tests/AttestedCompletionTests.fs:453 (explicit must equal derived), :505 (F4 end to end through real Dokimos)",
+        "snapshot run-02/harness/briefs/workflow-d.md step 5; observations echelon-optimized: completeVerifiedCalls 1, rejections 0 in all 9 completing runs; complete-verified ~1.1-1.6 s"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "F4-single-test-run",
+      "description": "The verified-completion protocol adds exactly one test run (the host verifier's) and no separate validate-run.",
+      "mandatory": true,
+      "status": "PASS",
+      "evidence": [
+        "snapshot run-02 observations echelon-optimized: verifierTestRuns 1, verifyCalls 1, validateRunCalls 0 in all 9 completing runs",
+        "run-01 REPORT.md: treatment 2.17 test runs/run vs baseline 1.0 (validate-run duplicated the agent's run)"
+      ],
+      "notes": "Agents still run tests themselves (1-3 full runs), so total test runs per D run are 2-4; the protocol-imposed share is exactly 1."
+    },
+    {
+      "id": "F5-price-table",
+      "description": "A versioned, sourced model price table is read by Praxis to estimate cost.",
+      "mandatory": false,
+      "status": "PASS",
+      "evidence": [
+        "praxis src/Praxis.Infrastructure/Work/PriceTableReader.fs:21-56 (praxis.price-table/1); tests/Praxis.Tests/TelemetryAgentAttributionTests.fs:210,244",
+        "snapshot research/pricing/anthropic.price-table.json (tableVersion 2026-10-20.1, with source excerpt; commit a2a5ac3 on the run-02 branch)",
+        "snapshot run-02 observations: report.priceTable recorded, costEstimated computed (partial)"
+      ],
+      "notes": "Price table exists only on the run-02 branch, not on cohort-based-engineering main. Prices were not re-verified here. Cost is 'partial' because output tokens are a lower bound."
+    },
+    {
+      "id": "F6-rollout-gate",
+      "description": "PRAXIS-REL-006 rollout gate is defined, fail-closed, and its conditions are met.",
+      "mandatory": true,
+      "status": "FAIL",
+      "evidence": [
+        "praxis docs/verified-completion-rollout.md (gate items 1-7, flags fail closed on non-boolean); tests/Praxis.Tests/AttestedCompletionTests.fs:567,577,584",
+        "praxis .ros/work/queue.json: PRAXIS-REL-006 status captured",
+        "gate item 5 (real application repository) and 6 (run-02 report reviewed) not yet evidenced; item 7 (trust root) not met in run-02 arm D and not enforced in code (see F1-agent-cannot-fabricate-attestation); REL-GATE-003 open"
+      ],
+      "notes": "The gate is defined and its controls work as documented for honest callers; it is not passed."
+    },
+    {
+      "id": "regression-tests",
+      "description": "Praxis and Dokimos test suites at main pass with the real Dokimos (no skips of the attested end-to-end cases).",
+      "mandatory": true,
+      "status": "PASS",
+      "evidence": [
+        "research/reliability/evidence/praxis-tests-4ade512.txt: Praxis.Tests at praxis main 4ade512 (git archive, Release, .NET SDK 10.0.402 installed via dotnet-install.sh), PRAXIS_TEST_DOKIMOS_DLL = Dokimos.Cli built from dokimos 04b5f85: 2330/2330 passed, 0 failed; 21 'attested completion' cases incl. F4 end to end and forged-receipt refusal through real Dokimos",
+        "research/reliability/evidence/dokimos-tests-v0.7.0.txt: Dokimos 04b5f85 Domain 4/4, Core 322/322, Cli 142/143 in a non-git archive (BehaviorVerifyCliTests needs a Git checkout)",
+        "research/reliability/evidence/dokimos-cli-tests-gitrepo.txt: Dokimos.Cli.Tests 143/143 after git init of the same tree"
+      ],
+      "notes": "The one Dokimos failure is environmental (oracle not inside a Git repository) and passes in a Git checkout. Tests do not cover the PROBE-2/3/4 bypasses; they pass because those are documented-out-of-scope behaviours, not because they are refused."
+    }
+  ],
+  "verdict": {
+    "optimizedWorkflowReady": false,
+    "attestedConfigurationReady": false,
+    "attestedConfigurationScope": "F1-attested-forgery-refused, F1-agent-cannot-fabricate-attestation, F2, F3, F4 (both), regression-tests; excludes REL-GATE-003 (non-attested) and F6 (rollout)",
+    "blocking": [
+      "F1-agent-cannot-fabricate-attestation",
+      "REL-GATE-003-resolved",
+      "F6-rollout-gate"
+    ],
+    "summary": "Mechanisms F1-F5 are implemented, tested (2330/2330 Praxis, 469/469 Dokimos) and exercised in run-02 arm D, and attested mode refuses every forged receipt the gate constructs. Not ready: a repository writer who runs complete-verified can still fabricate an attested completion by committing a weaker ros.json (PROBE-3) or naming an authority that pins its own key (PROBE-4); REL-GATE-003 is unresolved (PROBE-2); the PRAXIS-REL-006 rollout gate is captured, not passed. Attested configuration becomes ready when the trust root (policy + authority + key) is enforced outside the agent's control (draft REL-GATE-004)."
+  }
+}
