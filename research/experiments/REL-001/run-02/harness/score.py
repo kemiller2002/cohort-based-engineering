@@ -240,6 +240,11 @@ def item_events(repo, item):
     return out
 
 
+def claimed_by(e, name):
+    who = e.get("claimant") or (e.get("actor") or {}).get("id") or ""
+    return who.split("/")[-1] == name
+
+
 def etype(e):
     return e.get("type") or e.get("eventType") or ""
 
@@ -389,7 +394,8 @@ def main(argv):
     for n in names:
         repo = by_name[n]["repo"]
         evs = item_events(repo, item)
-        verified = [e for e in evs if etype(e) == "work.completion.verified"]
+        # A clone also holds completions it fetched from the shared remote (U6); count only those this agent claimed.
+        verified = [e for e in evs if etype(e) == "work.completion.verified" and (not multi or claimed_by(e, n))]
         workspaces[n] = {
             "head": git(repo, "rev-parse", "HEAD"),
             "uncommittedTrackedChanges": len((git(repo, "status", "--porcelain", "--untracked-files=no", "--", ".", ":!.ros", ":!.praxis") or "").splitlines()),

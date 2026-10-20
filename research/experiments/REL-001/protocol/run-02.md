@@ -228,3 +228,18 @@ Additional metrics (addendum):
   is an exploratory difficulty measure.
 - **Exploratory, not preregistered:** a U2 variant without the conflict node. It is not run unless budget
   remains after the confirmatory matrix.
+
+## Amendments
+
+### A1 (2026-10-20, after the pilot, before the first confirmatory trial)
+- **Pilot finding:** in `REL-001-R2-PILOT-U6-echelon-optimized`, agent-1 was refused the claim (`PRX.CLAIM.HELD`) and
+  stopped blocked. After fetching the remote, its clone also held agent-2's `work.completion.verified` event, so the
+  supplementary field `u6.toolDuplicateOwner` read `true`, although only agent-2 completed.
+- **Change:** in U6, `score.py` counts a tool-recorded completion only for the agent named as its `claimant`. The
+  scorer's sha256 is `55238f1849773d4868969210f75d9c5e4ee31c8e32830e18304adddaaf781002`.
+- **What does not change:** the preregistered R8 observables (completion, duplicate owner, lost work and conflicting
+  completions) and every hypothesis, metric, task, arm and the order. The R8 result for this pilot was
+  1 completion, no duplicate owner and 0 lost work, both before and after the change.
+- **Pilot review otherwise clean:** across the 5 pilot trials there was no X2 mismatch (every run was served
+  `claude-opus-5-5`), no X4 contamination and no X6 tampering, and every metric is eligible. Pilot data stay
+  excluded from the analysis.
