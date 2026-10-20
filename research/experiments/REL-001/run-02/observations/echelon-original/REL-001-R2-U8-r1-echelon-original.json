@@ -1,0 +1,542 @@
+{
+  "schema": "cbe.rel-001.observation/1",
+  "experimentId": "REL-001",
+  "runId": "REL-001-R2-U8-r1-echelon-original",
+  "supersedes": null,
+  "arm": "echelon-original",
+  "scenario": "nominal",
+  "replicate": 1,
+  "status": "completed",
+  "statusReason": null,
+  "exclusion": null,
+  "task": {
+    "taskId": "U8",
+    "requirementIds": [
+      "LEDGER-U8-R1"
+    ],
+    "acceptanceCriteriaDigest": "77ced8af66da37b35549117e31fac5e50c6f68dc1f8dc8994af039e53dfb5745",
+    "complexity": {
+      "class": "simple",
+      "basis": "builder-assigned category (unvalidated; run-02 design)"
+    }
+  },
+  "environment": {
+    "repositories": [
+      {
+        "name": "rel001-run02-fixture",
+        "commit": "c62110e59805dfd179deed4b5b08399bf32013d8"
+      },
+      {
+        "name": "cohort-based-engineering",
+        "commit": "30a5293a43ced12cf651c921a54682238ba28909"
+      }
+    ],
+    "tools": {
+      "dotnet": "10.0.402",
+      "praxis": "3.16.0",
+      "dokimos": "0.6.0+828208f46b7d1073534bd02873d6298b62ad1de2",
+      "ordo": "1.17.0"
+    },
+    "enforcement": {
+      "ordoContracts": true,
+      "praxisOwnership": true,
+      "dokimosVerification": true
+    }
+  },
+  "model": {
+    "provider": "anthropic",
+    "configuredModel": "claude-opus-5-5",
+    "servedModels": [
+      "claude-opus-5-5"
+    ],
+    "configurationDigest": "852ca26b5cdaf3649de4751974084a6e9db5efdc89895a8a1699a5f82a6af662"
+  },
+  "cache": {
+    "state": "warm",
+    "note": "sub-agents of one orchestrating session share the provider prompt cache for the common prefix (run-01 A3); cache reads are reported separately"
+  },
+  "concurrency": {
+    "agents": 1
+  },
+  "retryPolicy": {
+    "maxAttempts": 3,
+    "description": "at most 3 completion attempts (C, D); A and B have no completion command"
+  },
+  "instrumentation": {
+    "status": "incomplete",
+    "missing": [
+      "tokensOutput",
+      "tokensTotal",
+      "costEstimated",
+      "costBilled",
+      "activeMs"
+    ]
+  },
+  "report": {
+    "schema": "praxis.telemetry-reliability-report",
+    "schemaVersion": 1,
+    "sha256": "45f274fdb61f17ac0c6309427c0277c179ad9e31d39e4f0aa9094bba7f2a2a92",
+    "priceTable": {
+      "source": "/home/user/cohort-based-engineering/research/pricing/anthropic.price-table.json",
+      "version": "2026-10-20.1",
+      "effectiveDate": "2026-10-06T00:00:00Z"
+    }
+  },
+  "metrics": {
+    "tokensInput": {
+      "availability": "available",
+      "value": 18,
+      "unit": "tokens",
+      "numerator": 9,
+      "denominator": 9
+    },
+    "tokensOutput": {
+      "availability": "partial",
+      "value": 142,
+      "unit": "tokens",
+      "numerator": 9,
+      "denominator": 9
+    },
+    "tokensCacheRead": {
+      "availability": "available",
+      "value": 500027,
+      "unit": "tokens",
+      "numerator": 9,
+      "denominator": 9
+    },
+    "tokensCacheWrite": {
+      "availability": "available",
+      "value": 29528,
+      "unit": "tokens",
+      "numerator": 9,
+      "denominator": 9
+    },
+    "tokensTotal": {
+      "availability": "partial",
+      "value": 529715,
+      "unit": "tokens",
+      "numerator": 9,
+      "denominator": 9
+    },
+    "costEstimated": {
+      "availability": "partial",
+      "value": 0.250557,
+      "unit": "USD",
+      "numerator": 9,
+      "denominator": 9,
+      "basis": "estimated"
+    },
+    "costBilled": {
+      "availability": "unavailable",
+      "value": null,
+      "unit": "USD",
+      "basis": "billed"
+    },
+    "verifiedRequirements": {
+      "availability": "available",
+      "value": 1,
+      "unit": "requirements"
+    },
+    "costPerVerifiedRequirement": {
+      "availability": "partial",
+      "value": 0.250557,
+      "unit": "USD/requirement",
+      "numerator": 0.250557,
+      "denominator": 1,
+      "basis": "estimated"
+    },
+    "tokensPerVerifiedRequirement": {
+      "availability": "partial",
+      "value": 529715.0,
+      "unit": "tokens/requirement",
+      "numerator": 529715,
+      "denominator": 1
+    },
+    "firstPassVerificationRate": {
+      "availability": "available",
+      "value": 1.0,
+      "unit": "ratio"
+    },
+    "reworkFrequency": {
+      "availability": "available",
+      "value": 0,
+      "unit": "events"
+    },
+    "completionRejectionFrequency": {
+      "availability": "available",
+      "value": 0.0,
+      "unit": "ratio",
+      "numerator": 0,
+      "denominator": 1
+    },
+    "duplicateOwnershipAttempts": {
+      "availability": "available",
+      "value": 0,
+      "unit": "attempts"
+    },
+    "staleWriteRejections": {
+      "availability": "unavailable",
+      "value": null,
+      "unit": "rejections"
+    },
+    "elapsedMs": {
+      "availability": "available",
+      "value": 84150,
+      "unit": "ms"
+    },
+    "activeMs": {
+      "availability": "unavailable",
+      "value": null,
+      "unit": "ms"
+    },
+    "toolCalls": {
+      "availability": "available",
+      "value": 9,
+      "unit": "calls"
+    },
+    "testRuns": {
+      "availability": "available",
+      "value": 2,
+      "unit": "runs"
+    },
+    "escapedDefects": {
+      "availability": "available",
+      "value": 0,
+      "unit": "defects"
+    }
+  },
+  "gates": {
+    "duplicateActiveClaims": 0,
+    "invalidAcceptedDecisions": 0,
+    "unverifiedCompletions": 0
+  },
+  "scoring": {
+    "finalCommit": "796f614e5ee230ad96cd24716f95c12fc45b7a07",
+    "uncommittedTrackedChanges": 0,
+    "oracleExit": 0,
+    "oracleBuilt": true,
+    "oracleDigest": "b02728ad0d6a8433f1ea7d9729f8862e9a9f468923a67d4008cba5d7efd2cfb7",
+    "requirements": {
+      "LEDGER-U8-R1": {
+        "tests": 8,
+        "passed": 8,
+        "pass": true
+      }
+    },
+    "recordedCompletion": true,
+    "verified": true,
+    "escapedDefect": false,
+    "completionAttempts": 1,
+    "rejections": 0,
+    "validateRuns": 1,
+    "testRuns": 2,
+    "rework": {
+      "total": 0,
+      "extraCompletionAttempts": 0,
+      "revertCommits": 0,
+      "resets": 0
+    },
+    "oracleContamination": false
+  },
+  "run02": {
+    "schema": "cbe.rel-001.run-02-observation/1",
+    "armLetter": "C",
+    "category": "simple",
+    "categoryBasis": "builder-assigned (unvalidated)",
+    "block": "U8-r1",
+    "label": "trial",
+    "pilot": false,
+    "workItem": "LEDGER-U8",
+    "agents": {
+      "agent-1": {
+        "agentId": "a6d24fdce587a7342",
+        "finalMessageSource": "transcript",
+        "finalMessageSha256": "39b39a59add013e3e15e0b08d319a639246bc983715532a3fcd3e842f5fda6cc",
+        "outcome": {
+          "present": true,
+          "value": "completed",
+          "reason": null,
+          "strict": true,
+          "count": 1
+        },
+        "toolCalls": 9,
+        "servedModels": [
+          "claude-opus-5-5"
+        ],
+        "transcriptEntries": 46,
+        "namesBothDecisions": null,
+        "harness": {
+          "source": "Agent tool result (orchestrator)",
+          "subagentTokens": 66358,
+          "toolUses": 9,
+          "durationMs": 76139
+        }
+      }
+    },
+    "workspaces": {
+      "agent-1": {
+        "head": "796f614e5ee230ad96cd24716f95c12fc45b7a07",
+        "uncommittedTrackedChanges": 0,
+        "untracked": 0,
+        "toolRecordedCompletion": true,
+        "plainCompletions": 0,
+        "completionCommit": "ab1cfc781538408fd3c58d7e7784b04c0b97d35c",
+        "claimsAcquired": 1,
+        "claimsRejected": 0,
+        "revertCommits": 0,
+        "resets": 0
+      }
+    },
+    "completionEvidence": {
+      "kind": "tool-recorded completion (work.completion.verified)",
+      "recorded": true,
+      "outcomeConsistency": {
+        "outcomeLine": "completed",
+        "toolRecorded": true,
+        "consistent": true
+      }
+    },
+    "units": {
+      "total": 1,
+      "correct": 1,
+      "perRequirement": {
+        "LEDGER-U8-R1": {
+          "oraclePass": true,
+          "counted": true
+        }
+      }
+    },
+    "oracle": {
+      "final": {
+        "commit": "796f614e5ee230ad96cd24716f95c12fc45b7a07",
+        "built": true,
+        "exit": 0
+      },
+      "first": {
+        "commit": "796f614e5ee230ad96cd24716f95c12fc45b7a07",
+        "requirements": {
+          "LEDGER-U8-R1": {
+            "tests": 8,
+            "passed": 8,
+            "pass": true
+          }
+        }
+      }
+    },
+    "u2Rubric": null,
+    "u6": null,
+    "reliability": {
+      "invalidCompletionsAccepted": 0,
+      "escapedDefects": 0,
+      "duplicateOwners": 0,
+      "lostWork": 0,
+      "conflictingCompletions": 0,
+      "completionCommitDiffersFromVerified": false,
+      "invalidCompletionAttempts": 0
+    },
+    "firstPassCorrect": true,
+    "escalation": {
+      "blocked": false,
+      "question": false
+    },
+    "tokens": {
+      "source": "praxis telemetry reliability-report --agent-binding (F2); output is a lower bound (Claude Code transcripts)",
+      "byKind": {
+        "input": {
+          "availability": "available",
+          "value": 18,
+          "unit": "tokens",
+          "numerator": 9,
+          "denominator": 9
+        },
+        "output": {
+          "availability": "partial",
+          "value": 142,
+          "unit": "tokens",
+          "numerator": 9,
+          "denominator": 9
+        },
+        "cacheRead": {
+          "availability": "available",
+          "value": 500027,
+          "unit": "tokens",
+          "numerator": 9,
+          "denominator": 9
+        },
+        "cacheWrite": {
+          "availability": "available",
+          "value": 29528,
+          "unit": "tokens",
+          "numerator": 9,
+          "denominator": 9
+        },
+        "cacheWrite5m": {
+          "availability": "available",
+          "value": 29528,
+          "unit": "tokens",
+          "numerator": 9,
+          "denominator": 9
+        },
+        "cacheWrite1h": {
+          "availability": "available",
+          "value": 0,
+          "unit": "tokens",
+          "numerator": 9,
+          "denominator": 9
+        },
+        "total": {
+          "availability": "partial",
+          "value": 529715,
+          "unit": "tokens",
+          "numerator": 9,
+          "denominator": 9
+        }
+      },
+      "excludingCacheReads": {
+        "availability": "partial",
+        "value": 29688,
+        "unit": "tokens",
+        "numerator": 27,
+        "denominator": 27
+      },
+      "attribution": {
+        "agentsFound": [
+          "a6d24fdce587a7342"
+        ],
+        "agentsMissing": [],
+        "methods": {
+          "a6d24fdce587a7342": {
+            "agent-id": 9
+          }
+        },
+        "unattributedObservations": 0,
+        "conservationBalanced": true,
+        "bindingSha256": "94f9f38cba842a31789dfdd418c388e9c4ff8c1f1e3f732564955684819604f7",
+        "crossFileDuplicatesExcluded": 0,
+        "duplicateEntriesExcluded": 4
+      },
+      "reportExit": 0,
+      "harnessSecondary": {
+        "subagentTokens": 66358,
+        "perAgent": [
+          {
+            "source": "Agent tool result (orchestrator)",
+            "subagentTokens": 66358,
+            "toolUses": 9,
+            "durationMs": 76139
+          }
+        ]
+      }
+    },
+    "cost": {
+      "estimated": {
+        "availability": "partial",
+        "value": 0.250557,
+        "unit": "USD",
+        "numerator": 9,
+        "denominator": 9
+      },
+      "priceTableSha256": "dd58c305821c66ec59c2c567a936885be6833d480c915ad0778b5385ff325b42",
+      "billed": null
+    },
+    "tests": {
+      "total": 2,
+      "full": 2,
+      "focused": 0,
+      "list": 0,
+      "computeMs": 24464,
+      "bySource": {
+        "agent": {
+          "full": 1,
+          "focused": 0,
+          "ms": 11094
+        },
+        "validate-run": {
+          "full": 1,
+          "focused": 0,
+          "ms": 13370
+        }
+      },
+      "invocations": 3,
+      "buildMs": 1676
+    },
+    "verification": {
+      "validateRunCalls": 1,
+      "validateRunMs": 13747,
+      "verifyCalls": 0,
+      "verifyMs": 0,
+      "completeVerifiedCalls": 1,
+      "completeVerifiedMs": 789,
+      "completeVerifiedTimings": [],
+      "verifierTestRuns": 0,
+      "verifierTestMs": 0
+    },
+    "coordination": {
+      "claim": 1,
+      "renew": 0,
+      "release": 0,
+      "recover": 0,
+      "expire": 0,
+      "claims": 0
+    },
+    "wallMs": 84150,
+    "harnessSpanMs": 127532,
+    "toolCalls": 9,
+    "rework": {
+      "total": 0,
+      "extraCompletionAttempts": 0,
+      "revertCommits": 0,
+      "resets": 0
+    },
+    "exclusions": {
+      "x2": {
+        "mismatch": false,
+        "servedModels": [
+          "claude-opus-5-5"
+        ],
+        "configuredModel": "claude-opus-5-5"
+      },
+      "x4": {
+        "contaminated": false,
+        "transcriptSignals": [],
+        "oracleModuleInRepository": false
+      },
+      "x6": {
+        "tampered": false,
+        "changedHostFiles": [],
+        "scoredAs": null
+      }
+    },
+    "eligibility": {
+      "correct": true,
+      "cost": true,
+      "tokensTotal": true,
+      "tokensExcludingCacheReads": true,
+      "wallMs": true,
+      "pairedComparisons": true
+    },
+    "directivesSha256": "1ae15c1f5b398d4c18b39b4a8ff11333c640d3c858cee68c911896fbf92985cc",
+    "binaries": {
+      "praxis": {
+        "source": "/tmp/claude-0/rel001/bin/praxis-3.16.0/x/praxis-linux-x64/praxis",
+        "sha256": "3c379a279aa23aed1434179207a6f265fe595eb9c4bda0e701f52333bd7f475c"
+      },
+      "dokimos": {
+        "source": "/tmp/claude-0/rel001/bin/dokimos-0.6.0/x/dokimos",
+        "sha256": "6fb568f9de09e6c9d23647484b5a8e8207b939d7c95323f5247f1a5244c96586"
+      },
+      "ordo": {
+        "sha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1"
+      }
+    },
+    "contract": {
+      "sha256": "1b28bc7d080cb154fcb67e579b56ad4ac93c4d1d745f148ecf2c4927ac53deb8",
+      "ordoExit": 0,
+      "ordoAdmits": true,
+      "ordoContractDigest": "sha256:b9a8f6e1b8be0983e409649f509e2fa8ce2e33a529eec1810fbd37fdcbf6974c",
+      "praxisCheckExit": 0,
+      "boundDigest": "sha256:b9a8f6e1b8be0983e409649f509e2fa8ce2e33a529eec1810fbd37fdcbf6974c"
+    },
+    "verifier": null
+  }
+}
