@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:eb20f0b45570e405db57ed1b9f35156f7beb95494ea5bab164adf09500263c62",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/U5.md#LEDGER-U5-R1",
+        "originalId": "LEDGER-U5-R1",
+        "document": "requirements/U5.md",
+        "location": "L29",
+        "revision": "sha256:eb20f0b45570e405db57ed1b9f35156f7beb95494ea5bab164adf09500263c62",
+        "contentDigest": "sha256:a8e33cdf4fc9bd20c0857a1b9d6a9f71d94c210af7da83fe2c10ecc1863db4bd"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "INV-U5-ALL-OR-NOTHING",
+        "VERIFY-U5-R1",
+        "COHORT-U5"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/U5.md#LEDGER-U5-R2",
+        "originalId": "LEDGER-U5-R2",
+        "document": "requirements/U5.md",
+        "location": "L44",
+        "revision": "sha256:eb20f0b45570e405db57ed1b9f35156f7beb95494ea5bab164adf09500263c62",
+        "contentDigest": "sha256:c4515aa154f9d93712d9cb541097a56610c8a40c83421e45af9b3c520eb2d2f7"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-U5-BATCH-ATOMICITY",
+        "INV-U5-ALL-OR-NOTHING",
+        "VERIFY-U5-R2",
+        "COHORT-U5"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-U5-BATCH-ATOMICITY",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/U5.md#LEDGER-U5-R2"
+      ],
+      "dependsOn": [],
+      "justification": "a batch is computed on the current state and committed once"
+    },
+    {
+      "id": "INV-U5-ALL-OR-NOTHING",
+      "kind": "invariant",
+      "requirementKeys": [
+        "requirements/U5.md#LEDGER-U5-R1",
+        "requirements/U5.md#LEDGER-U5-R2"
+      ],
+      "dependsOn": [],
+      "justification": "a refused batch records no posting"
+    },
+    {
+      "id": "VERIFY-U5-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U5.md#LEDGER-U5-R1"
+      ],
+      "dependsOn": [
+        "INV-U5-ALL-OR-NOTHING"
+      ]
+    },
+    {
+      "id": "VERIFY-U5-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U5.md#LEDGER-U5-R2"
+      ],
+      "dependsOn": [
+        "DEC-U5-BATCH-ATOMICITY",
+        "INV-U5-ALL-OR-NOTHING"
+      ]
+    },
+    {
+      "id": "COHORT-U5",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/U5.md#LEDGER-U5-R1",
+        "requirements/U5.md#LEDGER-U5-R2"
+      ],
+      "dependsOn": [
+        "DEC-U5-BATCH-ATOMICITY",
+        "INV-U5-ALL-OR-NOTHING"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:2d1d0d0260bf65d51bd3af3017a605a5cca16198de82d367353618edfddccd1c",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/U3.md#LEDGER-U3-R1",
+        "originalId": "LEDGER-U3-R1",
+        "document": "requirements/U3.md",
+        "location": "L16",
+        "revision": "sha256:2d1d0d0260bf65d51bd3af3017a605a5cca16198de82d367353618edfddccd1c",
+        "contentDigest": "sha256:fcae95553f8e2495d7f929054ee625fcb0b65d7580f8690f8e026de11b77965f"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-U3-R1",
+        "COHORT-U3"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/U3.md#LEDGER-U3-R2",
+        "originalId": "LEDGER-U3-R2",
+        "document": "requirements/U3.md",
+        "location": "L32",
+        "revision": "sha256:2d1d0d0260bf65d51bd3af3017a605a5cca16198de82d367353618edfddccd1c",
+        "contentDigest": "sha256:3a4749b9222f74edc90a8fe7aaba7eb80f38e2ee1dbeb2575ebb70557412d4bb"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-U3-ROUNDING",
+        "VERIFY-U3-R2",
+        "COHORT-U3"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-U3-ROUNDING",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/U3.md#LEDGER-U3-R2"
+      ],
+      "dependsOn": [],
+      "justification": "base share rounded half to even to cents; remainder to the first account"
+    },
+    {
+      "id": "VERIFY-U3-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U3.md#LEDGER-U3-R1"
+      ],
+      "dependsOn": [
+        "DEC-U3-ROUNDING"
+      ]
+    },
+    {
+      "id": "VERIFY-U3-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U3.md#LEDGER-U3-R2"
+      ],
+      "dependsOn": [
+        "DEC-U3-ROUNDING"
+      ]
+    },
+    {
+      "id": "COHORT-U3",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/U3.md#LEDGER-U3-R1",
+        "requirements/U3.md#LEDGER-U3-R2"
+      ],
+      "dependsOn": [
+        "DEC-U3-ROUNDING"
+      ]
+    }
+  ]
+}

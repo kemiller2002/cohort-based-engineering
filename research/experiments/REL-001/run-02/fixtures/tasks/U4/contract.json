@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:9fd6a18a0d65b9c07c522a3d002c732e4f50d135c97adfc72ed018a8014c3ba5",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/U4.md#LEDGER-U4-R1",
+        "originalId": "LEDGER-U4-R1",
+        "document": "requirements/U4.md",
+        "location": "L10",
+        "revision": "sha256:9fd6a18a0d65b9c07c522a3d002c732e4f50d135c97adfc72ed018a8014c3ba5",
+        "contentDigest": "sha256:fef25e7d2b67943eb91ba4462813475154bc7d4eef6ffea007aeec2d783e5a55"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-U4-SHARED-VIEW",
+        "VERIFY-U4-R1",
+        "COHORT-U4"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/U4.md#LEDGER-U4-R2",
+        "originalId": "LEDGER-U4-R2",
+        "document": "requirements/U4.md",
+        "location": "L28",
+        "revision": "sha256:9fd6a18a0d65b9c07c522a3d002c732e4f50d135c97adfc72ed018a8014c3ba5",
+        "contentDigest": "sha256:dfc6b7b69acfab6ade699f67f74bb7d23243a7ad22de3914bbbdf74705a30822"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-U4-SHARED-VIEW",
+        "VERIFY-U4-R2",
+        "COHORT-U4"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-U4-SHARED-VIEW",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/U4.md#LEDGER-U4-R1",
+        "requirements/U4.md#LEDGER-U4-R2"
+      ],
+      "dependsOn": [],
+      "justification": "per-account views are built on the shared helper postingsOf"
+    },
+    {
+      "id": "VERIFY-U4-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U4.md#LEDGER-U4-R1"
+      ],
+      "dependsOn": [
+        "DEC-U4-SHARED-VIEW"
+      ]
+    },
+    {
+      "id": "VERIFY-U4-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U4.md#LEDGER-U4-R2"
+      ],
+      "dependsOn": [
+        "DEC-U4-SHARED-VIEW"
+      ]
+    },
+    {
+      "id": "COHORT-U4",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/U4.md#LEDGER-U4-R1",
+        "requirements/U4.md#LEDGER-U4-R2"
+      ],
+      "dependsOn": [
+        "DEC-U4-SHARED-VIEW"
+      ]
+    }
+  ]
+}

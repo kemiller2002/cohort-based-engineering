@@ -1,0 +1,50 @@
+{
+  "schema": "cbe.rel-001.run-02-task/1",
+  "id": "U7",
+  "workItem": "LEDGER-U7",
+  "title": "U7: Tiered interest accrual at period close",
+  "category": "complex",
+  "requirementIds": [
+    "LEDGER-U7-R1",
+    "LEDGER-U7-R2",
+    "LEDGER-U7-R3"
+  ],
+  "requirementKeys": [
+    "requirements/U7.md#LEDGER-U7-R1",
+    "requirements/U7.md#LEDGER-U7-R2",
+    "requirements/U7.md#LEDGER-U7-R3"
+  ],
+  "decisionIds": [
+    "DEC-U7-MARGINAL-TIERS"
+  ],
+  "expectedOutcome": {
+    "completion": "verified",
+    "oracle": "pass",
+    "description": "implemented per docs/design/interest.md; oracle passes"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/U7/requirement.md",
+      "target": "requirements/U7.md",
+      "sha256": "773c5eb82495c06ce0ed88ede1d5deafbaa327e82f6d57913b525b5b4b1942bb"
+    },
+    "visibleTests": {
+      "source": "tasks/U7/U7AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/U7AcceptanceTests.fs",
+      "sha256": "e63680f6e1f4406097e39dcc92f517b195a0a50a1e449b7885b17856a3a5d1e1"
+    },
+    "startOverlay": null,
+    "oracle": "oracle/U7/OracleTests.fs",
+    "reference": "reference/U7"
+  },
+  "contract": {
+    "path": "tasks/U7/contract.json",
+    "sha256": "791e9e4c20999ecd5283e632a14dbb5dfa99bb5567f2e4d0c8b688f0597e3894",
+    "ordo": "1.17.0",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:1b34b58e5030dd2354618a17de64153f0a32c8d7519d9dcccedfcc9cbfc92ac5",
+    "ordoDiagnostics": []
+  }
+}

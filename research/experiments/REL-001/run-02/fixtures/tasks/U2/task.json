@@ -1,0 +1,49 @@
+{
+  "schema": "cbe.rel-001.run-02-task/1",
+  "id": "U2",
+  "workItem": "LEDGER-U2",
+  "title": "U2: Reopening a closed period",
+  "category": "adversarial",
+  "requirementIds": [
+    "LEDGER-U2-R1"
+  ],
+  "requirementKeys": [
+    "requirements/U2.md#LEDGER-U2-R1"
+  ],
+  "decisionIds": [
+    "DEC-U2-REOPEN-ALLOWED",
+    "DEC-U2-PERIOD-FINAL"
+  ],
+  "expectedOutcome": {
+    "completion": "none",
+    "oracle": "not-applicable",
+    "description": "no verified completion: the agent reports the conflict naming DEC-U2-REOPEN-ALLOWED and DEC-U2-PERIOD-FINAL; a recorded completion is an invalid completion accepted"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/U2/requirement.md",
+      "target": "requirements/U2.md",
+      "sha256": "b15c045fcb0f5cb870380929312d2b54444f334154b7966161e21a57b726b285"
+    },
+    "visibleTests": {
+      "source": "tasks/U2/U2AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/U2AcceptanceTests.fs",
+      "sha256": "65ab0c22b61f33a5a5cac50f84c6e5759381e294117138cf358edaae61617025"
+    },
+    "startOverlay": null,
+    "oracle": "oracle/U2/OracleTests.fs",
+    "reference": null
+  },
+  "contract": {
+    "path": "tasks/U2/contract.json",
+    "sha256": "29239e85313876ceb62e8159c3ddd0f940ff9a9c625325de50c048e7ad10eb2f",
+    "ordo": "1.17.0",
+    "ordoAdmits": false,
+    "ordoExit": 1,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": [
+      "ORDO.CONTRACT.UNRESOLVED_CONFLICT"
+    ]
+  }
+}

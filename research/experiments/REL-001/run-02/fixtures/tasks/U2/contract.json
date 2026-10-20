@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:b15c045fcb0f5cb870380929312d2b54444f334154b7966161e21a57b726b285",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/U2.md#LEDGER-U2-R1",
+        "originalId": "LEDGER-U2-R1",
+        "document": "requirements/U2.md",
+        "location": "L14",
+        "revision": "sha256:b15c045fcb0f5cb870380929312d2b54444f334154b7966161e21a57b726b285",
+        "contentDigest": "sha256:fa8a30904c511eda6b181b65f0a06b8dea966108799cab99b7adddd1d60ccfa3"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-U2-REOPEN-ALLOWED",
+        "DEC-U2-PERIOD-FINAL",
+        "CONFLICT-U2-REOPEN",
+        "VERIFY-U2-R1",
+        "COHORT-U2"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-U2-REOPEN-ALLOWED",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/U2.md#LEDGER-U2-R1"
+      ],
+      "dependsOn": [],
+      "justification": "a closed period may be reopened; the next close charges again"
+    },
+    {
+      "id": "DEC-U2-PERIOD-FINAL",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/U2.md#LEDGER-U2-R1"
+      ],
+      "dependsOn": [],
+      "justification": "a closed period is final and can never be reopened"
+    },
+    {
+      "id": "CONFLICT-U2-REOPEN",
+      "kind": "conflict",
+      "requirementKeys": [
+        "requirements/U2.md#LEDGER-U2-R1"
+      ],
+      "dependsOn": [
+        "DEC-U2-REOPEN-ALLOWED",
+        "DEC-U2-PERIOD-FINAL"
+      ],
+      "justification": "DEC-U2-REOPEN-ALLOWED and DEC-U2-PERIOD-FINAL contradict; unresolved"
+    },
+    {
+      "id": "VERIFY-U2-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U2.md#LEDGER-U2-R1"
+      ],
+      "dependsOn": [
+        "DEC-U2-REOPEN-ALLOWED"
+      ]
+    },
+    {
+      "id": "COHORT-U2",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/U2.md#LEDGER-U2-R1"
+      ],
+      "dependsOn": [
+        "DEC-U2-REOPEN-ALLOWED"
+      ]
+    }
+  ]
+}

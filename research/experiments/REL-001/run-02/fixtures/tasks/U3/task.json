@@ -1,0 +1,48 @@
+{
+  "schema": "cbe.rel-001.run-02-task/1",
+  "id": "U3",
+  "workItem": "LEDGER-U3",
+  "title": "U3: Shared fee split across accounts",
+  "category": "adversarial",
+  "requirementIds": [
+    "LEDGER-U3-R1",
+    "LEDGER-U3-R2"
+  ],
+  "requirementKeys": [
+    "requirements/U3.md#LEDGER-U3-R1",
+    "requirements/U3.md#LEDGER-U3-R2"
+  ],
+  "decisionIds": [
+    "DEC-U3-ROUNDING"
+  ],
+  "expectedOutcome": {
+    "completion": "verified",
+    "oracle": "pass",
+    "description": "implemented; the hidden oracle (uneven splits, remainders) passes; an oracle failure after completion is an escaped defect"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/U3/requirement.md",
+      "target": "requirements/U3.md",
+      "sha256": "2d1d0d0260bf65d51bd3af3017a605a5cca16198de82d367353618edfddccd1c"
+    },
+    "visibleTests": {
+      "source": "tasks/U3/U3AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/U3AcceptanceTests.fs",
+      "sha256": "49a172573afdf52a91112db32640c6f0eaa8fdf7a4baffe54023b2e5768aaa8a"
+    },
+    "startOverlay": null,
+    "oracle": "oracle/U3/OracleTests.fs",
+    "reference": "reference/U3"
+  },
+  "contract": {
+    "path": "tasks/U3/contract.json",
+    "sha256": "fea56df890dbd875b081592808a141b815b6a8dd6155c8fcf894007c6423d61a",
+    "ordo": "1.17.0",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:fa8fe5beb473b159d61986e4289eb776a885dc29a93b49c13561eb9b6cf28cef",
+    "ordoDiagnostics": []
+  }
+}
