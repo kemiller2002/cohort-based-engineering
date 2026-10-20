@@ -187,7 +187,7 @@ orchestrator therefore also records the harness's per-agent figures in `logs/age
 substituted for the primary one. Trial 1 was re-scored with the same `score.sh` that scores every later
 trial.
 
-**A5 (2026-10-20T13:30Z, regression re-run on released Praxis 3.17.0, before the run-02 preregistration).**
+**A5 (2026-10-20T13:13Z, regression re-run on released Praxis 3.17.0, before the run-02 preregistration).**
 Experiments A, B and C and the evidence-binding gate check were re-run with the treatment arm on released
 **Praxis 3.17.0** (tag commit `aea29b4a`, `praxis-linux-x64.tar.gz` sha256
 `4c0819aba084387545d5ac72d073abfdfc44c06e2225550e2be8c3babd0da23e`, checked against `native-checksums.txt`;
