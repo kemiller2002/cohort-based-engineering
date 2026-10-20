@@ -261,6 +261,8 @@ Additional metrics (addendum):
 - **Change:** from trial 13 onwards, the four arm trials of a non-U6 block run **concurrently**. They are set up one
   after another in `order.json` order and then launched together. Blocks still run in preregistered order, and a block
   starts only when the previous block has been scored.
+- **Start time:** after all four setups finish, every trial's `startedAt` is reset to the same instant, immediately
+  before the four agents launch, so one trial's setup time is not counted as part of another trial's wall time.
 - **U6 blocks** (2 agents per trial) keep running one arm at a time.
 - **Trials 1–12** ran one at a time.
 - **Record:** `run-02/observations/concurrency.json` lists, for each run, its mode (`sequential` or

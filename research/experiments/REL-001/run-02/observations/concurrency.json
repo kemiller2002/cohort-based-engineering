@@ -46,5 +46,37 @@
   "REL-001-R2-U6-r2-echelon-optimized": {
     "mode": "sequential",
     "concurrentWith": []
+  },
+  "REL-001-R2-U9-r1-bare": {
+    "mode": "block-concurrent",
+    "concurrentWith": [
+      "REL-001-R2-U9-r1-echelon-optimized",
+      "REL-001-R2-U9-r1-echelon-original",
+      "REL-001-R2-U9-r1-directives"
+    ]
+  },
+  "REL-001-R2-U9-r1-echelon-optimized": {
+    "mode": "block-concurrent",
+    "concurrentWith": [
+      "REL-001-R2-U9-r1-bare",
+      "REL-001-R2-U9-r1-echelon-original",
+      "REL-001-R2-U9-r1-directives"
+    ]
+  },
+  "REL-001-R2-U9-r1-echelon-original": {
+    "mode": "block-concurrent",
+    "concurrentWith": [
+      "REL-001-R2-U9-r1-bare",
+      "REL-001-R2-U9-r1-echelon-optimized",
+      "REL-001-R2-U9-r1-directives"
+    ]
+  },
+  "REL-001-R2-U9-r1-directives": {
+    "mode": "block-concurrent",
+    "concurrentWith": [
+      "REL-001-R2-U9-r1-bare",
+      "REL-001-R2-U9-r1-echelon-optimized",
+      "REL-001-R2-U9-r1-echelon-original"
+    ]
   }
 }
