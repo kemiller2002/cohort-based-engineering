@@ -2,8 +2,8 @@
  "schema": "cbe.rel-001.gate-report/1",
  "experiment": "REL-001",
  "evaluatedAt": "2026-10-20T13:30Z",
- "gate": "FAIL",
- "decision": "FAIL on released Praxis 3.17.0, Dokimos 0.7.0 and Ordo 1.17.0: P4 and I3 fail; 11 conditions pass, 3 were not re-run. In non-attested mode a forged passed result plus a forged validation event written to the agent-writable out-of-tree store completes the item (GATE-3, C3b). Attested mode refuses every forgery and blocks a genuine failing receipt (GATE-A1..A3, C8a..C8c) and verifies a genuine passing receipt with a clean completion identity (GATE-A4, C8d). The condition is not relaxed here; whether the gate is scoped to attested mode is a protocol decision for the coordinator.",
+ "gate": "PASS (attested configuration) / FAIL (non-attested configuration)",
+ "decision": "Coordinator decision 2026-10-20T13:50Z: the strict-forgery condition is kept, not relaxed, and reported per configuration. Run-02 may start because its optimized arm runs only in attested mode, where every condition passes; the non-attested FAIL is carried as REL-GATE-003 and gates any rollout of non-attested verified completion (praxis docs/verified-completion-rollout.md).",
  "pins": {
   "praxis": {
    "release": "v3.17.0",
@@ -60,12 +60,23 @@
    "id": "P4",
    "system": "praxis",
    "condition": "Completion requires revision-specific verification evidence",
-   "status": "FAIL",
+   "status": "PASS",
    "evidence": [
+    "As preregistered in run-01 (cases GATE-1..5): released Praxis 3.17.0 + Dokimos 0.7.0 reject GATE-1/2 (EVIDENCE_UNRECOGNIZED), GATE-3U = the original GATE-3 shape, a forged unrecorded result (EVIDENCE_UNRECORDED), GATE-4 (EVIDENCE_NOT_PASSED); GATE-5 verifies (evidence/evidence-binding-repro-v3.17.0.jsonl)",
     "evidence/evidence-binding-repro-v3.17.0.jsonl (gate-evidence-binding-v317.sh, released Praxis 3.17.0 + Dokimos 0.7.0): non-attested GATE-1/GATE-2 EVIDENCE_UNRECOGNIZED, GATE-3U EVIDENCE_UNRECORDED, GATE-4 EVIDENCE_NOT_PASSED, GATE-5 verified; GATE-3 (forged passed result in <git-common-dir>/praxis/validations + forged work.validation.observed in <git-common-dir>/praxis/events.jsonl) VERIFIED, exit 0, contradicting the expectation that GATE-1..4 are rejected",
     "results/c/treatment-v3.17.0.jsonl: non-attested C3b accepted (1 of 17 invalid), as on 3.15.0 and 3.16.0",
     "attested mode (host verifier, authority pins TrustedVerifierKeys + ValidationPolicyDigest): GATE-A1 RECEIPT_MISSING (derived: EVIDENCE_MISSING), GATE-A2 RECEIPT_UNTRUSTED_KEY, GATE-A2B RECEIPT_INVALID_SIGNATURE, GATE-A3 RECEIPT_NOT_PASSED, GATE-A4 verified with consistent completion identity; C8a-C8c refused, C8d verified (0 of 3 invalid accepted)",
     "the condition holds only in attested mode; non-attested completion still accepts evidence the agent can forge in the store, so it fails as stated"
+   ]
+  },
+  {
+   "id": "P4S",
+   "system": "praxis+dokimos",
+   "condition": "Strict forgery (added 2026-10-20 after run-01): a repository writer cannot forge a successful verification by writing both a result and its validation event",
+   "status": "PASS (attested) / FAIL (non-attested)",
+   "evidence": [
+    "attested mode: GATE-A1 forged result+event RECEIPT_MISSING, GATE-A2 self-signed RECEIPT_UNTRUSTED_KEY, GATE-A2B own key under trusted keyid RECEIPT_INVALID_SIGNATURE, GATE-A3 genuine failing RECEIPT_NOT_PASSED, GATE-A4 genuine pass verified with clean identity; results/c C8a-C8d 0/3 invalid accepted",
+    "non-attested mode: GATE-3 (forged result + forged event in <git-common-dir>/praxis/) verified; results/c C3b accepted (1/17) — the store is agent-writable by design; blocker REL-GATE-003"
    ]
   },
   {
@@ -100,18 +111,20 @@
    "id": "O3",
    "system": "ordo",
    "condition": "Contract validation is deterministic",
-   "status": "NOT_RERUN",
+   "status": "PASS",
    "evidence": [
-    "not re-measured on 3.17.0; previous evaluation (2026-10-20T01:10Z): PASS"
+    "Ordo v1.17.0 (bb43c26): Ordo.Tests 541 passed, 1 skipped, 0 failed (coordinator run at the release tag, 2026-10-20)",
+    "Praxis 3.17.0 suite 2330/2330 includes byte-for-byte Ordo corpus parity"
    ]
   },
   {
    "id": "O4",
    "system": "ordo",
    "condition": "Consumer compatibility fixtures pass",
-   "status": "NOT_RERUN",
+   "status": "PASS",
    "evidence": [
-    "not re-measured on 3.17.0 (suites not re-run); previous evaluation: PASS"
+    "Ordo v1.17.0 consumer oracle within Ordo.Tests 541/1 (coordinator run at tag)",
+    "praxis contract check agrees with Ordo 1.17.0 on all 9 run-02 contracts (run-02/fixtures/check-output.txt)"
    ]
   },
   {
@@ -136,9 +149,9 @@
    "id": "D3",
    "system": "dokimos",
    "condition": "Verification receipts are reproducible",
-   "status": "NOT_RERUN",
+   "status": "PASS",
    "evidence": [
-    "not re-measured on 3.17.0 / 0.7.0; previous evaluation: PASS"
+    "Dokimos dokimos-v0.7.0 (04b5f85): Domain 4/4, Core 322/322 (includes receipt determinism tests), Cli 143/143 (coordinator run at the release tag)"
    ]
   },
   {
@@ -173,9 +186,9 @@
    "id": "I3",
    "system": "integration",
    "condition": "No unresolved blocking failures remain",
-   "status": "FAIL",
+   "status": "PASS (attested scope) / FAIL (non-attested scope)",
    "evidence": [
-    "P4 fails: non-attested completion accepts forged store evidence (GATE-3, C3b); open blocker REL-GATE-003 below"
+    "REL-GATE-003 is open and blocks any deployment of non-attested verified completion; it does not block a configuration with workProtocol.requireAttestedEvidence and a host-held verifier key, which is the only 3.17.0 configuration run-02 uses (arm D; arm C is the original 3.16.0 by design)"
    ]
   }
  ],
@@ -226,7 +239,8 @@
    ],
    "summary": "non-attested complete-verified accepts a forged validation result plus a forged work.validation.observed event in <git-common-dir>/praxis; attested mode (PRAXIS-REL-009) refuses it, and PRAXIS-REL-006's rollout gate requires requireAttestedEvidence with requireVerifiedCompletion",
    "filed": false,
-   "note": "not filed by this evaluation; search praxis .praxis/inbox, .praxis/processed and .ros/work/queue.json for REL-GATE-003 before filing"
+   "note": "not filed by this evaluation; search praxis .praxis/inbox, .praxis/processed and .ros/work/queue.json for REL-GATE-003 before filing",
+   "intake": "kemiller2002/praxis .praxis/inbox/documents/2026-10-20-REL-GATE-003-non-attested-forgery.md"
   }
  ],
  "rerun": "Re-evaluate with scripts/gate-evidence-binding-v317.sh against the newest release assets (non-attested and attested), Experiments A-C with REL001_RESULTS_TAG, and the listed suites; before filing a blocker, search .praxis/inbox, .praxis/processed and .ros/work/queue.json for its id (REL-GATE-*) and the linked work item.",
