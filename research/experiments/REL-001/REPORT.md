@@ -1,5 +1,8 @@
 # REL-001 run-01: results
 
+> Run-02, the four-arm comparison with the final ADOPT/MODIFY/REJECT decision, is reported in
+> [`REPORT-run-02.md`](REPORT-run-02.md). This run-01 report is otherwise unchanged.
+
 Status: **complete** (2026-10-20). Protocol: [`protocol/run-01.md`](protocol/run-01.md) (preregistered, amendments A1–A4).
 Gate: [`gate/gate-report.json`](gate/gate-report.json). Every number below is computed from a committed
 result file. Nothing is estimated or imputed.
