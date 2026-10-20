@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.coordination-manifest/1",
+  "mission": "Echelon parallel research: token efficiency, reliability, comparative experiments",
+  "coordinator": {"session": "session_0174JuJ3F3WXwdPbjo3Pk5P7", "branch": "claude/echelon-parallel-research-aikt36", "repo": "kemiller2002/cohort-based-engineering"},
+  "initializedAt": "2026-10-20T23:10:00Z",
+  "pins": {
+    "cohort-based-engineering/main": "68588a87997fde5aa644c7bd7fe7cf92829b474a",
+    "cohort-based-engineering/claude/echelon-reliability-integration-g8x7vn (run-02, read-only snapshot)": "c8da63fe8bad6a1737c4eed101729c3ca3f6ac1b",
+    "praxis/main (v3.17.0 released at aea29b4a)": "4ade512f5f5aba823349b7e7788f69a55f4b4a90",
+    "dokimos/main (dokimos-v0.7.0)": "04b5f856367b47a087285109c1fc5923ec351389",
+    "ordo/main (v1.17.0)": "bb43c26c106f4cbe972234636c5c67edc235c188"
+  },
+  "activeExternalWork": [
+    {
+      "id": "REL-001/run-02",
+      "owner": "session_01XWWNptdQh8cjEC9DzsoKkh (Echelon engineering reliability integration)",
+      "branch": "claude/echelon-reliability-integration-g8x7vn (cohort, praxis, dokimos, ordo)",
+      "status": "confirmatory trials in progress: 32 of 88 committed at c8da63f (2026-10-20T22:59Z)",
+      "rule": "do not modify; read only via /home/user/wt/cbe-run02-readonly"
+    },
+    {
+      "id": "REL-GATE-003",
+      "owner": "unclaimed: queued in praxis .praxis/inbox/documents/2026-10-20-REL-GATE-003-non-attested-forgery.md, not in .ros/work/queue.json",
+      "status": "open; gate-report.json says PASS attested / FAIL non-attested"
+    }
+  ],
+  "workstreams": [
+    {"id": "A", "name": "reliability-completion", "agent": "subagent worker-A", "worktree": "/home/user/cohort-based-engineering (writes research/reliability/ only)", "dependsOn": [], "status": "running", "evidence": "research/reliability/", "tokens": null, "next": "readiness-report.json"},
+    {"id": "B", "name": "historical-token-audit", "agent": "subagent worker-B", "worktree": "/home/user/cohort-based-engineering (writes research/token-efficiency/HISTORICAL-EVIDENCE.md, evidence-index.json)", "dependsOn": [], "status": "running", "evidence": "research/token-efficiency/", "tokens": null, "next": "evidence index"},
+    {"id": "C", "name": "comparative-experiment-design", "agent": "subagent worker-C", "worktree": "/home/user/cohort-based-engineering (writes research/experiments/REL-001/run-03/ only)", "dependsOn": ["run-02 exists and is running: next identifier run-03"], "status": "running", "evidence": "research/experiments/REL-001/run-03/", "tokens": null, "next": "preregistration draft (not committed as preregistered until coordinator gate)"},
+    {"id": "D", "name": "token-attribution-overhead", "agent": "subagent worker-D", "worktree": "/home/user/cohort-based-engineering (writes research/token-efficiency/OVERHEAD-ANALYSIS.md, overhead-schema.json, profiling/)", "dependsOn": [], "status": "running", "evidence": "research/token-efficiency/", "tokens": null, "next": "profile run-01 D and run-02 committed trials"}
+  ]
+}
