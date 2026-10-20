@@ -1,6 +1,6 @@
 # REL-001 completion gate
 
-`gate-report.json` (`cbe.rel-001.gate-report/1`) is the machine-readable gate. **Result
+`gate-report.json` (`cbe.rel-001.gate-report/1`) is the machine-readable gate. **Current result (2026-10-20T01:10Z): PASS.** All 16 conditions pass on released Praxis 3.16.0, Ordo 1.17.0 and Dokimos 0.6.0. REL-GATE-002 is resolved: Experiment B's treatment arm now accepts 0 of 11 invalid cases. Earlier evaluations are kept under `history`, including the FAIL on O2 (2026-10-19T22:20Z) and the PASS on 3.15.0 (21:45Z). **First result
 (2026-10-19): FAIL, so the experiment was not started.** 12 conditions pass, 3 fail and 1 is blocked.
 
 The failure is in completion evidence binding (P4, D2). The released Praxis 3.14.0 and

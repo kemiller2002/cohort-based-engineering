@@ -1,0 +1,189 @@
+{
+  "schema": "cbe.rel-001.harness-check/1",
+  "recordedAt": "2026-10-19T21:47:53Z",
+  "note": "HARNESS CHECKS, NOT OBSERVATIONS. Scripted stand-in agents (harness/d/smoke-agent.sh or manual commands); no model in the loop; never counted in analysis. No Experiment D trial has been run.",
+  "contractAdmission": [
+    {
+      "task": "T1",
+      "ordo": {
+        "admitted": true,
+        "digest": "sha256:d398400441a11242c66ae3149d7f205be51ec796373aaa2f338889b8b0b69ffc",
+        "decisionIds": [
+          "DEC-T1-AMOUNT-GUARD"
+        ]
+      },
+      "praxis": {
+        "admitted": true,
+        "status": "admitted",
+        "digest": "sha256:d398400441a11242c66ae3149d7f205be51ec796373aaa2f338889b8b0b69ffc",
+        "decisionIds": [
+          "DEC-T1-AMOUNT-GUARD"
+        ]
+      }
+    },
+    {
+      "task": "T2",
+      "ordo": {
+        "admitted": true,
+        "digest": "sha256:040a4e2b5e653864e598bb592849f66fc33af2f46ec978d7d3afe363322c630f",
+        "decisionIds": [
+          "DEC-T2-ERROR-ORDER"
+        ]
+      },
+      "praxis": {
+        "admitted": true,
+        "status": "admitted",
+        "digest": "sha256:040a4e2b5e653864e598bb592849f66fc33af2f46ec978d7d3afe363322c630f",
+        "decisionIds": [
+          "DEC-T2-ERROR-ORDER"
+        ]
+      }
+    },
+    {
+      "task": "T3",
+      "ordo": {
+        "admitted": true,
+        "digest": "sha256:d2dc50406169b5db4bbbb9a426ea8d99d4d3bb3270d15948ae00c63e2978e4c4",
+        "decisionIds": [
+          "DEC-T3-IDEMPOTENCY-KEY"
+        ]
+      },
+      "praxis": {
+        "admitted": true,
+        "status": "admitted",
+        "digest": "sha256:d2dc50406169b5db4bbbb9a426ea8d99d4d3bb3270d15948ae00c63e2978e4c4",
+        "decisionIds": [
+          "DEC-T3-IDEMPOTENCY-KEY"
+        ]
+      }
+    }
+  ],
+  "checks": [
+    {
+      "label": "baseline T2, scripted reference solution",
+      "runId": "REL-001-HC-D-baseline-T2",
+      "arm": "baseline",
+      "task": "T2",
+      "status": "completed",
+      "scoring": {
+        "finalCommit": "7e741b5683a49d85d8eac22fe5401ff6828c8211",
+        "oracleBuilt": true,
+        "requirements": {
+          "LEDGER-T2-R1": {
+            "tests": 2,
+            "passed": 2,
+            "pass": true
+          },
+          "LEDGER-T2-R2": {
+            "tests": 4,
+            "passed": 4,
+            "pass": true
+          },
+          "LEDGER-T2-R3": {
+            "tests": 1,
+            "passed": 1,
+            "pass": true
+          }
+        },
+        "recordedCompletion": true,
+        "verified": true,
+        "escapedDefect": false,
+        "completionAttempts": 1,
+        "rejections": 0,
+        "validateRuns": 0,
+        "testRuns": 1,
+        "rework": {
+          "total": 0,
+          "extraCompletionAttempts": 0,
+          "revertCommits": 0,
+          "resets": 0
+        }
+      },
+      "gates": {
+        "duplicateActiveClaims": null,
+        "invalidAcceptedDecisions": null,
+        "unverifiedCompletions": null
+      },
+      "schemaValid": true
+    },
+    {
+      "label": "treatment T3, scripted reference solution",
+      "runId": "REL-001-HC-D-treatment-T3",
+      "arm": "treatment",
+      "task": "T3",
+      "status": "completed",
+      "scoring": {
+        "finalCommit": "214ef42e78598645bc6ac09a1358714dd83400b0",
+        "oracleBuilt": true,
+        "requirements": {
+          "LEDGER-T3-R1": {
+            "tests": 2,
+            "passed": 2,
+            "pass": true
+          },
+          "LEDGER-T3-R2": {
+            "tests": 3,
+            "passed": 3,
+            "pass": true
+          }
+        },
+        "recordedCompletion": true,
+        "verified": true,
+        "escapedDefect": false,
+        "completionAttempts": 1,
+        "rejections": 0,
+        "validateRuns": 1,
+        "testRuns": 1,
+        "rework": {
+          "total": 0,
+          "extraCompletionAttempts": 0,
+          "revertCommits": 0,
+          "resets": 0
+        }
+      },
+      "gates": {
+        "duplicateActiveClaims": 0,
+        "invalidAcceptedDecisions": 0,
+        "unverifiedCompletions": 0
+      },
+      "schemaValid": true
+    },
+    {
+      "label": "baseline T1, negative control: completes without implementing",
+      "runId": "REL-001-HC-D-baseline-T1-noop",
+      "arm": "baseline",
+      "task": "T1",
+      "status": "completed",
+      "scoring": {
+        "finalCommit": "13b495824a0d46b17f12823614ca883e4d1e51c7",
+        "oracleBuilt": true,
+        "requirements": {
+          "LEDGER-T1-R1": {
+            "tests": 6,
+            "passed": 1,
+            "pass": false
+          }
+        },
+        "recordedCompletion": true,
+        "verified": false,
+        "escapedDefect": true,
+        "completionAttempts": 1,
+        "rejections": 0,
+        "validateRuns": 0,
+        "testRuns": 1,
+        "rework": {
+          "total": 0,
+          "extraCompletionAttempts": 0,
+          "revertCommits": 0,
+          "resets": 0
+        }
+      },
+      "gates": {
+        "duplicateActiveClaims": null,
+        "invalidAcceptedDecisions": null,
+        "unverifiedCompletions": null
+      },
+      "schemaValid": true
+    }
+  ]
+}

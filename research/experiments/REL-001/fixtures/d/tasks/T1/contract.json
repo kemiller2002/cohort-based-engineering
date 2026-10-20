@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:608fe460005bf61cedfe3168cceedfd46c08053ca43cea014ec975b8a9f732bf",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T1.md#LEDGER-T1-R1",
+        "originalId": "LEDGER-T1-R1",
+        "document": "requirements/T1.md",
+        "location": "L5",
+        "revision": "sha256:608fe460005bf61cedfe3168cceedfd46c08053ca43cea014ec975b8a9f732bf",
+        "contentDigest": "sha256:82935c2ecc4a355b4d547b3359330a820b73ef991c2c236cff5b1dc43e5c83d6"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-T1-AMOUNT-GUARD",
+        "VERIFY-T1-R1",
+        "COHORT-T1"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-T1-AMOUNT-GUARD",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T1.md#LEDGER-T1-R1"
+      ],
+      "dependsOn": [],
+      "justification": "amount validation precedes account and funds checks"
+    },
+    {
+      "id": "VERIFY-T1-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#LEDGER-T1-R1"
+      ],
+      "dependsOn": [
+        "DEC-T1-AMOUNT-GUARD"
+      ]
+    },
+    {
+      "id": "COHORT-T1",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T1.md#LEDGER-T1-R1"
+      ],
+      "dependsOn": [
+        "DEC-T1-AMOUNT-GUARD"
+      ]
+    }
+  ]
+}

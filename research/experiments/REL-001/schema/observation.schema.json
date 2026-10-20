@@ -92,7 +92,7 @@
       "properties": {
         "schema": { "const": "praxis.telemetry-reliability-report" },
         "schemaVersion": { "const": 1 },
-        "sha256": { "$ref": "#/$defs/sha256" },
+        "sha256": { "anyOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }], "description": "null only when the run has no reliability report; instrumentation.status is then incomplete (additive, run-01)." },
         "priceTable": {
           "type": ["object", "null"], "additionalProperties": false,
           "required": ["source", "version", "effectiveDate"],
@@ -134,6 +134,38 @@
         "duplicateActiveClaims": { "type": ["integer", "null"], "minimum": 0 },
         "invalidAcceptedDecisions": { "type": ["integer", "null"], "minimum": 0 },
         "unverifiedCompletions": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "scoring": {
+      "type": ["object", "null"],
+      "description": "Additive (run-01): Experiment D oracle scoring from harness/d/score.sh. Optional; existing consumers ignore it.",
+      "additionalProperties": false,
+      "required": ["finalCommit", "oracleExit", "oracleBuilt", "oracleDigest", "requirements", "recordedCompletion", "verified", "escapedDefect", "completionAttempts", "rejections", "validateRuns", "testRuns", "rework", "oracleContamination"],
+      "properties": {
+        "finalCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "uncommittedTrackedChanges": { "type": "integer", "minimum": 0 },
+        "oracleExit": { "type": "integer" },
+        "oracleBuilt": { "type": "boolean" },
+        "oracleDigest": { "$ref": "#/$defs/sha256" },
+        "requirements": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object", "additionalProperties": false, "required": ["tests", "passed", "pass"],
+            "properties": { "tests": { "type": "integer", "minimum": 0 }, "passed": { "type": "integer", "minimum": 0 }, "pass": { "type": "boolean" } }
+          }
+        },
+        "recordedCompletion": { "type": "boolean" },
+        "verified": { "type": "boolean", "description": "every requirement's oracle tests pass at the final commit and the run recorded a completion" },
+        "escapedDefect": { "type": "boolean", "description": "the run recorded a completion and at least one requirement's oracle tests fail" },
+        "completionAttempts": { "type": "integer", "minimum": 0 },
+        "rejections": { "type": "integer", "minimum": 0 },
+        "validateRuns": { "type": "integer", "minimum": 0 },
+        "testRuns": { "type": "integer", "minimum": 0 },
+        "rework": {
+          "type": "object", "additionalProperties": false, "required": ["total", "extraCompletionAttempts", "revertCommits", "resets"],
+          "properties": { "total": { "type": "integer", "minimum": 0 }, "extraCompletionAttempts": { "type": "integer", "minimum": 0 }, "revertCommits": { "type": "integer", "minimum": 0 }, "resets": { "type": "integer", "minimum": 0 } }
+        },
+        "oracleContamination": { "type": "boolean" }
       }
     }
   },
