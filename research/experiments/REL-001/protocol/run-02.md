@@ -256,3 +256,22 @@ Additional metrics (addendum):
 - **Budget:** X5 (45 minutes) is judged on the corrected `wallMs`. No trial so far comes near it.
 - **Why this is not outcome-driven:** the change affects a secondary metric in every arm alike, and was made before any
   arm comparison was computed.
+
+### A3 (2026-10-20, a deviation made after confirmatory trial 11 at the experimenter's request, before any analysis)
+- **Change:** from trial 13 onwards, the four arm trials of a non-U6 block run **concurrently**. They are set up one
+  after another in `order.json` order and then launched together. Blocks still run in preregistered order, and a block
+  starts only when the previous block has been scored.
+- **U6 blocks** (2 agents per trial) keep running one arm at a time.
+- **Trials 1–12** ran one at a time.
+- **Record:** `run-02/observations/concurrency.json` lists, for each run, its mode (`sequential` or
+  `block-concurrent`) and the runs it shared the machine with.
+- **What is unaffected:** the primary outcome (model cost per correct requirement), token counts, correctness, units,
+  reliability counts and tool calls. None of these depend on CPU contention, and arms within a block still share the
+  same conditions, including cache state and time of day.
+- **What is affected:** `wallMs` and test compute time (`testMs`, `verifierTestMs`) are measured under up to 4-way
+  contention on a 4-CPU host.
+  - Paired within-block comparisons stay balanced, because all four arms share the same contention.
+  - Pooled absolute times are not comparable between sequential and block-concurrent blocks. The analysis reports
+    time metrics per mode, and those are exploratory.
+- **Why this is not outcome-driven:** it was made to cut experiment duration, no arm comparison had been computed,
+  and it applies to every arm alike.
