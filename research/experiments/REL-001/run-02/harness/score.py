@@ -488,7 +488,11 @@ def main(argv):
     entries = price.get("entries") or []
 
     # --- time, tool calls, rework
-    elapsed = ms_between(agent_log.get("startedAt"), agent_log.get("endedAt"))
+    # A2: the run ends at the last agent transcript event, not when the orchestrator calls finish.
+    stamps = [t for t in (parse_time(e.get("timestamp")) for e in all_entries) if t]
+    last_event = max(stamps).isoformat().replace("+00:00", "Z") if stamps else None
+    elapsed = ms_between(agent_log.get("startedAt"), last_event)
+    harness_span = ms_between(agent_log.get("startedAt"), agent_log.get("endedAt"))
     tool_calls = sum(a["toolCalls"] for a in per_agent.values()) if all(a["toolCalls"] is not None for a in per_agent.values()) else None
     reverts = sum(w["revertCommits"] for w in workspaces.values()); resets = sum(w["resets"] for w in workspaces.values())
     rework = (max(0, attempts - 1) if attempts else 0) + reverts + resets
@@ -571,7 +575,7 @@ def main(argv):
                        "harnessSecondary": {"subagentTokens": harness_tokens, "perAgent": harness}},
             "cost": {"estimated": cost, "priceTableSha256": run["measurement"]["priceTableSha256"], "billed": None},
             "tests": tests, "verification": verification, "coordination": coordination,
-            "wallMs": elapsed, "toolCalls": tool_calls,
+            "wallMs": elapsed, "harnessSpanMs": harness_span, "toolCalls": tool_calls,
             "rework": {"total": rework, "extraCompletionAttempts": max(0, attempts - 1) if attempts else 0, "revertCommits": reverts, "resets": resets},
             "exclusions": {"x2": {"mismatch": x2, "servedModels": models, "configuredModel": run["model"]["configuredModel"]},
                            "x4": {"contaminated": x4, "transcriptSignals": hits, "oracleModuleInRepository": repo_oracle},

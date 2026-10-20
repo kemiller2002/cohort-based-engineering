@@ -243,3 +243,16 @@ Additional metrics (addendum):
 - **Pilot review otherwise clean:** across the 5 pilot trials there was no X2 mismatch (every run was served
   `claude-opus-5-5`), no X4 contamination and no X6 tampering, and every metric is eligible. Pilot data stay
   excluded from the analysis.
+
+### A2 (2026-10-20, a deviation made after confirmatory trial 9 and before any analysis)
+- **Finding:** in trial 9, `REL-001-R2-U6-r2-bare`, wall time was recorded as 5,339,096 ms (89 minutes). Both agents
+  had actually finished within about 1.5 minutes. The harness ended the clock when the orchestrator called `finish`, so
+  the orchestrator's own delay before scoring counted as trial time. Single-agent trials carried a smaller version of
+  the same error, 3–15 s.
+- **Change:** `wallMs` and `elapsedMs` now run from `startedAt` to the last transcript event of any agent in the
+  trial. The old span is kept as `harnessSpanMs`. Scorer sha256: `5421ae5caf4ce4f38490e3f88a2d776dda435eba73c0e95a68bf4cead3142042`.
+- **Re-scoring:** every finished trial (the 5 pilots and confirmatory trials 1–9) was re-scored with the same scorer. No
+  outcome, unit count, token or cost figure changed. Only wall time did.
+- **Budget:** X5 (45 minutes) is judged on the corrected `wallMs`. No trial so far comes near it.
+- **Why this is not outcome-driven:** the change affects a secondary metric in every arm alike, and was made before any
+  arm comparison was computed.
