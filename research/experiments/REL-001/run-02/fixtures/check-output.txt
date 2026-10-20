@@ -1,0 +1,81 @@
+REL-001 run-02 fixture check
+fixture tree digest: fc9bec53cf5ea54cff0dc0f0dcc223fc44e5b5f785c454b2dbc613073714bc57
+oracle digest:       7402d3c567855dd23584cd33211f0c55682e5033e86ffb1df2ab87ec254167ad
+dotnet 10.0.402; ordo 33a37628439f32a2…
+
+U1   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U1   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U1   reference: visible tests                 expected PASS got PASS ok        (passed 12, failed 0)
+U1   reference: oracle                        expected PASS got PASS ok        (passed 9, failed 0)
+U1   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 7a2a87cc2feda719…, task.json sha/digest match yes/yes, digest sha256:5797fd50d3bd4af8…)
+U1   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U2   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U2   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U2   forced-allow: visible tests              expected PASS got PASS ok        (passed 11, failed 0)
+U2   forced-allow: oracle                     expected FAIL got FAIL ok        (passed 2, failed 1)
+U2   forced-final: visible tests              expected PASS got PASS ok        (passed 11, failed 0)
+U2   forced-final: oracle                     expected FAIL got FAIL ok        (passed 2, failed 1)
+U2   ordo 1.17.0 admits contract              expected false got false ok        (sha256 29239e85313876ce…, task.json sha/digest match yes/yes, ORDO.CONTRACT.UNRESOLVED_CONFLICT)
+U2   praxis 3.16.0 admits contract            expected false got false ok        (exit 1)
+
+U3   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U3   start: visible tests                     expected FAIL got FAIL ok        (build failed (3 compiler errors))
+U3   reference: visible tests                 expected PASS got PASS ok        (passed 13, failed 0)
+U3   reference: oracle                        expected PASS got PASS ok        (passed 10, failed 0)
+U3   naive: visible tests                     expected PASS got PASS ok        (passed 13, failed 0)
+U3   naive: oracle                            expected FAIL got FAIL ok        (passed 2, failed 8)
+       naive fails: OracleU3.LEDGER-U3-R2 zero shares are not posted
+       naive fails: OracleU3.LEDGER-U3-R1 refusal order
+       naive fails: OracleU3.LEDGER-U3-R1 funds checked against the first account's larger share
+       naive fails: OracleU3.LEDGER-U3-R2 negative remainder
+       naive fails: OracleU3.LEDGER-U3-R2 banker's rounding at the half cent
+       naive fails: OracleU3.LEDGER-U3-R2 first in list order takes the remainder
+       naive fails: OracleU3.LEDGER-U3-R2 shares sum exactly to the total
+       naive fails: OracleU3.LEDGER-U3-R2 uneven split remainder to the first account
+U3   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 fea56df890dbd875…, task.json sha/digest match yes/yes, digest sha256:fa8fe5beb473b159…)
+U3   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U4   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U4   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U4   reference: visible tests                 expected PASS got PASS ok        (passed 12, failed 0)
+U4   reference: oracle                        expected PASS got PASS ok        (passed 10, failed 0)
+U4   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 eddca6576604f28b…, task.json sha/digest match yes/yes, digest sha256:b325e5129d0f1c9a…)
+U4   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U5   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U5   start: visible tests                     expected FAIL got FAIL ok        (build failed (6 compiler errors))
+U5   reference: visible tests                 expected PASS got PASS ok        (passed 12, failed 0)
+U5   reference: oracle                        expected PASS got PASS ok        (passed 9, failed 0)
+U5   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 616be1b1f721eaea…, task.json sha/digest match yes/yes, digest sha256:dc810ed4c6649122…)
+U5   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U6   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U6   start: visible tests                     expected FAIL got FAIL ok        (build failed (4 compiler errors))
+U6   reference: visible tests                 expected PASS got PASS ok        (passed 12, failed 0)
+U6   reference: oracle                        expected PASS got PASS ok        (passed 8, failed 0)
+U6   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 a3bc796016cdd1ac…, task.json sha/digest match yes/yes, digest sha256:c78f27b340e28e40…)
+U6   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U7   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U7   start: visible tests                     expected FAIL got FAIL ok        (build failed (5 compiler errors))
+U7   reference: visible tests                 expected PASS got PASS ok        (passed 13, failed 0)
+U7   reference: oracle                        expected PASS got PASS ok        (passed 13, failed 0)
+U7   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 791e9e4c20999ecd…, task.json sha/digest match yes/yes, digest sha256:1b34b58e5030dd23…)
+U7   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U8   start: own tests                         expected PASS got PASS ok        (passed 10, failed 0)
+U8   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U8   reference: visible tests                 expected PASS got PASS ok        (passed 11, failed 0)
+U8   reference: oracle                        expected PASS got PASS ok        (passed 8, failed 0)
+U8   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 d23772af3ffb9ac6…, task.json sha/digest match yes/yes, digest sha256:47f79290074a7cf3…)
+U8   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U9   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U9   start: visible tests                     expected FAIL got FAIL ok        (build failed (16 compiler errors))
+U9   reference: visible tests                 expected PASS got PASS ok        (passed 15, failed 0)
+U9   reference: oracle                        expected PASS got PASS ok        (passed 12, failed 0)
+U9   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 4442bcfa686e2632…, task.json sha/digest match yes/yes, digest sha256:09edab43793e7f82…)
+U9   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+RESULT: PASS (every expectation held)
