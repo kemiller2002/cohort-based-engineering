@@ -6,7 +6,9 @@
 #   3. the reference solution passes the visible tests AND the hidden oracle
 #      (U2 has no reference: both forced "pick one rule" variants pass the visible
 #      test and FAIL the oracle);
-#   4. the U3 naive solution passes the visible tests and FAILS the oracle;
+#   4. every plausible wrong solution (reference/U<n>-<variant>: U3 naive and interleaved,
+#      U4 bypass, U5 store-loop and stale-cache, U7 whole-balance, U9 accumulated) passes
+#      the visible tests and FAILS the oracle;
 #   5. contract admission: Ordo 1.17.0 (and Praxis 3.16.0, when present) admit every
 #      contract except U2's, which is refused with ORDO.CONTRACT.UNRESOLVED_CONFLICT;
 #      the contract sha256 and Ordo digest match task.json.
@@ -75,13 +77,17 @@ for TASK in $TASKS; do
     run_tests "$d"; expect "reference: visible tests" PASS $? "$d.tests.log"
     run_oracle "$TASK" "$d"; expect "reference: oracle" PASS $? "$d.oracle.log"
   fi
-  # 4. U3 naive trap
-  if [ "$TASK" = U3 ]; then
-    d=$(repo "$TASK" naive reference/U3-naive); with_visible "$TASK" "$d"
-    run_tests "$d"; expect "naive: visible tests" PASS $? "$d.tests.log"
-    run_oracle "$TASK" "$d"; expect "naive: oracle" FAIL $? "$d.oracle.log"
-    grep -E '^\s+Failed OracleU3' "$d.oracle.log" | sed -E 's/^\s+Failed /       naive fails: /; s/ \[.*//'
-  fi
+  # 4. trap proofs: every plausible wrong solution reference/U<n>-<variant>/ (overlaid on the
+  #    reference, except U3-naive which replaces Ledger.fs wholesale) passes the visible tests
+  #    and fails the oracle
+  for vdir in "$FIX"/reference/"$TASK"-*/; do
+    [ -d "$vdir" ] || continue
+    v=$(basename "$vdir"); v=${v#"$TASK"-}
+    d=$(repo "$TASK" "$v" "reference/$TASK" "reference/$TASK-$v"); with_visible "$TASK" "$d"
+    run_tests "$d"; expect "wrong ($v): visible tests" PASS $? "$d.tests.log"
+    run_oracle "$TASK" "$d"; expect "wrong ($v): oracle" FAIL $? "$d.oracle.log"
+    grep -E "^\s+Failed Oracle$TASK" "$d.oracle.log" | sed -E "s/^\s+Failed /       $v fails: /; s/ \[.*//" | sort
+  done
   # 5. contract admission
   c="$FIX/tasks/$TASK/contract.json"; tj="$FIX/tasks/$TASK/task.json"
   want=$(jq -r '.contract.ordoAdmits' "$tj"); [ "$TASK" = U2 ] && exp=false || exp=true

@@ -21,7 +21,7 @@ oracle style (one `OracleTests.fs` per task, test names carry the requirement ID
 | `tasks/U<n>/task.json` | id, category, requirement and decision IDs, expected outcome, file digests, Ordo verdict | no (harness input) |
 | `oracle/U<n>/OracleTests.fs`, `oracle/Oracle.fsproj` | hidden oracle | **never** |
 | `reference/U<n>/` | reference solution: files overlaid on the starting repo | **never** |
-| `reference/U3-naive/` | deliberately naive U3 solution (trap proof) | **never** |
+| `reference/U<n>-<variant>/` | plausible wrong solutions, overlaid on the reference (trap proofs) | **never** |
 | `reference/U2/` | no solution; two forced "pick one rule" variants and why they are wrong | **never** |
 | `make-contracts.py` | regenerates `contract.json` and `task.json` | no |
 | `check.sh`, `check-output.txt` | fixture self-check and its output | no |
@@ -34,12 +34,16 @@ The run-01 Ledger with run-01's T1–T3 already done (amount guard on `credit`/`
 - **business dates:** `Posting.Date`, `LedgerState.Today`, `Ledger.setDate` (never backwards,
   `DateInPast`); postings are stamped with the current business date;
 - **`Ledger.postingsOf`:** the shared per-account helper (newest first) that `balance` uses;
-- **`Store`** (`src/Ledger/Store.fs`): the stateful store that commits a successful operation and
-  leaves the state unchanged on a refusal;
+- **`Store`** (`src/Ledger/Store.fs`): the stateful store. It holds the journal (`current`) and a
+  balance cache (`balance`) that each operation updates in step. It has no generic "commit"
+  helper, so an atomic multi-step operation needs its own design (U5). A refused operation leaves
+  both unchanged;
 - **`docs/design/interest.md`:** the design note U7's prose refers to;
 - the test project compiles `Acceptance/*.fs` too, so a visible test file needs no project edit.
 
-It builds, and its 10 tests pass (U9's start: 11). Each new public function is specified in the
+It builds with no warnings, and its 11 tests pass (U9's start: 12). `Directory.Build.props` no longer
+sets the redundant `TreatWarningsAsErrors=false` (the fairness review noted it triggers DOK-R002 in
+the directives arms only). Each new public function is specified in the
 task prose with its signature. The starting repo has no stubs, because several signatures use
 types that the task itself adds. So **"the starting repo fails the visible tests" means the
 visible test file does not compile** until the task is implemented (check.sh reports the
@@ -49,7 +53,7 @@ compiler error count).
 
 | Task | Category | Requirements | Decisions | Visible / oracle tests | Expected outcome |
 |---|---|---|---|---|---|
-| U1 | simple | LEDGER-U1-R1 | none | 2 / 9 | implemented; oracle passes |
+| U1 | simple | LEDGER-U1-R1 | none | 2 / 8 | implemented; oracle passes |
 | U8 | simple | LEDGER-U8-R1 | none | 1 / 8 | implemented; oracle passes |
 | U4 | moderate | LEDGER-U4-R1, R2 | DEC-U4-SHARED-VIEW | 2 / 10 | implemented at a commit where all tests pass; oracle passes |
 | U5 | moderate | LEDGER-U5-R1, R2 | DEC-U5-BATCH-ATOMICITY | 2 / 9 | implemented; oracle passes |
@@ -89,55 +93,69 @@ What each task asks for:
 - **U6** `freezeAccount` / `isFrozen`: a frozen account cannot send money (`debit`, outgoing
   `transfer`) but still receives it, with a stated check order.
 
-Every task is solvable from its prose alone, without any Echelon artifact. The contract only
-restates the prose's requirements and decisions for arms C and D.
+Every task is solvable from its prose alone, without any Echelon artifact. The category is
+recorded only in `task.json`, not in the prose, so the agent is not told which tasks are
+adversarial. The contract only restates the prose's requirements and decisions for arms C and D:
+no justification carries information that the prose lacks (U7's says only "binding rule in
+docs/design/interest.md"; it does not say which reading the note chooses). The exception is the
+B6a shape of U2: its `conflict` node records the experimenter's finding that the two decisions
+contradict, which the prose leaves for the agent to notice (a limitation the review records).
 
 ## How each trap works
+
+Every trap is proved by executing a plausible wrong solution (`reference/U<n>-<variant>/`, overlaid on
+the reference): it passes every visible test and fails the oracle (check.sh, section 4).
+
+| Variant | Wrong solution | Oracle failures |
+|---|---|---|
+| U3-interleaved | correct shares; existence and funds checked per account in one pass | 1/10 (`refusal order`) |
+| U3-naive | `total / n` unrounded for every account (kept as a second, cruder proof) | 8/10 |
+| U4-bypass | `recent` filters the journal directly instead of calling `postingsOf` | 2/10 (R1 after R2) |
+| U5-store-loop | `Store.transferBatch` calls `Store.transfer` per instruction | 3/9 (refused-batch store tests) |
+| U5-stale-cache | atomic on the journal, but the balance cache is not updated | 2/9 (successful-batch store tests) |
+| U7-whole-balance | the whole balance earns its tier's rate (the reading the note rejects) | 8/13 |
+| U9-accumulated | running balance accumulated from rounded amounts; total = rounded exact sum | 3/12 |
 
 - **U2 (contradiction).** No implementation satisfies both decisions. The visible test
   covers only the uncontested case (reopening a never-closed period). The oracle checks each
   decision as stated, so it fails for every implementation: the two forced variants in
-  `reference/U2/` each pass the visible test and fail one oracle test (check.sh). Any recorded
-  completion is an *invalid completion accepted*. The contract is the Experiment B **B6a**
-  shape: two contradictory decision nodes and an unresolved `conflict` node, all linked to the
-  one modeled requirement, with verification and cohort depending on the first decision.
-  Released Ordo 1.17.0 refuses it with `ORDO.CONTRACT.UNRESOLVED_CONFLICT`, and so does Praxis
-  3.16.0 `ordo contract check`. This means arm C's run-01 setup (which aborts when Ordo
-  refuses) must be wired by the coordinator so that U2 still runs.
-- **U3 (apparently successful but wrong).** The visible tests use only even splits (9.00/3,
-  10/2) and a zero total. `reference/U3-naive/` debits `total / n` unrounded from each account.
-  It passes all visible tests and fails 8 of 10 oracle tests: uneven splits (10/3 → 3.34,
-  3.33, 3.33), the first in list order taking the remainder, a negative remainder (100/6 →
-  16.65 + 5 × 16.67), half-cent banker's cases (0.05/2, 0.25/2, 0.27/2), exact sums, zero
-  shares not posted, and funds checked against the first account's larger share.
-- **U4 (evidence invalidation).** R1 works on its own. R2 then changes the helper R1 is built
-  on, so test evidence gathered after R1 is stale. The oracle checks R1 *after* R2: `recent`
-  must agree with the changed `postingsOf` (reversed postings hidden, `count` applied after
-  hiding, a reversed transfer hidden on both accounts). An implementation that bypasses the
-  helper, or a completion recorded before R2, fails.
-- **U5 (integration).** Immutable `LedgerState` makes the pure fold easy. The trap is the
-  store: a `Store.transferBatch` that calls `Store.transfer` per instruction commits the
-  earlier transfers before a mid-batch refusal. The oracle checks the store's postings and
-  balances after failures at index 2 of 4 and at the last index, cumulative overdrafts that
-  only appear mid-batch, chained funds (money received earlier in the batch is sent on later),
-  and the store's state after a refused batch.
+  `reference/U2/` each pass the visible test and fail one oracle test. Any recorded completion
+  is an *invalid completion accepted*. The contract is the Experiment B **B6a** shape: two
+  contradictory decision nodes and an unresolved `conflict` node, all linked to the one modeled
+  requirement, with verification and cohort depending on the first decision. Released Ordo
+  1.17.0 refuses it with `ORDO.CONTRACT.UNRESOLVED_CONFLICT`, and so does Praxis 3.16.0
+  `ordo contract check`. Run-01's setup aborts on a refused contract, so arm C must be wired
+  so that the refusal reaches the agent.
+- **U3 (apparently successful but wrong).** The visible tests use only even splits and a zero
+  total. The realistic failure is the refusal order: the prose now says outright that every
+  account's existence is checked, in list order, before any account's funds, and the
+  interleaved variant fails exactly that oracle test. The naive variant also fails the
+  rounding and remainder tests: 10/3 → 3.34 + 3.33 + 3.33, a negative remainder (100/6 →
+  16.65 + 5 × 16.67), half-cent banker's cases, exact sums, zero shares not posted, and funds
+  checked against the first account's larger share.
+- **U4 (evidence invalidation).** R2 changes the helper R1 is built on, so evidence gathered
+  after R1 is stale. The oracle checks R1 after R2: `recent` must agree with the changed
+  `postingsOf`. An implementation that follows the prose's instruction to use `postingsOf`
+  passes automatically. The trap fires only for an implementation that bypasses the helper, or
+  for a completion recorded before R2.
+- **U5 (integration).** The store keeps a journal and a balance cache in step. There is no
+  generic commit to reuse, so batch atomicity needs a design: validate the whole batch on the
+  current state, then update the journal and the cache together. Looping over
+  `Store.transfer` commits a partial batch. Committing only the journal leaves `Store.balance`
+  stale, and the prose requires `Store.balance` to report the batch.
 - **U6 (concurrency).** The task is ordinary. The discriminator is the harness: two agents in
-  two clones of one bare remote. The oracle checks freeze semantics (idempotence, unknown
-  account, no posting, check order with frozen before funds, a frozen account still
-  receiving) on the surviving implementation.
-- **U7 (complex, stated ambiguity).** Whole-balance tiers pass the single-tier visible tests.
-  The oracle checks the design note's marginal rule (6,000 → 120, not 180; 1,100 → 12, not
-  22), inclusive limits, rounding once after summing (0.005 + 0.004 → 0.01), close-summary
-  balances rather than current ones, accounts opened after the close excluded, and a refused
-  second accrual even when the first paid nobody (so accrual cannot be inferred from
-  postings).
+  two clones of one bare remote. The oracle checks freeze semantics on the surviving
+  implementation.
+- **U7 (stated ambiguity).** The prose names both readings and defers to
+  `docs/design/interest.md` (marginal). The oracle checks the note's rule (6,000 → 120, not
+  180; 1,100 → 12, not 22), inclusive limits, rounding once after summing, close-summary
+  balances, and a refused second accrual even when the first paid nobody.
 - **U8 (simple).** Inclusive boundaries, same-day order, and an opening balance from postings
   dated before the range.
-- **U9 (complex).** A running balance is converted from the native balance, not accumulated
-  from rounded amounts (24.09, not 24.08). The holdings total is the sum of the rounded lines
-  (24.08, not the rounded exact 24.09). The oracle also checks JPY/KRW whole units, banker's
-  rounding (12.045 → 12.04), the reporting currency's rate fixed at 1, and unknown-currency
-  refusal order.
+- **U9 (complex).** A running balance is converted from the native balance (24.09, not 24.08
+  accumulated). The holdings total is the sum of the rounded lines (24.08, not the rounded exact
+  sum 24.09). The oracle also checks JPY/KRW whole units, banker's rounding, the reporting
+  currency's rate fixed at 1, and unknown-currency refusal order.
 
 The oracles test only behaviour that the prose states. Oracle content does not appear in the
 visible tests or in the prose beyond what the prose itself says.
@@ -150,15 +168,15 @@ each `task.json`.
 
 | Task | contract.json sha256 | Ordo 1.17.0 |
 |---|---|---|
-| U1 | `7a2a87cc2feda719dc5c492c1a162e4fb250e60ad11edb1d2c9e52be6426e8de` | admitted `sha256:5797fd50d3bd4af82ade758bf4806871401a3313696ed25aca5c1188bd1866d7` |
-| U2 | `29239e85313876ceb62e8159c3ddd0f940ff9a9c625325de50c048e7ad10eb2f` | **refused** `ORDO.CONTRACT.UNRESOLVED_CONFLICT` |
-| U3 | `fea56df890dbd875b081592808a141b815b6a8dd6155c8fcf894007c6423d61a` | admitted `sha256:fa8fe5beb473b159d61986e4289eb776a885dc29a93b49c13561eb9b6cf28cef` |
-| U4 | `eddca6576604f28b2faf70df13cf7abb84ec347e5b14f952d91925c3d4dd86cf` | admitted `sha256:b325e5129d0f1c9a2ad05a58efff036b64d13245476a9b8e60e53c3fd7b283c8` |
-| U5 | `616be1b1f721eaea5b9037f2c39982e76f6f1f7846eb78aa7520514ea908ef82` | admitted `sha256:dc810ed4c664912258da96c71e9063e70e74b3110085b8e74284c7bdff930d02` |
-| U6 | `a3bc796016cdd1acaf3e2755b1a85adb2be10d3284d6cf53ebc712dc958cf50a` | admitted `sha256:c78f27b340e28e405cf5ee4442c32612ef76d0651f0c6569c8dfc8787381f34a` |
-| U7 | `791e9e4c20999ecd5283e632a14dbb5dfa99bb5567f2e4d0c8b688f0597e3894` | admitted `sha256:1b34b58e5030dd2354618a17de64153f0a32c8d7519d9dcccedfcc9cbfc92ac5` |
-| U8 | `d23772af3ffb9ac622aced19a7899412202eb197618f176cc0c43b2140703f09` | admitted `sha256:47f79290074a7cf3461d19f73d7c1807df6409398383e18fe428dad756254dfd` |
-| U9 | `4442bcfa686e26325724139ebf447b1922950f942de23e63cfc5389848e644cf` | admitted `sha256:09edab43793e7f82bec7ec9a0ca0be00ddf33c94a49649d7ebfb803aa35e5519` |
+| U1 | `dbb38d3286e0efe42246f70187b582061ea1b4d4ba65a011767f64bf6c3cde64` | admitted `sha256:d0afa88fe070422cf428a4206720a07a6d96e9f70ff6d91227137b817f43f913` |
+| U2 | `5e48be94d98a7cff0f74b89e029ca416299f6e99903ae1efc51ac1890e0c2f06` | **refused** `ORDO.CONTRACT.UNRESOLVED_CONFLICT` |
+| U3 | `42d975478990264b86762361da5bfda6de7ef6a00819730153d857f78d0bceca` | admitted `sha256:65947c1246b1f6f724c762cbb3685b750380da4d6f6341e4a79b3fce456158cb` |
+| U4 | `c1a6e6564b4b799eda74e6bd99aa136732c13dd362dd2dfaf7f9f77da71de632` | admitted `sha256:e96c3b72bfce8632d4e10a53ecebcb1519711dd94a3ae8b869a44c768b830f37` |
+| U5 | `584182af2b3420ce42b1c3fe476fe3cf4aa89b56244ae595d6260931bd299704` | admitted `sha256:3680652a952405cf6bac04d9a0f27455ce31d9b364d4da88bf111721a9e07051` |
+| U6 | `8b2dc8e8315ec17a73d300ec1e7df8c223d25759e07f6b21162c57fdc16dc236` | admitted `sha256:755056029cfd95946cb7cd871266848d547b627eca7686ec513df42d9b7f449b` |
+| U7 | `f7a41e1abd1a44443574878aed0c996f98254f2d858596d2395ab6a6365ba1ba` | admitted `sha256:92566630ab6a66ad84102bf8008ce95b649b9ccaa7be4caca6cb7dc15b175004` |
+| U8 | `1b28bc7d080cb154fcb67e579b56ad4ac93c4d1d745f148ecf2c4927ac53deb8` | admitted `sha256:b9a8f6e1b8be0983e409649f509e2fa8ce2e33a529eec1810fbd37fdcbf6974c` |
+| U9 | `6bbd65c55362e796b409c96ed58c1b756bb19f1a92ec2b8b7a5ff9cb2066d797` | admitted `sha256:306a1c9539fced790452f4665c0402bbc540e92c8aa67b9870c8dc68f065733b` |
 
 The fixture-tree and oracle digests (computed the same way as run-01's `fixtureDigest` and
 `oracleDigest`, over `repo tasks oracle reference` and `oracle`) are printed at the top of
