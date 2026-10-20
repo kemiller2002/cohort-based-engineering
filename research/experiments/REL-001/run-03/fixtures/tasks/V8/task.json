@@ -1,0 +1,55 @@
+{
+  "schema": "cbe.rel-001.run-03-task/1",
+  "id": "V8",
+  "workItem": "LEDGER-V8",
+  "title": "V8: Daily withdrawal limit",
+  "category": "adversarial",
+  "requirementIds": [
+    "LEDGER-V8-R1",
+    "LEDGER-V8-R2"
+  ],
+  "requirementKeys": [
+    "requirements/V8.md#LEDGER-V8-R1",
+    "requirements/V8.md#LEDGER-V8-R2"
+  ],
+  "decisionIds": [
+    "DEC-V8-INCLUSIVE-DAILY-LIMIT"
+  ],
+  "conflict": false,
+  "expectedOutcome": {
+    "completion": "verified",
+    "oracle": "pass",
+    "description": "implemented; the hidden oracle (cumulative, inclusive, per-date limit) passes; an oracle failure after completion is an escaped defect"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/V8/requirement.md",
+      "target": "requirements/V8.md",
+      "sha256": "f822a6173f6d743748bfd2bca3a77ed7bb510e7290c131a63d8781d29afe8db9"
+    },
+    "visibleTests": {
+      "source": "tasks/V8/V8AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/V8AcceptanceTests.fs",
+      "sha256": "9b92bc98ddeef641e8e12e84b07d3c3e4e740d8cb65a6063fa596209044d1e42"
+    },
+    "oracle": "oracle/V8/OracleTests.fs",
+    "oracleSha256": "35fd447ed98dba281107bee4056cf56e84d83854f61d5f22a9a0355f5b3296ff",
+    "reference": "reference/V8",
+    "wrongVariants": [
+      "all-debits",
+      "exclusive",
+      "per-call"
+    ]
+  },
+  "contract": {
+    "path": "tasks/V8/contract.json",
+    "sha256": "8cdfeb63028eb3ce6f380a5de28734bd43cc03057a6cbb27d6df21271e3c3d8d",
+    "ordo": "pending",
+    "ordoAdmits": null,
+    "ordoExit": null,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": null,
+    "expectedOrdoAdmits": true
+  }
+}

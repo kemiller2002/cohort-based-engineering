@@ -1,0 +1,56 @@
+{
+  "schema": "cbe.rel-001.run-03-task/1",
+  "id": "V6",
+  "workItem": "LEDGER-V6",
+  "title": "V6: Bank reconciliation",
+  "category": "complex",
+  "requirementIds": [
+    "LEDGER-V6-R1",
+    "LEDGER-V6-R2",
+    "LEDGER-V6-R3"
+  ],
+  "requirementKeys": [
+    "requirements/V6.md#LEDGER-V6-R1",
+    "requirements/V6.md#LEDGER-V6-R2",
+    "requirements/V6.md#LEDGER-V6-R3"
+  ],
+  "decisionIds": [
+    "DEC-V6-CLOSEST-FIRST"
+  ],
+  "conflict": false,
+  "expectedOutcome": {
+    "completion": "verified",
+    "oracle": "pass",
+    "description": "implemented; oracle passes"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/V6/requirement.md",
+      "target": "requirements/V6.md",
+      "sha256": "fb98f5b761d9d407ed0bed34da2c93a645be76523e65c4706ac96416a1a0fd44"
+    },
+    "visibleTests": {
+      "source": "tasks/V6/V6AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/V6AcceptanceTests.fs",
+      "sha256": "23985aecf5e1427f09da8c1a2d93fc5ba4f3eb809e94cb05bd94a338fa463be7"
+    },
+    "oracle": "oracle/V6/OracleTests.fs",
+    "oracleSha256": "8ce64cf656ee2b543e1ac4b6fdbae0ab4845452f59f89e541ff9bf8e59c9f2dd",
+    "reference": "reference/V6",
+    "wrongVariants": [
+      "exclusive-window",
+      "first-candidate"
+    ]
+  },
+  "contract": {
+    "path": "tasks/V6/contract.json",
+    "sha256": "37a57ab0eae4a3cfba6908667754df61ee800ba5ea9b06d03e934c0ff4ae0e87",
+    "ordo": "pending",
+    "ordoAdmits": null,
+    "ordoExit": null,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": null,
+    "expectedOrdoAdmits": true
+  }
+}

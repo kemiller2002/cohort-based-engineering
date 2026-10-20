@@ -1,0 +1,35 @@
+{
+  "schema": "cbe.rel-001.run-03-pins/1",
+  "status": "DRAFT: every TBD is frozen in the preregistration commit, before any pilot or trial; setup.sh refuses a pilot or confirmatory run while any pin is TBD or a binary does not match its pin",
+  "arms": {
+    "C": {
+      "label": "echelon-original (unchanged from run-02 arm C)",
+      "praxis": {"version": "3.16.0", "sha256": "1dc197367297526e911a8e42e08854f9cc0aa96cf1733414382b1069fafe5bb2", "file": "praxis-bin", "path": "TBD"},
+      "dokimos": {"version": "0.6.0", "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b", "path": "TBD"},
+      "ordo": {"version": "1.17.0", "sha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d", "path": "TBD"},
+      "shaBasis": "run-02 protocol pins are release-tarball sha256 values; the preregistration commit records the extracted entry-point sha256 that setup.sh compares (field sha256Entry)",
+      "sha256Entry": "TBD"
+    },
+    "D": {
+      "label": "echelon-optimized: the post-REL-GATE-003, F4-optimized build (attested mode, workProtocol.requireAttestedEvidence)",
+      "praxis": {"version": "TBD", "sha256": "TBD", "tagCommit": "TBD", "file": "praxis-bin", "path": "TBD"},
+      "dokimos": {"version": "TBD", "sha256": "TBD", "path": "TBD"},
+      "ordo": {"version": "TBD", "sha256": "TBD", "path": "TBD"},
+      "requires": ["REL-GATE-003 resolved in this Praxis version (gate report committed)", "F4 protocol optimizations released in this version"],
+      "sha256Entry": "TBD"
+    }
+  },
+  "measurement": {"praxis": "the arm-D Praxis (telemetry reliability-report --agent-binding --price-table)", "path": "TBD", "sha256": "TBD"},
+  "priceTable": {
+    "source": "research/pricing/anthropic.price-table.json (run-02 branch claude/echelon-reliability-integration-g8x7vn), copied to run-03/pricing/",
+    "tableVersion": "2026-10-20.1",
+    "sha256": "dd58c305821c66ec59c2c567a936885be6833d480c915ad0778b5385ff325b42"
+  },
+  "model": {"provider": "anthropic", "model": "claude-opus-5-5"},
+  "launcher": {
+    "cacheCondition": "TBD: K1 isolated-cli (preferred) or K0 subagent-shared; decided by the pilot feasibility rule P1 in protocol/run-03.md",
+    "claudeCodeVersion": "TBD (claude --version of the launcher host; 2.1.305 when this draft was written)"
+  },
+  "dotnet": {"sdk": "TBD (dotnet --version on the trial host)"},
+  "directives": {"path": "run-03/directives/DIRECTIVES.md", "sha256": "1ae15c1f5b398d4c18b39b4a8ff11333c640d3c858cee68c911896fbf92985cc"}
+}

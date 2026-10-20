@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:f822a6173f6d743748bfd2bca3a77ed7bb510e7290c131a63d8781d29afe8db9",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/V8.md#LEDGER-V8-R1",
+        "originalId": "LEDGER-V8-R1",
+        "document": "requirements/V8.md",
+        "location": "L21",
+        "revision": "sha256:f822a6173f6d743748bfd2bca3a77ed7bb510e7290c131a63d8781d29afe8db9",
+        "contentDigest": "sha256:3fa3d39dfe87f99d0059dedbe1304cdd781758ea69606aa3b8e3acfc7162e6fd"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-V8-INCLUSIVE-DAILY-LIMIT",
+        "VERIFY-V8-R1",
+        "COHORT-V8"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/V8.md#LEDGER-V8-R2",
+        "originalId": "LEDGER-V8-R2",
+        "document": "requirements/V8.md",
+        "location": "L39",
+        "revision": "sha256:f822a6173f6d743748bfd2bca3a77ed7bb510e7290c131a63d8781d29afe8db9",
+        "contentDigest": "sha256:564c43a95bf99cbcaf06b854b901448fd217cb3e08e004f8ce12d0889688279f"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-V8-R2",
+        "COHORT-V8"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-V8-INCLUSIVE-DAILY-LIMIT",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/V8.md#LEDGER-V8-R1"
+      ],
+      "dependsOn": [],
+      "justification": "withdrawals per account and business date may total exactly 500.00"
+    },
+    {
+      "id": "VERIFY-V8-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V8.md#LEDGER-V8-R1"
+      ],
+      "dependsOn": [
+        "DEC-V8-INCLUSIVE-DAILY-LIMIT"
+      ]
+    },
+    {
+      "id": "VERIFY-V8-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V8.md#LEDGER-V8-R2"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-V8",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/V8.md#LEDGER-V8-R1",
+        "requirements/V8.md#LEDGER-V8-R2"
+      ],
+      "dependsOn": [
+        "DEC-V8-INCLUSIVE-DAILY-LIMIT"
+      ]
+    }
+  ]
+}

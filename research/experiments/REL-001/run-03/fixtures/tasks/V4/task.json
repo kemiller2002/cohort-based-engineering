@@ -1,0 +1,54 @@
+{
+  "schema": "cbe.rel-001.run-03-task/1",
+  "id": "V4",
+  "workItem": "LEDGER-V4",
+  "title": "V4: Fee preview, then a new fee rule",
+  "category": "moderate",
+  "requirementIds": [
+    "LEDGER-V4-R1",
+    "LEDGER-V4-R2"
+  ],
+  "requirementKeys": [
+    "requirements/V4.md#LEDGER-V4-R1",
+    "requirements/V4.md#LEDGER-V4-R2"
+  ],
+  "decisionIds": [
+    "DEC-V4-SHARED-FEE-RULE"
+  ],
+  "conflict": false,
+  "expectedOutcome": {
+    "completion": "verified",
+    "oracle": "pass",
+    "description": "implemented with R2 applied to everything built on periodFee; oracle passes"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/V4/requirement.md",
+      "target": "requirements/V4.md",
+      "sha256": "d638e588a3c747a39f5da728e29c6a38a26caba89fb4d810d11d818270fccbcc"
+    },
+    "visibleTests": {
+      "source": "tasks/V4/V4AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/V4AcceptanceTests.fs",
+      "sha256": "22bde9075a8ba33e77b54b6e9790efc41c6fcc4546564c412f8e32e88ed8b5d8"
+    },
+    "oracle": "oracle/V4/OracleTests.fs",
+    "oracleSha256": "ad263f21a73eb6da7d467a4a64892398cebf4011fe195359bf9c0e34f822ab2a",
+    "reference": "reference/V4",
+    "wrongVariants": [
+      "boundary",
+      "stale-preview"
+    ]
+  },
+  "contract": {
+    "path": "tasks/V4/contract.json",
+    "sha256": "41680ccfc5830864db350831365bc94392220647a6581909f0775908bfdebd66",
+    "ordo": "pending",
+    "ordoAdmits": null,
+    "ordoExit": null,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": null,
+    "expectedOrdoAdmits": true
+  }
+}

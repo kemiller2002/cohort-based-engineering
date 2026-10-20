@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:fb98f5b761d9d407ed0bed34da2c93a645be76523e65c4706ac96416a1a0fd44",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/V6.md#LEDGER-V6-R1",
+        "originalId": "LEDGER-V6-R1",
+        "document": "requirements/V6.md",
+        "location": "L32",
+        "revision": "sha256:fb98f5b761d9d407ed0bed34da2c93a645be76523e65c4706ac96416a1a0fd44",
+        "contentDigest": "sha256:33dab1cc271d42001f5f166ddfa1ed8b8e980fced24be759b435b90a3140f639"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-V6-R1",
+        "COHORT-V6"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/V6.md#LEDGER-V6-R2",
+        "originalId": "LEDGER-V6-R2",
+        "document": "requirements/V6.md",
+        "location": "L38",
+        "revision": "sha256:fb98f5b761d9d407ed0bed34da2c93a645be76523e65c4706ac96416a1a0fd44",
+        "contentDigest": "sha256:c71ca8797698418f33107130e1fe33396013be697452bda085b591142de7dce6"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-V6-CLOSEST-FIRST",
+        "VERIFY-V6-R2",
+        "COHORT-V6"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/V6.md#LEDGER-V6-R3",
+        "originalId": "LEDGER-V6-R3",
+        "document": "requirements/V6.md",
+        "location": "L51",
+        "revision": "sha256:fb98f5b761d9d407ed0bed34da2c93a645be76523e65c4706ac96416a1a0fd44",
+        "contentDigest": "sha256:b4e66f93a23ecda991b43890e3dc13c7f18cb90dbeadc2e815963547073ba7cb"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-V6-R3",
+        "COHORT-V6"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-V6-CLOSEST-FIRST",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/V6.md#LEDGER-V6-R2"
+      ],
+      "dependsOn": [],
+      "justification": "each line, in order, takes the closest unmatched posting; ties go to the earlier posting"
+    },
+    {
+      "id": "VERIFY-V6-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V6.md#LEDGER-V6-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-V6-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V6.md#LEDGER-V6-R2"
+      ],
+      "dependsOn": [
+        "DEC-V6-CLOSEST-FIRST"
+      ]
+    },
+    {
+      "id": "VERIFY-V6-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V6.md#LEDGER-V6-R3"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-V6",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/V6.md#LEDGER-V6-R1",
+        "requirements/V6.md#LEDGER-V6-R2",
+        "requirements/V6.md#LEDGER-V6-R3"
+      ],
+      "dependsOn": [
+        "DEC-V6-CLOSEST-FIRST"
+      ]
+    }
+  ]
+}

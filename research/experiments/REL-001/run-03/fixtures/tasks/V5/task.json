@@ -1,0 +1,57 @@
+{
+  "schema": "cbe.rel-001.run-03-task/1",
+  "id": "V5",
+  "workItem": "LEDGER-V5",
+  "title": "V5: Standing orders",
+  "category": "complex",
+  "requirementIds": [
+    "LEDGER-V5-R1",
+    "LEDGER-V5-R2",
+    "LEDGER-V5-R3"
+  ],
+  "requirementKeys": [
+    "requirements/V5.md#LEDGER-V5-R1",
+    "requirements/V5.md#LEDGER-V5-R2",
+    "requirements/V5.md#LEDGER-V5-R3"
+  ],
+  "decisionIds": [
+    "DEC-V5-SHORTFALL"
+  ],
+  "conflict": false,
+  "expectedOutcome": {
+    "completion": "verified",
+    "oracle": "pass",
+    "description": "implemented per docs/design/standing-orders.md; oracle passes"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/V5/requirement.md",
+      "target": "requirements/V5.md",
+      "sha256": "794a926ceb986e0377989c38c5a4c32f0ddd3c98c771acde26ef99b9a4d275cb"
+    },
+    "visibleTests": {
+      "source": "tasks/V5/V5AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/V5AcceptanceTests.fs",
+      "sha256": "8ecaef8d7cd7f64c8d3818b0a398aeff297071a93864f52b53888cd48b00f3c3"
+    },
+    "oracle": "oracle/V5/OracleTests.fs",
+    "oracleSha256": "11b1a25c4b628ccec0b508d524ab320d3cd8d82c1257ba95dfcb884ee7765aae",
+    "reference": "reference/V5",
+    "wrongVariants": [
+      "exact-day",
+      "list-order",
+      "partial"
+    ]
+  },
+  "contract": {
+    "path": "tasks/V5/contract.json",
+    "sha256": "5ddbcd0d6d1be9e1032b470f6c81df5ad96b882fa0623fe8e0babb48a507c9f3",
+    "ordo": "pending",
+    "ordoAdmits": null,
+    "ordoExit": null,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": null,
+    "expectedOrdoAdmits": true
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:0cbdd2297b67702fad3ff4ab3b960305c25a39e9d3360d6f1f6f0614f538d783",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/V3.md#LEDGER-V3-R1",
+        "originalId": "LEDGER-V3-R1",
+        "document": "requirements/V3.md",
+        "location": "L23",
+        "revision": "sha256:0cbdd2297b67702fad3ff4ab3b960305c25a39e9d3360d6f1f6f0614f538d783",
+        "contentDigest": "sha256:38ce43b99e937c84f0aa4d34c0e35f17ecfb8e18aa912dad8ec9db6c5a22643a"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "INV-V3-HELD-NOT-SPENDABLE",
+        "VERIFY-V3-R1",
+        "COHORT-V3"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/V3.md#LEDGER-V3-R2",
+        "originalId": "LEDGER-V3-R2",
+        "document": "requirements/V3.md",
+        "location": "L38",
+        "revision": "sha256:0cbdd2297b67702fad3ff4ab3b960305c25a39e9d3360d6f1f6f0614f538d783",
+        "contentDigest": "sha256:2980d63f93ed9a0e8b3203322346bae0e85b694df337610e57643d75d2e80f1c"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "INV-V3-HELD-NOT-SPENDABLE",
+        "VERIFY-V3-R2",
+        "COHORT-V3"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "INV-V3-HELD-NOT-SPENDABLE",
+      "kind": "invariant",
+      "requirementKeys": [
+        "requirements/V3.md#LEDGER-V3-R1",
+        "requirements/V3.md#LEDGER-V3-R2"
+      ],
+      "dependsOn": [],
+      "justification": "debit and transfer never spend more than the available amount"
+    },
+    {
+      "id": "VERIFY-V3-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V3.md#LEDGER-V3-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-V3-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V3.md#LEDGER-V3-R2"
+      ],
+      "dependsOn": [
+        "INV-V3-HELD-NOT-SPENDABLE"
+      ]
+    },
+    {
+      "id": "COHORT-V3",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/V3.md#LEDGER-V3-R1",
+        "requirements/V3.md#LEDGER-V3-R2"
+      ],
+      "dependsOn": [
+        "INV-V3-HELD-NOT-SPENDABLE"
+      ]
+    }
+  ]
+}
