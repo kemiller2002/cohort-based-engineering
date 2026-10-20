@@ -20,6 +20,9 @@ contam=0
 for m in OracleT1 OracleT2 OracleT3; do
   if git -C "$REPO" log --all -p 2>/dev/null | grep -q "module $m" || grep -rqs "module $m" "$REPO" --exclude-dir=.git; then contam=1; fi
 done
+# Amendment A3: the oracle shares the disk with the run, so the agent's own transcripts are
+# also checked for any reference to the oracle directory or modules.
+if [ -n "$TRANSCRIPTS" ] && grep -rqsE "fixtures/d/oracle|module OracleT[0-9]" "$TRANSCRIPTS"; then contam=1; fi
 
 # --- oracle at the final commit, outside the run repository
 mkdir -p "$SC/src"; git -C "$REPO" archive "$FINAL" | tar -x -C "$SC/src"

@@ -153,3 +153,22 @@ authority input:
 Experiments A, B and C are re-run for the treatment arm on 3.16.0. The 3.15.0 results are kept,
 not overwritten, as the pre-fix observation (the run ids differ). Hypotheses, metrics,
 randomization, the D task set and the D order are unchanged.
+
+**A3 (2026-10-20T01:10Z, after the gate re-evaluation on released Praxis 3.16.0, before any Experiment D trial).**
+How the D trials are run, fixed before the first trial:
+- **Pins:** treatment Praxis **3.16.0** (`praxis-linux-x64.tar.gz`, sha256
+  `1dc197367297526e911a8e42e08854f9cc0aa96cf1733414382b1069fafe5bb2`). Baseline Praxis 3.12.0 and
+  Dokimos 0.6.0 are unchanged.
+- **Agent runtime:** each trial is one fresh Claude Code sub-agent (`general-purpose`, the same model
+  and default tool set in both arms). The orchestrating session launches the trials one at a time in
+  the preregistered order. The agent configuration is `harness/d/agent-config.json`
+  (sha256 `60adeb4389807b0ef40d8ca2979103ae18869be2ed1539b9fbd60289b4c00e83`). The wrapper prompt is
+  identical across arms apart from the run's `AGENT_BRIEF.md` path.
+- **Deviation from "cold cache":** sub-agents of one session share the provider prompt cache for the
+  common system-prompt prefix, so a trial is not fully cold. Both arms are equally exposed. Cache
+  reads are reported separately from input and output tokens, and they are not compared as if they
+  were fresh input.
+- **X4 detection extended:** the hidden oracle is on the same disk as the workspaces. `score.sh` also
+  marks a run contaminated when the agent's own transcripts reference the oracle directory or modules.
+- **Budget enforcement:** the orchestrator records `logs/agent.json {startedAt, endedAt}`. A trial
+  still running at 45 minutes is stopped and scored under X5 (failed, not excluded).
