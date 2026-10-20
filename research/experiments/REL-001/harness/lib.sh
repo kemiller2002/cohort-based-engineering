@@ -9,13 +9,13 @@ BIN="${REL001_BIN:-/tmp/claude-0/rel001/bin}"
 RUNS="${REL001_RUNS:-/tmp/claude-0/rel001/runs}"
 ORDO_SRC="${REL001_ORDO_SRC:-/home/user/ordo}"
 ORDO_FIXTURES="$ORDO_SRC/examples/ecir/consumer"
-ORDO_COMMIT="e6fe390e47bf1d6d777017ced0b381f1c7d6acf7"
+ORDO_COMMIT="${REL001_ORDO_COMMIT:-e6fe390e47bf1d6d777017ced0b381f1c7d6acf7}"
 export PATH="/root/.dotnet:$PATH" DOTNET_ROOT=/root/.dotnet DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
 
 BASELINE_PRAXIS="$BIN/praxis-3.12.0/x/praxis-linux-x64/praxis"
 TREATMENT_PRAXIS="${REL001_TREATMENT_PRAXIS:-$BIN/praxis-3.15.0/x/praxis-linux-x64/praxis}"
 DOKIMOS="$BIN/dokimos-0.6.0/x/dokimos"
-SDE="$BIN/ordo-sde/sde"
+SDE="${REL001_SDE:-$BIN/ordo-sde/sde}"
 
 # arm_init ARM: sets PRAXIS and the runtime identity environment.
 arm_init() {
@@ -29,7 +29,7 @@ arm_init() {
   PRAXIS_VERSION="$("$PRAXIS" --version 2>/dev/null | awk '{print $2}')"
   PRAXIS_SHA="$(sha256sum "$(dirname "$PRAXIS")/praxis-bin" | cut -d' ' -f1)"
   DOKIMOS_SHA="$(sha256sum "$DOKIMOS" | cut -d' ' -f1)"
-  SDE_SHA="$(sha256sum "$(dirname "$SDE")/sde.dll" | cut -d' ' -f1)"
+  SDE_SHA="$(sha256sum "$( [ -f "$(dirname "$SDE")/sde.dll" ] && echo "$(dirname "$SDE")/sde.dll" || echo "$SDE")" | cut -d' ' -f1)"
 }
 
 now_ms() { date +%s%3N; }
