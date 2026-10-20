@@ -30,7 +30,7 @@ trials start, the original stays as recorded and a separately preregistered run-
 - **Order:** `run-02/harness/order.json` sha256 `0d403e7310f7637400b5d49dc6fc8b40a72153aafb073d2e28071924fefe8e29`
   (seed 20261020; 22 blocks × 4 arms = 88 trials). Pilot: `pilot-order.json` sha256 `221c33daa5ec09dfddcc58aa02a52a7d2f67b7490d9681174ac98a980f511d63`.
 - **Analysis:** `run-02/analysis/analyze-run02.fsx` sha256 `19d4f0eac95ece04614ec1b1865e95b46140787e3d0ae360bd065afc96d6793b`.
-- **Completion gate:** `gate/gate-report.json` (evaluation 2026-10-20T13:50Z). Every condition passes for the attested
+- **Completion gate:** `gate/gate-report.json` (evaluation 2026-10-20T13:18:21Z). Every condition passes for the attested
   configuration used by arm D. The non-attested strict-forgery failure (REL-GATE-003) affects no run-02 arm: C is the original
   3.16.0 by design, and is known to accept C3b.
 
