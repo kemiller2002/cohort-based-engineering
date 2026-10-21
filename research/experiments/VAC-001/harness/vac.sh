@@ -167,7 +167,23 @@ cmd_descope() {
   echo "descoped $TASK in $RUN/$ARM"
 }
 
+# Arm D/DR gate feedback: requirement IDs, check names and rule violations only; never oracle source.
+#   vac.sh feedback RUN ARM UNIT ATTEMPT   -> writes $WS/briefs/unit-UNIT-repair-ATTEMPT.md and prints its path
+cmd_feedback() {
+  paths "$1" "$2"; UNIT="$3"; ATTEMPT="$4"
+  local obs="$RS/verify-$UNIT-$ATTEMPT.json" out="$WS/briefs/unit-$UNIT-repair-$ATTEMPT.md"
+  jq -r '"# Independent verification of work unit \(.unit): rejected\n\nThe verifier checked commit `\(.head)` and did not accept it.\n",
+     (if .build.ok then empty else "- The solution does not build (\(.build.compilerErrors) compiler errors)." end),
+     (if .visibleTests.failed > 0 then "- \(.visibleTests.failed) repository test(s) fail." else empty end),
+     (if .uncommittedPaths > 0 then "- The worktree has \(.uncommittedPaths) uncommitted path(s)." else empty end),
+     (if (.architecture.passed // true) then empty else (.architecture.violations[] | "- Architecture \(.rule): \(.file):\(.line) \(.text)") end),
+     (.oracle.failing[] | "- Failing check `\(.test)` (requirement \(.requirement))"),
+     "\nFix these, commit, update `.vac/reports/unit-\(.unit).json` (and the Praxis state), and end your final message as the brief says."' "$obs" > "$out"
+  echo "$out"
+}
+
 case "${1:-}" in
+  feedback) shift; cmd_feedback "$@";;
   descope) shift; cmd_descope "$@";;
   finish) shift; cmd_finish "$@";;
   setup)  shift; cmd_setup "$@";;
