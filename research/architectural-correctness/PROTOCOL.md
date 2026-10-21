@@ -283,6 +283,7 @@ Recorded in `pins.json` (freeze 2026-10-21T10:13:56Z):
 - **Most traps hit the boundary rules.** Several traps violate ARC-BND-03, so H3's sensitivity is concentrated on
   presentation/projection placement.
 - **Concurrency and the shared cache prefix** add wall-time and cache noise. Both are measured.
+- **Exposure of pilot oracle test names.** Commit `8fb76b5` briefly published the pilot observations, which include the hidden T1 and T8 oracle test names. Observations stay out of git until all trials end (`.gitignore`). Any agent reading the repository or GitHub is excluded as X4.
 - **Exposure of trap metadata.** Trap descriptions were briefly public in commit `2f15e59` before being moved to the
   sealed store. The contamination scan covers the GitHub organisation and the local research checkout.
 
