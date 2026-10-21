@@ -35,7 +35,9 @@ score or result file was read; `run-02/observations/protocol-notes.md` and the p
   (V5's design note) is new. Every other repository file is a byte-for-byte copy (table above).
 - `fixtures/oracle/Oracle.fsproj`: run-02's (`933528c5…`) with the comment's "run-02" changed to "run-03".
 - `wrapper prompt` in `harness/agent-config.json`: the run-02 prompt text (`852ca26b…` file), byte for byte; the
-  file gains the K1/K0 invocation descriptions.
+  file gains the K1/K0 invocation descriptions. Draft revision R1 (2026-10-21) replaces the `tools` string with a `tools` object
+  (`builtIn: Bash, Read, Edit, Write`) that `launch-agent.sh` passes as `--tools`; evidence
+  `research/token-efficiency/prefix/PREFIX-COMPOSITION.md`.
 
 ## Adapted (derived, not copied)
 
