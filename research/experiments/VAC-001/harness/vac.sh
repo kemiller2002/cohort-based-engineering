@@ -108,14 +108,17 @@ cmd_verify() {
   local tasks; tasks=$(jq -r --argjson u "$UNIT" '[.units[] | select(.unit <= $u) | .task] | unique | join(" ")' "$ST/setup.json")
   local start=$(date +%s%3N)
   local trc=0; ( cd "$V/tree" && timeout 900 dotnet test Ledger.slnx > "$V/tests.log" 2>&1 ) || trc=$?
-  # cumulative oracle: every staged task's hidden tests, compiled together against this tree
-  mkdir -p "$V/oracle"
-  sed "s#LEDGER_PROJECT_PATH#$V/tree/src/Ledger/Ledger.fsproj#; s#<Compile Include=\"OracleTests.fs\" />#ORACLE_FILES#" "$FIX/oracle/Oracle.fsproj" > "$V/oracle/Oracle.fsproj.tmpl"
-  local inc=""
-  for t in $tasks; do [ -f "$FIX/oracle/$t/OracleTests.fs" ] || continue; cp "$FIX/oracle/$t/OracleTests.fs" "$V/oracle/Oracle$t.fs"; inc="$inc<Compile Include=\"Oracle$t.fs\" />"; done
-  sed "s#ORACLE_FILES#$inc#" "$V/oracle/Oracle.fsproj.tmpl" > "$V/oracle/Oracle.fsproj"; rm "$V/oracle/Oracle.fsproj.tmpl"
-  local orc=0
-  if [ -n "$inc" ]; then ( cd "$V/oracle" && timeout 900 dotnet test --logger "trx;LogFileName=oracle.trx" > "$V/oracle.log" 2>&1 ) || orc=$?; fi
+  # cumulative oracle (amendment A2): every staged task that has an expected completion, each compiled in its own
+  # project so that one task's compile failure cannot hide another task's result
+  local orc=0 t
+  for t in $tasks; do
+    [ -f "$FIX/oracle/$t/OracleTests.fs" ] || continue
+    [ "$(jq -r .expectedOutcome.completion "$FIX/tasks/$t/task.json")" = none ] && continue
+    mkdir -p "$V/oracle/$t"
+    sed "s#LEDGER_PROJECT_PATH#$V/tree/src/Ledger/Ledger.fsproj#" "$FIX/oracle/Oracle.fsproj" > "$V/oracle/$t/Oracle.fsproj"
+    cp "$FIX/oracle/$t/OracleTests.fs" "$V/oracle/$t/OracleTests.fs"
+    ( cd "$V/oracle/$t" && timeout 900 dotnet test --logger "trx;LogFileName=oracle-$t.trx" > "$V/oracle/$t.log" 2>&1 ) || orc=$?
+  done
   dotnet fsi --quiet --exec "$FSX" archcheck "$V/tree" --json > "$V/arch.json" 2> "$V/arch.err" || true
   dotnet fsi --quiet --exec "$FSX" evidence "$V/tree" "$UNIT" > "$V/evidence.json" 2> "$V/evidence.err" || true
   local ms=$(( $(date +%s%3N) - start ))

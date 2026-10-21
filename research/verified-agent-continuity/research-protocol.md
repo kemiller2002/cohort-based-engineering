@@ -235,3 +235,13 @@ following are recorded:
   - **Analysis.** A V7 unit's own failed build is not a critical failure, because the starting state plus V7's tests
     never compiles.
   - **Unchanged.** Data from P1 unit 1 (all arms) is unaffected.
+- **A2 (2026-10-21, after P1 unit 2, before any arm comparison).** Verifier defect.
+  - **Problem 1.** The cumulative oracle compiled V7's oracle file. V7 has no expected implementation, so that
+    file can never compile, and arm B's unit 2 was wrongly scored "not accepted".
+  - **Problem 2.** All oracles were compiled in one project, so a compile failure in one task's oracle hid every
+    other task's result.
+  - **Change.** Tasks whose `expectedOutcome.completion` is `none` (V7) are excluded. Each task's oracle now
+    compiles and runs in its own project, so failures are attributed per task.
+  - **Rescoring.** Unit 2 was rescored in every arm with the corrected verifier. The defective observation is kept
+    as `results/P1/B/verify-2-1.superseded-by-A2.json`. Units 1 are unaffected: no implementation oracle applied.
+

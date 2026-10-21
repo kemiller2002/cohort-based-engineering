@@ -1,0 +1,190 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 2,
+  "attempt": 1,
+  "task": "V5",
+  "fault": "none",
+  "head": "85e95624c0b5d060cb0ee9fc9c8b5e90e3aa6142",
+  "verifiedAt": "2026-10-21T08:05:47.1775548Z",
+  "verifyMs": 20569,
+  "stagedTasks": [
+    "V7",
+    "V5"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 22,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 15,
+    "failed": 0,
+    "byTask": {
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 2,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U2-D1",
+        "statement": "Added StandingOrder, OrderOutcome and LedgerError.InvalidOrder to Domain.fs exactly as specified; StandingOrders.fs is compiled between Ledger.fs and Store.fs so it can use Ledger.transfer/setDate. No Store wrapper was added (not required).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs#StandingOrder",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fsproj",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D2",
+        "statement": "Validation runs over the whole list before the date check; OrderId duplicates are detected with ordinal (Set\u003Cstring\u003E) equality; Error (InvalidOrder id) names the first offending order. The date check and the business-date move reuse Ledger.setDate, so a past date yields DateInPast and payments are stamped with the new date.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#setDate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#firstInvalid",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D3",
+        "statement": "Paid in full or not at all: each due order is a single Ledger.transfer for the full Value (which refuses with InsufficientFunds rather than paying part); a refused transfer becomes Skipped(id, error) and the run continues with the next order.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "docs/design/standing-orders.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D4",
+        "statement": "Due orders are sorted with String.CompareOrdinal on OrderId; the reference date is formatted yyyy-MM-dd with InvariantCulture; days in month come from DateTime.DaysInMonth.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#reference",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D5",
+        "statement": "AlreadyPaid is detected by any journal posting whose Reference equals standing:\u003COrderId\u003E:\u003Cyyyy-MM-dd\u003E, checked before attempting the transfer and against the state including earlier payments of the same run.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

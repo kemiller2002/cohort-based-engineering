@@ -195,10 +195,8 @@ let evidence (tree: string) (unit: int) =
 type OracleCase = { Name: string; Task: string; Requirement: string; Outcome: string }
 
 let oracleCases (dir: string) =
-    let trx = Directory.GetFiles(dir, "*.trx", SearchOption.AllDirectories) |> Array.tryHead
-    match trx with
-    | None -> []
-    | Some f ->
+    let trx = if Directory.Exists dir then Directory.GetFiles(dir, "*.trx", SearchOption.AllDirectories) |> Array.toList else []
+    trx |> List.collect (fun f ->
         XDocument.Load(f).Descendants()
         |> Seq.filter (fun e -> e.Name.LocalName = "UnitTestResult")
         |> Seq.map (fun e ->
@@ -206,7 +204,7 @@ let oracleCases (dir: string) =
             let task = Regex.Match(name, @"Oracle(V\d)").Groups[1].Value
             let req = Regex.Match(name, @"LEDGER-V\d-R\d").Value
             { Name = name; Task = task; Requirement = req; Outcome = e.Attribute(XName.Get "outcome").Value })
-        |> Seq.toList
+        |> Seq.toList)
 
 let testSummary (log: string) =
     let text = if File.Exists log then File.ReadAllText log else ""
@@ -233,7 +231,9 @@ let observe (a: Map<string, string>) =
     let staged = units |> List.filter (fun u -> i64 u "unit" <= int64 unit) |> List.choose (fun u -> str u "task")
     let tests = testSummary a["tests-log"]
     let cases = oracleCases a["oracle-dir"]
-    let oracleLog = testSummary (Path.Combine(a["oracle-dir"], "..", "oracle.log"))
+    let oracleLogs = if Directory.Exists a["oracle-dir"] then Directory.GetFiles(a["oracle-dir"], "*.log") |> Array.toList else []
+    let compileErrorsOf t = oracleLogs |> List.filter (fun f -> Path.GetFileNameWithoutExtension f = t) |> List.sumBy (fun f -> (testSummary f).CompilerErrors)
+    let oracleLog = {| CompilerErrors = oracleLogs |> List.sumBy (fun f -> (testSummary f).CompilerErrors) |}
     let arch = tryParse a["arch"]
     let archPassed = arch |> Option.map (fun j -> j["passed"].GetValue<bool>()) |> Option.defaultValue false
     let ev = tryParse a["evidence"]
@@ -267,7 +267,7 @@ let observe (a: Map<string, string>) =
            "oracle", jobj [ "built", jbool oracleBuilt; "exit", jint (int64 (int a["oracle-rc"])); "compilerErrors", jint (int64 oracleLog.CompilerErrors)
                             "cases", jint (int64 cases.Length); "failed", jint (int64 failingCases.Length)
                             "byTask", jobj (staged |> List.distinct |> List.filter ((<>) "V7") |> List.map (fun t ->
-                                t, jobj [ "cases", jint (int64 (byTask t).Length); "failed", jint (int64 (byTask t |> List.filter (fun c -> c.Outcome <> "Passed")).Length) ]))
+                                t, jobj [ "cases", jint (int64 (byTask t).Length); "failed", jint (int64 (byTask t |> List.filter (fun c -> c.Outcome <> "Passed")).Length); "compilerErrors", jint (int64 (compileErrorsOf t)) ]))
                             "failing", jarr (failingCases |> List.map (fun c -> jobj [ "test", jstr c.Name; "task", jstr c.Task; "requirement", jstr c.Requirement ])) ]
            "architecture", (match arch with Some j -> j.DeepClone() | None -> jnull)
            "evidence", (match ev with Some j -> j.DeepClone() | None -> jnull)
