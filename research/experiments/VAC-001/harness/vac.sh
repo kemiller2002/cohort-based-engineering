@@ -198,7 +198,21 @@ cmd_reevidence() {
   done
 }
 
+# Regenerate usage files for every finished unit from the transcripts, with the windows recorded at finish time.
+#   vac.sh reusage RUN ARM
+cmd_reusage() {
+  paths "$1" "$2"; local line u t a to from
+  while read -r line; do
+    u=$(jq -r .unit <<<"$line"); t=$(jq -r .attempt <<<"$line"); a=$(jq -r .agentId <<<"$line"); to=$(jq -r .finishedAt <<<"$line")
+    if [ "$t" -eq 1 ]; then from=$(jq -r --argjson u "$u" '.units[] | select(.unit == $u) | .stagedAt' "$ST/setup.json")
+    else from=$(jq -rs --argjson u "$u" --argjson t "$(( t - 1 ))" '[.[] | select(.unit == $u and .attempt == $t)][-1].finishedAt' "$ST/finish.jsonl"); fi
+    dotnet fsi --quiet --exec "$FSX" usage --transcript "${VAC_TRANSCRIPTS:-/root/.claude/projects/-home-user/33f5e1ff-fd17-5061-b88b-9980676c7c5b/subagents}/agent-$a.jsonl" \
+      --from "$from" --to "$to" --workspace "$WS" --prices "$EXP/../../pricing/anthropic.price-table.json" > "$RS/usage-$u-$t.json"
+  done < <(jq -c -s 'group_by([.unit, .attempt]) | map(.[-1]) | .[]' "$ST/finish.jsonl")
+}
+
 case "${1:-}" in
+  reusage) shift; cmd_reusage "$@";;
   reevidence) shift; cmd_reevidence "$@";;
   feedback) shift; cmd_feedback "$@";;
   descope) shift; cmd_descope "$@";;
