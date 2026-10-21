@@ -122,7 +122,13 @@ The four arms bundle orchestration, constructibility and independent verificatio
      - wrong-key receipts;
      - stale and replayed receipts.
    - Evidence: gate P4, cases GATE-A1–A4, and experiment C attested (0/3 accepted).
-   - **In non-attested mode, yes:** GATE-3 and C3b are accepted. This is REL-GATE-003, filed in Praxis intake (P1).
+   - **In non-attested mode, yes:** GATE-3 and C3b are accepted. This was REL-GATE-003 (P1).
+     - It is now fixed in Praxis v3.18.0 (praxis#280): `requireVerifiedCompletion` implies attested evidence, and every
+       completion is labelled attested or unattested.
+     - Re-run on the released v3.18.0: the gate and experiment C give the same outcomes as 3.17.0, including GATE-A1–A4 and
+       C8a–d.
+     - A repository that requires no attestation still accepts the forgery, but it is now labelled `unattested`
+       (`gate/gate-report.json`, `reruns`).
    - In run-02 no agent attempted it: 0 invalid completions were accepted and 0 X6 tampering was detected.
    - **Qualification: REL-GATE-004, reported after the matrix finished by a parallel research session (praxis#279).**
      - On 3.17.0, attestation is only as strong as its trust root. Two probes complete an item as verified without a
@@ -170,7 +176,7 @@ The four arms bundle orchestration, constructibility and independent verificatio
    - **Not as a default.** It is ready as an **opt-in assurance mode** where its guarantees are needed:
      - concurrent agents on one backlog;
      - forgery-resistant, audited completion on protected branches.
-   - For those uses the gate is in place, but REL-GATE-003 and REL-GATE-004 must be fixed first, and the verifier key,
+   - For those uses the gate is in place, but REL-GATE-004 must be fixed first (REL-GATE-003 is fixed in v3.18.0), and the verifier key,
      policy and authority must sit outside the agent's write access.
 
 ## Is Echelon more efficient than simply giving Claude a requirement?
@@ -195,7 +201,7 @@ The four arms bundle orchestration, constructibility and independent verificatio
 3. **Do not enable `requireVerifiedCompletion` globally.** The F6 gate stays closed for a global default.
    - Gate item 6 (run-02 reviewed) is now satisfied, and its recommendation is this section.
    - Gate item 5 (representative applications) remains open.
-   - REL-GATE-003 must be fixed before any repository enables non-attested verified completion.
+   - REL-GATE-003 is fixed in v3.18.0, so verified completion now implies attestation by default. REL-GATE-004 is still open.
 4. **Adaptive routing: justified by what the work requires, not by task category.**
    - The preregistered condition was met: confirmatory differences exist in every category. But they all point the same way (A cheapest), so category-based routing to Echelon is **not** justified.
    - What the evidence supports is a deterministic rule keyed on declared properties of the work: concurrency risk and required assurance level. It should not be keyed on inferred difficulty.
@@ -213,7 +219,8 @@ The four arms bundle orchestration, constructibility and independent verificatio
 - **Change:**
   - Make those mechanisms opt-in by declared need rather than the default path. On single-agent bounded tasks they cost +35% (CI +25% to +50%) with no measured quality gain.
   - Drop the directives pack from the default prompt.
-  - Fix REL-GATE-003 so that verified completion implies attestation.
+  - Make verified completion imply attestation (REL-GATE-003, done in v3.18.0), and read the attestation policy and
+    authority from a source the agent cannot write (REL-GATE-004).
 - **Not REJECT:** the reliability mechanisms work as designed, and their cost is moderate and predictable.
 - **Not ADOPT:** the evidence shows no efficiency or quality benefit for the default single-agent workflow.
 
@@ -256,7 +263,7 @@ The four arms bundle orchestration, constructibility and independent verificatio
 - **Not included:** this covers this session only. Run-01 and earlier sessions are not included.
 
 ## Follow-ups
-- **Praxis intake REL-GATE-003 (P1):** verified completion must imply attestation, and every completion should be labelled attested or unattested. The fix is in progress.
+- **REL-GATE-003 (P1): resolved** in praxis#280, released in v3.18.0, and re-verified on the released binary.
 - **Praxis intake REL-GATE-004** (praxis#279, filed by the parallel session): read the attestation policy and the
   authority from the protected base or the host, never from the completing worktree or a caller-chosen path. Until it
   is fixed, attested mode requires a host-controlled trust root (gate item 7).
