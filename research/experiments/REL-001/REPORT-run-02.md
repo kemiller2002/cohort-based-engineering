@@ -124,6 +124,21 @@ The four arms bundle orchestration, constructibility and independent verificatio
    - Evidence: gate P4, cases GATE-A1–A4, and experiment C attested (0/3 accepted).
    - **In non-attested mode, yes:** GATE-3 and C3b are accepted. This is REL-GATE-003, filed in Praxis intake (P1).
    - In run-02 no agent attempted it: 0 invalid completions were accepted and 0 X6 tampering was detected.
+   - **Qualification: REL-GATE-004, reported after the matrix finished by a parallel research session (praxis#279).**
+     - On 3.17.0, attestation is only as strong as its trust root. Two probes complete an item as verified without a
+       genuine test run:
+       - an agent-committed `ros.json` that drops `requireAttestedEvidence` (the flag is read from the completing
+         worktree);
+       - an agent-chosen authority file that pins the agent's own key.
+     - In run-02 the verifier and the host files ran under the agent's own user, and X6 only compared host-file digests.
+     - A post-hoc check ([`run-02/analysis/integrity-d.py`](run-02/analysis/integrity-d.py), with results in
+       `integrity-d.json`; exploratory) covers all 47 C and D trials, pilots included. It finds every one **intact**:
+       - every authority, contract and verifier path passed is the harness-provided host path;
+       - `ros.json` is unchanged from the base commit at HEAD and in the worktree;
+       - no transcript overrides those variables or writes `ros.json`.
+     - The exposure was real but was not exercised. Attested mode is forgery-resistant only when the policy and the
+       authority come from a source the agent cannot write. That is rollout-gate item 7 (trust root), which is now
+       mandatory, not advisory.
 2. **Can two agents successfully own the same work item?**
    - **Not at the tool level.** Experiment A recorded 0 duplicate active owners on 3.16.0 and on 3.17.0.
    - In U6, Praxis refused the second claim in 4/4 C and D runs.
@@ -155,7 +170,8 @@ The four arms bundle orchestration, constructibility and independent verificatio
    - **Not as a default.** It is ready as an **opt-in assurance mode** where its guarantees are needed:
      - concurrent agents on one backlog;
      - forgery-resistant, audited completion on protected branches.
-   - For those uses the gate is in place, but REL-GATE-003 must be fixed first.
+   - For those uses the gate is in place, but REL-GATE-003 and REL-GATE-004 must be fixed first, and the verifier key,
+     policy and authority must sit outside the agent's write access.
 
 ## Is Echelon more efficient than simply giving Claude a requirement?
 **No.** In every category, bare Claude reached the same correctness for less. Each category's conclusion stands on its own:
@@ -188,7 +204,8 @@ The four arms bundle orchestration, constructibility and independent verificatio
 ## Decision: **MODIFY**
 - **Keep:**
   - claims (0 duplicate active owners; 4/4 second claims refused in U6);
-  - attested verification (forgery refused in attested mode);
+  - attested verification (forgery refused in attested mode, provided the policy and the authority are host-controlled;
+    see REL-GATE-004);
   - exact completion identity (19/19);
   - contract admission (0/11 invalid accepted).
   
@@ -211,6 +228,21 @@ The four arms bundle orchestration, constructibility and independent verificatio
   - Transcript output tokens are a lower bound (run-01 A4).
   - Sub-agents of one orchestrator share the prompt cache, equally across arms.
   - Cost is **estimated** from the F5 price table ($4 / $20 / $0.20 / $5 or $8 per MTok for input / output / cache read / cache write).
+- **Prompt-cache state.** A parallel session reported that some trials re-wrote the shared prefix instead of
+  reading it from cache.
+  - Exploratory check ([`run-02/analysis/cache-sensitivity.py`](run-02/analysis/cache-sensitivity.py), with results in
+    `cache-sensitivity.json`): a trial counts as cold-prefix when any agent's first request wrote more cache than it read.
+  - Cold-prefix trials are balanced across arms: A 2/20, B 2/20, C 2/20, D 3/20, with U6 excluded.
+  - Repricing every agent's first-request cache write at the cache-read price changes no conclusion:
+
+    | Comparison | As measured | Warm cache |
+    |---|---|---|
+    | D vs A | +35.5% | +43.9% |
+    | D vs C | +2.3% | −1.1% |
+    | A vs C | −24.5% | −31.3% |
+    | B vs A | +21.2% | +29.7% |
+
+  - Removing cache-write cost makes Echelon's relative overhead *larger*, not smaller.
 - **Directives agents stepping outside their workspace.** Two directives-arm agents moved the visible acceptance file outside their workspace to take a baseline (see `run-02/observations/protocol-notes.md`). This is not oracle contamination; the runs were scored as they were.
 
 ## Cost of this implementation (measured from this session's transcripts, deduplicated by message id)
@@ -225,5 +257,8 @@ The four arms bundle orchestration, constructibility and independent verificatio
 
 ## Follow-ups
 - **Praxis intake REL-GATE-003 (P1):** verified completion must imply attestation, and every completion should be labelled attested or unattested. The fix is in progress.
+- **Praxis intake REL-GATE-004** (praxis#279, filed by the parallel session): read the attestation policy and the
+  authority from the protected base or the host, never from the completing worktree or a caller-chosen path. Until it
+  is fixed, attested mode requires a host-controlled trust root (gate item 7).
 - **Praxis intake REL-ROUTE-001:** deterministic workflow routing by declared concurrency and assurance needs.
 - **Cohort-side, for any run-03:** use tasks with a non-zero bare-agent failure rate, so that the benefit of verification can be measured and not just its cost.
