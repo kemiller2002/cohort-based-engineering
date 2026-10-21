@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>archcheck</AssemblyName>
+    <RootNamespace>Archcheck</RootNamespace>
+    <Version>0.1.0</Version>
+    <IsPackable>false</IsPackable>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarnOn>3390</WarnOn>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <!--
+      FSharp.Compiler.Service carries its own exact FSharp.Core dependency
+      ([10.1.402]); the implicit SDK reference is turned off so the pin is visible.
+    -->
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Domain.fs" />
+    <Compile Include="Json.fs" />
+    <Compile Include="Paths.fs" />
+    <Compile Include="Policy.fs" />
+    <Compile Include="Exec.fs" />
+    <Compile Include="Provenance.fs" />
+    <Compile Include="MsBuild.fs" />
+    <Compile Include="Syntax.fs" />
+    <Compile Include="Symbols.fs" />
+    <Compile Include="Rules.fs" />
+    <Compile Include="Heuristics.fs" />
+    <Compile Include="Report.fs" />
+    <Compile Include="Verify.fs" />
+    <Compile Include="Selftest.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      43.12.402 is the FCS build that ships inside .NET SDK 10.0.402 (F# 10.1.402,
+      sdk/10.0.402/FSharp/FSharp.Compiler.Service.dll file version 43.1204.226), so the
+      type-check sees the same language and inference as the real `dotnet build`.
+      Ordo.Complexity pins 43.8.400 (F# 8 era); it only parses, so it never needed to match
+      the SDK's compiler, and it targets an older FSharp.Core (8.0.400).
+    -->
+    <PackageReference Include="FSharp.Core" Version="[10.1.402]" />
+    <PackageReference Include="FSharp.Compiler.Service" Version="[43.12.402]" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:8f18cde994e6be5e3df51690457b882c4dacf0a433c50614b7fec2d4bda6aa0c",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T6.md#LEND-T6-R1",
+        "originalId": "LEND-T6-R1",
+        "document": "requirements/T6.md",
+        "location": "L9",
+        "revision": "sha256:8f18cde994e6be5e3df51690457b882c4dacf0a433c50614b7fec2d4bda6aa0c",
+        "contentDigest": "sha256:85ea70374cfd531debda8e885ff26c5dac170fecf904310711c31831f066a055"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-007",
+        "VERIFY-T6-R1",
+        "COHORT-T6"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T6.md#LEND-T6-R2",
+        "originalId": "LEND-T6-R2",
+        "document": "requirements/T6.md",
+        "location": "L18",
+        "revision": "sha256:8f18cde994e6be5e3df51690457b882c4dacf0a433c50614b7fec2d4bda6aa0c",
+        "contentDigest": "sha256:ef47af8722d1c09fbb30341f74c03cca64bb6d27a6ad7fa21d3df9d7e32fee01"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-005",
+        "DEC-007",
+        "VERIFY-T6-R2",
+        "COHORT-T6"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T6.md#LEND-T6-R3",
+        "originalId": "LEND-T6-R3",
+        "document": "requirements/T6.md",
+        "location": "L27",
+        "revision": "sha256:8f18cde994e6be5e3df51690457b882c4dacf0a433c50614b7fec2d4bda6aa0c",
+        "contentDigest": "sha256:69d9bb343c88bd1d72e37fd4d6f2dfe69a83c4706fa0b13bb7bdeba4e5f5478a"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-007",
+        "VERIFY-T6-R3",
+        "COHORT-T6"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T6.md#LEND-T6-R4",
+        "originalId": "LEND-T6-R4",
+        "document": "requirements/T6.md",
+        "location": "L47",
+        "revision": "sha256:8f18cde994e6be5e3df51690457b882c4dacf0a433c50614b7fec2d4bda6aa0c",
+        "contentDigest": "sha256:145856a0fd4cd0167caa843c7affb343b3aafbd850a898bb760c343771eb09e2"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-007",
+        "VERIFY-T6-R4",
+        "COHORT-T6"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-005",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T6.md#LEND-T6-R2"
+      ],
+      "dependsOn": [],
+      "justification": "per-book FIFO holds queue; while a book has holds its copies are lent only to the head of the queue"
+    },
+    {
+      "id": "DEC-007",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T6.md#LEND-T6-R1",
+        "requirements/T6.md#LEND-T6-R2",
+        "requirements/T6.md#LEND-T6-R3",
+        "requirements/T6.md#LEND-T6-R4"
+      ],
+      "dependsOn": [],
+      "justification": "a returned copy of a held book is set aside for the head of its queue for 7 days; an uncollected hold expires"
+    },
+    {
+      "id": "VERIFY-T6-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6.md#LEND-T6-R1"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "VERIFY-T6-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6.md#LEND-T6-R2"
+      ],
+      "dependsOn": [
+        "DEC-005",
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "VERIFY-T6-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6.md#LEND-T6-R3"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "VERIFY-T6-R4",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6.md#LEND-T6-R4"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "COHORT-T6",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T6.md#LEND-T6-R1",
+        "requirements/T6.md#LEND-T6-R2",
+        "requirements/T6.md#LEND-T6-R3",
+        "requirements/T6.md#LEND-T6-R4"
+      ],
+      "dependsOn": [
+        "DEC-005",
+        "DEC-007"
+      ]
+    }
+  ]
+}

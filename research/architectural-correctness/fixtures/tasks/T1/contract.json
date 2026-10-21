@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:b68e4122f34dbb9afdb55808e8caad8fc29899906f39b74503653e992eb259b9",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T1.md#LEND-T1-R1",
+        "originalId": "LEND-T1-R1",
+        "document": "requirements/T1.md",
+        "location": "L11",
+        "revision": "sha256:b68e4122f34dbb9afdb55808e8caad8fc29899906f39b74503653e992eb259b9",
+        "contentDigest": "sha256:30fa1feaf4926d092cf17f8548574a653feded3aeb3eed215c77c0538e1907ca"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-004",
+        "VERIFY-T1-R1",
+        "COHORT-T1"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T1.md#LEND-T1-R2",
+        "originalId": "LEND-T1-R2",
+        "document": "requirements/T1.md",
+        "location": "L26",
+        "revision": "sha256:b68e4122f34dbb9afdb55808e8caad8fc29899906f39b74503653e992eb259b9",
+        "contentDigest": "sha256:88f1888782c4be258d26520a4dd8b3a7152b3812d0599841ff5221cdeca6c521"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-004",
+        "VERIFY-T1-R2",
+        "COHORT-T1"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-004",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T1.md#LEND-T1-R1",
+        "requirements/T1.md#LEND-T1-R2"
+      ],
+      "dependsOn": [],
+      "justification": "at most 2 renewals; not when overdue; not when any member holds the book; each renewal adds 21 days to the due date"
+    },
+    {
+      "id": "VERIFY-T1-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#LEND-T1-R1"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "VERIFY-T1-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#LEND-T1-R2"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "COHORT-T1",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T1.md#LEND-T1-R1",
+        "requirements/T1.md#LEND-T1-R2"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    }
+  ]
+}

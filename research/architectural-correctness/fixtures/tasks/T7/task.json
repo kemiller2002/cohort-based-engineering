@@ -1,0 +1,108 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T7",
+  "workItem": "LEND-T7",
+  "title": "T7: Restructure the command line",
+  "categories": [
+    10
+  ],
+  "categoryNames": [
+    "refactoring that preserves function but damages boundaries"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND-T7-R1",
+      "LEND-T7-R2",
+      "LEND-T7-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T7.md#LEND-T7-R1",
+      "requirements/T7.md#LEND-T7-R2",
+      "requirements/T7.md#LEND-T7-R3"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T7 follow-up: A JSON surface",
+    "requirementIds": [
+      "LEND-T7-F1",
+      "LEND-T7-F2"
+    ],
+    "requirementKeys": [
+      "requirements/T7-followup.md#LEND-T7-F1",
+      "requirements/T7-followup.md#LEND-T7-F2"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T7/requirement.md",
+      "target": "requirements/T7.md",
+      "sha256": "d70b80870e0a3c67010a1d1baed21de12da4046bce561c6c118bebbea41be543"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T7/acceptance/T7AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T7AcceptanceTests.fs",
+        "sha256": "c8eeefac89f2f4af1665e234f9b8f1462c693479db16b6d45d44450f8e27fc0a"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T7/followup.md",
+      "target": "requirements/T7-followup.md",
+      "sha256": "d26457226c40a6fdcf1aeba2381532e02c4dd70cdc7bce2d315a6b349f0b9449"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T7/followup-acceptance/T7FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T7FollowupAcceptanceTests.fs",
+        "sha256": "b02cf0223d2c1e8a1a3cafc83fcb2c048ff3a0e2762d85e2cd5123d0bca8161e"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T7/InitialOracleTests.fs",
+        "sha256": "931655deff5741811141d2eb17542448df7523044a5263daa89d4959474be059"
+      },
+      "followup": {
+        "path": "sealed:oracle/T7/FollowupOracleTests.fs",
+        "sha256": "32fc855b3ee5fcd2cad247ef5840588ec55bee11ccf1a0006164f6e773d27521"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T7/probes.json",
+      "sha256": "8b8e86853ed4ee45377ef7870d9407eed20034a3e64e5880d754f924d30b7855"
+    },
+    "reference": {
+      "good": "sealed:reference/T7/good",
+      "trap": "sealed:reference/T7/trap",
+      "followup-good": "sealed:reference/T7/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T7/contract.json",
+    "sha256": "493bd01d9508509500049a152f6b27d904afa8229060103dfaa24602f5931d69",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:382071d1ba7f66d6b5192cb7bc1b61413fc160f5dbe8748c7755fc76e1729758",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T7/followup-contract.json",
+    "sha256": "f14265f4185d35c4812f88e7642b8dfa9a834fd7c5e1a10e73a8a50e6e814627",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:2c3428a791a8f46c3c052a900397b30d6159729c5633a18e3327209cb72db3dd",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 1,
+  "privateMetadata": "sealed:task-private/T7.json"
+}

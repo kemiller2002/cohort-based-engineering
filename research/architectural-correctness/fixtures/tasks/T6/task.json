@@ -1,0 +1,117 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T6",
+  "workItem": "LEND-T6",
+  "title": "T6: Hold pickup and expiry",
+  "categories": [
+    9,
+    8
+  ],
+  "categoryNames": [
+    "integration across tiers",
+    "works initially but makes follow-ups expensive"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND-T6-R1",
+      "LEND-T6-R2",
+      "LEND-T6-R3",
+      "LEND-T6-R4"
+    ],
+    "requirementKeys": [
+      "requirements/T6.md#LEND-T6-R1",
+      "requirements/T6.md#LEND-T6-R2",
+      "requirements/T6.md#LEND-T6-R3",
+      "requirements/T6.md#LEND-T6-R4"
+    ],
+    "decisionIds": [
+      "DEC-005",
+      "DEC-007"
+    ],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T6 follow-up: Passing a copy down the queue",
+    "requirementIds": [
+      "LEND-T6-F1",
+      "LEND-T6-F2"
+    ],
+    "requirementKeys": [
+      "requirements/T6-followup.md#LEND-T6-F1",
+      "requirements/T6-followup.md#LEND-T6-F2"
+    ],
+    "decisionIds": [
+      "DEC-007"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T6/requirement.md",
+      "target": "requirements/T6.md",
+      "sha256": "8f18cde994e6be5e3df51690457b882c4dacf0a433c50614b7fec2d4bda6aa0c"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T6/acceptance/T6AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T6AcceptanceTests.fs",
+        "sha256": "992e9319e1236a33f3e31ead34a8c375bce32c0ba5a2d60e74e2b6025d2fac93"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T6/followup.md",
+      "target": "requirements/T6-followup.md",
+      "sha256": "57d50ba4aaab56769465b60d6a91cc7a54771dd259fe3c4bf60bf6142a3217f4"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T6/followup-acceptance/T6FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T6FollowupAcceptanceTests.fs",
+        "sha256": "8c2a87235dc90796aa5a2ed4ec2c413d21934b8bf41ca70b8280bfd638b8f822"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T6/InitialOracleTests.fs",
+        "sha256": "3bfe5289882cc128abb471fadddc4001d266a79331000a9e7a6f53b7a9e94ebf"
+      },
+      "followup": {
+        "path": "sealed:oracle/T6/FollowupOracleTests.fs",
+        "sha256": "c61de7b082a7bd41e2ff72cf10a110b4c45d1212f51808456952f1bb6b543fa9"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T6/probes.json",
+      "sha256": "ceb451956e221bd4758f19a7e7e2b76b2b51a18a7cf2c0a7516dae0f387508b9"
+    },
+    "reference": {
+      "good": "sealed:reference/T6/good",
+      "trap": "sealed:reference/T6/trap",
+      "followup-good": "sealed:reference/T6/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T6/contract.json",
+    "sha256": "e2a90ff3217687bdde89001fd30a6437bae5af93d7489ec7222807afb6de861b",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:dafb022d162689bbcb745b10fd614c54371e1433361ae9616e303552fc8f103b",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T6/followup-contract.json",
+    "sha256": "4b5f350cee2db24d00cd311991887c52a1c43824f9fd92412d27e469b028fe5d",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:ef56d0ddcad9f070a49e8d0cd16a546e9e7761dea254d12226bbb596e0e4b7c9",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 4,
+  "privateMetadata": "sealed:task-private/T6.json"
+}

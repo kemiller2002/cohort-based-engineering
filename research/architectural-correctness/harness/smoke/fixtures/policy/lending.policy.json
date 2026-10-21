@@ -1,0 +1,13 @@
+{
+  "schema": "arch001.policy/1",
+  "id": "smoke-standin",
+  "standIn": true,
+  "projects": [
+    {"path": "src/Lending.Semantic/Lending.Semantic.fsproj", "tier": 1},
+    {"path": "src/Lending.Host/Lending.Host.fsproj", "tier": 4}
+  ],
+  "rules": {
+    "ARC-SYM-02": {"class": "DET", "severity": 2, "symbols": ["DateTime.Now", "DateTime.UtcNow", "DateTime.Today", "Guid.NewGuid", "System.Random"], "allowedIn": ["src/Lending.Host/Composition.fs"]},
+    "ARC-SYM-01": {"class": "DET", "severity": 3, "tiers": [1, 2], "namespaces": ["System.IO", "System.Net", "System.Console"]}
+  }
+}

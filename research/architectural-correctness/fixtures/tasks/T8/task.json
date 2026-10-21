@@ -1,0 +1,99 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T8",
+  "workItem": "LEND-T8",
+  "title": "T8: ISBN-13 validation",
+  "categories": [],
+  "categoryNames": [],
+  "control": true,
+  "initial": {
+    "requirementIds": [
+      "LEND-T8-R1",
+      "LEND-T8-R2"
+    ],
+    "requirementKeys": [
+      "requirements/T8.md#LEND-T8-R1",
+      "requirements/T8.md#LEND-T8-R2"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T8 follow-up: Older ISBNs",
+    "requirementIds": [
+      "LEND-T8-F1"
+    ],
+    "requirementKeys": [
+      "requirements/T8-followup.md#LEND-T8-F1"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T8/requirement.md",
+      "target": "requirements/T8.md",
+      "sha256": "397d753f11b8915bf6b63e9b155197c93ad94bce3f27affb93eb849677cc9ae7"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T8/acceptance/T8AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T8AcceptanceTests.fs",
+        "sha256": "c6c7b50c944906aa153ce1b341ae18afeb8c430bbf74fc368dc00f0e458e7e6d"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T8/followup.md",
+      "target": "requirements/T8-followup.md",
+      "sha256": "a47bb0236547562acba8954e7a6cf46fe6dc5cadd01c0650fba8cfac128d2a0a"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T8/followup-acceptance/T8FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T8FollowupAcceptanceTests.fs",
+        "sha256": "a3ac764d578e1584a5410fc7df4ad2db5eac9da4834df7623f40e9fd07b96078"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T8/InitialOracleTests.fs",
+        "sha256": "f7d3a88a17a92c0b8f600297516071aa3f1b9c3538b2973ba04b484213805897"
+      },
+      "followup": {
+        "path": "sealed:oracle/T8/FollowupOracleTests.fs",
+        "sha256": "d894d7d5ff95b0cc0d0233de23158a673f4d323aa8da4f950a70511e01750eec"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T8/probes.json",
+      "sha256": "535f467dcd085ec6d3fcc214af3910dd6af869e5376642cef4ab08e64b54edb9"
+    },
+    "reference": {
+      "good": "sealed:reference/T8/good",
+      "followup-good": "sealed:reference/T8/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T8/contract.json",
+    "sha256": "279aa7c61ea77fd7ec4bf9e080cbc3692089dc764f12de288a5dcf748bb85007",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:d3984d876cf1b252e8f02e3d0b226f9edff8ada483f58761b32f73c374873253",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T8/followup-contract.json",
+    "sha256": "e60f4b03cfc673369a0466443bcd92b85bbee0c4bf0c227354f5054632a8608f",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:fc62afbe8ee5234ebe14849cf9cb8ae6aaab25ba05d13bf7af915b777af2e1fb",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 2,
+  "privateMetadata": "sealed:task-private/T8.json"
+}
