@@ -251,12 +251,14 @@
         "P4",
         "I3"
       ],
-      "status": "open",
+      "status": "resolved (scope: protected policy and pinned trust root)",
       "findings": [
         "the attestation policy is read from the completing worktree ros.json",
         "the authority path is caller-chosen, so an agent can pin its own key"
       ],
-      "note": "attested mode is forgery-resistant only with a host-controlled trust root (rollout gate item 7). The run-02 post-hoc integrity check found 47/47 C and D trials intact (run-02/analysis/integrity-d.json)."
+      "note": "The completion policy is read from the protected base, and attestation requires workProtocol.trustedVerifierKeyIds to pin the host verifier keyid. GATE-A5 (PROBE-3) is refused with POLICY_CHANGED and GATE-A6 (PROBE-4) with UNTRUSTED_AUTHORITY on v3.19.0; both completed as verified on v3.18.0. Remaining documented limit: a process that can rewrite refs/remotes/origin/HEAD, origin/main or the protected history controls the protected source too, so the host must still audit verifierKeyIds and the authority path after the fact.",
+      "resolvedBy": "praxis#279 (e29e49d2), released in v3.19.0",
+      "breaking": "Repositories that already require attested or verified completion must add workProtocol.trustedVerifierKeyIds (the host verifier keyid) on the protected branch before their next attested completion; until then it fails closed with PRX.COMPLETION.UNTRUSTED_AUTHORITY."
     }
   ],
   "rerun": "Re-evaluate with scripts/gate-evidence-binding-v317.sh against the newest release assets (non-attested and attested), Experiments A-C with REL001_RESULTS_TAG, and the listed suites; before filing a blocker, search .praxis/inbox, .praxis/processed and .ros/work/queue.json for its id (REL-GATE-*) and the linked work item.",
@@ -835,6 +837,28 @@
         "GATE-5": "unattested",
         "GATE-A4": "attested"
       }
+    },
+    {
+      "evaluatedAt": "2026-10-21T07:19:46Z",
+      "praxis": {
+        "release": "v3.19.0",
+        "commit": "e29e49d2",
+        "asset": "praxis-linux-x64.tar.gz",
+        "sha256": "202abfd3997af3cf3f3c259f44a3696b0a080b85cff6076d8c5e76f8fb6636c1",
+        "binarySha256": "7577ecbd528c943b9392d79515cce2b429392c0ece9337b99a56b6fb282b2f69"
+      },
+      "dokimos": "dokimos-v0.7.0",
+      "ordo": "v1.17.0",
+      "scripts": [
+        "gate/scripts/gate-evidence-binding-v319.sh",
+        "harness/c/run.sh with REL001_PIN_VERIFIER_KEY=1 (amendment A6)"
+      ],
+      "evidence": [
+        "gate/evidence/evidence-binding-repro-v3.19.0.jsonl",
+        "results/c/treatment-v3.19.0.jsonl",
+        "results/c/summary-v3.19.0.json"
+      ],
+      "result": "Every v317 case has the same outcome as on v3.18.0. GATE-A4-keyids: the completion records exactly the host verifier keyid. GATE-A5 (PROBE-3) is rejected with POLICY_CHANGED and GATE-A6 (PROBE-4) with UNTRUSTED_AUTHORITY; on v3.18.0 both completed as verified. Experiment C with the pin matches prediction in 22/23 cases; C8a-d all match, and C3b is the known non-attested case."
     }
   ]
 }
