@@ -5,7 +5,15 @@
     "session": "session_01E9jW5aZuFTf7HzifRjcs7y",
     "branch": "claude/echelon-architectural-correctness-m4glhq",
     "repo": "kemiller2002/cohort-based-engineering",
-    "owns": ["research integrity", "workstream dependencies", "version pins", "preregistration", "integration", "final analysis"]
+    "owns": [
+      "research integrity",
+      "workstream dependencies",
+      "version pins",
+      "preregistration",
+      "integration",
+      "final analysis"
+    ],
+    "tokens": "not exposed by the runtime (unavailable, not zero)"
   },
   "initializedAt": "2026-10-21T00:00:00Z",
   "independence": {
@@ -23,11 +31,72 @@
     "FSharp.Compiler.Service": "43.12.402"
   },
   "workstreams": [
-    {"id": "A", "name": "architecture-inventory", "agent": "subagent worker-A", "writes": "inventory/architecture-spec-inventory.md", "dependsOn": [], "status": "running"},
-    {"id": "E", "name": "capability-inventory (Ordo/Praxis/Dokimos/AST)", "agent": "subagent worker-E", "writes": "inventory/capability-inventory.md", "dependsOn": [], "status": "running"},
-    {"id": "F", "name": "prior-evidence review", "agent": "subagent worker-F", "writes": "inventory/prior-evidence.md", "dependsOn": [], "status": "running"},
-    {"id": "B", "name": "fixtures and hidden oracles", "dependsOn": ["A", "E"], "status": "pending"},
-    {"id": "C", "name": "architecture verifier", "dependsOn": ["A", "E"], "status": "pending"},
-    {"id": "D", "name": "experimental infrastructure", "dependsOn": ["F"], "status": "pending"}
+    {
+      "id": "A",
+      "name": "architecture-inventory",
+      "agent": "subagent worker-A",
+      "writes": "inventory/architecture-spec-inventory.md",
+      "dependsOn": [],
+      "status": "complete",
+      "tokens": 182484
+    },
+    {
+      "id": "E",
+      "name": "capability-inventory (Ordo/Praxis/Dokimos/AST)",
+      "agent": "subagent worker-E",
+      "writes": "inventory/capability-inventory.md",
+      "dependsOn": [],
+      "status": "complete",
+      "tokens": 194191
+    },
+    {
+      "id": "F",
+      "name": "prior-evidence review",
+      "agent": "subagent worker-F",
+      "writes": "inventory/prior-evidence.md",
+      "dependsOn": [],
+      "status": "complete",
+      "tokens": 237494
+    },
+    {
+      "id": "B",
+      "name": "fixtures and hidden oracles",
+      "dependsOn": [
+        "A",
+        "E"
+      ],
+      "status": "complete",
+      "tokens": 415839
+    },
+    {
+      "id": "C",
+      "name": "architecture verifier",
+      "dependsOn": [
+        "A",
+        "E"
+      ],
+      "status": "complete",
+      "tokens": 278436
+    },
+    {
+      "id": "D",
+      "name": "experimental infrastructure",
+      "dependsOn": [
+        "F"
+      ],
+      "status": "complete",
+      "tokens": 328674
+    }
+  ],
+  "status": "complete: confirmatory trials executed and reported 2026-10-21",
+  "deliverables": [
+    "BASELINE.md",
+    "ARCHITECTURE-RULES.md",
+    "PROTOCOL.md",
+    "SCORING.md",
+    "scoring-spec.json",
+    "RESULTS.json",
+    "REPORT.md",
+    "IMPLEMENTATION-RECOMMENDATIONS.md"
   ]
 }
