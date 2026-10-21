@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:794a926ceb986e0377989c38c5a4c32f0ddd3c98c771acde26ef99b9a4d275cb",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/V5.md#LEDGER-V5-R1",
+        "originalId": "LEDGER-V5-R1",
+        "document": "requirements/V5.md",
+        "location": "L33",
+        "revision": "sha256:794a926ceb986e0377989c38c5a4c32f0ddd3c98c771acde26ef99b9a4d275cb",
+        "contentDigest": "sha256:23ed9ad71bfe14bd6a7464de14f2159efdcbf40c615bb00fc8f3d2afcf97e1a3"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-V5-R1",
+        "COHORT-V5"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/V5.md#LEDGER-V5-R2",
+        "originalId": "LEDGER-V5-R2",
+        "document": "requirements/V5.md",
+        "location": "L44",
+        "revision": "sha256:794a926ceb986e0377989c38c5a4c32f0ddd3c98c771acde26ef99b9a4d275cb",
+        "contentDigest": "sha256:ce73366ccdc11209aae64efb996b64600f8772fd8cfaa168d82e0eeebb758ccf"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-V5-SHORTFALL",
+        "VERIFY-V5-R2",
+        "COHORT-V5"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/V5.md#LEDGER-V5-R3",
+        "originalId": "LEDGER-V5-R3",
+        "document": "requirements/V5.md",
+        "location": "L65",
+        "revision": "sha256:794a926ceb986e0377989c38c5a4c32f0ddd3c98c771acde26ef99b9a4d275cb",
+        "contentDigest": "sha256:737ba73928079cc8d4019e1e45f9d81920131d93a5d504ad7969473798e88882"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-V5-R3",
+        "COHORT-V5"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-V5-SHORTFALL",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/V5.md#LEDGER-V5-R2"
+      ],
+      "dependsOn": [],
+      "justification": "binding rule in docs/design/standing-orders.md"
+    },
+    {
+      "id": "VERIFY-V5-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V5.md#LEDGER-V5-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-V5-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V5.md#LEDGER-V5-R2"
+      ],
+      "dependsOn": [
+        "DEC-V5-SHORTFALL"
+      ]
+    },
+    {
+      "id": "VERIFY-V5-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V5.md#LEDGER-V5-R3"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-V5",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/V5.md#LEDGER-V5-R1",
+        "requirements/V5.md#LEDGER-V5-R2",
+        "requirements/V5.md#LEDGER-V5-R3"
+      ],
+      "dependsOn": [
+        "DEC-V5-SHORTFALL"
+      ]
+    }
+  ]
+}

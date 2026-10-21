@@ -1,0 +1,82 @@
+{
+  "schema": "cbe.coordination-manifest/1",
+  "mission": "Echelon parallel research: token efficiency, reliability, comparative experiments",
+  "coordinator": {
+    "session": "session_0174JuJ3F3WXwdPbjo3Pk5P7",
+    "branch": "claude/echelon-parallel-research-aikt36",
+    "repo": "kemiller2002/cohort-based-engineering"
+  },
+  "initializedAt": "2026-10-20T23:10:00Z",
+  "pins": {
+    "cohort-based-engineering/main": "da2a7dd (run-02 merged)",
+    "cohort-based-engineering/claude/echelon-reliability-integration-g8x7vn (run-02, read-only snapshot)": "c8da63fe8bad6a1737c4eed101729c3ca3f6ac1b",
+    "praxis/main (v3.17.0 released at aea29b4a)": "4ade512f5f5aba823349b7e7788f69a55f4b4a90",
+    "dokimos/main (dokimos-v0.7.0)": "04b5f856367b47a087285109c1fc5923ec351389",
+    "ordo/main (v1.17.0)": "bb43c26c106f4cbe972234636c5c67edc235c188"
+  },
+  "activeExternalWork": [
+    {
+      "id": "REL-001/run-02",
+      "owner": "session_01XWWNptdQh8cjEC9DzsoKkh",
+      "status": "complete: 88/88, REPORT-run-02.md merged on cohort main (da2a7dd); decision MODIFY"
+    },
+    {
+      "id": "REL-GATE-003",
+      "owner": "session_01XWWNptdQh8cjEC9DzsoKkh",
+      "status": "fix released in Praxis 3.18.0 (c66bb740); cohort gate cases not yet re-run on the release"
+    },
+    {
+      "id": "REL-GATE-004",
+      "owner": "coordinator session_0174JuJ3F3WXwdPbjo3Pk5P7 (user-approved 2026-10-21)",
+      "status": "implementation in progress on praxis claude/echelon-parallel-research-aikt36 (PR #279), based on main c66bb740 (3.18.0)"
+    }
+  ],
+  "workstreams": [
+    {
+      "id": "A",
+      "name": "reliability-completion",
+      "agent": "subagent worker-A",
+      "worktree": "/home/user/cohort-based-engineering (writes research/reliability/ only)",
+      "dependsOn": [],
+      "status": "complete",
+      "evidence": "research/reliability/",
+      "tokens": 170132,
+      "next": "REL-GATE-004 to praxis inbox; reliability gate FAIL (F1 fabrication, REL-GATE-003, F6)"
+    },
+    {
+      "id": "B",
+      "name": "historical-token-audit",
+      "agent": "subagent worker-B",
+      "worktree": "/home/user/cohort-based-engineering (writes research/token-efficiency/HISTORICAL-EVIDENCE.md, evidence-index.json)",
+      "dependsOn": [],
+      "status": "complete",
+      "evidence": "research/token-efficiency/",
+      "tokens": 164074,
+      "next": "none; A022 values withheld pending unseal"
+    },
+    {
+      "id": "C",
+      "name": "comparative-experiment-design",
+      "agent": "subagent worker-C",
+      "worktree": "/home/user/cohort-based-engineering (writes research/experiments/REL-001/run-03/ only)",
+      "dependsOn": [
+        "run-02 exists and is running: next identifier run-03"
+      ],
+      "status": "draft-complete",
+      "evidence": "research/experiments/REL-001/run-03/",
+      "tokens": 353738,
+      "next": "freeze pins (arm D post-REL-GATE-003 build, Claude Code version, K1 auth), run pinned Ordo contract check, fairness review, then preregistration commit; pilot after"
+    },
+    {
+      "id": "D",
+      "name": "token-attribution-overhead",
+      "agent": "subagent worker-D",
+      "worktree": "/home/user/cohort-based-engineering (writes research/token-efficiency/OVERHEAD-ANALYSIS.md, overhead-schema.json, profiling/)",
+      "dependsOn": [],
+      "status": "complete",
+      "evidence": "research/token-efficiency/",
+      "tokens": 219080,
+      "next": "transcripts unavailable (run host /tmp); adopt REL-TOKEN-001 then rerun profile.py transcripts"
+    }
+  ]
+}

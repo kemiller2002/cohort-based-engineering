@@ -1,0 +1,616 @@
+{
+ "dataset": {
+  "id": "fixture",
+  "label": "synthetic fixture (format check only)"
+ },
+ "generator": {
+  "name": "cbe-token-overhead-profiler",
+  "version": "1.0.0"
+ },
+ "inputs": [
+  {
+   "path": "fixtures/tiny-transcript.jsonl",
+   "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d"
+  }
+ ],
+ "records": [
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 4000.0,
+   "estimatedCostUsd": 0.200108,
+   "executionId": "tiny-transcript",
+   "flags": [
+    "first-request-cache-write"
+   ],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "requirement-ingestion",
+   "phaseBasis": "rule:read-brief",
+   "provenance": {
+    "locator": "message.id=m1",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m1",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0000",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 0,
+    "cacheWrite": 40000,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 40000,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Read"
+   ],
+   "toolResultBytes": 2000,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 3000.0,
+   "estimatedCostUsd": 0.011108,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "coordination",
+   "phaseBasis": "rule:env-setup",
+   "provenance": {
+    "locator": "message.id=m2",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m2",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0001",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 40000,
+    "cacheWrite": 600,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 600,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Bash"
+   ],
+   "toolResultBytes": 16,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 3000.0,
+   "estimatedCostUsd": 0.015728,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "repository-discovery",
+   "phaseBasis": "rule:read-repo",
+   "provenance": {
+    "locator": "message.id=m3",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m3",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0002",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 40600,
+    "cacheWrite": 1500,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 1500,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 2,
+   "toolNames": [
+    "Grep",
+    "Read"
+   ],
+   "toolResultBytes": 4005,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 3000.0,
+   "estimatedCostUsd": 0.014528,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "implementation",
+   "phaseBasis": "rule:edit",
+   "provenance": {
+    "locator": "message.id=m4",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m4",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0003",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 42100,
+    "cacheWrite": 1200,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 1200,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Edit"
+   ],
+   "toolResultBytes": 2,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 19000.0,
+   "estimatedCostUsd": 0.010268,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "testing",
+   "phaseBasis": "rule:dotnet-test",
+   "provenance": {
+    "locator": "message.id=m5",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m5",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0004",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 1,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 43300,
+    "cacheWrite": 300,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 300,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Bash"
+   ],
+   "toolResultBytes": 16,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 20000.0,
+   "estimatedCostUsd": 0.010328,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "testing",
+   "phaseBasis": "rule:dotnet-test",
+   "provenance": {
+    "locator": "message.id=m6",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m6",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0005",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 1,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 43600,
+    "cacheWrite": 300,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 300,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Bash"
+   ],
+   "toolResultBytes": 16,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 3000.0,
+   "estimatedCostUsd": 0.014388,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "repository-discovery",
+   "phaseBasis": "rule:read-repo",
+   "provenance": {
+    "locator": "message.id=m7",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m7",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0006",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 43900,
+    "cacheWrite": 1100,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 1100,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Read"
+   ],
+   "toolResultBytes": 4000,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 17000.0,
+   "estimatedCostUsd": 0.011108,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "verification",
+   "phaseBasis": "rule:praxis-verify",
+   "provenance": {
+    "locator": "message.id=m8",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m8",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0007",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 45000,
+    "cacheWrite": 400,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 400,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Bash"
+   ],
+   "toolResultBytes": 20,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": 4000.0,
+   "estimatedCostUsd": 0.010188,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "completion",
+   "phaseBasis": "rule:praxis-complete",
+   "provenance": {
+    "locator": "message.id=m9",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m9",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0008",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 45400,
+    "cacheWrite": 200,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 200,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 1,
+   "toolNames": [
+    "Bash"
+   ],
+   "toolResultBytes": 23,
+   "workItem": null
+  },
+  {
+   "agent": {
+    "agentId": "agent-fix",
+    "role": "agent"
+   },
+   "elapsedMs": null,
+   "estimatedCostUsd": 0.009728,
+   "executionId": "tiny-transcript",
+   "flags": [],
+   "granularity": "request",
+   "measurement": "measured",
+   "phase": "reporting",
+   "phaseBasis": "rule:final-message",
+   "provenance": {
+    "locator": "message.id=m10",
+    "method": "transcript request (dedup by message.id, last-written usage)",
+    "priceTable": {
+     "version": "2026-10-20.1"
+    },
+    "sha256": "1d0a46558aba622fcae21f8f28b25c790a8ad8a19e076debd1025bfff7e3642d",
+    "source": "fixtures/tiny-transcript.jsonl"
+   },
+   "providerSession": {
+    "model": "claude-opus-5-5",
+    "provider": "anthropic",
+    "requestKey": "m10",
+    "sessionId": "S-FIX"
+   },
+   "recordId": "tiny-transcript:req0009",
+   "schema": "cbe.token-overhead/1#record",
+   "testRuns": 0,
+   "tokenEstimate": null,
+   "tokens": {
+    "cacheRead": 45600,
+    "cacheWrite": 100,
+    "cacheWrite1h": 0,
+    "cacheWrite5m": 100,
+    "input": 2,
+    "output": 5,
+    "outputLowerBound": true
+   },
+   "toolCalls": 0,
+   "toolNames": [],
+   "toolResultBytes": 0,
+   "workItem": null
+  }
+ ],
+ "schema": "cbe.token-overhead/1",
+ "summary": {
+  "byPhase": {
+   "completion": {
+    "cacheRead": 45400,
+    "cacheWrite": 200,
+    "requests": 1,
+    "shareOfTokens": 0.1048,
+    "testRuns": 0,
+    "tokens": 45607,
+    "toolResultBytes": 23
+   },
+   "coordination": {
+    "cacheRead": 40000,
+    "cacheWrite": 600,
+    "requests": 1,
+    "shareOfTokens": 0.0933,
+    "testRuns": 0,
+    "tokens": 40607,
+    "toolResultBytes": 16
+   },
+   "implementation": {
+    "cacheRead": 42100,
+    "cacheWrite": 1200,
+    "requests": 1,
+    "shareOfTokens": 0.0995,
+    "testRuns": 0,
+    "tokens": 43307,
+    "toolResultBytes": 2
+   },
+   "reporting": {
+    "cacheRead": 45600,
+    "cacheWrite": 100,
+    "requests": 1,
+    "shareOfTokens": 0.105,
+    "testRuns": 0,
+    "tokens": 45707,
+    "toolResultBytes": 0
+   },
+   "repository-discovery": {
+    "cacheRead": 84500,
+    "cacheWrite": 2600,
+    "requests": 2,
+    "shareOfTokens": 0.2001,
+    "testRuns": 0,
+    "tokens": 87114,
+    "toolResultBytes": 8005
+   },
+   "requirement-ingestion": {
+    "cacheRead": 0,
+    "cacheWrite": 40000,
+    "requests": 1,
+    "shareOfTokens": 0.0919,
+    "testRuns": 0,
+    "tokens": 40007,
+    "toolResultBytes": 2000
+   },
+   "testing": {
+    "cacheRead": 86900,
+    "cacheWrite": 600,
+    "requests": 2,
+    "shareOfTokens": 0.2011,
+    "testRuns": 2,
+    "tokens": 87514,
+    "toolResultBytes": 32
+   },
+   "verification": {
+    "cacheRead": 45000,
+    "cacheWrite": 400,
+    "requests": 1,
+    "shareOfTokens": 0.1043,
+    "testRuns": 0,
+    "tokens": 45407,
+    "toolResultBytes": 20
+   }
+  },
+  "firstRequestCacheWrites": [
+   "tiny-transcript:req0000"
+  ],
+  "label": "synthetic fixture (format check only)",
+  "outputLowerBound": true,
+  "perTranscript": {
+   "fixtures/tiny-transcript.jsonl": {
+    "briefReads": [
+     {
+      "bytes": 2000,
+      "request": 0,
+      "tokensEstimate": 500,
+      "tool": "Read"
+     }
+    ],
+    "briefTokensNote": "tokensEstimate = bytes // 4 (estimate, not a tokenizer count)",
+    "duplicateToolCalls": [
+     {
+      "firstAt": 4,
+      "request": 5,
+      "tool": "Bash"
+     },
+     {
+      "firstAt": 2,
+      "request": 6,
+      "tool": "Read"
+     }
+    ],
+    "malformedLines": 1,
+    "repeatedReads": [
+     {
+      "path": "/w/src/Ledger/Ledger.fs",
+      "request": 6
+     }
+    ],
+    "testRunsWithoutInterveningEdit": [
+     5
+    ]
+   }
+  }
+ }
+}

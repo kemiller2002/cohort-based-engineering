@@ -1,0 +1,827 @@
+{
+  "schema": "cbe.token-evidence-index/1",
+  "generatedAt": "2026-10-20",
+  "author": "Worker B (historical token-efficiency audit), Echelon research program",
+  "conventions": {
+    "totalTokens": "input + output + cache_read + cache_write, summed over the sessions named; cache buckets are never folded into input. Platform figures are get_session external_metadata.usage; transcript figures are self-measured (output is a streaming-start lower bound).",
+    "deltaPct": "(treatment - baseline) / baseline * 100, computed by this audit from the raw files listed, only when comparable is true. Negative = treatment used fewer tokens.",
+    "cost": "Platform-reported USD estimates are quoted as a secondary cross-check only; no cost is inferred from tokens and no saving is inferred from elapsed time."
+  },
+  "entries": [
+    {
+      "id": "TE-H01",
+      "sourceIds": [
+        "EX-ROS-2026-A021",
+        "EV-ROS-2026-A064",
+        "EV-ROS-2026-A063",
+        "HY-ROS-2026-A028"
+      ],
+      "mechanism": [
+        "grouped-vs-independent-requirements",
+        "long-vs-short-lived-agents",
+        "context-reconstruction-cost",
+        "repeated-repository-discovery"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "main (records); arms experiment/a021-grouped @5face88, experiment/a021-control @8ea9be2; start 8b4ffa3",
+      "protocolPath": "praxis:research/experiments/EX-ROS-2026-A021--grouped-versus-independent-execution.md",
+      "baseline": "Independent: one fresh Claude Code remote session per item (PRAXIS-GROUP-01..05), serial; 7 sessions including 2 failed item-04 attempts",
+      "treatment": "Grouped: one session implementing all 5 items after a written group analysis",
+      "model": "claude-opus-5-5 (configured and last-served identical, all sessions)",
+      "toolchainVersions": "Claude Code remote; container version not recorded in sessions.json (unavailable)",
+      "rawDataPaths": [
+        "praxis:research/experiments/EX-ROS-2026-A021-harness/sessions.json",
+        "praxis:research/experiments/EX-ROS-2026-A021-harness/session_metrics.py",
+        "praxis:research/experiments/EX-ROS-2026-A021-harness/prompts/"
+      ],
+      "metric": "total platform tokens for the 5-item cohort (all sessions of the arm)",
+      "baselineValue": 46270704,
+      "treatmentValue": 24911173,
+      "deltaPct": -46.2,
+      "comparable": true,
+      "reproducible": "partially: same setup re-executed as R2 (TE-H02); per-session usage is recorded, transcripts not committed",
+      "secondaryObservations": {
+        "controlCompletedSessionsOnlyTotalTokens": 40615025,
+        "deltaPctVsCompletedOnly": -38.7,
+        "outputTokens": {
+          "baseline": 244630,
+          "treatment": 112377
+        },
+        "cacheReadTokens": {
+          "baseline": 45074840,
+          "treatment": 24507715
+        },
+        "cacheShareOfTotalTreatment": 0.984,
+        "modelRequests": {
+          "baseline": ">=237 (lower bound)",
+          "treatment": 114
+        },
+        "fileReadsSearches": {
+          "baseline": ">=134/159",
+          "treatment": "52/53"
+        },
+        "agentsMdReads": {
+          "baseline": 5,
+          "treatment": 1
+        },
+        "platformCostUsd": {
+          "baseline": 21.51,
+          "treatment": 9.48
+        }
+      },
+      "confounders": [
+        "one cohort, one run per arm; cohort authored by the experiment designer and extends the grouping feature itself",
+        "treatment bundles three factors: shared context, up-front written group analysis, and single-session continuity",
+        "control-05 started from the wrong commit (merge conflict and rework)",
+        "control item 04 needed three sessions (stall, permission block); 5.66M tokens of failed attempts count against control",
+        "partial blinding; quality mixed (grouped more coherent, control more faithful to individual criteria and +37 vs +19 tests)"
+      ],
+      "classification": "demonstrated-improvement",
+      "confidence": "medium"
+    },
+    {
+      "id": "TE-H02",
+      "sourceIds": [
+        "EX-ROS-2026-A021-R2",
+        "EV-ROS-2026-A070"
+      ],
+      "mechanism": [
+        "grouped-vs-independent-requirements",
+        "long-vs-short-lived-agents",
+        "context-reconstruction-cost"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "experiment/a021-r2-grouped @0b5284c, experiment/a021-r2-control @8bb8f78; records on claude/a021-r2-orchestration-e0gty2 @063e6b58 and experiment/a021-r2-post-unblind @6b538516",
+      "protocolPath": "praxis:research/experiments/EX-ROS-2026-A021--grouped-versus-independent-execution.md (R2 section on claude/a021-r2-orchestration-e0gty2)",
+      "baseline": "5 fresh worker sessions (C1..C5) created serially by a control orchestrator",
+      "treatment": "1 grouped session (G) with up-front group analysis",
+      "model": "claude-opus-5-5 (configured = context = last-served for every session)",
+      "toolchainVersions": "Claude Code container 2.1.285, env_016QeyeEJj49imTiwTeC9Tgd, permission mode auto",
+      "rawDataPaths": [
+        "praxis@claude/a021-r2-orchestration-e0gty2:research/experiments/EX-ROS-2026-A021-R2-run.txt",
+        "praxis@experiment/a021-r2-post-unblind:research/experiments/EX-ROS-2026-A021-R2-blind/output/POST-UNBLINDING-METRICS.txt",
+        "praxis@experiment/a021-r2-grouped:research/experiments/EX-ROS-2026-A021-R2-grouped/metrics/grouped.json",
+        "praxis@experiment/a021-r2-control:research/experiments/EX-ROS-2026-A021-R2-control/metrics/control-01..05.json"
+      ],
+      "metric": "total platform tokens, implementing sessions only (control orchestrator excluded)",
+      "baselineValue": 55640723,
+      "treatmentValue": 28359020,
+      "deltaPct": -49.0,
+      "comparable": true,
+      "reproducible": "execution replication of TE-H01 (same repo, baseline, cohort); not an independent-domain replication",
+      "secondaryObservations": {
+        "deltaPctIncludingControlOrchestrator": -55.9,
+        "outputTokens": {
+          "baseline": 236654,
+          "treatment": 132902
+        },
+        "platformCostUsdImplementingOnly": {
+          "baseline": 22.56,
+          "treatment": 10.75
+        }
+      },
+      "confounders": [
+        "C2 and C3 received a stale baseline checkout (C2 designed without GROUP-01 before merging)",
+        "same cohort and feature family as TE-H01",
+        "treatment includes written group analysis; quality mixed (2 confirmed defects each arm)"
+      ],
+      "classification": "demonstrated-improvement",
+      "confidence": "medium"
+    },
+    {
+      "id": "TE-H03",
+      "sourceIds": [
+        "EX-ROS-2026-A024",
+        "EV-ROS-2026-A075",
+        "EV-ROS-2026-A074",
+        "HY-ROS-2026-A030"
+      ],
+      "mechanism": [
+        "long-vs-short-lived-agents",
+        "context-reconstruction-cost",
+        "repeated-repository-discovery"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "experiment/a024-arm-1 (A), experiment/a024-arm-2 (B); records on main (merged PR #205); frozen manifest 91745d9; start ddda837",
+      "protocolPath": "praxis:research/experiments/EX-ROS-2026-A024--context-continuity-and-externalized-handoff.md",
+      "baseline": "B code-only resets: 5 fresh sessions, each inheriting only committed code",
+      "treatment": "A continuous: one session for all 5 items (no written group analysis required)",
+      "model": "claude-opus-5-5, effort medium (every request)",
+      "toolchainVersions": "Claude Code 2.1.292, then 2.1.293 mid-run (deviation D6)",
+      "rawDataPaths": [
+        "praxis:research/experiments/EX-ROS-2026-A024-run/sessions.json",
+        "praxis:research/experiments/EX-ROS-2026-A024-run/telemetry/arm-*.json",
+        "praxis:research/experiments/EX-ROS-2026-A024-run/analysis/output.json",
+        "praxis:research/experiments/EX-ROS-2026-A024-run/analysis/summary.txt"
+      ],
+      "metric": "total platform tokens, completed sessions",
+      "baselineValue": 34061674,
+      "treatmentValue": 20260436,
+      "deltaPct": -40.5,
+      "comparable": true,
+      "reproducible": "yes in design: frozen manifest, hashed prompts and analysis; one execution per arm",
+      "secondaryObservations": {
+        "outputTokens": {
+          "baseline": 163797,
+          "treatment": 102006
+        },
+        "cacheReadTokens": {
+          "baseline": 33224664,
+          "treatment": 19876197
+        },
+        "fileReadsPlusSearches": {
+          "baseline": 263,
+          "treatment": 112
+        },
+        "crossSessionReReadPaths": {
+          "baseline": 18,
+          "treatment": 0
+        },
+        "governanceReads": {
+          "baseline": 16,
+          "treatment": 6
+        },
+        "modelRequests": {
+          "baseline": 231,
+          "treatment": 94
+        },
+        "platformCostUsd": {
+          "baseline": 15.3,
+          "treatment": 8.27
+        }
+      },
+      "confounders": [
+        "same cohort (PRAXIS-GROUP-01..05) as A021, replayed",
+        "runtime update 2.1.292 -> 2.1.293 between sessions",
+        "launcher outcome_branch defect: stale-start sessions (excluded here; included in 'all sessions' figures)",
+        "architecture quality reversed vs A021 (A 5, B 10 on rubric); correctness at ceiling 36/36 all arms"
+      ],
+      "classification": "demonstrated-improvement",
+      "confidence": "medium"
+    },
+    {
+      "id": "TE-H04",
+      "sourceIds": [
+        "EX-ROS-2026-A024",
+        "EV-ROS-2026-A075",
+        "HY-ROS-2026-A030"
+      ],
+      "mechanism": [
+        "handoff-efficiency",
+        "structured-vs-natural-language-communication",
+        "context-reconstruction-cost"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "experiment/a024-arm-2 (B), experiment/a024-arm-3 (C)",
+      "protocolPath": "praxis:research/experiments/EX-ROS-2026-A024--context-continuity-and-externalized-handoff.md",
+      "baseline": "B code-only resets (5 fresh sessions)",
+      "treatment": "C fresh sessions plus a schema-validated structured handoff file written by each predecessor",
+      "model": "claude-opus-5-5, effort medium",
+      "toolchainVersions": "Claude Code 2.1.292 / 2.1.293",
+      "rawDataPaths": [
+        "praxis:research/experiments/EX-ROS-2026-A024-run/sessions.json",
+        "praxis:research/experiments/EX-ROS-2026-A024-run/platform/arm-3-0*.handoff-PRAXIS-GROUP-0*.json",
+        "praxis:research/experiments/EX-ROS-2026-A024-run/analysis/output.json"
+      ],
+      "metric": "total platform tokens, completed sessions",
+      "baselineValue": 34061674,
+      "treatmentValue": 37629623,
+      "deltaPct": 10.5,
+      "comparable": true,
+      "reproducible": "frozen harness; one execution per arm",
+      "secondaryObservations": {
+        "deltaPctAllSessionsInclStaleStarts": 11.8,
+        "fileReadsPlusSearches": {
+          "baseline": 263,
+          "treatment": 276
+        },
+        "discoveryRecoveryRatio": "-13/151 (-0.086), preregistered threshold 0.50",
+        "governanceReads": {
+          "baseline": 16,
+          "treatment": 21
+        },
+        "outputTokens": {
+          "baseline": 163797,
+          "treatment": 204253
+        },
+        "platformCostUsd": {
+          "baseline": 15.3,
+          "treatment": 17.43
+        }
+      },
+      "confounders": [
+        "one execution per arm, one cohort",
+        "handoff content and schema are one design; a terser or retrieval-indexed handoff is untested",
+        "C sessions read more governance material, not only the handoff",
+        "C retry consumed by launcher defect before amendment A1"
+      ],
+      "classification": "demonstrated-regression",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H05",
+      "sourceIds": [
+        "EX-ROS-2026-A022 (cohesion-moderated 2x2, orchestration branch)",
+        "HY-ROS-2026-A029"
+      ],
+      "mechanism": [
+        "grouped-vs-independent-requirements",
+        "long-vs-short-lived-agents"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "withheld (sealed experiment)",
+      "protocolPath": "praxis@experiment/a022-orchestration:research/experiments/EX-ROS-2026-A022--cohesion-moderated-grouped-execution.md",
+      "baseline": "withheld (sealed)",
+      "treatment": "withheld (sealed)",
+      "model": "claude-opus-5-5 (transcript metrics; some sessions also show '<synthetic>' entries from interruption/resume)",
+      "toolchainVersions": "unavailable in metrics files",
+      "rawDataPaths": [],
+      "metric": "total transcript tokens (self-measured session_metrics, output lower bound)",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "frozen protocol; results record sealed and blind evaluation not yet unsealed; condition-to-run mapping here is inferred from cohort item IDs and metrics file shape (g vs w1..w5), not from the sealed record",
+      "secondaryObservations": {
+        "outputTokens": {
+          "baseline": 348687,
+          "treatment": 121713
+        },
+        "modelRequests": {
+          "baseline": 411,
+          "treatment": 119
+        }
+      },
+      "confounders": [
+        "platform usage-limit pause 2026-10-02..06 interrupted sessions (one A022 session, wall 5411 min; run id withheld, sealed); resumed sessions re-pay cache",
+        "repeated stale-checkout guard failures and repairs",
+        "self-measured transcript metrics, not platform usage",
+        "quality outcome unknown (sealed)"
+      ],
+      "classification": "inconclusive",
+      "confidence": "low",
+      "notes": "WITHHELD by coordinator 2026-10-20: EX-ROS-2026-A022 is sealed (blinded). The audit inferred condition labels from cohort item IDs and metrics file names (g vs w1..w5); publishing condition-mapped totals could unblind the evaluation. Values removed until A022 is unsealed. The inferability of condition labels is itself recorded as a blinding-leak finding."
+    },
+    {
+      "id": "TE-H06",
+      "sourceIds": [
+        "EX-ROS-2026-A022 (cohesion-moderated 2x2)",
+        "HY-ROS-2026-A029"
+      ],
+      "mechanism": [
+        "grouped-vs-independent-requirements"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "withheld (sealed experiment)",
+      "protocolPath": "praxis@experiment/a022-orchestration:research/experiments/EX-ROS-2026-A022--cohesion-moderated-grouped-execution.md",
+      "baseline": "withheld (sealed)",
+      "treatment": "withheld (sealed)",
+      "model": "claude-opus-5-5 (transcript)",
+      "toolchainVersions": "unavailable",
+      "rawDataPaths": [],
+      "metric": "total transcript tokens",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "incomplete: worker 5 of condition D has an analysis commit but no metrics file at branch head",
+      "secondaryObservations": {
+        "note": "grouped (5 items) already exceeds independent (4 of 5 items) by 6.6%; direction consistent with cohesion moderation but not a valid comparison until D completes"
+      },
+      "confounders": [
+        "baseline incomplete (4/5 workers)",
+        "grouped session spanned the usage-limit pause (wall 5726 min) and resumed",
+        "sealed results; quality unknown"
+      ],
+      "classification": "inconclusive",
+      "confidence": "low",
+      "notes": "WITHHELD by coordinator 2026-10-20: EX-ROS-2026-A022 is sealed (blinded). The audit inferred condition labels from cohort item IDs and metrics file names (g vs w1..w5); publishing condition-mapped totals could unblind the evaluation. Values removed until A022 is unsealed. The inferability of condition labels is itself recorded as a blinding-leak finding."
+    },
+    {
+      "id": "TE-H07",
+      "sourceIds": [
+        "REL-001 run-01 Experiment D"
+      ],
+      "mechanism": [
+        "batched-testing",
+        "tool-call-reduction",
+        "prompt-caching"
+      ],
+      "repo": "kemiller2002/cohort-based-engineering",
+      "branch": "claude/echelon-parallel-research-aikt36",
+      "protocolPath": "cohort-based-engineering:research/experiments/REL-001/protocol/run-01.md",
+      "baseline": "Praxis 3.12.0, no verified-completion protocol",
+      "treatment": "Praxis 3.16.0 + Dokimos 0.6.0 + Ordo 1.17.0 verified-completion protocol",
+      "model": "claude-opus-5-5 (every transcript)",
+      "toolchainVersions": "Praxis 3.12.0 vs 3.16.0; Dokimos 0.6.0; Ordo 1.17.0",
+      "rawDataPaths": [
+        "cohort-based-engineering:research/experiments/REL-001/analysis/exploratory-results.json",
+        "cohort-based-engineering:research/experiments/REL-001/analysis/results.json",
+        "cohort-based-engineering:research/experiments/REL-001/results/"
+      ],
+      "metric": "tokens per verified requirement (Praxis report, A4), mean over 6 paired blocks",
+      "baselineValue": 205274,
+      "treatmentValue": 270402,
+      "deltaPct": 31.7,
+      "comparable": true,
+      "reproducible": "yes (12 trials, scripted); exploratory analysis written after data; preregistered analysis inconclusive (0 eligible runs)",
+      "secondaryObservations": {
+        "bootstrap95": "+14.3% to +55.9%, 6/6 pairs higher",
+        "harnessPerAgentTokens": {
+          "baseline": 29947,
+          "treatment": 32391,
+          "deltaPct": 8.2
+        },
+        "toolCallsPerRun": {
+          "baseline": 7.3,
+          "treatment": 10.0
+        },
+        "testRunsPerRun": {
+          "baseline": 1.0,
+          "treatment": 2.17
+        }
+      },
+      "confounders": [
+        "exploratory, post-hoc",
+        "easy tasks; ceiling effect on quality",
+        "sub-agents share one orchestrator prompt cache (no cold trial)",
+        "tokens dominated by cache reads of the shared system-prompt prefix",
+        "attribution by transcript directory"
+      ],
+      "classification": "demonstrated-regression",
+      "confidence": "medium"
+    },
+    {
+      "id": "TE-H08",
+      "sourceIds": [
+        "CONSTRUCT-008 pilot calibration",
+        "DF-SDE-2026-0023",
+        "DF-ROS-2026-A072"
+      ],
+      "mechanism": [
+        "ordo-deterministic-execution-mechanical-first"
+      ],
+      "repo": "kemiller2002/ordo (calibration); raw data in kemiller2002/research-documents (not attached)",
+      "branch": "ordo main (src/Ordo.Core/ConstructionCoverage.fs measuredCalibration construct-008-pilot/1); praxis construct/mechanical-first merged to main",
+      "protocolPath": "research-documents:research/construction-by-design/CONSTRUCT-008/ (not attached; unverified)",
+      "baseline": "Arm A: conventional agent implementation",
+      "treatment": "Arm C: mechanical-first construction (Ordo-generated artifacts, handwritten code only in declared slots)",
+      "model": "one model, unnamed in the Ordo record (unavailable)",
+      "toolchainVersions": "Ordo 1.8.2 pre-release pin (praxis docs/construction.md); otherwise unavailable",
+      "rawDataPaths": [
+        "ordo:src/Ordo.Core/ConstructionCoverage.fs",
+        "ordo:docs/architecture/coverage-report.md",
+        "ordo:research/decisions/DF-SDE-2026-0023--advise-construction-route-by-structure-ratio.md",
+        "praxis:research/evidence/EV-ROS-2026-A076--cumulative-transcript-usage-matches-harness.md (single-run cumulative totals for CONSTRUCT-008 A1/B1/C1 and time-entry-expanded-01 A1/B1/C2)"
+      ],
+      "metric": "'primary' and 'cumulative' token metric per slice (definitions not verifiable locally)",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "claimed n=3 per arm per slice, 4 slices; raw usage.json files not available to this audit",
+      "secondaryObservations": {
+        "claimedBySlice": {
+          "time-entry-timer-pilot-01 (ratio 0.77)": "C cheaper: -4% primary, -12% cumulative, ranges overlap",
+          "summa-delivery (0.48)": "C cheaper: -13.6% primary, separated",
+          "chrona-timer (0.39)": "C dearer: +14% median, ranges overlap",
+          "time-entry-expanded-01 (0.13)": "C dearer: +8% primary separated, +33% cumulative"
+        }
+      },
+      "confounders": [
+        "threshold (0.45) fitted in-sample to 4 points",
+        "slices differ in size and domain",
+        "raw data not inspected by this audit; numbers are claims from Ordo source comments"
+      ],
+      "classification": "inconclusive",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H09",
+      "sourceIds": [
+        "EX-SDE-2026-0001",
+        "EX-SDE-2026-0002",
+        "EV-SDE-2026-0007",
+        "EV-SDE-2026-0009",
+        "HY-SDE-2026-0009"
+      ],
+      "mechanism": [
+        "repeated-repository-discovery",
+        "tool-call-reduction"
+      ],
+      "repo": "kemiller2002/ordo",
+      "branch": "main",
+      "protocolPath": "ordo:research/experiments/EX-SDE-2026-0001--agent-cost-under-boundary-hardening-uninterrupted.md; ordo:research/experiments/EX-SDE-2026-0002--agent-cost-under-boundary-hardening-continued.md",
+      "baseline": "HelixNote baseline architecture (4879537)",
+      "treatment": "HelixNote mechanically hardened boundaries (8d2d789)",
+      "model": "unavailable (not recorded in run manifests)",
+      "toolchainVersions": "unavailable",
+      "rawDataPaths": [
+        "ordo:research/runs/EX-SDE-2026-0001/run-manifest.json",
+        "ordo:research/runs/EX-SDE-2026-0002/run-manifest.json"
+      ],
+      "metric": "mission cost USD per run (cache reads and output tokens reported per run, never summed)",
+      "baselineValue": 18.76,
+      "treatmentValue": 13.7,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "preregistered n=4/condition not reached (3 vs 2 verified); sensitivity over all complete runs: $20.05 vs $17.43 with overlapping ranges; last pair reversed",
+      "secondaryObservations": {
+        "verifiedRunCacheReads": {
+          "baselineA1": 30260000,
+          "baselineA2": 23900000,
+          "hardenedB1": 17620000
+        }
+      },
+      "confounders": [
+        "within-condition spread ($4.50 baseline) comparable to gap",
+        "void rule removes expensive runs preferentially",
+        "container recycling between setup and mission",
+        "rate-limit stop"
+      ],
+      "classification": "inconclusive",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H10",
+      "sourceIds": [
+        "EV-HN-2026-0005 (HelixNote Experiment 3)"
+      ],
+      "mechanism": [
+        "tool-call-reduction",
+        "repeated-repository-discovery"
+      ],
+      "repo": "kemiller2002/ordo",
+      "branch": "main",
+      "protocolPath": "ordo:research/evidence/EV-HN-2026-0005--experiment-3-corrected-agent-cost.md",
+      "baseline": "baseline architecture subagent, uninterrupted",
+      "treatment": "hardened architecture subagent, resumed portion only",
+      "model": "unavailable",
+      "toolchainVersions": "unavailable",
+      "rawDataPaths": [
+        "ordo:research/evidence/EV-HN-2026-0005--experiment-3-corrected-agent-cost.md"
+      ],
+      "metric": "harness-counted tokens",
+      "baselineValue": 516665,
+      "treatmentValue": 165288,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "no; treatment figure covers only the resumed ~22% of the run; record itself forbids citing the -68%",
+      "confounders": [
+        "partial measurement",
+        "shared warm build cache",
+        "Bolero build asymmetry",
+        "strategy divergence"
+      ],
+      "classification": "inconclusive",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H11",
+      "sourceIds": [
+        "EX-ROS-2026-A021",
+        "EX-ROS-2026-A024",
+        "EX-ROS-2026-A022 runs"
+      ],
+      "mechanism": [
+        "handoff-efficiency",
+        "context-reconstruction-cost"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "main / experiment branches as above",
+      "protocolPath": "praxis:research/evidence/EV-ROS-2026-A064--grouping-experiment-results.md; praxis:research/evidence/EV-ROS-2026-A074--a024-partial-execution-and-launcher-blocker.md",
+      "baseline": "orchestration as run (stale checkouts, stalled/permission-blocked sessions, launcher pinning)",
+      "treatment": "none run (observation of waste)",
+      "model": "claude-opus-5-5",
+      "toolchainVersions": "Claude Code remote 2.1.285-2.1.293",
+      "rawDataPaths": [
+        "praxis:research/experiments/EX-ROS-2026-A021-harness/sessions.json (control-04-attempt-1, control-04-attempt-2)",
+        "praxis:research/experiments/EX-ROS-2026-A024-run/sessions.json (status failed-orchestration)"
+      ],
+      "metric": "tokens spent in failed or stale-start sessions",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "observed directly in two experiments",
+      "secondaryObservations": {
+        "A021FailedAttemptsTotalTokens": 5655679,
+        "A021FailedShareOfControlArm": 0.122,
+        "A024StaleStartTotalTokens": 866156
+      },
+      "confounders": [
+        "environment-specific (platform launcher, permission policy)"
+      ],
+      "classification": "implemented-unmeasured",
+      "confidence": "medium"
+    },
+    {
+      "id": "TE-H12",
+      "sourceIds": [
+        "praxis#263 construct/compact-handoff",
+        "CONSTRUCT-010 phase 1",
+        "ConstructionHandoff /3"
+      ],
+      "mechanism": [
+        "structured-vs-natural-language-communication",
+        "handoff-efficiency"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "construct/compact-handoff merged to main (f38da007, 99cbdee8)",
+      "protocolPath": null,
+      "baseline": "previous handoff format",
+      "treatment": "one typed record per obligation with decisions and cited excerpts; Markdown twin with deduplicated boilerplate",
+      "model": "n/a",
+      "toolchainVersions": "Praxis main 2026-10-13",
+      "rawDataPaths": [
+        "praxis:src/Praxis.Infrastructure/Construction/ConstructionHandoff.fs"
+      ],
+      "metric": "none measured",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "n/a",
+      "confounders": [
+        "no token measurement; a smaller prompt alone is not evidence of savings"
+      ],
+      "classification": "implemented-unmeasured",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H13",
+      "sourceIds": [
+        "DF-ROS-2026-A072",
+        "praxis construct/mechanical-first",
+        "dokimos construct/mechanical-first-verification"
+      ],
+      "mechanism": [
+        "ordo-deterministic-execution-mechanical-first"
+      ],
+      "repo": "kemiller2002/praxis, kemiller2002/dokimos",
+      "branch": "praxis construct/mechanical-first (merged); dokimos construct/mechanical-first-verification @f9feaa8",
+      "protocolPath": "praxis:research/decisions/DF-ROS-2026-A072--capability-scoped-construction-extensions.md",
+      "baseline": "n/a",
+      "treatment": "construct route/extend: deterministic writes first, handwritten code only into declared slots",
+      "model": "n/a",
+      "toolchainVersions": "Praxis 3.12.0+",
+      "rawDataPaths": [
+        "praxis:docs/construction.md"
+      ],
+      "metric": "routing record counts deterministic writes and obligations; reasoning tokens explicitly 'unavailable'",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "n/a",
+      "confounders": [],
+      "classification": "implemented-unmeasured",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H14",
+      "sourceIds": [
+        "EV-ROS-2026-A076",
+        "WI-0101/WI-0102",
+        "telemetry/cumulative-usage-attribution"
+      ],
+      "mechanism": [
+        "prompt-caching"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "telemetry/cumulative-usage-attribution @50117168 (merged to main)",
+      "protocolPath": "praxis:research/evidence/EV-ROS-2026-A076--cumulative-transcript-usage-matches-harness.md",
+      "baseline": "research harness usage.py",
+      "treatment": "praxis telemetry usage (anthropic-claude-session adapter)",
+      "model": "n/a (measurement validation)",
+      "toolchainVersions": "Praxis main 2026-10-13",
+      "rawDataPaths": [
+        "praxis:tests/Praxis.Tests/Fixtures/construct-008-A1-usage-only.jsonl",
+        "praxis:docs/development-telemetry.md"
+      ],
+      "metric": "field-for-field agreement on 6 runs (54 values)",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "yes (golden tests)",
+      "secondaryObservations": {
+        "note": "measurement capability only; shows cache_write TTL split (all 5-minute in CONSTRUCT-008 runs, 1-hour in CONSTRUCT-010 remote) but makes no efficiency claim"
+      },
+      "confounders": [],
+      "classification": "implemented-unmeasured",
+      "confidence": "high"
+    },
+    {
+      "id": "TE-H15",
+      "sourceIds": [
+        "feature/provider-usage-pacing",
+        "docs/usage-pacing.md"
+      ],
+      "mechanism": [
+        "prompt-caching"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "feature/provider-usage-pacing @f885d164; docs/usage-pacing.md on main",
+      "protocolPath": null,
+      "baseline": "n/a",
+      "treatment": "quota-window pacing holds",
+      "model": "n/a",
+      "toolchainVersions": "n/a",
+      "rawDataPaths": [
+        "praxis:docs/usage-pacing.md"
+      ],
+      "metric": "none; pacing redistributes spend, it does not reduce tokens. Note: holds and resumes can cold the prompt cache (cf. TE-H05 pause)",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "n/a",
+      "confounders": [],
+      "classification": "implemented-unmeasured",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H16",
+      "sourceIds": [
+        "EX-ROS-2026-A023",
+        "HY-ROS-2026-A029"
+      ],
+      "mechanism": [
+        "grouped-vs-independent-requirements"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "main",
+      "protocolPath": "praxis:research/experiments/EX-ROS-2026-A023--affinity-moderation-across-repository-blocks.md",
+      "baseline": "independent execution",
+      "treatment": "grouped execution across repository blocks",
+      "model": "n/a",
+      "toolchainVersions": "n/a",
+      "rawDataPaths": [],
+      "metric": "planned",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "not run (status proposed)",
+      "confounders": [],
+      "classification": "proposed-unimplemented",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H17",
+      "sourceIds": [
+        "EX-ROS-2026-A022 (main: affinity-by-execution-mode)",
+        "EV-ROS-2026-A072"
+      ],
+      "mechanism": [
+        "grouped-vs-independent-requirements"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "main; research/a022-target-gate-outcome",
+      "protocolPath": "praxis:research/experiments/EX-ROS-2026-A022--affinity-by-execution-mode.md",
+      "baseline": "n/a",
+      "treatment": "n/a",
+      "model": "n/a",
+      "toolchainVersions": "Praxis 3.6.0 (inventory)",
+      "rawDataPaths": [
+        "praxis:research/experiments/EX-ROS-2026-A022-target-gate/inventory.json"
+      ],
+      "metric": "none (target-repository gate failed: no repo had >=5 high + >=5 low ready items)",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "gate reproducible via inventory.py --check",
+      "confounders": [],
+      "classification": "proposed-unimplemented",
+      "confidence": "high"
+    },
+    {
+      "id": "TE-H18",
+      "sourceIds": [
+        "HY-ROS-2026-A024"
+      ],
+      "mechanism": [
+        "repeated-repository-discovery"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "main",
+      "protocolPath": "praxis:research/hypotheses/HY-ROS-2026-A024--structural-locality-reduces-discovery-expansion.md",
+      "baseline": "n/a",
+      "treatment": "structural locality (SDE)",
+      "model": "n/a",
+      "toolchainVersions": "n/a",
+      "rawDataPaths": [],
+      "metric": "none (hypothesis active, confidence very-low, no experiment)",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "n/a",
+      "confounders": [],
+      "classification": "proposed-unimplemented",
+      "confidence": "low"
+    },
+    {
+      "id": "TE-H19",
+      "sourceIds": [
+        "REL-001 follow-up F4"
+      ],
+      "mechanism": [
+        "batched-testing",
+        "tool-call-reduction"
+      ],
+      "repo": "kemiller2002/praxis",
+      "branch": "main (released in v3.17.0, work item PRAXIS-REL-012 complete)",
+      "protocolPath": "cohort-based-engineering:research/experiments/REL-001/REPORT.md (Follow-ups F4)",
+      "baseline": "verified-completion protocol (2.17 test runs/run)",
+      "treatment": "one test run, derived completion arguments (Praxis 3.17.0 work verify + complete-verified --id --token)",
+      "model": "n/a",
+      "toolchainVersions": "n/a",
+      "rawDataPaths": [
+        "research/experiments/REL-001/run-02/analysis/results.json"
+      ],
+      "metric": "cost per correct requirement (USD, F5 price table)",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": 2.3,
+      "comparable": true,
+      "reproducible": "n/a",
+      "confounders": [],
+      "classification": "inconclusive",
+      "confidence": "high",
+      "notes": "Measured 2026-10-21 by REL-001 run-02 H1 (D vs C, preregistered): +2.3% (95% CI -4.8% to +12.1%), tokens -0.2%; not distinguishable. Ceiling: all arms 39/39 correct."
+    },
+    {
+      "id": "TE-H20",
+      "sourceIds": [
+        "none found"
+      ],
+      "mechanism": [
+        "batched-compilation"
+      ],
+      "repo": "all audited",
+      "branch": "n/a",
+      "protocolPath": null,
+      "baseline": "n/a",
+      "treatment": "n/a",
+      "model": "n/a",
+      "toolchainVersions": "n/a",
+      "rawDataPaths": [
+        "build counts only: A021 grouped 16 vs control 34 builds (EV-ROS-2026-A063/A070); A024 builds A 20, B 26, C 26 (analysis/summary.txt)"
+      ],
+      "metric": "no experiment manipulates build batching; build counts are a by-product of grouping",
+      "baselineValue": null,
+      "treatmentValue": null,
+      "deltaPct": null,
+      "comparable": false,
+      "reproducible": "n/a",
+      "confounders": [
+        "build count confounded with grouping treatment"
+      ],
+      "classification": "proposed-unimplemented",
+      "confidence": "low"
+    }
+  ]
+}

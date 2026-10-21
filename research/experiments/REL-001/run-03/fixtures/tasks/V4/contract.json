@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:d638e588a3c747a39f5da728e29c6a38a26caba89fb4d810d11d818270fccbcc",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/V4.md#LEDGER-V4-R1",
+        "originalId": "LEDGER-V4-R1",
+        "document": "requirements/V4.md",
+        "location": "L5",
+        "revision": "sha256:d638e588a3c747a39f5da728e29c6a38a26caba89fb4d810d11d818270fccbcc",
+        "contentDigest": "sha256:eabe473b0faadc2ec0c12e4a5cdb62e5c3538658e9a163b05e670ae04cdc6e4e"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-V4-SHARED-FEE-RULE",
+        "VERIFY-V4-R1",
+        "COHORT-V4"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/V4.md#LEDGER-V4-R2",
+        "originalId": "LEDGER-V4-R2",
+        "document": "requirements/V4.md",
+        "location": "L28",
+        "revision": "sha256:d638e588a3c747a39f5da728e29c6a38a26caba89fb4d810d11d818270fccbcc",
+        "contentDigest": "sha256:dd5b2ce17a359f8941d7063841ebd5d141d58c736bfd5e9a0a81bace0fc14e4d"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-V4-SHARED-FEE-RULE",
+        "VERIFY-V4-R2",
+        "COHORT-V4"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-V4-SHARED-FEE-RULE",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/V4.md#LEDGER-V4-R1",
+        "requirements/V4.md#LEDGER-V4-R2"
+      ],
+      "dependsOn": [],
+      "justification": "feeFor and closePeriod are built on periodFee"
+    },
+    {
+      "id": "VERIFY-V4-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V4.md#LEDGER-V4-R1"
+      ],
+      "dependsOn": [
+        "DEC-V4-SHARED-FEE-RULE"
+      ]
+    },
+    {
+      "id": "VERIFY-V4-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V4.md#LEDGER-V4-R2"
+      ],
+      "dependsOn": [
+        "DEC-V4-SHARED-FEE-RULE"
+      ]
+    },
+    {
+      "id": "COHORT-V4",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/V4.md#LEDGER-V4-R1",
+        "requirements/V4.md#LEDGER-V4-R2"
+      ],
+      "dependsOn": [
+        "DEC-V4-SHARED-FEE-RULE"
+      ]
+    }
+  ]
+}

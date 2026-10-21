@@ -1,0 +1,50 @@
+{
+  "schema": "cbe.rel-001.run-03-task/1",
+  "id": "V7",
+  "workItem": "LEDGER-V7",
+  "title": "V7: Account sweeps",
+  "category": "adversarial",
+  "requirementIds": [
+    "LEDGER-V7-R1"
+  ],
+  "requirementKeys": [
+    "requirements/V7.md#LEDGER-V7-R1"
+  ],
+  "decisionIds": [
+    "DEC-V7-EMPTY-NOOP",
+    "DEC-V7-ONE-PAIR"
+  ],
+  "conflict": true,
+  "expectedOutcome": {
+    "completion": "none",
+    "oracle": "not-applicable",
+    "description": "no completion: the agent reports the conflict naming DEC-V7-EMPTY-NOOP and DEC-V7-ONE-PAIR; a recorded completion is an invalid completion accepted"
+  },
+  "agents": 1,
+  "files": {
+    "requirement": {
+      "source": "tasks/V7/requirement.md",
+      "target": "requirements/V7.md",
+      "sha256": "eb5e131f7d76d3d2635380d69436abd0eb97ed0c4f5d50a91fe4a41c37b055b4"
+    },
+    "visibleTests": {
+      "source": "tasks/V7/V7AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/V7AcceptanceTests.fs",
+      "sha256": "f9c2df96b1c947a2210f252c6efcd6d41974d9fa2c74002fd42560c519d31270"
+    },
+    "oracle": "oracle/V7/OracleTests.fs",
+    "oracleSha256": "a02e5d857bfbfa5b34f13d4754edb4194d323efebee0d51b1c274a6d882ffeab",
+    "reference": "reference/V7",
+    "wrongVariants": []
+  },
+  "contract": {
+    "path": "tasks/V7/contract.json",
+    "sha256": "677394b64878b3f686b78881089a81011c44a146e469d3814a5b02f636d0acc0",
+    "ordo": "pending",
+    "ordoAdmits": null,
+    "ordoExit": null,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": null,
+    "expectedOrdoAdmits": false
+  }
+}

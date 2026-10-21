@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:eb5e131f7d76d3d2635380d69436abd0eb97ed0c4f5d50a91fe4a41c37b055b4",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/V7.md#LEDGER-V7-R1",
+        "originalId": "LEDGER-V7-R1",
+        "document": "requirements/V7.md",
+        "location": "L13",
+        "revision": "sha256:eb5e131f7d76d3d2635380d69436abd0eb97ed0c4f5d50a91fe4a41c37b055b4",
+        "contentDigest": "sha256:eb48671f5491ef4cf59cbd9a2107eab0dee8467e195261ca007a780acdd2ab29"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-V7-EMPTY-NOOP",
+        "DEC-V7-ONE-PAIR",
+        "CONFLICT-V7-EMPTY-SWEEP",
+        "VERIFY-V7-R1",
+        "COHORT-V7"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-V7-EMPTY-NOOP",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/V7.md#LEDGER-V7-R1"
+      ],
+      "dependsOn": [],
+      "justification": "sweeping an account whose balance is 0 succeeds and changes nothing"
+    },
+    {
+      "id": "DEC-V7-ONE-PAIR",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/V7.md#LEDGER-V7-R1"
+      ],
+      "dependsOn": [],
+      "justification": "every accepted sweep records exactly one pair of postings; an empty sweep is refused"
+    },
+    {
+      "id": "CONFLICT-V7-EMPTY-SWEEP",
+      "kind": "conflict",
+      "requirementKeys": [
+        "requirements/V7.md#LEDGER-V7-R1"
+      ],
+      "dependsOn": [
+        "DEC-V7-EMPTY-NOOP",
+        "DEC-V7-ONE-PAIR"
+      ],
+      "justification": "DEC-V7-EMPTY-NOOP and DEC-V7-ONE-PAIR contradict for an empty source; unresolved"
+    },
+    {
+      "id": "VERIFY-V7-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/V7.md#LEDGER-V7-R1"
+      ],
+      "dependsOn": [
+        "DEC-V7-EMPTY-NOOP"
+      ]
+    },
+    {
+      "id": "COHORT-V7",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/V7.md#LEDGER-V7-R1"
+      ],
+      "dependsOn": [
+        "DEC-V7-EMPTY-NOOP"
+      ]
+    }
+  ]
+}

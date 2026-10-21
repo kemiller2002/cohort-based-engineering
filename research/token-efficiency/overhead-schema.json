@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/kemiller2002/cohort-based-engineering/research/token-efficiency/overhead-schema.json",
+  "title": "cbe.token-overhead/1",
+  "description": "Token-overhead profile: attribution of provider usage, tool calls, test runs and elapsed time to workflow phases. A record carries measured token buckets only when the source measured them for that unit; an attribution that is modelled rather than measured goes in tokenEstimate, never in tokens. A value the source does not carry is null, never 0.",
+  "type": "object",
+  "required": ["schema", "generator", "dataset", "inputs", "records", "summary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "cbe.token-overhead/1" },
+    "generator": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": { "name": { "type": "string" }, "version": { "type": "string" } }
+    },
+    "dataset": {
+      "type": "object",
+      "required": ["id", "label"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string", "description": "e.g. 'exploratory profiling; within-arm only'" }
+      }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "properties": { "path": { "type": "string" }, "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }
+      }
+    },
+    "records": { "type": "array", "items": { "$ref": "#/$defs/record" } },
+    "summary": { "type": "object" }
+  },
+  "$defs": {
+    "count": { "type": ["integer", "null"], "minimum": 0 },
+    "phase": {
+      "enum": [
+        "requirement-ingestion",
+        "repository-discovery",
+        "planning-contract",
+        "implementation",
+        "coordination",
+        "handoff",
+        "testing",
+        "verification",
+        "completion",
+        "reporting",
+        "unattributed"
+      ]
+    },
+    "tokens": {
+      "type": "object",
+      "required": ["input", "output", "cacheRead", "cacheWrite", "outputLowerBound"],
+      "additionalProperties": false,
+      "properties": {
+        "input": { "$ref": "#/$defs/count" },
+        "output": { "$ref": "#/$defs/count" },
+        "cacheRead": { "$ref": "#/$defs/count" },
+        "cacheWrite": { "$ref": "#/$defs/count" },
+        "cacheWrite5m": { "$ref": "#/$defs/count" },
+        "cacheWrite1h": { "$ref": "#/$defs/count" },
+        "outputLowerBound": { "type": "boolean", "description": "true when output was read from a source that records it at streaming start (Claude Code transcripts)" }
+      }
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "schema", "recordId", "granularity", "phase", "phaseBasis", "measurement",
+        "tokens", "tokenEstimate", "providerSession", "agent", "workItem", "executionId",
+        "toolCalls", "testRuns", "elapsedMs", "estimatedCostUsd", "provenance"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema": { "const": "cbe.token-overhead/1#record" },
+        "recordId": { "type": "string" },
+        "granularity": {
+          "enum": ["request", "run-total", "run-phase-estimate"],
+          "description": "request: one deduplicated provider request from a transcript; run-total: a run's measured sums (not phase-attributable, so phase is 'unattributed'); run-phase-estimate: a phase's share of a run modelled from observation counts"
+        },
+        "phase": { "$ref": "#/$defs/phase" },
+        "phaseBasis": { "type": "string", "description": "rule id (rule:<id>), observation field (field:<json-pointer>), or 'none'" },
+        "measurement": { "enum": ["measured", "derived", "estimated"] },
+        "tokens": { "oneOf": [{ "$ref": "#/$defs/tokens" }, { "type": "null" }] },
+        "tokenEstimate": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "required": ["total", "method"],
+              "properties": {
+                "total": { "type": "number", "minimum": 0 },
+                "method": { "type": "string" },
+                "assumptions": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          ]
+        },
+        "providerSession": {
+          "type": "object",
+          "required": ["provider", "sessionId", "requestKey", "model"],
+          "properties": {
+            "provider": { "type": ["string", "null"] },
+            "sessionId": { "type": ["string", "null"] },
+            "requestKey": { "type": ["string", "null"] },
+            "model": { "type": ["string", "null"] }
+          }
+        },
+        "agent": {
+          "type": "object",
+          "required": ["agentId", "role"],
+          "properties": { "agentId": { "type": ["string", "null"] }, "role": { "type": ["string", "null"] } }
+        },
+        "workItem": { "type": ["string", "null"] },
+        "executionId": { "type": ["string", "null"], "description": "Praxis execution id or, for REL-001, the runId" },
+        "toolCalls": { "$ref": "#/$defs/count" },
+        "toolNames": { "type": "array", "items": { "type": "string" } },
+        "testRuns": { "$ref": "#/$defs/count" },
+        "toolResultBytes": { "$ref": "#/$defs/count" },
+        "elapsedMs": { "type": ["number", "null"], "minimum": 0 },
+        "estimatedCostUsd": { "type": ["number", "null"], "minimum": 0, "description": "null when no price table entry covers the model or no tokens were measured; a lower bound when tokens.outputLowerBound" },
+        "flags": { "type": "array", "items": { "type": "string" } },
+        "provenance": {
+          "type": "object",
+          "required": ["source", "sha256", "locator", "method"],
+          "properties": {
+            "source": { "type": "string", "description": "path relative to the dataset root" },
+            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "locator": { "type": "string", "description": "line range or JSON pointer(s)" },
+            "method": { "type": "string" },
+            "priceTable": { "type": ["object", "null"] }
+          }
+        }
+      }
+    }
+  }
+}
