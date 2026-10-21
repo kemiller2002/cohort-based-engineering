@@ -9,10 +9,16 @@
     - Same outcomes as 3.17.0 in every case.
     - REL-GATE-003 is resolved: `requireVerifiedCompletion` now implies attestation, and GATE-3 completes only where no
       attestation is required, labelled `unattested`.
-    - REL-GATE-004 is open: the attestation policy and authority must come from a source the agent cannot write.
+    - REL-GATE-004 was open at this re-run. It is now resolved in v3.19.0 (see below).
   - **From the release containing praxis#279 (REL-GATE-004):** use `scripts/gate-evidence-binding-v319.sh`, and run experiment C with
     `REL001_PIN_VERIFIER_KEY=1`. Attested repositories must pin the host verifier keyid (`workProtocol.trustedVerifierKeyIds`).
     The v319 script adds GATE-A5 (PROBE-3) and GATE-A6 (PROBE-4). See amendment A6 in `protocol/run-01.md`.
+  - **Re-run on Praxis v3.19.0 (2026-10-21T07:19Z): REL-GATE-004 resolved.**
+    - Every earlier case has the same outcome as on v3.18.0.
+    - GATE-A5 is refused with `POLICY_CHANGED` and GATE-A6 with `UNTRUSTED_AUTHORITY`; both had verified on v3.18.0.
+    - GATE-A4 records exactly the host verifier key ID.
+    - Experiment C with the pin: 22/23 cases match the prediction, and C8a–d all match.
+    - **Breaking:** attested repositories must pin `workProtocol.trustedVerifierKeyIds` on the protected branch.
   - Attested mode refuses every forgery (GATE-A1..A3) and verifies the genuine pass (GATE-A4).
 - O3, O4 and D3 were re-measured at the release tags.
 

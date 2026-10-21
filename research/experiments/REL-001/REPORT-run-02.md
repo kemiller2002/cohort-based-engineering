@@ -176,7 +176,7 @@ The four arms bundle orchestration, constructibility and independent verificatio
    - **Not as a default.** It is ready as an **opt-in assurance mode** where its guarantees are needed:
      - concurrent agents on one backlog;
      - forgery-resistant, audited completion on protected branches.
-   - For those uses the gate is in place, but REL-GATE-004 must be fixed first (REL-GATE-003 is fixed in v3.18.0), and the verifier key,
+   - For those uses the gate is in place (REL-GATE-003 is fixed in v3.18.0 and REL-GATE-004 in v3.19.0), provided the verifier key,
      policy and authority must sit outside the agent's write access.
 
 ## Is Echelon more efficient than simply giving Claude a requirement?
@@ -201,7 +201,9 @@ The four arms bundle orchestration, constructibility and independent verificatio
 3. **Do not enable `requireVerifiedCompletion` globally.** The F6 gate stays closed for a global default.
    - Gate item 6 (run-02 reviewed) is now satisfied, and its recommendation is this section.
    - Gate item 5 (representative applications) remains open.
-   - REL-GATE-003 is fixed in v3.18.0, so verified completion now implies attestation by default. REL-GATE-004 is still open.
+   - REL-GATE-003 is fixed in v3.18.0, so verified completion now implies attestation by default. REL-GATE-004 is fixed
+     in v3.19.0: the policy comes from the protected base and the verifier key is pinned. This is a breaking change:
+     attested repositories must pin `trustedVerifierKeyIds` on the protected branch.
 4. **Adaptive routing: justified by what the work requires, not by task category.**
    - The preregistered condition was met: confirmatory differences exist in every category. But they all point the same way (A cheapest), so category-based routing to Echelon is **not** justified.
    - What the evidence supports is a deterministic rule keyed on declared properties of the work: concurrency risk and required assurance level. It should not be keyed on inferred difficulty.
@@ -264,8 +266,12 @@ The four arms bundle orchestration, constructibility and independent verificatio
 
 ## Follow-ups
 - **REL-GATE-003 (P1): resolved** in praxis#280, released in v3.18.0, and re-verified on the released binary.
-- **Praxis intake REL-GATE-004** (praxis#279, filed by the parallel session): read the attestation policy and the
-  authority from the protected base or the host, never from the completing worktree or a caller-chosen path. Until it
-  is fixed, attested mode requires a host-controlled trust root (gate item 7).
+- **REL-GATE-004: resolved** in praxis#279, released in v3.19.0, and re-verified on the released binary with
+  `gate-evidence-binding-v319.sh` (amendment A6 in `protocol/run-01.md`).
+  - GATE-A5 (PROBE-3) is refused with `POLICY_CHANGED`, and GATE-A6 (PROBE-4) with `UNTRUSTED_AUTHORITY`.
+  - On v3.18.0, both had completed as `verified`.
+  - The completion records exactly the host verifier key ID.
+  - Remaining documented limit: a process that can rewrite the local protected-branch refs controls the protected
+    source too. The host still audits `verifierKeyIds` and the authority path (check 4 of `integrity-d.py`).
 - **Praxis intake REL-ROUTE-001:** deterministic workflow routing by declared concurrency and assurance needs.
 - **Cohort-side, for any run-03:** use tasks with a non-zero bare-agent failure rate, so that the benefit of verification can be measured and not just its cost.
