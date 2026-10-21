@@ -397,6 +397,156 @@ let usage (a: Map<string, string>) =
            "priceTable", (prices |> Option.bind (fun p -> str p "tableVersion") |> Option.map jstr |> Option.defaultValue jnull)
            "contaminationHits", jarr (hits |> List.truncate 20 |> List.map (fun s -> jstr (if s.Length > 300 then s.Substring(0, 300) else s))) ]
 
+// ---------- Analysis (research-protocol.md section 9) ----------
+type UnitRow =
+    { Unit: int; Task: string; Fault: string; Claimed: string; FirstAccepted: bool; FinalAccepted: bool; Attempts: int
+      FalseFirst: bool; FalseFinal: bool; ClaimedFinal: string; EarlierFailing: string list; ArchRules: string list; BuildOk: bool
+      Decisions: int; Unsupported: int; Tokens: int64[]; Cost: decimal; Requests: int64; ToolUses: int64; CtxLast: int64
+      Compactions: int64; VerifyMs: int64; RepairTokens: int64; RepairCost: decimal; Models: string list; Efforts: string list; X4: int }
+
+let loadArm (dir: string) : UnitRow list =
+    let file (p: string) = tryParse (Path.Combine(dir, p))
+    let setup = file "setup.json" |> Option.get
+    items setup "units"
+    |> List.map (fun u -> int (i64 u "unit"))
+    |> List.filter (fun n -> File.Exists(Path.Combine(dir, sprintf "verify-%d-1.json" n)))
+    |> List.map (fun n ->
+        let attempts =
+            Seq.initInfinite ((+) 1) |> Seq.takeWhile (fun t -> File.Exists(Path.Combine(dir, sprintf "verify-%d-%d.json" n t))) |> Seq.toList
+        let obs t = file (sprintf "verify-%d-%d.json" n t) |> Option.get
+        let usageOf t = file (sprintf "usage-%d-%d.json" n t)
+        let first, last = obs 1, obs (List.last attempts)
+        let b (o: JsonNode) (k: string) = o["verdict"].[k].GetValue<bool>()
+        let tok (u: JsonNode) = [| "input"; "cacheWrite5m"; "cacheWrite1h"; "cacheRead"; "output"; "total" |] |> Array.map (fun k -> i64 u["tokens"] k)
+        let usages = attempts |> List.choose usageOf
+        let sumTok us = us |> List.map tok |> List.fold (Array.map2 (+)) (Array.zeroCreate 6)
+        let costOf (u: JsonNode) = match u["costUsd"] with null -> 0m | v -> v.GetValue<decimal>()
+        let decisions = items last["evidence"] "decisions"
+        let unsupported = decisions |> List.filter (fun d -> str d "layer1" = Some "invalid-evidence" || str d "layer1" = Some "no-evidence") |> List.length
+        let strs (n: JsonNode) k = items n k |> List.map (fun x -> x.GetValue<string>())
+        { Unit = n; Task = str first "task" |> Option.get; Fault = str first "fault" |> Option.defaultValue "none"
+          Claimed = first["claim"].["outcome"].GetValue<string>(); ClaimedFinal = last["claim"].["outcome"].GetValue<string>()
+          FirstAccepted = b first "accepted"; FinalAccepted = b last "accepted"; Attempts = attempts.Length
+          FalseFirst = b first "falseCompletion"; FalseFinal = b last "falseCompletion"
+          EarlierFailing = strs last["verdict"] "earlierTasksFailing"
+          ArchRules = (match last["architecture"] with null -> [] | a -> items a "violations" |> List.choose (fun v -> str v "rule") |> List.distinct)
+          BuildOk = last["build"].["ok"].GetValue<bool>()
+          Decisions = decisions.Length; Unsupported = unsupported
+          Tokens = sumTok usages; Cost = usages |> List.sumBy costOf
+          Requests = usages |> List.sumBy (fun u -> i64 u "requests"); ToolUses = usages |> List.sumBy (fun u -> i64 u "toolUses")
+          CtxLast = (match List.tryLast usages with Some u -> i64 u["context"] "last" | None -> 0L)
+          Compactions = usages |> List.sumBy (fun u -> i64 u "compactions")
+          VerifyMs = attempts |> List.sumBy (fun t -> i64 (obs t) "verifyMs")
+          RepairTokens = (usages |> List.skip (min 1 usages.Length) |> sumTok).[5]
+          RepairCost = usages |> List.skip (min 1 usages.Length) |> List.sumBy costOf
+          Models = usages |> List.collect (fun u -> strs u "models") |> List.distinct
+          Efforts = usages |> List.collect (fun u -> strs u "efforts") |> List.distinct
+          X4 = usages |> List.sumBy (fun u -> (items u "contaminationHits").Length) })
+
+let ratio (num: int) (den: int) =
+    jobj [ "numerator", jint (int64 num); "denominator", jint (int64 den); "value", (if den = 0 then jnull else jdec (Math.Round(decimal num / decimal den, 4))) ]
+
+let decisionIdsOf (fixture: string) (task: string) =
+    tryParse (Path.Combine(fixture, "tasks", task, "task.json")) |> Option.map (fun t -> items t "decisionIds" |> List.map (fun d -> d.GetValue<string>())) |> Option.defaultValue []
+
+/// Per-unit derived facts that need the sequence: regressions vs carried defects, critical failures, decision drift.
+let derive (fixture: string) (rows: UnitRow list) =
+    rows |> List.map (fun r ->
+        let acceptedBefore = rows |> List.filter (fun p -> p.Unit < r.Unit && p.FinalAccepted && p.Task <> "V7") |> List.map (fun p -> p.Task) |> Set.ofList
+        let regressed = r.EarlierFailing |> List.filter acceptedBefore.Contains
+        let carried = r.EarlierFailing |> List.filter (acceptedBefore.Contains >> not)
+        let buildBroken = not r.BuildOk && r.Task <> "V7"
+        let critical = r.FalseFirst || not (List.isEmpty regressed) || buildBroken
+        // DDR: established decisions = DEC-BASE-REFUSALS-AS-DATA (AR-3), DEC-BASE-DERIVED-BALANCES (AR-4), plus the
+        // decisions of every task accepted at an earlier unit. A reversal = the rule violated / that task's oracle failing.
+        let established = 2 + (acceptedBefore |> Set.toList |> List.sumBy (fun t -> max 1 (decisionIdsOf fixture t).Length))
+        let reversals =
+            (r.ArchRules |> List.filter (fun x -> x = "AR-3" || x = "AR-4") |> List.length)
+            + (regressed |> List.sumBy (fun t -> max 1 (decisionIdsOf fixture t).Length))
+        r, regressed, carried, critical, established, reversals)
+
+let armMetrics (fixture: string) (run: string) (arm: string) (rows: UnitRow list) =
+    let d = derive fixture rows
+    let sumTok = rows |> List.map (fun r -> r.Tokens) |> List.fold (Array.map2 (+)) (Array.zeroCreate 6)
+    let tokObj (t: int64[]) = jobj [ "input", jint t[0]; "cacheWrite5m", jint t[1]; "cacheWrite1h", jint t[2]; "cacheRead", jint t[3]; "output", jint t[4]; "total", jint t[5] ]
+    let cost = rows |> List.sumBy (fun r -> r.Cost)
+    let accepted = rows |> List.filter (fun r -> r.FinalAccepted) |> List.length
+    let claimedFirst = rows |> List.filter (fun r -> r.Claimed = "completed")
+    let claimedFinal = rows |> List.filter (fun r -> r.ClaimedFinal = "completed")
+    let firstCritical = d |> List.tryFind (fun (_, _, _, c, _, _) -> c) |> Option.map (fun (r, _, _, _, _, _) -> r.Unit)
+    let unitJson (r: UnitRow, regressed: string list, carried: string list, critical, _, _) =
+        jobj [ "unit", jint (int64 r.Unit); "task", jstr r.Task; "fault", jstr r.Fault; "claimed", jstr r.Claimed
+               "acceptedFirstPass", jbool r.FirstAccepted; "acceptedFinal", jbool r.FinalAccepted; "attempts", jint (int64 r.Attempts)
+               "falseCompletionFirstPass", jbool r.FalseFirst; "regressedTasks", jarr (regressed |> List.map jstr); "carriedDefects", jarr (carried |> List.map jstr)
+               "architectureViolations", jarr (r.ArchRules |> List.map jstr); "decisions", jint (int64 r.Decisions); "unsupportedDecisions", jint (int64 r.Unsupported)
+               "criticalFailure", jbool critical; "tokens", tokObj r.Tokens; "costUsd", jdec (Math.Round(r.Cost, 6)); "requests", jint r.Requests
+               "toolUses", jint r.ToolUses; "contextLast", jint r.CtxLast; "compactions", jint r.Compactions; "wallMs", jnull; "verifyMs", jint r.VerifyMs
+               "excluded", (if r.X4 > 0 then jstr (sprintf "X4: %d contamination hit(s)" r.X4) elif r.Models |> List.exists ((<>) "claude-opus-5-5") then jstr "X2" else jnull) ]
+    jobj [ "schema", jstr "cbe.vac-001.metrics/1"; "run", jstr run; "arm", jstr arm
+           "model", jarr (rows |> List.collect (fun r -> r.Models) |> List.distinct |> List.map jstr)
+           "effort", jarr (rows |> List.collect (fun r -> r.Efforts) |> List.distinct |> List.map jstr)
+           "priceTable", jstr "2026-10-20.1"
+           "units", jarr (d |> List.map unitJson)
+           "metrics", jobj [
+               "UDR", ratio (rows |> List.sumBy (fun r -> r.Unsupported)) (rows |> List.sumBy (fun r -> r.Decisions)); "udrLayer", jstr "layer1"
+               "AVR", ratio (rows |> List.filter (fun r -> not (List.isEmpty r.ArchRules)) |> List.length) rows.Length
+               "DDR", ratio (d |> List.sumBy (fun (_, _, _, _, _, x) -> x)) (d |> List.sumBy (fun (_, _, _, _, e, _) -> e))
+               "FCR", jobj [ "firstPass", ratio (claimedFirst |> List.filter (fun r -> r.FalseFirst) |> List.length) claimedFirst.Length
+                             "delivered", ratio (claimedFinal |> List.filter (fun r -> r.FalseFinal) |> List.length) claimedFinal.Length ]
+               "CCR", jobj [ "costUsd", jdec (Math.Round(cost, 6)); "acceptedUnits", jint (int64 accepted)
+                             "usdPerAccepted", (if accepted = 0 then jnull else jdec (Math.Round(cost / decimal accepted, 6)))
+                             "tokensPerAccepted", (if accepted = 0 then jnull else jdec (Math.Round(decimal sumTok[5] / decimal accepted, 1))); "tokens", tokObj sumTok ]
+               "firstPassAcceptance", ratio (rows |> List.filter (fun r -> r.FirstAccepted) |> List.length) rows.Length
+               "finalAcceptance", ratio accepted rows.Length
+               "longevity", jobj [ "firstCriticalFailureUnit", (match firstCritical with Some u -> jint (int64 u) | None -> jnull)
+                                   "censored", jbool firstCritical.IsNone
+                                   "recoverableFailures", jarr (d |> List.filter (fun (r, _, _, c, _, _) -> not r.FirstAccepted && not c) |> List.map (fun (r, _, _, _, _, _) -> jint (int64 r.Unit)))
+                                   "repairTokens", jint (rows |> List.sumBy (fun r -> r.RepairTokens)); "repairCostUsd", jdec (Math.Round(rows |> List.sumBy (fun r -> r.RepairCost), 6))
+                                   "contextByUnit", jarr (rows |> List.map (fun r -> jint r.CtxLast)); "compactions", jint (rows |> List.sumBy (fun r -> r.Compactions))
+                                   "carriedDefectsByUnit", jarr (d |> List.map (fun (_, reg, car, _, _, _) -> jint (int64 (reg.Length + car.Length)))) ] ]
+           "unavailable", jobj [ "wallMs", jstr "per-unit agent wall-clock is not separable from transcript timestamps under concurrent arms; exploratory only"
+                                 "UDR.layer3", jstr "Layer 3 adjudication is reported in hallucination-evaluation.md" ] ]
+
+/// Paired percentile bootstrap over blocks (run x unit position): cost per accepted unit, arm X / arm Y.
+let bootstrap (blocks: (decimal * int * decimal * int) list) (seed: int) (n: int) =
+    let rnd = Random(seed)
+    let stat (bs: (decimal * int * decimal * int) list) =
+        let cx, ax, cy, ay = bs |> List.fold (fun (a, b, c, d) (w, x, y, z) -> a + w, b + x, c + y, d + z) (0m, 0, 0m, 0)
+        if ax = 0 || ay = 0 || cy = 0m then None else Some(float ((cx / decimal ax) / (cy / decimal ay)) - 1.0)
+    let arr = List.toArray blocks
+    let samples =
+        List.init n (fun _ -> List.init arr.Length (fun _ -> arr[rnd.Next arr.Length]) |> stat) |> List.choose id |> List.sort |> List.toArray
+    let point = stat blocks
+    let pct (p: float) = if samples.Length = 0 then nan else samples[min (samples.Length - 1) (int (p * float samples.Length))]
+    point, pct 0.025, pct 0.975, samples.Length
+
+let analyze (resultsDir: string) (runs: string list) (fixture: string) =
+    let arms = [ "A"; "B"; "C"; "D"; "DR" ]
+    let data =
+        [ for run in runs do
+            for arm in arms do
+                let dir = Path.Combine(resultsDir, run, arm)
+                if Directory.Exists dir && File.Exists(Path.Combine(dir, "setup.json")) then yield (run, arm), loadArm dir ]
+    let perArm = data |> List.map (fun ((run, arm), rows) -> armMetrics fixture run arm rows)
+    let contrast x y =
+        let blocks =
+            [ for run in runs do
+                match data |> List.tryFind (fun ((r, a), _) -> r = run && a = x), data |> List.tryFind (fun ((r, a), _) -> r = run && a = y) with
+                | Some(_, rx), Some(_, ry) ->
+                    for ux in rx do
+                        match ry |> List.tryFind (fun uy -> uy.Unit = ux.Unit) with
+                        | Some uy -> yield ux.Cost, (if ux.FinalAccepted then 1 else 0), uy.Cost, (if uy.FinalAccepted then 1 else 0)
+                        | None -> ()
+                | _ -> () ]
+        let point, lo, hi, valid = bootstrap blocks 20261021 10000
+        jobj [ "comparison", jstr (sprintf "%s vs %s" x y); "measure", jstr "cost per accepted unit, relative difference"; "blocks", jint (int64 blocks.Length)
+               "point", (match point with Some p -> jdec (Math.Round(decimal p, 4)) | None -> jnull)
+               "ci95", jarr [ (if Double.IsNaN lo then jnull else jdec (Math.Round(decimal lo, 4))); (if Double.IsNaN hi then jnull else jdec (Math.Round(decimal hi, 4))) ]
+               "validResamples", jint (int64 valid); "resamples", jint 10000L; "seed", jint 20261021L ]
+    jobj [ "schema", jstr "cbe.vac-001.analysis/1"; "runs", jarr (runs |> List.map jstr); "generatedAt", jstr (DateTime.UtcNow.ToString("o"))
+           "arms", jarr perArm
+           "contrasts", jarr ([ "B", "A"; "C", "B"; "D", "B"; "D", "A"; "DR", "A"; "D", "DR" ] |> List.map (fun (x, y) -> contrast x y)) ]
+
 // ---------- Dispatch ----------
 match fsi.CommandLineArgs |> Array.toList |> List.tail with
 | "archcheck" :: tree :: rest ->
@@ -410,4 +560,5 @@ match fsi.CommandLineArgs |> Array.toList |> List.tail with
 | "observe" :: rest -> printfn "%s" (pretty (observe (args rest)))
 | "state" :: rest -> printfn "%s" (pretty (state (args rest)))
 | "usage" :: rest -> printfn "%s" (pretty (usage (args rest)))
+| "analyze" :: results :: fixture :: runs -> printfn "%s" (pretty (analyze results runs fixture))
 | _ -> eprintfn "usage: vac.fsx archcheck|evidence|observe|state|usage ..."; exit 2
