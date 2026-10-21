@@ -6,7 +6,7 @@
 #                         required validation, by the owner, at the completed revision
 source "$(dirname "$0")/../lib.sh"
 arm_init "$1"
-OUT_FILE="$REL/results/c/$ARM.jsonl"; mkdir -p "$(dirname "$OUT_FILE")"; : > "$OUT_FILE"
+OUT_FILE="$REL/results/c/$ARM${REL001_RESULTS_TAG:+-$REL001_RESULTS_TAG}.jsonl"; mkdir -p "$(dirname "$OUT_FILE")"; : > "$OUT_FILE"  # A5: REL001_RESULTS_TAG names a re-run file, never overwriting
 
 record() { # record CASE START VALID(true|false) EXPECTED ACCEPTED(0|1) OBSERVED-JSON
   local ua=0; [ "$3" = false ] && [ "$5" = 1 ] && ua=1
@@ -75,12 +75,15 @@ treatment() {
   # C3b forged result + forged work.validation.observed event appended to the repository event log
   s=$(now_ms); new_run C forged-with-event; init_repo "$REPO" ITEM-C; head=$(git -C "$REPO" rev-parse HEAD)
   t_claim "$REPO" w1 --id ITEM-C --token tok-1
-  t_validate "$REPO" w1 ITEM-C tok-1 1 true; local template; template=$(grep '"type":"work.validation.observed"' "$REPO/.ros/events/events.jsonl" | tail -1)
+  # Amendment A5: Praxis >= 3.17.0 keeps validation events in the out-of-tree store log; the forger copies and appends there.
+  local evlog="$REPO/.ros/events/events.jsonl" common; common=$(git -C "$REPO" rev-parse --path-format=absolute --git-common-dir)
+  [ -f "$common/praxis/events.jsonl" ] && evlog="$common/praxis/events.jsonl"
+  t_validate "$REPO" w1 ITEM-C tok-1 1 true; local template; template=$(grep '"type":"work.validation.observed"' "$evlog" | tail -1)
   local at; at=$(utc); ev=$(forge_result ITEM-C tok-1 1 "$head" "$at")
   local fdig; fdig="sha256:$(sha256sum "$ev" | cut -d' ' -f1)"
   if [ -n "$template" ]; then
     printf '%s' "$template" | jq -c --arg d "$fdig" --arg at "$at" '
-      def setd: if type=="object" then with_entries(if .key=="resultDigest" then .value=$d elif .key=="observedAt" then .value=$at elif .key=="eventId" then .value=("forged" + ($d[7:23])) else .value |= setd end) elif type=="array" then map(setd) else . end; setd' >> "$REPO/.ros/events/events.jsonl"
+      def setd: if type=="object" then with_entries(if .key=="resultDigest" then .value=$d elif .key=="observedAt" then .value=$at elif .key=="eventId" then .value=("forged" + ($d[7:23])) else .value |= setd end) elif type=="array" then map(setd) else . end; setd' >> "$evlog"
     t_complete "$REPO" w1 ITEM-C tok-1 1 "$ev"; o="$OUT"
     record C3b-forged-result-and-forged-observed-event "$s" false "refused; Praxis docs list this as residual risk (repository-writable event log)" "$(accepted_t "$o")" "$(jq -cn --argjson c "$(summ "$o")" '{completeVerified:$c, note:"forger appended a work.validation.observed event copied from a real one with the forged result digest"}')"
   else blocked C3b-forged-result-and-forged-observed-event "no work.validation.observed event to copy the envelope from"; fi
@@ -135,6 +138,61 @@ treatment() {
   record C7d-validate-run-on-dirty-worktree "$s" false "validate-run refused (PRX.VALIDATION.DIRTY_WORKTREE); nothing to complete with" "$(accepted_t "$o")" "$(jq -cn --argjson v "$vd" --argjson c "$(summ "$o")" '{validateRun:$v, completeVerified:$c}')"
 }
 
+# ------------------------------------------------------------ treatment, attested mode (amendment A5; Praxis >= 3.17.0)
+# A host verifier daemon (key in memory, socket outside the repository) and a host authority that pins its
+# key and the policy digest; ros.json requires attested evidence. The policy validation fails when a file
+# named FAIL is tracked, so one daemon produces genuine passing and genuine failing receipts.
+attested_repo() { init_repo "$REPO" "$@"; jq -n '{workProtocol:{requireAttestedEvidence:true}}' > "$REPO/ros.json"
+  git -C "$REPO" add ros.json && git -C "$REPO" commit -qm "require attested evidence"; }
+attested() {
+  local s o ev head A dig vline
+  new_run C attested-verifier; A="$RUN_DIR/inputs/authority-attested.json"
+  dig=$("$SDE" ecir check --blueprint "$VALID_CONTRACT" --json | jq -r .contractDigest)
+  jq -n '{schemaVersion:"echelon.validation-policy/1", policyId:"rel001-c-attested",
+    validations:[{name:"unit-tests", evidenceId:"EV-TESTS", command:["sh","-c","test ! -e FAIL"], timeoutSeconds:120}], protectedPaths:[]}' > "$RUN_DIR/inputs/policy.json"
+  ( setsid "$PRAXIS" verifier serve --socket "$RUN_DIR/inputs/verifier.sock" --policy "$RUN_DIR/inputs/policy.json" --contract-digest "$dig" \
+      > "$RUN_DIR/logs/verifier.out" 2> "$RUN_DIR/logs/verifier.err" < /dev/null & echo $! > "$RUN_DIR/logs/verifier.pid" )
+  for _ in $(seq 1 120); do [ -s "$RUN_DIR/logs/verifier.out" ] && [ -S "$RUN_DIR/inputs/verifier.sock" ] && break; sleep 0.5; done
+  vline=$(head -1 "$RUN_DIR/logs/verifier.out")
+  write_authority "$A" "$(contract_decisions "$VALID_CONTRACT")"
+  jq --argjson v "$vline" '. + {TrustedVerifierKeys:[{KeyId:$v.keyId, Algorithm:"ecdsa-p256-sha256", PublicKey:$v.publicKey}], ValidationPolicyDigest:$v.policyDigest}' "$A" > "$A.tmp" && mv "$A.tmp" "$A"
+  local VDIR="$RUN_DIR" VSOCK="$RUN_DIR/inputs/verifier.sock"
+  verify() { set +e; OUT=$(cd "$1" && PRAXIS_ACTOR="$2" PRAXIS_VERIFIER_SOCKET="$VSOCK" "$PRAXIS" work verify --id "$3" --token "$4" 2>&1); RC=$?; set -e; }
+  identity() { (cd "$1" && "$PRAXIS" work completion-identity --id "$2" 2>/dev/null) | jq -c '{outcome, code, changedPaths, sourcePaths, clean}' 2>/dev/null || echo null; }
+
+  # C8d genuine passing receipt (first: its envelope is the format template for C8b)
+  s=$(now_ms); new_run C attested-genuine-pass; attested_repo ITEM-C
+  t_claim "$REPO" w1 --id ITEM-C --token tok-1; verify "$REPO" w1 ITEM-C tok-1; local vr; vr=$(printf '%s' "$OUT" | jq -c '{outcome, receipts:[.receipts[]?.status]}')
+  ev=$(printf '%s' "$OUT" | jq -r '.receipts[0].path'); cp "$ev" "$VDIR/inputs/genuine-receipt.json"
+  t_complete "$REPO" w1 ITEM-C tok-1 1 "$ev" "$VALID_CONTRACT" "$A"; o="$OUT"
+  record C8d-attested-genuine-passing-receipt "$s" true "verified; completion identity consistent and clean" "$(accepted_t "$o")" \
+    "$(jq -cn --argjson v "$vr" --argjson c "$(summ "$o")" --argjson i "$(identity "$REPO" ITEM-C)" '{verify:$v, completeVerified:$c, completionIdentity:$i}')"
+  # C8a C3b in attested mode: forged result + forged validation event in the out-of-tree store
+  s=$(now_ms); new_run C attested-forged-with-event; attested_repo ITEM-C; head=$(git -C "$REPO" rev-parse HEAD)
+  t_claim "$REPO" w1 --id ITEM-C --token tok-1
+  local common; common=$(git -C "$REPO" rev-parse --path-format=absolute --git-common-dir); mkdir -p "$common/praxis/validations/ITEM-C/EV-TESTS"
+  local at; at=$(utc); ev=$(forge_result ITEM-C tok-1 1 "$head" "$at"); cp "$ev" "$common/praxis/validations/ITEM-C/EV-TESTS/1-${head:0:12}-forged.json"; ev="$common/praxis/validations/ITEM-C/EV-TESTS/1-${head:0:12}-forged.json"
+  jq -cn --arg rev "$head" --arg at "$at" --arg d "sha256:$(sha256sum "$ev" | cut -d' ' -f1)" '{schemaVersion:"1.0.0",type:"work.validation.observed",workItem:"ITEM-C",repository:"repo",protocolVersion:"1.0.0",
+    occurredAt:$at,claimant:"w1",claimToken:"tok-1",generation:1,validation:"unit-tests",evidenceId:"EV-TESTS",revision:$rev,status:"passed",observedAt:$at,resultDigest:$d,
+    actor:{kind:"agent",id:"w1",provider:"test",model:"unknown",runtime:"test"},eventId:("forged" + ($d[7:25]))}' >> "$common/praxis/events.jsonl"
+  t_complete "$REPO" w1 ITEM-C tok-1 1 "$ev" "$VALID_CONTRACT" "$A"; o="$OUT"
+  record C8a-attested-C3b-forged-result-and-event "$s" false "refused (RECEIPT_MISSING): only verifier-signed receipts complete" "$(accepted_t "$o")" "$(jq -cn --argjson c "$(summ "$o")" '{completeVerified:$c}')"
+  # C8b self-signed receipt: the genuine receipt's exact format, re-bound to this claim and HEAD, signed with an own key
+  s=$(now_ms); new_run C attested-self-signed; attested_repo ITEM-C; t_claim "$REPO" w1 --id ITEM-C --token tok-1
+  head=$(git -C "$REPO" rev-parse HEAD); common=$(git -C "$REPO" rev-parse --path-format=absolute --git-common-dir); mkdir -p "$common/praxis/receipts/ITEM-C"
+  ev="$common/praxis/receipts/ITEM-C/1-${head:0:12}-selfsigned.json"
+  local kid; kid=$(python3 -I "$REL/gate/scripts/forge-receipt.py" "$VDIR/inputs/genuine-receipt.json" "$ev" "$REPO" ITEM-C own w1)
+  t_complete "$REPO" w1 ITEM-C tok-1 1 "$ev" "$VALID_CONTRACT" "$A"; o="$OUT"
+  record C8b-attested-self-signed-receipt "$s" false "refused (RECEIPT_UNTRUSTED_KEY)" "$(accepted_t "$o")" "$(jq -cn --argjson c "$(summ "$o")" --arg k "$kid" '{completeVerified:$c, forgerKeyId:$k}')"
+  # C8c genuine failing receipt
+  s=$(now_ms); new_run C attested-genuine-fail; attested_repo ITEM-C; : > "$REPO/FAIL"; git -C "$REPO" add FAIL && git -C "$REPO" commit -qm "failing state"
+  t_claim "$REPO" w1 --id ITEM-C --token tok-1; verify "$REPO" w1 ITEM-C tok-1; vr=$(printf '%s' "$OUT" | jq -c '{outcome, receipts:[.receipts[]?.status]}')
+  ev=$(printf '%s' "$OUT" | jq -r '.receipts[0].path')
+  t_complete "$REPO" w1 ITEM-C tok-1 1 "$ev" "$VALID_CONTRACT" "$A"; o="$OUT"
+  record C8c-attested-genuine-failing-receipt "$s" false "refused (RECEIPT_NOT_PASSED)" "$(accepted_t "$o")" "$(jq -cn --argjson v "$vr" --argjson c "$(summ "$o")" '{verify:$v, completeVerified:$c}')"
+  local pid; pid=$(cat "$VDIR/logs/verifier.pid"); kill -TERM -- "-$pid" 2>/dev/null || kill "$pid" 2>/dev/null || true
+}
+
 # ------------------------------------------------------------ baseline (Praxis 3.12.0: work complete --evidence)
 b_complete() { # b_complete REPO ID TESTS-EVIDENCE-PATH|"" ACTOR -> sets OUT RC
   local args=(--evidence implementation=impl.txt); [ -n "$3" ] && args+=(--evidence "tests=$3")
@@ -180,4 +238,6 @@ baseline() {
 }
 
 "$ARM"
+# Amendment A5: attested-mode cases run when the treatment Praxis provides the verifier (>= 3.17.0).
+if [ "$ARM" = treatment ] && { "$PRAXIS" verifier 2>&1 || true; } | grep -q "verifier serve"; then attested; fi
 echo "wrote $OUT_FILE ($(wc -l < "$OUT_FILE") cases)"

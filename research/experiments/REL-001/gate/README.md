@@ -1,6 +1,14 @@
 # REL-001 completion gate
 
-`gate-report.json` (`cbe.rel-001.gate-report/1`) is the machine-readable gate. **Current result (2026-10-20T01:10Z): PASS.** All 16 conditions pass on released Praxis 3.16.0, Ordo 1.17.0 and Dokimos 0.6.0. REL-GATE-002 is resolved: Experiment B's treatment arm now accepts 0 of 11 invalid cases. Earlier evaluations are kept under `history`, including the FAIL on O2 (2026-10-19T22:20Z) and the PASS on 3.15.0 (21:45Z). **First result
+`gate-report.json` (`cbe.rel-001.gate-report/1`) is the machine-readable gate. **Current result (2026-10-20T13:18Z, amendment A5 plus the coordinator evaluation): PASS for the attested configuration, FAIL for the non-attested configuration** on released Praxis 3.17.0, Dokimos 0.7.0 and Ordo 1.17.0.
+
+- P4 passes as preregistered in run-01. Its original GATE-3 shape is a forged result with no event (GATE-3U), and it is rejected.
+- The stricter case added afterwards (P4S) behaves differently by mode:
+  - In non-attested mode, a forged result plus a forged validation event in the out-of-tree store still completes an item (GATE-3, C3b). This is blocker REL-GATE-003, filed in the Praxis intake.
+  - Attested mode refuses every forgery (GATE-A1..A3) and verifies the genuine pass (GATE-A4).
+- O3, O4 and D3 were re-measured at the release tags.
+
+Reproduce with `scripts/gate-evidence-binding-v317.sh PRAXIS DOKIMOS ORDO CONTRACT WORKDIR [non-attested|attested|both]`; on 3.17.0 the original script below is refused for every case with `PRX.COMPLETION.DIRTY_WORKTREE`. **Previous result (2026-10-20T01:10Z): PASS.** All 16 conditions pass on released Praxis 3.16.0, Ordo 1.17.0 and Dokimos 0.6.0. REL-GATE-002 is resolved: Experiment B's treatment arm now accepts 0 of 11 invalid cases. Earlier evaluations are kept under `history`, including the FAIL on O2 (2026-10-19T22:20Z) and the PASS on 3.15.0 (21:45Z). **First result
 (2026-10-19): FAIL, so the experiment was not started.** 12 conditions pass, 3 fail and 1 is blocked.
 
 The failure is in completion evidence binding (P4, D2). The released Praxis 3.14.0 and

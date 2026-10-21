@@ -186,3 +186,62 @@ orchestrator therefore also records the harness's per-agent figures in `logs/age
 (`subagentTokens`, `toolUses`, `durationMs`) as a secondary measurement. That record is reported, never
 substituted for the primary one. Trial 1 was re-scored with the same `score.sh` that scores every later
 trial.
+
+**A5 (2026-10-20T13:13Z, regression re-run on released Praxis 3.17.0, before the run-02 preregistration).**
+Experiments A, B and C and the evidence-binding gate check were re-run with the treatment arm on released
+**Praxis 3.17.0** (tag commit `aea29b4a`, `praxis-linux-x64.tar.gz` sha256
+`4c0819aba084387545d5ac72d073abfdfc44c06e2225550e2be8c3babd0da23e`, checked against `native-checksums.txt`;
+`praxis-bin` sha256 `a5ec4a14…`), **Dokimos 0.7.0** (`dokimos-linux-x64.tar.gz` sha256
+`369917447350acd76b4e7d7a805abd9cfefbefa1922845e301052b9b82430a13`, checked against
+`dokimos-checksums.txt`; source commit `04b5f856`) and **Ordo 1.17.0** (release binary, commit `bb43c26c`). The
+baseline arm (Praxis 3.12.0) was not re-run. The 3.15.0 and 3.16.0 results are kept unchanged; the new
+results are `results/<e>/treatment-v3.17.0.jsonl` and `results/<e>/summary-v3.17.0.json`.
+
+Why the harness changed. Praxis 3.17.0 requires a clean worktree and `HEAD` = the verified commit at
+completion, and keeps claims, validation results, receipts and claim-protocol events in the out-of-tree
+store `<git-common-dir>/praxis/`. Only what those rules require was changed:
+- `harness/lib.sh`: `count_events` reads the tracked log and the store log and takes, per event type, the
+  larger of the two counts (the store log mirrors the tracked completion event under another eventId, so
+  a sum would double-count; the first A run on 3.17.0 showed exactly that, 2 "verified" events for one
+  completion, and was discarded). `REL001_TREATMENT_DOKIMOS` overrides the Dokimos path, and the recorded
+  Dokimos version is read from the binary instead of the literal `0.6.0`.
+- `harness/{a,b,c}/run.sh`: `REL001_RESULTS_TAG` names the output file (`<arm>-<tag>.jsonl`), so a re-run
+  never overwrites a kept result. `harness/summarize.fsx a|b|c [TAG]` summarizes the tagged file.
+- `harness/c/run.sh`: C3b's forger now copies and appends the forged `work.validation.observed` event to
+  the store log, where 3.17.0 records validation events (it appended to the tracked log before). New
+  attested-mode cases (run when the treatment Praxis provides `verifier serve`): a host verifier daemon,
+  an authority pinning its key and the policy digest, `ros.json` `requireAttestedEvidence`:
+  C8a C3b in attested mode, C8b a self-signed receipt (the genuine receipt's exact format, re-bound to the
+  claim and HEAD, signed with an own key; `gate/scripts/forge-receipt.py`), C8c a genuine failing receipt,
+  C8d a genuine passing receipt.
+- `gate/scripts/gate-evidence-binding-v317.sh` (new; the original script is unchanged). The original is
+  refused for every case on 3.17.0 with `PRX.COMPLETION.DIRTY_WORKTREE` because it leaves the authority and
+  evidence files untracked inside the repository, so its refusals test nothing. The new script keeps host
+  files outside the repository, commits cited evidence files before the verification revision and runs each
+  case in a fresh repository. GATE-3 is now the forgery an agent can make on 3.17.0: a forged passed result
+  in `<git-common-dir>/praxis/validations` plus a forged event in `<git-common-dir>/praxis/events.jsonl`;
+  the original unrecorded shape is kept as GATE-3U. Attested variant: GATE-A1 (forgery as GATE-3), A2
+  (self-signed receipt), A2B (own key under the trusted keyid), A3 (genuine failing receipt), A4 (genuine
+  passing receipt). Output: `gate/evidence/evidence-binding-repro-v3.17.0.jsonl`.
+
+Results (real counts):
+- **A** (17 cases): 0 duplicate active owners, 0 stale completions accepted, 0 lost work; 17/17 match the
+  prediction. A6a's second retry is now refused with `ARGUMENT_MISMATCH` (HEAD moved to the metadata commit)
+  instead of being replayed; still exactly one completion.
+- **B** (12 cases): 0 of 11 invalid accepted; B1-valid verified; 12/12 match.
+- **C non-attested** (19 cases): 1 of 17 invalid accepted, **C3b** (forged result + forged event in the
+  agent-writable store), as on 3.15.0 and 3.16.0. Every other invalid case is refused; several now with
+  `ARGUMENT_MISMATCH` or `HEAD_MISMATCH` (the F3/F4 identity checks run before the evidence checks) instead
+  of the earlier evidence code.
+- **C attested** (4 cases): 0 of 3 invalid accepted (C8a `RECEIPT_MISSING`, C8b `RECEIPT_UNTRUSTED_KEY`,
+  C8c `RECEIPT_NOT_PASSED`); C8d verified with completion identity `consistent`, only
+  `.ros/events/events.jsonl` changed, worktree clean.
+- **Gate check**: GATE-1, GATE-2 `EVIDENCE_UNRECOGNIZED`; GATE-3U `EVIDENCE_UNRECORDED`; GATE-4
+  `EVIDENCE_NOT_PASSED`; GATE-5 verified; **GATE-3 verified (exit 0)**, contradicting the expectation that
+  GATE-1..4 are rejected in non-attested mode. Attested: A1 `RECEIPT_MISSING` (derived path:
+  `EVIDENCE_MISSING`), A2 `RECEIPT_UNTRUSTED_KEY`, A2B `RECEIPT_INVALID_SIGNATURE`, A3 `RECEIPT_NOT_PASSED`,
+  A4 verified with clean completion identity.
+
+The gate is re-evaluated in `gate/gate-report.json` from these results only (see there); conditions that
+were not re-measured on 3.17.0 are marked as not re-run, never carried over as PASS. Hypotheses, metrics,
+D tasks and the D order of run-01 are unchanged.

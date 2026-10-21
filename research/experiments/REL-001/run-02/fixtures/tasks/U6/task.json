@@ -1,0 +1,48 @@
+{
+  "schema": "cbe.rel-001.run-02-task/1",
+  "id": "U6",
+  "workItem": "LEDGER-U6",
+  "title": "U6: Freezing accounts",
+  "category": "adversarial",
+  "requirementIds": [
+    "LEDGER-U6-R1",
+    "LEDGER-U6-R2"
+  ],
+  "requirementKeys": [
+    "requirements/U6.md#LEDGER-U6-R1",
+    "requirements/U6.md#LEDGER-U6-R2"
+  ],
+  "decisionIds": [
+    "DEC-U6-FREEZE-SCOPE"
+  ],
+  "expectedOutcome": {
+    "completion": "verified",
+    "oracle": "pass",
+    "description": "two agents, one work item: exactly one completion, no lost work, no duplicate active owner; the completed implementation passes the oracle"
+  },
+  "agents": 2,
+  "files": {
+    "requirement": {
+      "source": "tasks/U6/requirement.md",
+      "target": "requirements/U6.md",
+      "sha256": "bf808f64233e5e83e7d40fb27f8a7c800bfdfb620b1170e4ad232fc4f26fcd09"
+    },
+    "visibleTests": {
+      "source": "tasks/U6/U6AcceptanceTests.fs",
+      "target": "tests/Ledger.Tests/Acceptance/U6AcceptanceTests.fs",
+      "sha256": "9e3a9b26d32339d9345db87369a268aa1e4386ce2e917ce59191fd8680ae3c01"
+    },
+    "startOverlay": null,
+    "oracle": "oracle/U6/OracleTests.fs",
+    "reference": "reference/U6"
+  },
+  "contract": {
+    "path": "tasks/U6/contract.json",
+    "sha256": "8b2dc8e8315ec17a73d300ec1e7df8c223d25759e07f6b21162c57fdc16dc236",
+    "ordo": "1.17.0",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:755056029cfd95946cb7cd871266848d547b627eca7686ec513df42d9b7f449b",
+    "ordoDiagnostics": []
+  }
+}

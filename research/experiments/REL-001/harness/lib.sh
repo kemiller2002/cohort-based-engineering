@@ -14,7 +14,7 @@ export PATH="/root/.dotnet:$PATH" DOTNET_ROOT=/root/.dotnet DOTNET_CLI_TELEMETRY
 
 BASELINE_PRAXIS="$BIN/praxis-3.12.0/x/praxis-linux-x64/praxis"
 TREATMENT_PRAXIS="${REL001_TREATMENT_PRAXIS:-$BIN/praxis-3.15.0/x/praxis-linux-x64/praxis}"
-DOKIMOS="$BIN/dokimos-0.6.0/x/dokimos"
+DOKIMOS="${REL001_TREATMENT_DOKIMOS:-$BIN/dokimos-0.6.0/x/dokimos}"   # amendment A5: overridable (0.7.0 for the 3.17.0 re-run)
 SDE="${REL001_SDE:-$BIN/ordo-sde/sde}"
 
 # arm_init ARM: sets PRAXIS and the runtime identity environment.
@@ -29,6 +29,7 @@ arm_init() {
   PRAXIS_VERSION="$("$PRAXIS" --version 2>/dev/null | awk '{print $2}')"
   PRAXIS_SHA="$(sha256sum "$(dirname "$PRAXIS")/praxis-bin" | cut -d' ' -f1)"
   DOKIMOS_SHA="$(sha256sum "$DOKIMOS" | cut -d' ' -f1)"
+  DOKIMOS_VERSION="$("$DOKIMOS" --version 2>/dev/null | jq -r '.ReleaseVersion // empty' 2>/dev/null || true)"; DOKIMOS_VERSION="${DOKIMOS_VERSION:-0.6.0}"
   SDE_SHA="$(sha256sum "$( [ -f "$(dirname "$SDE")/sde.dll" ] && echo "$(dirname "$SDE")/sde.dll" || echo "$SDE")" | cut -d' ' -f1)"
 }
 
@@ -77,10 +78,10 @@ emit() {
   local out="$1" body="$2"
   mkdir -p "$(dirname "$out")"
   jq -cn --argjson b "$body" --arg arm "$ARM" --arg run "$RUN_ID" --arg pv "$PRAXIS_VERSION" --arg ps "$PRAXIS_SHA" \
-     --arg ds "$DOKIMOS_SHA" --arg ss "$SDE_SHA" --arg oc "$ORDO_COMMIT" --arg at "$(utc)" '
+     --arg ds "$DOKIMOS_SHA" --arg dv "$DOKIMOS_VERSION" --arg ss "$SDE_SHA" --arg oc "$ORDO_COMMIT" --arg at "$(utc)" '
     {schema:"cbe.rel-001.case-result/1", runId:$run, arm:$arm, recordedAt:$at,
      binaries:({praxis:{version:$pv, sha256:$ps}} +
-       (if $arm=="treatment" then {dokimos:{version:"0.6.0", sha256:$ds}, ordo:{commit:$oc, sdeDllSha256:$ss}} else {} end))} + $b' >> "$out"
+       (if $arm=="treatment" then {dokimos:{version:$dv, sha256:$ds}, ordo:{commit:$oc, sdeDllSha256:$ss}} else {} end))} + $b' >> "$out"
 }
 
 # ---- treatment helpers (Praxis >= 3.15.0). Output: JSON on stdout; exit code in $RC.
@@ -106,4 +107,12 @@ t_complete() { local dir="$1" actor="$2" id="$3" tok="$4" gen="$5" ev="$6" contr
 # claim_state DIR ID -> compact JSON of the current claim record.
 claim_state() { (cd "$1" && "$PRAXIS" work claims "$2" 2>/dev/null) | jq -c '(.claim // .claims[0] // .) | {status, effectiveStatus, generation, revision, holder: (.holder.claimant // null), pendingPacketDigest, consumed: (.consumedPacketDigests|length? // null), completed: (.completion != null)}' 2>/dev/null || echo null; }
 summ() { printf '%s' "$1" | jq -c '{outcome, code, codes: (.codes // null)} | with_entries(select(.value != null))' 2>/dev/null || jq -cn --arg t "${1:0:300}" '{unparsed:$t}'; }
-count_events() { local f="$1/.ros/events/events.jsonl"; if [ -f "$f" ]; then grep -c "\"type\":\"$2\"" "$f" || true; else echo 0; fi; }
+# Amendment A5: Praxis >= 3.17.0 writes claim-protocol events to the out-of-tree store
+# (<git-common-dir>/praxis/events.jsonl) and the canonical completion event to the tracked log, which the
+# store log mirrors under another eventId. Each log is complete for what it records, so a type's count is
+# the larger of its two counts (never their sum).
+count_events() {
+  local common t s; common=$(git -C "$1" rev-parse --path-format=absolute --git-common-dir 2>/dev/null || true)
+  t=$(grep -c "\"type\":\"$2\"" "$1/.ros/events/events.jsonl" 2>/dev/null || true)
+  s=$( [ -n "$common" ] && grep -c "\"type\":\"$2\"" "$common/praxis/events.jsonl" 2>/dev/null || true)
+  t=${t:-0}; s=${s:-0}; echo $(( t > s ? t : s )); }

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:ecc8f78ef8a359d0f0772e48b5d670af62a6d4c5295af61d1e07be17953c1407",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/U9.md#LEDGER-U9-R1",
+        "originalId": "LEDGER-U9-R1",
+        "document": "requirements/U9.md",
+        "location": "L46",
+        "revision": "sha256:ecc8f78ef8a359d0f0772e48b5d670af62a6d4c5295af61d1e07be17953c1407",
+        "contentDigest": "sha256:220aa467abb455d3127b925810ace0d327b5886b29949fc09c93ee4fd10cee56"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-U9-R1",
+        "COHORT-U9"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/U9.md#LEDGER-U9-R2",
+        "originalId": "LEDGER-U9-R2",
+        "document": "requirements/U9.md",
+        "location": "L61",
+        "revision": "sha256:ecc8f78ef8a359d0f0772e48b5d670af62a6d4c5295af61d1e07be17953c1407",
+        "contentDigest": "sha256:2f81ae1b2db88d5c49e34cb5b7d3336a17ff91c99287b45f536b1c0370b31af6"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-U9-R2",
+        "COHORT-U9"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/U9.md#LEDGER-U9-R3",
+        "originalId": "LEDGER-U9-R3",
+        "document": "requirements/U9.md",
+        "location": "L75",
+        "revision": "sha256:ecc8f78ef8a359d0f0772e48b5d670af62a6d4c5295af61d1e07be17953c1407",
+        "contentDigest": "sha256:c81eea404d8d08367d09cb160a3eba0b62d408ff8ba4653359ba38c7a3679941"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-U9-ROUND-ONCE",
+        "VERIFY-U9-R3",
+        "COHORT-U9"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-U9-ROUND-ONCE",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/U9.md#LEDGER-U9-R3"
+      ],
+      "dependsOn": [],
+      "justification": "reported figures are converted exactly, then rounded once in the reporting currency"
+    },
+    {
+      "id": "VERIFY-U9-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U9.md#LEDGER-U9-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-U9-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U9.md#LEDGER-U9-R2"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-U9-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U9.md#LEDGER-U9-R3"
+      ],
+      "dependsOn": [
+        "DEC-U9-ROUND-ONCE"
+      ]
+    },
+    {
+      "id": "COHORT-U9",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/U9.md#LEDGER-U9-R1",
+        "requirements/U9.md#LEDGER-U9-R2",
+        "requirements/U9.md#LEDGER-U9-R3"
+      ],
+      "dependsOn": [
+        "DEC-U9-ROUND-ONCE"
+      ]
+    }
+  ]
+}
