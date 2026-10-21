@@ -373,7 +373,7 @@ let usage (a: Map<string, string>) =
             match o["message"] with
             | :? JsonObject as m -> (match m["content"] with :? JsonArray as c -> c |> Seq.filter (fun b -> b <> null && str b "type" = Some "tool_use" && List.contains (str b "name" |> Option.defaultValue "") [ "Bash"; "Read"; "Grep"; "Glob"; "Edit"; "Write"; "NotebookEdit" ]) |> Seq.map (fun b -> b["input"].ToJsonString()) |> Seq.toList | _ -> [])
             | _ -> [])
-    let otherArm (s: string) = Regex.Matches(s, @"/home/user/vac-work/[^/\s""]+/[^/\s""]+") |> Seq.exists (fun m -> not (own.StartsWith m.Value))
+    let otherArm (s: string) = Regex.Matches(s, @"/home/user/vac-work/[\w.-]+/[\w.-]+") |> Seq.exists (fun m -> not (own.StartsWith m.Value))
     let hits = toolInputs |> List.filter (fun s -> forbidden |> List.exists s.Contains || otherArm s)
     // Scope check: absolute paths outside the workspace and outside the toolchain the brief provides.
     let allowedPrefixes = [ own; "/root/.dotnet"; "/usr/"; "/bin/"; "/dev/null"; "/proc/"; "/etc/"; "/root/.nuget" ]

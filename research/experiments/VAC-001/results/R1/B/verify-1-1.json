@@ -1,0 +1,108 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "R1",
+  "arm": "B",
+  "unit": 1,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "96663be00bf09c8063cc84059696a6cae10b124b",
+  "verifiedAt": "2026-10-21T08:37:02.9878775Z",
+  "verifyMs": 42646,
+  "stagedTasks": [
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": false,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 0,
+    "failed": 0,
+    "byTask": {},
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "Stop blocked instead of implementing sweep with one of the two conflicting zero-balance behaviours; no code in src/Ledger or tests was changed.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DIRECTIVES.md",
+            "kind": "brief-provided",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D2",
+        "statement": "The two decisions are same-level records (each a team decision inside the same requirement, neither newer nor narrower), so the directives\u0027 tie-break rule does not resolve the conflict and the outcome materially changes the authorized behaviour; this is escalated rather than decided.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DIRECTIVES.md",
+            "kind": "brief-provided",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "LEDGER-V7-R1 cannot be met as written: DEC-V7-EMPTY-NOOP requires sweeping a zero-balance account to return Ok with the ledger unchanged, while DEC-V7-ONE-PAIR requires every accepted sweep to record exactly one pair of postings and a sweep that would record none to be refused with Error (InvalidAmount 0m). For a source balance of 0 the two decisions prescribe mutually exclusive results, and the acceptance criteria require each statement to hold. Choosing one would silently overrule a recorded decision of another team (Operations vs Audit), which needs an owner\u0027s resolution."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

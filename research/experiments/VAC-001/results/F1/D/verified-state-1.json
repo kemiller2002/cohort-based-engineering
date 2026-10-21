@@ -1,0 +1,79 @@
+{
+  "schema": "vac.verified-state/1",
+  "updatedAfterUnit": 1,
+  "verifier": "VAC-001 host verifier (hidden oracle, build, tests, VAC-RULES 1.0.0)",
+  "head": "020e69c1f445b1d9f67e45fb62dada58c2aba40e",
+  "promotionRule": "a decision is verified only when its Layer 1 evidence is valid and its unit was independently accepted; invalid evidence is rejected; everything else stays provisional",
+  "requirements": [
+    {
+      "id": "LEDGER-V8-R1",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V8-R2",
+      "unit": 1,
+      "status": "verified"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "The daily limit is inclusive: withdrawals per account and business date may total exactly 500.00; refusal only when withdrawn \u002B amount \u003E 500.00, with remaining = 500.00 - withdrawn.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D3",
+      "statement": "Refusal checks run in the required order: InvalidAmount, UnknownAccount, InsufficientFunds, DailyLimitExceeded; refusals return Error and change nothing.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D4",
+      "statement": "Relied on existing Ledger.balance/postingsOf (derived balances) and the private post helper so the withdrawal posting is stamped with LedgerState.Today.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D5",
+      "statement": "Added Store.withdraw that commits Ledger.withdraw and shifts the balance cache, keeping DEC-BASE-STORE-CACHE.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    }
+  ],
+  "provisional": [
+    {
+      "id": "U1-D2",
+      "statement": "A withdrawal is identified by reference \u0027withdraw\u0027, a negative amount and Date = LedgerState.Today; Posting gets no new field. Positive postings with that reference are ignored (assumption); debit/transfer with the literal reference \u0027withdraw\u0027 would count.",
+      "unit": 1,
+      "task": "V8",
+      "status": "provisional",
+      "basis": "assumption",
+      "invalidRefs": []
+    }
+  ],
+  "rejected": [],
+  "constraints": [
+    "VAC-RULES 1.0.0: docs/architecture/RULES.md"
+  ],
+  "lastUnit": {
+    "unit": 1,
+    "task": "V8",
+    "accepted": true,
+    "failingChecks": [],
+    "architectureViolations": []
+  }
+}

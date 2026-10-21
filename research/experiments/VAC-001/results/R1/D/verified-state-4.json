@@ -1,0 +1,165 @@
+{
+  "schema": "vac.verified-state/1",
+  "updatedAfterUnit": 4,
+  "verifier": "VAC-001 host verifier (hidden oracle, build, tests, VAC-RULES 1.0.0)",
+  "head": "bdcd825e22e0689296fcb2be325b3bbc7cb76144",
+  "promotionRule": "a decision is verified only when its Layer 1 evidence is valid and its unit was independently accepted; invalid evidence is rejected; everything else stays provisional",
+  "requirements": [
+    {
+      "id": "LEDGER-V7-R1",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R1",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R2",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V1-R1",
+      "unit": 3,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V2-R1",
+      "unit": 4,
+      "status": "verified"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "Did not implement sweep: engineering control 1 forbids implementation when Ordo reports any diagnostic; work item LEDGER-V7 recorded as blocked in Praxis.",
+      "unit": 1,
+      "task": "V7",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D1",
+      "statement": "The fee rule exists only in Ledger.periodFee; feeFor maps balance through periodFee (so it inherits UnknownAccount from balance) and closePeriod charges periodFee of each balance.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D2",
+      "statement": "R2 table boundaries are inclusive lower bounds: 1.00 pays 1.00, 999.99 pays 1.00, 1000.00 pays 0.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D3",
+      "statement": "closePeriod records a fee posting only when the fee is more than 0, lists every account in Fees (0 when none), and keeps its ClosedPeriods-based idempotence; Store needs no change because it has no closePeriod operation.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D4",
+      "statement": "Implemented R1 (old rule extracted unchanged) as its own commit before changing the rule for R2, as the requirement orders.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D1",
+      "statement": "Closed accounts are remembered in a new LedgerState.ClosedAccounts set; closeAccount moves the id from Accounts to ClosedAccounts, so every existing operation (balance, credit, debit, transfer, feeFor, closePeriod) treats it as unknown without changes. This adds a record field but changes no function signature; it stores ids, not balances.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D2",
+      "statement": "openAccount refuses an id in Accounts or ClosedAccounts with DuplicateAccount, whether or not the closed account had postings.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D3",
+      "statement": "closeAccount is built on balance: UnknownAccount comes first, then NonZeroBalance(id, current balance) for any balance other than 0; refusals change nothing.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D4",
+      "statement": "Store gets no closeAccount in this unit, so its balance cache cannot drift; a future Store.closeAccount must also drop the id from the cache.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D5",
+      "statement": "Earlier period summaries in ClosedPeriods keep listing an account closed later; only closes after the account is closed omit it.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D1",
+      "statement": "richest orders open accounts by balance descending, then id ascending with String.CompareOrdinal, and truncates to count (0 gives [], a larger count gives all open accounts); a negative count is refused with InvalidCount count.",
+      "unit": 4,
+      "task": "V2",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D2",
+      "statement": "Open accounts are LedgerState.Accounts; closed accounts (ClosedAccounts) do not take part and zero-balance open accounts do.",
+      "unit": 4,
+      "task": "V2",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D3",
+      "statement": "Balances for richest are derived in one fold over the journal rather than per-account balance calls; still derived from postings, and records nothing.",
+      "unit": 4,
+      "task": "V2",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    }
+  ],
+  "provisional": [],
+  "rejected": [],
+  "constraints": [
+    "VAC-RULES 1.0.0: docs/architecture/RULES.md"
+  ],
+  "lastUnit": {
+    "unit": 4,
+    "task": "V2",
+    "accepted": true,
+    "failingChecks": [],
+    "architectureViolations": []
+  }
+}
