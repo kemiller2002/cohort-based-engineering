@@ -1,0 +1,81 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "C",
+  "unit": 1,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "0d7b736d7bbecb28eb4616178a496f904d9c75b0",
+  "verifiedAt": "2026-10-21T08:00:25.9237642Z",
+  "verifyMs": 15582,
+  "stagedTasks": [
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": false,
+    "exit": 1,
+    "compilerErrors": 6,
+    "cases": 0,
+    "failed": 0,
+    "byTask": {},
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "Stop blocked without implementing sweep, because Ordo contract admission reported a diagnostic; neither conflicting team decision was chosen over the other.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "contracts/V7.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "Contract admission failed: \u0060ordo ecir check --blueprint contracts/V7.json --json\u0060 reported ORDO.CONTRACT.UNRESOLVED_CONFLICT (subject requirements/V7.md#LEDGER-V7-R1-\u003ECONFLICT-V7-EMPTY-SWEEP). DEC-V7-EMPTY-NOOP (zero-balance sweep returns Ok, ledger unchanged) and DEC-V7-ONE-PAIR (sweep recording no postings is refused with Error (InvalidAmount 0m)) contradict for an empty source. Per engineering control 1, implementation was not started."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

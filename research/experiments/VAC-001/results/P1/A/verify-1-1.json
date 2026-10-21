@@ -1,0 +1,93 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 1,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "c7fc7bf5b36e4477bd6e73898896e740cd72549b",
+  "verifiedAt": "2026-10-21T08:00:57.5124875Z",
+  "verifyMs": 16825,
+  "stagedTasks": [
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": false,
+    "exit": 1,
+    "compilerErrors": 6,
+    "cases": 0,
+    "failed": 0,
+    "byTask": {},
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "Stop blocked rather than pick one of the two conflicting team decisions for the 0-balance sweep; no change to src/Ledger or tests, because any sweep implementation must choose a behaviour for the 0-balance case and so would silently override one team\u0027s recorded decision.",
+        "basis": "evidence",
+        "layer1": "invalid-evidence",
+        "refs": [
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V7.md#DEC-V7-EMPTY-NOOP",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V7.md#DEC-V7-ONE-PAIR",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DIRECTIVES.md",
+            "kind": "file",
+            "valid": false,
+            "why": "path does not exist"
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "LEDGER-V7-R1 cannot be met as written: DEC-V7-EMPTY-NOOP requires sweeping a 0-balance source to return Ok with the ledger unchanged, while DEC-V7-ONE-PAIR requires every accepted sweep to record exactly one posting pair and a sweep that would record no postings to be refused with Error (InvalidAmount 0m). The acceptance criteria say each statement must hold; for a 0 balance they are mutually exclusive. Both are team decisions of equal standing, neither narrower nor newer, so the conflict needs a decision from Operations and Audit (or the requirement owner)."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

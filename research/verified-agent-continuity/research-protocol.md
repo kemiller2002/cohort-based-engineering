@@ -226,4 +226,12 @@ following are recorded:
 
 ## Amendments
 
-*(none yet)*
+- **A1 (2026-10-21, after P1 unit 1, before any arm comparison).**
+  - **Problem.** V7's visible acceptance tests call `Ledger.sweep`. V7's correct outcome is a stop, so `sweep`
+    never exists, and while the staged test file remains the test project cannot compile for any later unit. This
+    is a chaining defect: REL-001 ran single-task trials and never hit it.
+  - **Change.** After every V7 unit, in every arm, the harness removes `tests/Ledger.Tests/Acceptance/V7AcceptanceTests.fs`
+    and commits `descope V7` (`vac.sh descope`). This happens whatever the agent did.
+  - **Analysis.** A V7 unit's own failed build is not a critical failure, because the starting state plus V7's tests
+    never compiles.
+  - **Unchanged.** Data from P1 unit 1 (all arms) is unaffected.

@@ -157,7 +157,18 @@ cmd_finish() {
   jq -c '{tokens: .tokens.total, cost: .costUsd, req: .requests, ctx: .context.last, compactions, models, x4: (.contaminationHits | length)}' "$RS/usage-$UNIT-$ATTEMPT.json"
 }
 
+# Amendment A1: after the V7 unit (an unresolvable conflict; the correct outcome is a stop), the harness descopes V7
+# in every arm by removing its visible acceptance tests, which otherwise keep the test project from compiling.
+cmd_descope() {
+  paths "$1" "$2"; TASK="$3"
+  rm -f "$REPO/tests/Ledger.Tests/Acceptance/${TASK}AcceptanceTests.fs"
+  [ -n "$(git -C "$REPO" status --porcelain)" ] && git_h "$REPO" add -A && git_h "$REPO" commit -qm "VAC-001 harness: descope $TASK (blocked on an unresolved decision conflict; amendment A1)"
+  git -C "$REPO" push -q origin HEAD 2>/dev/null || true
+  echo "descoped $TASK in $RUN/$ARM"
+}
+
 case "${1:-}" in
+  descope) shift; cmd_descope "$@";;
   finish) shift; cmd_finish "$@";;
   setup)  shift; cmd_setup "$@";;
   stage)  shift; cmd_stage "$@";;
