@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ARCH-001 scoring, measurement half (adapted from REL-001 run-03 harness/score.sh; see PROVENANCE.md).
-#   usage: score.sh RUNID [--assemble-only]
+#   usage: score.sh RUNID [--assemble-only|--arch-only]
 # Everything runs in RUN/state/score from PRISTINE harness-side inputs (sealed oracle and probes from
 # ARCH001_SEALED_DIR, the pristine policy and contracts, the source verifier dist), never from the workspace.
 # Commits scored, per phase k: S_k = the last submitted commit of phase k (or, with no submit, the phase-1
@@ -12,8 +12,10 @@
 #   visible tests at S1 and S2 (TRX) for "pre-existing visible tests broken".
 # Then score.py assembles the observation; non-smoke observations are copied to $ARCH001_OBSERVATIONS/RUNID.json.
 source "$(dirname "$0")/lib.sh"
-run_paths "${1:?usage: score.sh RUNID [--assemble-only]}"
+run_paths "${1:?usage: score.sh RUNID [--assemble-only|--arch-only]}"
 ASSEMBLE_ONLY=false; [ "${2:-}" = --assemble-only ] && ASSEMBLE_ONLY=true
+# Amendment A4: --arch-only re-runs only the verifier steps at the commits already recorded in commits.json.
+ARCH_ONLY=false; [ "${2:-}" = --arch-only ] && ARCH_ONLY=true
 RJ="$ST/run.json"; [ -f "$RJ" ] || { echo "no run.json for $RUN_ID" >&2; exit 2; }
 TASK=$(jq -r .task "$RJ"); ARM=$(jq -r .arm "$RJ"); LABEL=$(jq -r .label "$RJ")
 load_run_config
@@ -80,12 +82,19 @@ archcheck() {  # LABEL COMMIT [CONTRACT_NAME]
   export_tree "$c" "$d/tree" --git
   AC=$(archcheck_cmd)
   [ -n "$cn" ] && [ -f "$PRISTINE/$cn" ] && extra+=(--contract "$PRISTINE/$cn")
-  if [ -f "$ORACLE_DIR/probes.json" ] && $AC verify --help 2>&1 | grep -q -- '--probes'; then extra+=(--probes "$ORACLE_DIR/probes.json"); echo true > "$d/probes"; else echo false > "$d/probes"; fi
+  # Amendment A4: the pinned archcheck takes --probes. Feature detection through `verify --help | grep -q` always
+  # failed under pipefail (archcheck exits 2 on --help), which silently dropped the probes; they are now always passed.
+  if [ -f "$ORACLE_DIR/probes.json" ]; then extra+=(--probes "$ORACLE_DIR/probes.json"); echo true > "$d/probes"; else echo false > "$d/probes"; fi
   set +e; ( cd "$d/tree" && $AC verify --repo "$d/tree" --policy "$PRISTINE/policy.json" "${extra[@]}" --json --out "$d/report.json" > "$d/output.txt" 2>&1 ); echo $? > "$d/exit"; set -e
   rm -rf "$d/tree"
 }
 
-if ! $ASSEMBLE_ONLY; then
+if $ARCH_ONLY; then
+  S1=$(jq -r '.S1 // empty' "$SC/commits.json"); S2=$(jq -r '.S2 // empty' "$SC/commits.json")
+  C1=""; C2=""; has_contract "$ARM" && { C1="$TASK.contract.json"; C2="$TASK-followup.contract.json"; }
+  archcheck p1 "$S1" "$C1"
+  if [ -n "$S2" ]; then archcheck p2 "$S2" "$C2"; has_contract "$ARM" && archcheck p2-initial-contract "$S2" "$C1"; fi
+elif ! $ASSEMBLE_ONLY; then
   rm -rf "${SC:?}"; mkdir -p "$SC"
   S1=$(submitted 1 last); [ -n "$S1" ] || S1=$(jq -r '.phase1Commit // .phases["1"].endHead' "$RJ")
   S2=$(submitted 2 last); [ -n "$S2" ] || S2=$(jq -r '.phases["2"].endHead // empty' "$RJ")

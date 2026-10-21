@@ -145,14 +145,27 @@ def subset(run, names_or_prefixes=None, pattern=None):
     return {**s, "tests": [t["name"] for t in pick]}
 
 
-def regression_subset(run, manifest):
+# Amendment A3 (during confirmatory scoring, arm-blind): an initial-oracle test that a task's follow-up deliberately
+# supersedes is not a regression test. "Superseded" is defined by the sealed reference, not by any trial: the
+# InitialOracle tests that FAIL on the follow-up-good reference (harness/amendments/A3-superseded.json, produced by
+# harness/amendments/superseded.sh). They are removed from the phase-2 regression set (labelled or fallback).
+def superseded(task):
+    path = os.environ.get("ARCH001_A3_SUPERSEDED", os.path.join(os.path.dirname(os.path.abspath(__file__)), "amendments", "A3-superseded.json"))
+    doc = read_json(path, {}) or {}
+    return tuple((doc.get(task) or {}).get("superseded") or ())
+
+
+def regression_subset(run, manifest, task=None):
     if run is None:
         return None
+    drop = set(superseded(task)) if task else set()
+    if drop:
+        run = {**run, "tests": [t for t in run["tests"] if (t["name"] or "") not in drop and short_name(t["name"]) not in drop]}
     if manifest.get("regression"):
         return {**subset(run, names_or_prefixes=manifest["regression"]), "basis": "oracle.json regression list"}
     if any("regression" in (t["name"] or "").lower() for t in run["tests"]):
         return {**subset(run, pattern=r"(?i)regression"), "basis": "test names containing 'Regression'"}
-    return {**subset(run), "basis": "no labels: every InitialOracle test"}
+    return {**subset(run), "basis": "no labels: every InitialOracle test" + (" not superseded by the follow-up (amendment A3)" if drop else "")}
 
 
 def visible_run(score_dir, label):
@@ -406,7 +419,7 @@ def main(argv):
 
     phases = {str(k): phase_block(run, k, state, price, ledger) for k in (1, 2)}
     o = {lab: oracle_run(sc, lab) for lab in ("p1", "p1-first", "p2", "p2-regression", "p2-first")}
-    reg = regression_subset(o["p2-regression"], manifest)
+    reg = regression_subset(o["p2-regression"], manifest, run["task"])
     a = {lab: arch_run(sc, lab) for lab in ("p1", "p2", "p2-initial-contract")}
     vis = {lab: visible_run(sc, lab) for lab in ("p1", "p2")}
 
@@ -436,9 +449,13 @@ def main(argv):
 
     dec_rx = manifest.get("decisionTests") or DEC_ID.pattern
     con_rx = manifest.get("conflictTests") or r"CONFLICT"
-    scored_runs = [r for r in (o["p1"], o["p2"], o["p2-regression"]) if r]
+    # Amendment A3: the phase-2 regression run counts only its regression subset (superseded tests are not decision
+    # failures), and conflict tests are scored where the conflict exists, at S1.
+    reg_run = (None if not o["p2-regression"] or reg is None else
+               {**o["p2-regression"], "tests": [t for t in o["p2-regression"]["tests"] if t["name"] in set(reg["tests"])]})
+    scored_runs = [r for r in (o["p1"], o["p2"], reg_run) if r]
     dec = [subset(r, pattern=dec_rx) for r in scored_runs]
-    con = [subset(r, pattern=con_rx) for r in scored_runs]
+    con = [subset(r, pattern=con_rx) for r in ([o["p1"]] if o["p1"] else [])]
     dsum = lambda xs, key: sum(x[key] for x in xs if x)
     conflict_applicable = bool(tj.get("conflict")) or dsum(con, "total") > 0
 
