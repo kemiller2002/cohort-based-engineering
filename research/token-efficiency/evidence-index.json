@@ -822,6 +822,71 @@
       ],
       "classification": "proposed-unimplemented",
       "confidence": "low"
+    },
+    {
+      "id": "TE-H21",
+      "sourceIds": [
+        "VAC-001 P1",
+        "VAC-001 R1"
+      ],
+      "mechanism": [
+        "long-vs-short-lived-agents",
+        "context-reconstruction-cost",
+        "repeated-repository-discovery"
+      ],
+      "baseline": "A: fresh general-purpose sub-agent per unit, handoff = previous agent-written unit report; chained 8-unit Ledger V1-V8 sequence, hidden oracle acceptance",
+      "treatment": "B: one sub-agent continued via SendMessage across the same 8 units",
+      "rawDataPaths": [
+        "cohort-based-engineering:research/experiments/VAC-001/results/{P1,R1}/{A,B}/usage-*.json",
+        "cohort-based-engineering:research/experiments/VAC-001/results/{P1,R1}/{A,B}/requests.jsonl"
+      ],
+      "metric": "total tokens (input + cache write + cache read + output lower bound) over 2 chains x 8 units",
+      "baselineValue": 10533719,
+      "treatmentValue": 9776823,
+      "deltaPct": -7.2,
+      "reproducible": "yes from the committed content-free request ledgers; raw transcripts not committed (identity/environment context)",
+      "secondaryObservations": "Cost (lower bound, price table 2026-10-20.1): A $5.01 vs B $2.96; paired bootstrap cost per accepted unit B vs A -40.9% (CI -48.1% to -33.0%, 16 blocks). Token difference is small; cost difference comes from cache writes (2.7-3x in A) and requests per unit (~10 vs ~6.7). Acceptance 16/16 both arms; 0 regressions, 0 false completions.",
+      "confounders": "K0 shared prompt cache with orchestrator; arms ran concurrently; single fixture; correctness at ceiling",
+      "classification": "supported (this fixture)",
+      "confidence": "moderate",
+      "repo": "kemiller2002/cohort-based-engineering",
+      "branch": "claude/verified-agent-continuity-vfjrrx (preregistered at 05b3cf2)",
+      "protocolPath": "cohort-based-engineering:research/verified-agent-continuity/research-protocol.md",
+      "model": "claude-opus-5-5, effort medium (every request, from transcripts)",
+      "toolchainVersions": "Claude Code sub-agents (K0, shared prompt-cache prefix); Ordo 1.17.0 @bb43c26; Praxis 3.19.0 @986211c; .NET 10.0.402",
+      "comparable": true
+    },
+    {
+      "id": "TE-H22",
+      "sourceIds": [
+        "VAC-001 F1"
+      ],
+      "mechanism": [
+        "verified-state-reconstruction",
+        "context-reconstruction-cost",
+        "structured-handoff"
+      ],
+      "baseline": "D: one sub-agent continued across 8 units with Ordo, Praxis work protocol, host gate and verified state",
+      "treatment": "DR: identical controls and verified state, fresh sub-agent per unit (reconstructed context)",
+      "rawDataPaths": [
+        "cohort-based-engineering:research/experiments/VAC-001/results/F1/{D,DR}/usage-*.json",
+        "cohort-based-engineering:research/experiments/VAC-001/results/F1/{D,DR}/requests.jsonl"
+      ],
+      "metric": "total tokens over 1 chain x 8 units (5 injected faults, identical in both arms)",
+      "baselineValue": 6081559,
+      "treatmentValue": 7447082,
+      "deltaPct": 22.5,
+      "reproducible": "yes from committed ledgers",
+      "secondaryObservations": "Cost lower bound D $1.81 vs DR $3.37 (+86%); both 8/8 accepted, 0/5 faults accepted, 15/15 requirements verified with IDs preserved.",
+      "confounders": "n = 1 chain per arm; fault units identical in both",
+      "classification": "contradicts 'verified state replaces continuity at lower cost' (this fixture); consistent with TE-H04",
+      "confidence": "low",
+      "repo": "kemiller2002/cohort-based-engineering",
+      "branch": "claude/verified-agent-continuity-vfjrrx (preregistered at 05b3cf2)",
+      "protocolPath": "cohort-based-engineering:research/verified-agent-continuity/research-protocol.md",
+      "model": "claude-opus-5-5, effort medium (every request, from transcripts)",
+      "toolchainVersions": "Claude Code sub-agents (K0, shared prompt-cache prefix); Ordo 1.17.0 @bb43c26; Praxis 3.19.0 @986211c; .NET 10.0.402",
+      "comparable": true
     }
   ]
 }

@@ -23,9 +23,18 @@
     "budgetPerUnit": "no hard timeout (sub-agents); wall-clock recorded"
   },
   "tools": {
-    "ordo": { "version": "1.17.0", "source": "kemiller2002/ordo@bb43c26, dotnet build src/Sde.Cli -c Release" },
-    "praxis": { "version": "3.19.0", "source": "kemiller2002/praxis@986211c, dotnet build Praxis.slnx -c Release" },
-    "archcheck": { "rules": "VAC-RULES 1.0.0 (research/experiments/VAC-001/arm-files/RULES.md), derived from SDE-DOCTRINE-003 v0.2.1", "controls": "research/experiments/VAC-001/evidence/detector-controls-archcheck.tsv" },
+    "ordo": {
+      "version": "1.17.0",
+      "source": "kemiller2002/ordo@bb43c26, dotnet build src/Sde.Cli -c Release"
+    },
+    "praxis": {
+      "version": "3.19.0",
+      "source": "kemiller2002/praxis@986211c, dotnet build Praxis.slnx -c Release"
+    },
+    "archcheck": {
+      "rules": "VAC-RULES 1.0.0 (research/experiments/VAC-001/arm-files/RULES.md), derived from SDE-DOCTRINE-003 v0.2.1",
+      "controls": "research/experiments/VAC-001/evidence/detector-controls-archcheck.tsv"
+    },
     "dotnet": "SDK 10.0.402, runtime 8.0 (for Ordo)"
   },
   "seed": 20261021,
@@ -38,34 +47,165 @@
   },
   "runs": [
     {
-      "id": "P1", "purpose": "pilot", "arms": ["A", "B", "C", "D"], "armLaunchOrder": ["B", "A", "C", "D"],
+      "id": "P1",
+      "purpose": "pilot",
+      "arms": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "armLaunchOrder": [
+        "B",
+        "A",
+        "C",
+        "D"
+      ],
       "units": [
-        { "unit": 1, "task": "V7", "fault": "none" }, { "unit": 2, "task": "V5", "fault": "none" },
-        { "unit": 3, "task": "V1", "fault": "none" }, { "unit": 4, "task": "V4", "fault": "none" },
-        { "unit": 5, "task": "V8", "fault": "none" }, { "unit": 6, "task": "V2", "fault": "none" },
-        { "unit": 7, "task": "V6", "fault": "none" }, { "unit": 8, "task": "V3", "fault": "none" }
+        {
+          "unit": 1,
+          "task": "V7",
+          "fault": "none"
+        },
+        {
+          "unit": 2,
+          "task": "V5",
+          "fault": "none"
+        },
+        {
+          "unit": 3,
+          "task": "V1",
+          "fault": "none"
+        },
+        {
+          "unit": 4,
+          "task": "V4",
+          "fault": "none"
+        },
+        {
+          "unit": 5,
+          "task": "V8",
+          "fault": "none"
+        },
+        {
+          "unit": 6,
+          "task": "V2",
+          "fault": "none"
+        },
+        {
+          "unit": 7,
+          "task": "V6",
+          "fault": "none"
+        },
+        {
+          "unit": 8,
+          "task": "V3",
+          "fault": "none"
+        }
       ]
     },
     {
-      "id": "R1", "purpose": "replication", "arms": ["A", "B", "C", "D"],
+      "id": "R1",
+      "purpose": "replication",
+      "arms": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
       "units": [
-        { "unit": 1, "task": "V7", "fault": "none" }, { "unit": 2, "task": "V4", "fault": "none" },
-        { "unit": 3, "task": "V1", "fault": "none" }, { "unit": 4, "task": "V2", "fault": "none" },
-        { "unit": 5, "task": "V6", "fault": "none" }, { "unit": 6, "task": "V8", "fault": "none" },
-        { "unit": 7, "task": "V3", "fault": "none" }, { "unit": 8, "task": "V5", "fault": "none" }
+        {
+          "unit": 1,
+          "task": "V7",
+          "fault": "none"
+        },
+        {
+          "unit": 2,
+          "task": "V4",
+          "fault": "none"
+        },
+        {
+          "unit": 3,
+          "task": "V1",
+          "fault": "none"
+        },
+        {
+          "unit": 4,
+          "task": "V2",
+          "fault": "none"
+        },
+        {
+          "unit": 5,
+          "task": "V6",
+          "fault": "none"
+        },
+        {
+          "unit": 6,
+          "task": "V8",
+          "fault": "none"
+        },
+        {
+          "unit": 7,
+          "task": "V3",
+          "fault": "none"
+        },
+        {
+          "unit": 8,
+          "task": "V5",
+          "fault": "none"
+        }
       ]
     },
     {
-      "id": "F1", "purpose": "fault injection (Phase 5) and reconstructed context (Phase 6)", "arms": ["A", "B", "D", "DR"],
+      "id": "F1",
+      "purpose": "fault injection (Phase 5) and reconstructed context (Phase 6)",
+      "arms": [
+        "A",
+        "B",
+        "D",
+        "DR"
+      ],
       "units": [
-        { "unit": 1, "task": "V8", "fault": "none" },
-        { "unit": 2, "task": "V4", "fault": "F3-MISLEADING-COMPLETION" },
-        { "unit": 3, "task": "V1", "fault": "F4-DEPENDENCY-VERSION" },
-        { "unit": 4, "task": "V6", "fault": "F5-INVALID-HANDOFF-ASSUMPTION" },
-        { "unit": 5, "task": "V3", "fault": "F1-NONEXISTENT-API" },
-        { "unit": 6, "task": "V7", "fault": "none" },
-        { "unit": 7, "task": "V2", "fault": "none" },
-        { "unit": 8, "task": "V5", "fault": "F2-REJECTED-DECISION" }
+        {
+          "unit": 1,
+          "task": "V8",
+          "fault": "none"
+        },
+        {
+          "unit": 2,
+          "task": "V4",
+          "fault": "F3-MISLEADING-COMPLETION"
+        },
+        {
+          "unit": 3,
+          "task": "V1",
+          "fault": "F4-DEPENDENCY-VERSION"
+        },
+        {
+          "unit": 4,
+          "task": "V6",
+          "fault": "F5-INVALID-HANDOFF-ASSUMPTION"
+        },
+        {
+          "unit": 5,
+          "task": "V3",
+          "fault": "F1-NONEXISTENT-API"
+        },
+        {
+          "unit": 6,
+          "task": "V7",
+          "fault": "none"
+        },
+        {
+          "unit": 7,
+          "task": "V2",
+          "fault": "none"
+        },
+        {
+          "unit": 8,
+          "task": "V5",
+          "fault": "F2-REJECTED-DECISION"
+        }
       ]
     }
   ],
@@ -75,5 +215,16 @@
     "X4": "contamination: an agent tool input names the oracle, fixture, harness state or another arm's workspace",
     "X7": "orchestrator delivery error"
   },
-  "status": { "P1": "pending", "R1": "pending", "F1": "pending" }
+  "status": {
+    "P1": "complete (32 units)",
+    "R1": "complete (32 units)",
+    "F1": "complete (32 units)",
+    "layer3": "complete (202 decisions, 2 reviewers + adjudicator)",
+    "amendments": [
+      "A1",
+      "A2",
+      "A3",
+      "A4"
+    ]
+  }
 }
