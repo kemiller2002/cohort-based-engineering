@@ -1,0 +1,100 @@
+{
+  "acceptanceDifferenceD-A": {
+    "delta 0.15": {
+      "replicatesPerCell": 4,
+      "trialsPerArm": 25
+    },
+    "delta 0.2": {
+      "replicatesPerCell": 2,
+      "trialsPerArm": 14
+    },
+    "delta 0.3": {
+      "replicatesPerCell": 1,
+      "trialsPerArm": 7
+    }
+  },
+  "archAcceptanceRatePooled": {
+    "clampedTo": [
+      0.05,
+      0.95
+    ],
+    "designEffect": 1.5,
+    "rate": 0.95
+  },
+  "assumptions": "two-sided alpha 0.05, power 0.80; normal approximation; rho 0.5 within trial; pilot spread is a floor estimate",
+  "decision": {
+    "capBinds": false,
+    "maxReplicatesUnderCap": 77,
+    "needed": 2,
+    "replicates": 2,
+    "rule": "replicates = max(2, min(needed, maxReplicatesUnderCap, 5)); needed = max(acceptance delta 0.20, ratio 0.70 at x1.0 spread)"
+  },
+  "label": "PILOT ESTIMATE (planning only; 1 replicate x 2 tasks per arm)",
+  "logRatioVariancePerTrialPooled": 0.046635,
+  "pilotTrials": 8,
+  "primaryRatioD/A": {
+    "spread x1.0": {
+      "ratio 0.6": {
+        "replicatesPerCell": 1,
+        "trialsPerArm": 3
+      },
+      "ratio 0.7": {
+        "replicatesPerCell": 1,
+        "trialsPerArm": 6
+      },
+      "ratio 0.8": {
+        "replicatesPerCell": 2,
+        "trialsPerArm": 15
+      }
+    },
+    "spread x1.5": {
+      "ratio 0.6": {
+        "replicatesPerCell": 1,
+        "trialsPerArm": 7
+      },
+      "ratio 0.7": {
+        "replicatesPerCell": 2,
+        "trialsPerArm": 13
+      },
+      "ratio 0.8": {
+        "replicatesPerCell": 5,
+        "trialsPerArm": 34
+      }
+    }
+  },
+  "resource": {
+    "byReplicates": {
+      "2": {
+        "costUsd": 38.69,
+        "trials": 64,
+        "wallHoursAtConcurrency": 1.69
+      },
+      "3": {
+        "costUsd": 58.03,
+        "trials": 96,
+        "wallHoursAtConcurrency": 2.53
+      },
+      "4": {
+        "costUsd": 77.37,
+        "trials": 128,
+        "wallHoursAtConcurrency": 3.38
+      },
+      "5": {
+        "costUsd": 96.72,
+        "trials": 160,
+        "wallHoursAtConcurrency": 4.22
+      },
+      "6": {
+        "costUsd": 116.06,
+        "trials": 192,
+        "wallHoursAtConcurrency": 5.07
+      }
+    },
+    "capUsd": 1500.0,
+    "costPerReplicateUsd": 19.34,
+    "maxReplicatesUnderCap": 77,
+    "meanCostPerTrialUsd": 0.6045,
+    "meanWallMinutesPerTrial": 4.75
+  },
+  "tasks": 8
+}
