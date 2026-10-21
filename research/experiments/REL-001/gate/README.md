@@ -5,6 +5,11 @@
 - P4 passes as preregistered in run-01. Its original GATE-3 shape is a forged result with no event (GATE-3U), and it is rejected.
 - The stricter case added afterwards (P4S) behaves differently by mode:
   - In non-attested mode, a forged result plus a forged validation event in the out-of-tree store still completes an item (GATE-3, C3b). This is blocker REL-GATE-003, filed in the Praxis intake.
+  - **Re-run on Praxis v3.18.0 (2026-10-21T01:51Z):**
+    - Same outcomes as 3.17.0 in every case.
+    - REL-GATE-003 is resolved: `requireVerifiedCompletion` now implies attestation, and GATE-3 completes only where no
+      attestation is required, labelled `unattested`.
+    - REL-GATE-004 is open: the attestation policy and authority must come from a source the agent cannot write.
   - Attested mode refuses every forgery (GATE-A1..A3) and verifies the genuine pass (GATE-A4).
 - O3, O4 and D3 were re-measured at the release tags.
 

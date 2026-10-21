@@ -1,799 +1,840 @@
 {
- "schema": "cbe.rel-001.gate-report/1",
- "experiment": "REL-001",
- "evaluatedAt": "2026-10-20T13:13:19Z",
- "gate": "PASS (attested configuration) / FAIL (non-attested configuration)",
- "decision": "Coordinator decision 2026-10-20T13:18:21Z: the strict-forgery condition is kept, not relaxed, and reported per configuration. Run-02 may start because its optimized arm runs only in attested mode, where every condition passes; the non-attested FAIL is carried as REL-GATE-003 and gates any rollout of non-attested verified completion (praxis docs/verified-completion-rollout.md).",
- "pins": {
-  "praxis": {
-   "release": "v3.17.0",
-   "commit": "aea29b4a",
-   "asset": "praxis-linux-x64.tar.gz",
-   "sha256": "4c0819aba084387545d5ac72d073abfdfc44c06e2225550e2be8c3babd0da23e",
-   "binarySha256": "a5ec4a149be18731ab56010905900df39aa314b5f241091476e8c360ceaa83f6"
-  },
-  "dokimos": {
-   "release": "dokimos-v0.7.0",
-   "commit": "04b5f856367b47a087285109c1fc5923ec351389",
-   "asset": "dokimos-linux-x64.tar.gz",
-   "sha256": "369917447350acd76b4e7d7a805abd9cfefbefa1922845e301052b9b82430a13",
-   "binarySha256": "2f8ca8f96efc443cdf5f9eec805aaacb748c73bb947bd4a44b76dc482aa73f2b"
-  },
-  "ordo": {
-   "release": "v1.17.0",
-   "commit": "bb43c26c106f4cbe972234636c5c67edc235c188",
-   "asset": "ordo-linux-x64.tar.gz",
-   "sha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d",
-   "fix": "ordo#99 (9a8a2de) ORDO-REL-003 / REL-GATE-002"
-  }
- },
- "conditions": [
-  {
-   "id": "P1",
-   "system": "praxis",
-   "condition": "Atomic work claims prevent concurrent ownership",
-   "status": "PASS",
-   "evidence": [
-    "results/a/treatment-v3.17.0.jsonl: A1 local races (5 rounds x 8 workers) and A2 git-ref races (5 rounds x 4 clones): exactly one owner each; duplicateActiveOwners 0 (summary-v3.17.0.json)"
-   ]
-  },
-  {
-   "id": "P2",
-   "system": "praxis",
-   "condition": "Stale writes and expired claims are rejected",
-   "status": "PASS",
-   "evidence": [
-    "results/a/treatment-v3.17.0.jsonl: A4 expired owner cannot renew or validate, A7 late completion by an expired owner refused (recovered and unrecovered), A8 old git-ref holder cannot renew; staleCompletionsAccepted 0",
-    "results/c/treatment-v3.17.0.jsonl: C5a PRX.CLAIM.EXPIRED, C5b/C5c refused (EVIDENCE_FOREIGN_CLAIM/UNRECORDED/STALE)"
-   ]
-  },
-  {
-   "id": "P3",
-   "system": "praxis",
-   "condition": "State transitions are idempotent",
-   "status": "PASS",
-   "evidence": [
-    "results/a/treatment-v3.17.0.jsonl: A3 re-sent acquisition replayed with 1 acquired event; A6a/A6b exactly one verified completion after a SIGKILL (count taken per log, A5)"
-   ]
-  },
-  {
-   "id": "P4",
-   "system": "praxis",
-   "condition": "Completion requires revision-specific verification evidence",
-   "status": "PASS",
-   "evidence": [
-    "As preregistered in run-01 (cases GATE-1..5): released Praxis 3.17.0 + Dokimos 0.7.0 reject GATE-1/2 (EVIDENCE_UNRECOGNIZED), GATE-3U = the original GATE-3 shape, a forged unrecorded result (EVIDENCE_UNRECORDED), GATE-4 (EVIDENCE_NOT_PASSED); GATE-5 verifies (evidence/evidence-binding-repro-v3.17.0.jsonl)",
-    "evidence/evidence-binding-repro-v3.17.0.jsonl (gate-evidence-binding-v317.sh, released Praxis 3.17.0 + Dokimos 0.7.0): non-attested GATE-1/GATE-2 EVIDENCE_UNRECOGNIZED, GATE-3U EVIDENCE_UNRECORDED, GATE-4 EVIDENCE_NOT_PASSED, GATE-5 verified; GATE-3 (forged passed result in <git-common-dir>/praxis/validations + forged work.validation.observed in <git-common-dir>/praxis/events.jsonl) VERIFIED, exit 0, contradicting the expectation that GATE-1..4 are rejected",
-    "results/c/treatment-v3.17.0.jsonl: non-attested C3b accepted (1 of 17 invalid), as on 3.15.0 and 3.16.0",
-    "attested mode (host verifier, authority pins TrustedVerifierKeys + ValidationPolicyDigest): GATE-A1 RECEIPT_MISSING (derived: EVIDENCE_MISSING), GATE-A2 RECEIPT_UNTRUSTED_KEY, GATE-A2B RECEIPT_INVALID_SIGNATURE, GATE-A3 RECEIPT_NOT_PASSED, GATE-A4 verified with consistent completion identity; C8a-C8c refused, C8d verified (0 of 3 invalid accepted)",
-    "the condition holds only in attested mode; non-attested completion still accepts evidence the agent can forge in the store, so it fails as stated"
-   ]
-  },
-  {
-   "id": "P4S",
-   "system": "praxis+dokimos",
-   "condition": "Strict forgery (added 2026-10-20 after run-01): a repository writer cannot forge a successful verification by writing both a result and its validation event",
-   "status": "PASS (attested) / FAIL (non-attested)",
-   "evidence": [
-    "attested mode: GATE-A1 forged result+event RECEIPT_MISSING, GATE-A2 self-signed RECEIPT_UNTRUSTED_KEY, GATE-A2B own key under trusted keyid RECEIPT_INVALID_SIGNATURE, GATE-A3 genuine failing RECEIPT_NOT_PASSED, GATE-A4 genuine pass verified with clean identity; results/c C8a-C8d 0/3 invalid accepted",
-    "non-attested mode: GATE-3 (forged result + forged event in <git-common-dir>/praxis/) verified; results/c C3b accepted (1/17) — the store is agent-writable by design; blocker REL-GATE-003"
-   ]
-  },
-  {
-   "id": "P5",
-   "system": "praxis",
-   "condition": "Agent usage and execution costs can be attributed to work items",
-   "status": "PASS",
-   "evidence": [
-    "run-02 harness smoke on released Praxis 3.17.0 (telemetry reliability-report --agent-binding --price-table): constructed sub-agent transcripts attributed 1/1 (U1) and 2/2 (U6) by agent-id, duplicates removed, cost from research/pricing/anthropic.price-table.json",
-    "caveat: output tokens are a lower bound (Claude Code transcripts)"
-   ]
-  },
-  {
-   "id": "O1",
-   "system": "ordo",
-   "condition": "Versioned constructibility contracts are supported",
-   "status": "PASS",
-   "evidence": [
-    "results/b/treatment-v3.17.0.jsonl: B1 ecir/1 admitted and verified; B4 unsupported version refused (ORDO.CONTRACT.UNSUPPORTED_SCHEMA) by Ordo 1.17.0 and Praxis 3.17.0"
-   ]
-  },
-  {
-   "id": "O2",
-   "system": "ordo",
-   "condition": "Invalid decisions and dependencies are rejected before execution",
-   "status": "PASS",
-   "evidence": [
-    "results/b/treatment-v3.17.0.jsonl on Praxis 3.17.0 + Ordo 1.17.0 + Dokimos 0.7.0: invalid accepted 0/11; 12/12 match prediction (B5b CONTRACT_NOT_READY/BLOCKED_REQUIREMENT/UNRESOLVED_CONFLICT; B6a/B6b UNRESOLVED_CONFLICT)"
-   ]
-  },
-  {
-   "id": "O3",
-   "system": "ordo",
-   "condition": "Contract validation is deterministic",
-   "status": "PASS",
-   "evidence": [
-    "Ordo v1.17.0 (bb43c26): Ordo.Tests 541 passed, 1 skipped, 0 failed (coordinator run at the release tag, 2026-10-20)",
-    "Praxis 3.17.0 suite 2330/2330 includes byte-for-byte Ordo corpus parity"
-   ]
-  },
-  {
-   "id": "O4",
-   "system": "ordo",
-   "condition": "Consumer compatibility fixtures pass",
-   "status": "PASS",
-   "evidence": [
-    "Ordo v1.17.0 consumer oracle within Ordo.Tests 541/1 (coordinator run at tag)",
-    "praxis contract check agrees with Ordo 1.17.0 on all 9 run-02 contracts (run-02/fixtures/check-output.txt)"
-   ]
-  },
-  {
-   "id": "D1",
-   "system": "dokimos",
-   "condition": "Independent completion verification is operational",
-   "status": "PASS",
-   "evidence": [
-    "Dokimos 0.7.0 verified C1, C6a, C8d and GATE-5/GATE-A4 completions sent by Praxis 3.17.0"
-   ]
-  },
-  {
-   "id": "D2",
-   "system": "dokimos",
-   "condition": "Missing, replayed, and stale evidence is rejected",
-   "status": "PASS",
-   "evidence": [
-    "results/c/treatment-v3.17.0.jsonl: C4b consumed packet refused by Dokimos 0.7.0 (DOK.COMPLETION.REPLAYED_PACKET); C2a/C2b missing refused; C5a-C5c stale refused"
-   ]
-  },
-  {
-   "id": "D3",
-   "system": "dokimos",
-   "condition": "Verification receipts are reproducible",
-   "status": "PASS",
-   "evidence": [
-    "Dokimos dokimos-v0.7.0 (04b5f85): Domain 4/4, Core 322/322 (includes receipt determinism tests), Cli 143/143 (coordinator run at the release tag)"
-   ]
-  },
-  {
-   "id": "D4",
-   "system": "dokimos",
-   "condition": "Praxis can enforce the verification result",
-   "status": "PASS",
-   "evidence": [
-    "results/c/treatment-v3.17.0.jsonl: every refused verification left the item uncompleted; attested receipts not passed (C8c, GATE-A3) block completion"
-   ]
-  },
-  {
-   "id": "I1",
-   "system": "integration",
-   "condition": "All three systems use compatible contracts",
-   "status": "PASS",
-   "evidence": [
-    "ecir/1 + praxis.completion-packet/1 + dokimos.completion-authority/1 with the I6 attested members interoperate on the released binaries (GATE-A4, C8d verified; forged receipts refused by both)",
-    "distribution state (Conditor, echelon-registry) not re-checked"
-   ]
-  },
-  {
-   "id": "I2",
-   "system": "integration",
-   "condition": "A complete requirement can travel through intake, claim, implementation, verification, and completion",
-   "status": "PASS",
-   "evidence": [
-    "GATE-5 (non-attested) and GATE-A4 (attested): admitted ecir/1 contract -> claim -> evidence -> Dokimos-verified complete-verified -> metadata commit with consistent completion identity; run-02 smoke U1/U6 in arm D on the released binaries"
-   ]
-  },
-  {
-   "id": "I3",
-   "system": "integration",
-   "condition": "No unresolved blocking failures remain",
-   "status": "PASS (attested scope) / FAIL (non-attested scope)",
-   "evidence": [
-    "REL-GATE-003 is open and blocks any deployment of non-attested verified completion; it does not block a configuration with workProtocol.requireAttestedEvidence and a host-held verifier key, which is the only 3.17.0 configuration run-02 uses (arm D; arm C is the original 3.16.0 by design)"
-   ]
-  }
- ],
- "blockers": [
-  {
-   "id": "REL-GATE-001",
-   "repository": "kemiller2002/praxis",
-   "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
-   "workItem": "PRAXIS-REL-005",
-   "conditions": [
-    "P4",
-    "D2",
-    "I2",
-    "I3"
-   ],
-   "status": "resolved",
-   "resolvedBy": "praxis#274 (7fd7e40), released in v3.15.0"
-  },
-  {
-   "id": "REL-GATE-002",
-   "repository": "kemiller2002/ordo + kemiller2002/praxis",
-   "conditions": [
-    "O2",
-    "I3"
-   ],
-   "status": "resolved",
-   "findings": [
-    "B5b",
-    "B6a"
-   ],
-   "resolvedBy": "ordo#99 (9a8a2de) released in v1.17.0; praxis#275 (1f7c515) released in v3.16.0",
-   "workItems": [
-    "ORDO-REL-003",
-    "PRAXIS-REL-008"
-   ]
-  },
-  {
-   "id": "REL-GATE-003",
-   "repository": "kemiller2002/praxis",
-   "conditions": [
-    "P4",
-    "I3"
-   ],
-   "status": "open",
-   "findings": [
-    "GATE-3",
-    "C3b"
-   ],
-   "summary": "non-attested complete-verified accepts a forged validation result plus a forged work.validation.observed event in <git-common-dir>/praxis; attested mode (PRAXIS-REL-009) refuses it, and PRAXIS-REL-006's rollout gate requires requireAttestedEvidence with requireVerifiedCompletion",
-   "filed": false,
-   "note": "not filed by this evaluation; search praxis .praxis/inbox, .praxis/processed and .ros/work/queue.json for REL-GATE-003 before filing",
-   "intake": "kemiller2002/praxis .praxis/inbox/documents/2026-10-20-REL-GATE-003-non-attested-forgery.md"
-  }
- ],
- "rerun": "Re-evaluate with scripts/gate-evidence-binding-v317.sh against the newest release assets (non-attested and attested), Experiments A-C with REL001_RESULTS_TAG, and the listed suites; before filing a blocker, search .praxis/inbox, .praxis/processed and .ros/work/queue.json for its id (REL-GATE-*) and the linked work item.",
- "history": [
-  {
-   "evaluatedAt": "2026-10-20T01:10Z",
-   "gate": "PASS",
-   "decision": "All 16 conditions pass on released Praxis 3.16.0, Ordo 1.17.0 and Dokimos 0.6.0. Experiment D may start under amendments A2 and A3.",
-   "pins": {
+  "schema": "cbe.rel-001.gate-report/1",
+  "experiment": "REL-001",
+  "evaluatedAt": "2026-10-20T13:13:19Z",
+  "gate": "PASS (attested configuration) / FAIL (non-attested configuration)",
+  "decision": "Coordinator decision 2026-10-20T13:18:21Z: the strict-forgery condition is kept, not relaxed, and reported per configuration. Run-02 may start because its optimized arm runs only in attested mode, where every condition passes; the non-attested FAIL is carried as REL-GATE-003 and gates any rollout of non-attested verified completion (praxis docs/verified-completion-rollout.md).",
+  "pins": {
     "praxis": {
-     "release": "v3.16.0",
-     "commit": "bb8fbad82c3266520297f345e0874f5048704bf4",
-     "asset": "praxis-linux-x64.tar.gz",
-     "sha256": "1dc197367297526e911a8e42e08854f9cc0aa96cf1733414382b1069fafe5bb2",
-     "fix": "praxis#275 (1f7c515) PRAXIS-REL-008 / REL-GATE-002"
+      "release": "v3.17.0",
+      "commit": "aea29b4a",
+      "asset": "praxis-linux-x64.tar.gz",
+      "sha256": "4c0819aba084387545d5ac72d073abfdfc44c06e2225550e2be8c3babd0da23e",
+      "binarySha256": "a5ec4a149be18731ab56010905900df39aa314b5f241091476e8c360ceaa83f6"
     },
     "dokimos": {
-     "release": "dokimos-v0.6.0",
-     "commit": "828208f46b7d1073534bd02873d6298b62ad1de2",
-     "asset": "dokimos-linux-x64.tar.gz",
-     "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b"
+      "release": "dokimos-v0.7.0",
+      "commit": "04b5f856367b47a087285109c1fc5923ec351389",
+      "asset": "dokimos-linux-x64.tar.gz",
+      "sha256": "369917447350acd76b4e7d7a805abd9cfefbefa1922845e301052b9b82430a13",
+      "binarySha256": "2f8ca8f96efc443cdf5f9eec805aaacb748c73bb947bd4a44b76dc482aa73f2b"
     },
     "ordo": {
-     "release": "v1.17.0",
-     "commit": "bb43c26c106f4cbe972234636c5c67edc235c188",
-     "asset": "ordo-linux-x64.tar.gz",
-     "sha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d",
-     "fix": "ordo#99 (9a8a2de) ORDO-REL-003 / REL-GATE-002"
-    },
-    "cohort-based-engineering": {
-     "commit": "808eafaea58fa266e78755218eb4542c86f49705"
+      "release": "v1.17.0",
+      "commit": "bb43c26c106f4cbe972234636c5c67edc235c188",
+      "asset": "ordo-linux-x64.tar.gz",
+      "sha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d",
+      "fix": "ordo#99 (9a8a2de) ORDO-REL-003 / REL-GATE-002"
     }
-   },
-   "conditions": [
-    {
-     "id": "P1",
-     "system": "praxis",
-     "condition": "Atomic work claims prevent concurrent ownership",
-     "status": "PASS",
-     "evidence": [
-      "Praxis.Tests on 28103cff (= merged 1f7c515): 2299/2299, real Dokimos, no skips (evidence/praxis-tests-v3.16.0.txt)",
-      "praxis#273 (7221045)",
-      "evidence/praxis-tests.txt: work claims 31/31 (memory, file, git-ref races: exactly one winner)",
-      "praxis docs/work-claims.md scenario 2"
-     ]
-    },
-    {
-     "id": "P2",
-     "system": "praxis",
-     "condition": "Stale writes and expired claims are rejected",
-     "status": "PASS",
-     "evidence": [
-      "Praxis.Tests on 28103cff (= merged 1f7c515): 2299/2299, real Dokimos, no skips (evidence/praxis-tests-v3.16.0.txt)",
-      "evidence/praxis-tests.txt: work claims 31/31 (STALE_REVISION, STALE_GENERATION, EXPIRED, late completion refused)"
-     ]
-    },
-    {
-     "id": "P3",
-     "system": "praxis",
-     "condition": "State transitions are idempotent",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: work claims (re-sent acquisition, replayed completion, idempotent event sink)"
-     ]
-    },
-    {
-     "id": "P4",
-     "system": "praxis",
-     "condition": "Completion requires revision-specific verification evidence",
-     "status": "PASS",
-     "evidence": [
-      "evidence/evidence-binding-repro-v3.16.0.jsonl: GATE-1..4 rejected (exit 3), GATE-5 verified (exit 0) — released Praxis 3.16.0 + Dokimos 0.6.0",
-      "previous: evidence/evidence-binding-repro-v3.15.0.jsonl: GATE-1 failing log, GATE-2 unrelated file, GATE-3 forged unrecorded result, GATE-4 recorded failing run all rejected (exit 3); GATE-5 recorded passing run verified (exit 0) — released Praxis 3.15.0 + Dokimos 0.6.0",
-      "previous: praxis src/Praxis.Domain/Work/ValidationResult.fs: ValidatedEvidence has a private constructor; CompletionGate.packet/authority accept only ValidatedEvidence",
-      "previous: Praxis.Tests on fec427a2 (= merged code): 2292/2292, real Dokimos, no skips (orchestrator run)",
-      "previous: evidence/evidence-binding-repro.jsonl: released Praxis 3.14.0 + Dokimos 0.6.0 return verified (exit 0) for a failing test log and for an unrelated file",
-      "previous: praxis src/Praxis.Infrastructure/Work/FileWorkClaims.fs observeEvidence: existence + sha256 only"
-     ]
-    },
-    {
-     "id": "P5",
-     "system": "praxis",
-     "condition": "Agent usage and execution costs can be attributed to work items",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: reliability: 9/9",
-      "praxis EXE-20261019T155503978Z-978f54a3 carries ingested provider usage for PRAXIS-REL-001",
-      "caveat: cost requires a caller-supplied price table; automatic transcript ingestion is PRAXIS-REL-004"
-     ]
-    },
-    {
-     "id": "O1",
-     "system": "ordo",
-     "condition": "Versioned constructibility contracts are supported",
-     "status": "PASS",
-     "evidence": [
-      "ordo#99 (9a8a2de): Ordo.Tests 541 passed, 1 skipped (orchestrator run on the PR head); released as v1.17.0",
-      "previous: ordo#98 (e6fe390); evidence/ordo-tests.txt 536 passed, 1 skipped",
-      "previous: unsupported-version fixture refused (ORDO.CONTRACT.UNSUPPORTED_SCHEMA)"
-     ]
-    },
-    {
-     "id": "O2",
-     "system": "ordo",
-     "condition": "Invalid decisions and dependencies are rejected before execution",
-     "status": "PASS",
-     "evidence": [
-      "results/b/treatment.jsonl on Praxis 3.16.0 + Ordo 1.17.0: invalid accepted 0/11 (was 2/11 on 3.15.0, 11/11 baseline); all 12 cases match prediction",
-      "B6a/B6b: refused at admission by Ordo and Praxis (ORDO.CONTRACT.UNRESOLVED_CONFLICT)",
-      "B5b: admitted but refused at completion (PRX.COMPLETION.CONTRACT_NOT_READY, ORDO.CONTRACT.BLOCKED_REQUIREMENT, ORDO.CONTRACT.UNRESOLVED_CONFLICT)",
-      "decisions in scope are authorized only by the host authority's RequiredDecisionIds; BoundCompletionAuthority is constructible only from Ordo ReadyScope",
-      "previous: results/b/treatment.jsonl B6a: Ordo (sde ecir check) and Praxis admit a contract whose requirement links two contradictory decisions and an unresolved conflict node; claim -> validate-run -> complete-verified returns verified",
-      "previous: results/b/treatment.jsonl B5b: requirement with an open conflict (not modeled) is completed and verified",
-      "previous: B6b: refused only when the authority file happens to require the conflict resolution (DOK.COMPLETION.MISSING_CONFLICT_RESOLUTION)",
-      "previous: root cause: Ordo ConstructibilityContract.admitContract and the Praxis mirror check well-formedness only; Ordo's scoped readiness (ConstructionIr.validateCohort: BlockedRequirement, MissingDecisionAuthorization) is never applied on the completion path; Ordo semantic validation lacks 'modeled requirement linked to an unresolved conflict' (ecir-v1.md negative test 5)",
-      "previous: blocker: REL-GATE-002 (Ordo + Praxis)"
-     ]
-    },
-    {
-     "id": "O3",
-     "system": "ordo",
-     "condition": "Contract validation is deterministic",
-     "status": "PASS",
-     "evidence": [
-      "ordo canonical digest order-independent (reordered fixture identical digest)",
-      "evidence/praxis-tests.txt: ordo contract 11/11 incl. determinism and hostile-input cases"
-     ]
-    },
-    {
-     "id": "O4",
-     "system": "ordo",
-     "condition": "Consumer compatibility fixtures pass",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: ordo contract 11/11; Praxis reproduces every fixture digest and verdict and agrees with the vendored Ordo 1.8.2 binary"
-     ]
-    },
-    {
-     "id": "D1",
-     "system": "dokimos",
-     "condition": "Independent completion verification is operational",
-     "status": "PASS",
-     "evidence": [
-      "dokimos-v0.6.0 released (828208f); evidence/dokimos-tests.txt completion core 42/42, cli 36/36"
-     ]
-    },
-    {
-     "id": "D2",
-     "system": "dokimos",
-     "condition": "Missing, replayed, and stale evidence is rejected",
-     "status": "PASS",
-     "evidence": [
-      "Praxis 3.15.0 sends ClaimAcquiredAt/LeaseExpiresAt/EvaluatedAt and per-observation ObservedAt/Validation; stale/pre-claim evidence refused (PRX.COMPLETION.EVIDENCE_STALE) and enforced again by Dokimos",
-      "replay: praxis idempotent replay + Dokimos REPLAYED_PACKET (reliability pipeline scenario 7)",
-      "previous: Dokimos alone: PASS (MISSING/REPLAYED_PACKET/EVIDENCE_STALE/STALE_LEASE tests)",
-      "previous: End to end: FAIL, Praxis never supplies freshness members, so stale evidence is accepted (evidence/evidence-binding-repro.jsonl)"
-     ]
-    },
-    {
-     "id": "D3",
-     "system": "dokimos",
-     "condition": "Verification receipts are reproducible",
-     "status": "PASS",
-     "evidence": [
-      "dokimos completion tests: byte-stable receipts for reordered equivalent inputs"
-     ]
-    },
-    {
-     "id": "D4",
-     "system": "dokimos",
-     "condition": "Praxis can enforce the verification result",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: reliability pipeline scenarios 1,5,7 (real Dokimos); plain work complete refused for claimed items (PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED)",
-      "note: enforcement is real but the verified assertion is not (see P4)"
-     ]
-    },
-    {
-     "id": "I1",
-     "system": "integration",
-     "condition": "All three systems use compatible contracts",
-     "status": "PASS",
-     "evidence": [
-      "praxis.completion-packet/1 + dokimos.completion-authority/1 + ecir/1; packet digest parity proven against the real Dokimos CLI",
-      "distribution pending: conditor#105 (Conditor 0.10.7) and echelon-registry#86 open; echelon-current still pins Praxis 3.12.0 / Dokimos 0.2.0",
-      "distribution: Conditor 0.10.7 released (qualifies 3.14.0); 3.15.0 qualification and echelon-current 1.25.0 pending — not required for the isolated experiment, which pins release assets directly"
-     ]
-    },
-    {
-     "id": "I2",
-     "system": "integration",
-     "condition": "A complete requirement can travel through intake, claim, implementation, verification, and completion",
-     "status": "PASS",
-     "evidence": [
-      "GATE-5: admitted ecir/1 contract -> claim -> validate-run at the verification revision -> Dokimos-verified complete-verified with released binaries",
-      "full intake-to-completion by agents is exercised by Experiment D treatment runs",
-      "previous: mechanically executes (reliability pipeline scenario 1 from an admitted ecir/1 contract)",
-      "previous: blocked by P4: the verification step accepts evidence that does not prove the requirement"
-     ]
-    },
-    {
-     "id": "I3",
-     "system": "integration",
-     "condition": "No unresolved blocking failures remain",
-     "status": "PASS",
-     "evidence": [
-      "REL-GATE-001 and REL-GATE-002 resolved and released; no open blocker",
-      "previous: O2 fails (REL-GATE-002)"
-     ]
-    }
-   ],
-   "blockers": [
-    {
-     "id": "REL-GATE-001",
-     "repository": "kemiller2002/praxis",
-     "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
-     "workItem": "PRAXIS-REL-005",
-     "conditions": [
-      "P4",
-      "D2",
-      "I2",
-      "I3"
-     ],
-     "status": "resolved",
-     "resolvedBy": "praxis#274 (7fd7e40), released in v3.15.0"
-    },
-    {
-     "id": "REL-GATE-002",
-     "repository": "kemiller2002/ordo + kemiller2002/praxis",
-     "conditions": [
-      "O2",
-      "I3"
-     ],
-     "status": "resolved",
-     "findings": [
-      "B5b",
-      "B6a"
-     ],
-     "resolvedBy": "ordo#99 (9a8a2de) released in v1.17.0; praxis#275 (1f7c515) released in v3.16.0",
-     "workItems": [
-      "ORDO-REL-003",
-      "PRAXIS-REL-008"
-     ]
-    }
-   ]
   },
-  {
-   "evaluatedAt": "2026-10-19T22:20Z",
-   "gate": "FAIL",
-   "decision": "Experiments A-C ran under the PASS evaluation and exposed O2; Experiment D is not started until REL-GATE-002 is fixed and the gate re-passes.",
-   "pins": {
-    "praxis": {
-     "release": "v3.15.0",
-     "commit": "df6a8cbe23c2cd4d22980bded3cff4da2a0141cf",
-     "asset": "praxis-linux-x64.tar.gz",
-     "sha256": "bf135fa626be82c3e5fc0c2220005ae87aacf93d427eaee45780cfde1d2336cc",
-     "fix": "praxis#274 (7fd7e40) PRAXIS-REL-005 / REL-GATE-001"
+  "conditions": [
+    {
+      "id": "P1",
+      "system": "praxis",
+      "condition": "Atomic work claims prevent concurrent ownership",
+      "status": "PASS",
+      "evidence": [
+        "results/a/treatment-v3.17.0.jsonl: A1 local races (5 rounds x 8 workers) and A2 git-ref races (5 rounds x 4 clones): exactly one owner each; duplicateActiveOwners 0 (summary-v3.17.0.json)"
+      ]
     },
-    "dokimos": {
-     "release": "dokimos-v0.6.0",
-     "commit": "828208f46b7d1073534bd02873d6298b62ad1de2",
-     "asset": "dokimos-linux-x64.tar.gz",
-     "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b"
+    {
+      "id": "P2",
+      "system": "praxis",
+      "condition": "Stale writes and expired claims are rejected",
+      "status": "PASS",
+      "evidence": [
+        "results/a/treatment-v3.17.0.jsonl: A4 expired owner cannot renew or validate, A7 late completion by an expired owner refused (recovered and unrecovered), A8 old git-ref holder cannot renew; staleCompletionsAccepted 0",
+        "results/c/treatment-v3.17.0.jsonl: C5a PRX.CLAIM.EXPIRED, C5b/C5c refused (EVIDENCE_FOREIGN_CLAIM/UNRECORDED/STALE)"
+      ]
     },
-    "ordo": {
-     "release": null,
-     "commit": "e6fe390e47bf1d6d777017ced0b381f1c7d6acf7",
-     "note": "contract consumed as ecir/1 wire format; channel pins Ordo 1.8.2 whose wire code is unchanged (ordo#98)"
+    {
+      "id": "P3",
+      "system": "praxis",
+      "condition": "State transitions are idempotent",
+      "status": "PASS",
+      "evidence": [
+        "results/a/treatment-v3.17.0.jsonl: A3 re-sent acquisition replayed with 1 acquired event; A6a/A6b exactly one verified completion after a SIGKILL (count taken per log, A5)"
+      ]
     },
-    "cohort-based-engineering": {
-     "commit": "808eafaea58fa266e78755218eb4542c86f49705"
+    {
+      "id": "P4",
+      "system": "praxis",
+      "condition": "Completion requires revision-specific verification evidence",
+      "status": "PASS",
+      "evidence": [
+        "As preregistered in run-01 (cases GATE-1..5): released Praxis 3.17.0 + Dokimos 0.7.0 reject GATE-1/2 (EVIDENCE_UNRECOGNIZED), GATE-3U = the original GATE-3 shape, a forged unrecorded result (EVIDENCE_UNRECORDED), GATE-4 (EVIDENCE_NOT_PASSED); GATE-5 verifies (evidence/evidence-binding-repro-v3.17.0.jsonl)",
+        "evidence/evidence-binding-repro-v3.17.0.jsonl (gate-evidence-binding-v317.sh, released Praxis 3.17.0 + Dokimos 0.7.0): non-attested GATE-1/GATE-2 EVIDENCE_UNRECOGNIZED, GATE-3U EVIDENCE_UNRECORDED, GATE-4 EVIDENCE_NOT_PASSED, GATE-5 verified; GATE-3 (forged passed result in <git-common-dir>/praxis/validations + forged work.validation.observed in <git-common-dir>/praxis/events.jsonl) VERIFIED, exit 0, contradicting the expectation that GATE-1..4 are rejected",
+        "results/c/treatment-v3.17.0.jsonl: non-attested C3b accepted (1 of 17 invalid), as on 3.15.0 and 3.16.0",
+        "attested mode (host verifier, authority pins TrustedVerifierKeys + ValidationPolicyDigest): GATE-A1 RECEIPT_MISSING (derived: EVIDENCE_MISSING), GATE-A2 RECEIPT_UNTRUSTED_KEY, GATE-A2B RECEIPT_INVALID_SIGNATURE, GATE-A3 RECEIPT_NOT_PASSED, GATE-A4 verified with consistent completion identity; C8a-C8c refused, C8d verified (0 of 3 invalid accepted)",
+        "the condition holds only in attested mode; non-attested completion still accepts evidence the agent can forge in the store, so it fails as stated"
+      ]
+    },
+    {
+      "id": "P4S",
+      "system": "praxis+dokimos",
+      "condition": "Strict forgery (added 2026-10-20 after run-01): a repository writer cannot forge a successful verification by writing both a result and its validation event",
+      "status": "PASS (attested) / FAIL (non-attested)",
+      "evidence": [
+        "attested mode: GATE-A1 forged result+event RECEIPT_MISSING, GATE-A2 self-signed RECEIPT_UNTRUSTED_KEY, GATE-A2B own key under trusted keyid RECEIPT_INVALID_SIGNATURE, GATE-A3 genuine failing RECEIPT_NOT_PASSED, GATE-A4 genuine pass verified with clean identity; results/c C8a-C8d 0/3 invalid accepted",
+        "non-attested mode: GATE-3 (forged result + forged event in <git-common-dir>/praxis/) verified; results/c C3b accepted (1/17) — the store is agent-writable by design; blocker REL-GATE-003"
+      ]
+    },
+    {
+      "id": "P5",
+      "system": "praxis",
+      "condition": "Agent usage and execution costs can be attributed to work items",
+      "status": "PASS",
+      "evidence": [
+        "run-02 harness smoke on released Praxis 3.17.0 (telemetry reliability-report --agent-binding --price-table): constructed sub-agent transcripts attributed 1/1 (U1) and 2/2 (U6) by agent-id, duplicates removed, cost from research/pricing/anthropic.price-table.json",
+        "caveat: output tokens are a lower bound (Claude Code transcripts)"
+      ]
+    },
+    {
+      "id": "O1",
+      "system": "ordo",
+      "condition": "Versioned constructibility contracts are supported",
+      "status": "PASS",
+      "evidence": [
+        "results/b/treatment-v3.17.0.jsonl: B1 ecir/1 admitted and verified; B4 unsupported version refused (ORDO.CONTRACT.UNSUPPORTED_SCHEMA) by Ordo 1.17.0 and Praxis 3.17.0"
+      ]
+    },
+    {
+      "id": "O2",
+      "system": "ordo",
+      "condition": "Invalid decisions and dependencies are rejected before execution",
+      "status": "PASS",
+      "evidence": [
+        "results/b/treatment-v3.17.0.jsonl on Praxis 3.17.0 + Ordo 1.17.0 + Dokimos 0.7.0: invalid accepted 0/11; 12/12 match prediction (B5b CONTRACT_NOT_READY/BLOCKED_REQUIREMENT/UNRESOLVED_CONFLICT; B6a/B6b UNRESOLVED_CONFLICT)"
+      ]
+    },
+    {
+      "id": "O3",
+      "system": "ordo",
+      "condition": "Contract validation is deterministic",
+      "status": "PASS",
+      "evidence": [
+        "Ordo v1.17.0 (bb43c26): Ordo.Tests 541 passed, 1 skipped, 0 failed (coordinator run at the release tag, 2026-10-20)",
+        "Praxis 3.17.0 suite 2330/2330 includes byte-for-byte Ordo corpus parity"
+      ]
+    },
+    {
+      "id": "O4",
+      "system": "ordo",
+      "condition": "Consumer compatibility fixtures pass",
+      "status": "PASS",
+      "evidence": [
+        "Ordo v1.17.0 consumer oracle within Ordo.Tests 541/1 (coordinator run at tag)",
+        "praxis contract check agrees with Ordo 1.17.0 on all 9 run-02 contracts (run-02/fixtures/check-output.txt)"
+      ]
+    },
+    {
+      "id": "D1",
+      "system": "dokimos",
+      "condition": "Independent completion verification is operational",
+      "status": "PASS",
+      "evidence": [
+        "Dokimos 0.7.0 verified C1, C6a, C8d and GATE-5/GATE-A4 completions sent by Praxis 3.17.0"
+      ]
+    },
+    {
+      "id": "D2",
+      "system": "dokimos",
+      "condition": "Missing, replayed, and stale evidence is rejected",
+      "status": "PASS",
+      "evidence": [
+        "results/c/treatment-v3.17.0.jsonl: C4b consumed packet refused by Dokimos 0.7.0 (DOK.COMPLETION.REPLAYED_PACKET); C2a/C2b missing refused; C5a-C5c stale refused"
+      ]
+    },
+    {
+      "id": "D3",
+      "system": "dokimos",
+      "condition": "Verification receipts are reproducible",
+      "status": "PASS",
+      "evidence": [
+        "Dokimos dokimos-v0.7.0 (04b5f85): Domain 4/4, Core 322/322 (includes receipt determinism tests), Cli 143/143 (coordinator run at the release tag)"
+      ]
+    },
+    {
+      "id": "D4",
+      "system": "dokimos",
+      "condition": "Praxis can enforce the verification result",
+      "status": "PASS",
+      "evidence": [
+        "results/c/treatment-v3.17.0.jsonl: every refused verification left the item uncompleted; attested receipts not passed (C8c, GATE-A3) block completion"
+      ]
+    },
+    {
+      "id": "I1",
+      "system": "integration",
+      "condition": "All three systems use compatible contracts",
+      "status": "PASS",
+      "evidence": [
+        "ecir/1 + praxis.completion-packet/1 + dokimos.completion-authority/1 with the I6 attested members interoperate on the released binaries (GATE-A4, C8d verified; forged receipts refused by both)",
+        "distribution state (Conditor, echelon-registry) not re-checked"
+      ]
+    },
+    {
+      "id": "I2",
+      "system": "integration",
+      "condition": "A complete requirement can travel through intake, claim, implementation, verification, and completion",
+      "status": "PASS",
+      "evidence": [
+        "GATE-5 (non-attested) and GATE-A4 (attested): admitted ecir/1 contract -> claim -> evidence -> Dokimos-verified complete-verified -> metadata commit with consistent completion identity; run-02 smoke U1/U6 in arm D on the released binaries"
+      ]
+    },
+    {
+      "id": "I3",
+      "system": "integration",
+      "condition": "No unresolved blocking failures remain",
+      "status": "PASS (attested scope) / FAIL (non-attested scope)",
+      "evidence": [
+        "REL-GATE-003 is open and blocks any deployment of non-attested verified completion; it does not block a configuration with workProtocol.requireAttestedEvidence and a host-held verifier key, which is the only 3.17.0 configuration run-02 uses (arm D; arm C is the original 3.16.0 by design)"
+      ]
     }
-   },
-   "conditions": [
+  ],
+  "blockers": [
     {
-     "id": "P1",
-     "system": "praxis",
-     "condition": "Atomic work claims prevent concurrent ownership",
-     "status": "PASS",
-     "evidence": [
-      "praxis#273 (7221045)",
-      "evidence/praxis-tests.txt: work claims 31/31 (memory, file, git-ref races: exactly one winner)",
-      "praxis docs/work-claims.md scenario 2"
-     ]
+      "id": "REL-GATE-001",
+      "repository": "kemiller2002/praxis",
+      "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
+      "workItem": "PRAXIS-REL-005",
+      "conditions": [
+        "P4",
+        "D2",
+        "I2",
+        "I3"
+      ],
+      "status": "resolved",
+      "resolvedBy": "praxis#274 (7fd7e40), released in v3.15.0"
     },
     {
-     "id": "P2",
-     "system": "praxis",
-     "condition": "Stale writes and expired claims are rejected",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: work claims 31/31 (STALE_REVISION, STALE_GENERATION, EXPIRED, late completion refused)"
-     ]
+      "id": "REL-GATE-002",
+      "repository": "kemiller2002/ordo + kemiller2002/praxis",
+      "conditions": [
+        "O2",
+        "I3"
+      ],
+      "status": "resolved",
+      "findings": [
+        "B5b",
+        "B6a"
+      ],
+      "resolvedBy": "ordo#99 (9a8a2de) released in v1.17.0; praxis#275 (1f7c515) released in v3.16.0",
+      "workItems": [
+        "ORDO-REL-003",
+        "PRAXIS-REL-008"
+      ]
     },
     {
-     "id": "P3",
-     "system": "praxis",
-     "condition": "State transitions are idempotent",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: work claims (re-sent acquisition, replayed completion, idempotent event sink)"
-     ]
+      "id": "REL-GATE-003",
+      "repository": "kemiller2002/praxis",
+      "conditions": [
+        "P4",
+        "I3"
+      ],
+      "status": "resolved (scope: policy and labelling)",
+      "findings": [
+        "GATE-3",
+        "C3b"
+      ],
+      "summary": "non-attested complete-verified accepts a forged validation result plus a forged work.validation.observed event in <git-common-dir>/praxis; attested mode (PRAXIS-REL-009) refuses it, and PRAXIS-REL-006's rollout gate requires requireAttestedEvidence with requireVerifiedCompletion",
+      "filed": false,
+      "note": "requireVerifiedCompletion now implies attested evidence unless allowUnattestedEvidence is set, and every completion is labelled attested or unattested. A repository that requires neither still accepts the non-attested GATE-3/C3b forgery, now recorded as unattested; this is inherent to non-attested mode and documented as not forgery-resistant.",
+      "intake": "kemiller2002/praxis .praxis/inbox/documents/2026-10-20-REL-GATE-003-non-attested-forgery.md",
+      "resolvedBy": "praxis#280 (9587022), released in v3.18.0"
     },
     {
-     "id": "P4",
-     "system": "praxis",
-     "condition": "Completion requires revision-specific verification evidence",
-     "status": "PASS",
-     "evidence": [
-      "evidence/evidence-binding-repro-v3.15.0.jsonl: GATE-1 failing log, GATE-2 unrelated file, GATE-3 forged unrecorded result, GATE-4 recorded failing run all rejected (exit 3); GATE-5 recorded passing run verified (exit 0) — released Praxis 3.15.0 + Dokimos 0.6.0",
-      "praxis src/Praxis.Domain/Work/ValidationResult.fs: ValidatedEvidence has a private constructor; CompletionGate.packet/authority accept only ValidatedEvidence",
-      "Praxis.Tests on fec427a2 (= merged code): 2292/2292, real Dokimos, no skips (orchestrator run)",
-      "previous: evidence/evidence-binding-repro.jsonl: released Praxis 3.14.0 + Dokimos 0.6.0 return verified (exit 0) for a failing test log and for an unrelated file",
-      "previous: praxis src/Praxis.Infrastructure/Work/FileWorkClaims.fs observeEvidence: existence + sha256 only"
-     ]
-    },
-    {
-     "id": "P5",
-     "system": "praxis",
-     "condition": "Agent usage and execution costs can be attributed to work items",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: reliability: 9/9",
-      "praxis EXE-20261019T155503978Z-978f54a3 carries ingested provider usage for PRAXIS-REL-001",
-      "caveat: cost requires a caller-supplied price table; automatic transcript ingestion is PRAXIS-REL-004"
-     ]
-    },
-    {
-     "id": "O1",
-     "system": "ordo",
-     "condition": "Versioned constructibility contracts are supported",
-     "status": "PASS",
-     "evidence": [
-      "ordo#98 (e6fe390); evidence/ordo-tests.txt 536 passed, 1 skipped",
-      "unsupported-version fixture refused (ORDO.CONTRACT.UNSUPPORTED_SCHEMA)"
-     ]
-    },
-    {
-     "id": "O2",
-     "system": "ordo",
-     "condition": "Invalid decisions and dependencies are rejected before execution",
-     "status": "FAIL",
-     "evidence": [
-      "results/b/treatment.jsonl B6a: Ordo (sde ecir check) and Praxis admit a contract whose requirement links two contradictory decisions and an unresolved conflict node; claim -> validate-run -> complete-verified returns verified",
-      "results/b/treatment.jsonl B5b: requirement with an open conflict (not modeled) is completed and verified",
-      "B6b: refused only when the authority file happens to require the conflict resolution (DOK.COMPLETION.MISSING_CONFLICT_RESOLUTION)",
-      "root cause: Ordo ConstructibilityContract.admitContract and the Praxis mirror check well-formedness only; Ordo's scoped readiness (ConstructionIr.validateCohort: BlockedRequirement, MissingDecisionAuthorization) is never applied on the completion path; Ordo semantic validation lacks 'modeled requirement linked to an unresolved conflict' (ecir-v1.md negative test 5)",
-      "blocker: REL-GATE-002 (Ordo + Praxis)"
-     ]
-    },
-    {
-     "id": "O3",
-     "system": "ordo",
-     "condition": "Contract validation is deterministic",
-     "status": "PASS",
-     "evidence": [
-      "ordo canonical digest order-independent (reordered fixture identical digest)",
-      "evidence/praxis-tests.txt: ordo contract 11/11 incl. determinism and hostile-input cases"
-     ]
-    },
-    {
-     "id": "O4",
-     "system": "ordo",
-     "condition": "Consumer compatibility fixtures pass",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: ordo contract 11/11; Praxis reproduces every fixture digest and verdict and agrees with the vendored Ordo 1.8.2 binary"
-     ]
-    },
-    {
-     "id": "D1",
-     "system": "dokimos",
-     "condition": "Independent completion verification is operational",
-     "status": "PASS",
-     "evidence": [
-      "dokimos-v0.6.0 released (828208f); evidence/dokimos-tests.txt completion core 42/42, cli 36/36"
-     ]
-    },
-    {
-     "id": "D2",
-     "system": "dokimos",
-     "condition": "Missing, replayed, and stale evidence is rejected",
-     "status": "PASS",
-     "evidence": [
-      "Praxis 3.15.0 sends ClaimAcquiredAt/LeaseExpiresAt/EvaluatedAt and per-observation ObservedAt/Validation; stale/pre-claim evidence refused (PRX.COMPLETION.EVIDENCE_STALE) and enforced again by Dokimos",
-      "replay: praxis idempotent replay + Dokimos REPLAYED_PACKET (reliability pipeline scenario 7)",
-      "previous: Dokimos alone: PASS (MISSING/REPLAYED_PACKET/EVIDENCE_STALE/STALE_LEASE tests)",
-      "previous: End to end: FAIL, Praxis never supplies freshness members, so stale evidence is accepted (evidence/evidence-binding-repro.jsonl)"
-     ]
-    },
-    {
-     "id": "D3",
-     "system": "dokimos",
-     "condition": "Verification receipts are reproducible",
-     "status": "PASS",
-     "evidence": [
-      "dokimos completion tests: byte-stable receipts for reordered equivalent inputs"
-     ]
-    },
-    {
-     "id": "D4",
-     "system": "dokimos",
-     "condition": "Praxis can enforce the verification result",
-     "status": "PASS",
-     "evidence": [
-      "evidence/praxis-tests.txt: reliability pipeline scenarios 1,5,7 (real Dokimos); plain work complete refused for claimed items (PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED)",
-      "note: enforcement is real but the verified assertion is not (see P4)"
-     ]
-    },
-    {
-     "id": "I1",
-     "system": "integration",
-     "condition": "All three systems use compatible contracts",
-     "status": "PASS",
-     "evidence": [
-      "praxis.completion-packet/1 + dokimos.completion-authority/1 + ecir/1; packet digest parity proven against the real Dokimos CLI",
-      "distribution pending: conditor#105 (Conditor 0.10.7) and echelon-registry#86 open; echelon-current still pins Praxis 3.12.0 / Dokimos 0.2.0",
-      "distribution: Conditor 0.10.7 released (qualifies 3.14.0); 3.15.0 qualification and echelon-current 1.25.0 pending — not required for the isolated experiment, which pins release assets directly"
-     ]
-    },
-    {
-     "id": "I2",
-     "system": "integration",
-     "condition": "A complete requirement can travel through intake, claim, implementation, verification, and completion",
-     "status": "PASS",
-     "evidence": [
-      "GATE-5: admitted ecir/1 contract -> claim -> validate-run at the verification revision -> Dokimos-verified complete-verified with released binaries",
-      "full intake-to-completion by agents is exercised by Experiment D treatment runs",
-      "previous: mechanically executes (reliability pipeline scenario 1 from an admitted ecir/1 contract)",
-      "previous: blocked by P4: the verification step accepts evidence that does not prove the requirement"
-     ]
-    },
-    {
-     "id": "I3",
-     "system": "integration",
-     "condition": "No unresolved blocking failures remain",
-     "status": "FAIL",
-     "evidence": [
-      "O2 fails (REL-GATE-002)"
-     ]
+      "id": "REL-GATE-004",
+      "repository": "kemiller2002/praxis",
+      "intake": "praxis#279 (filed by session_0174JuJ3F3WXwdPbjo3Pk5P7)",
+      "conditions": [
+        "P4",
+        "I3"
+      ],
+      "status": "open",
+      "findings": [
+        "the attestation policy is read from the completing worktree ros.json",
+        "the authority path is caller-chosen, so an agent can pin its own key"
+      ],
+      "note": "attested mode is forgery-resistant only with a host-controlled trust root (rollout gate item 7). The run-02 post-hoc integrity check found 47/47 C and D trials intact (run-02/analysis/integrity-d.json)."
     }
-   ],
-   "blockers": [
+  ],
+  "rerun": "Re-evaluate with scripts/gate-evidence-binding-v317.sh against the newest release assets (non-attested and attested), Experiments A-C with REL001_RESULTS_TAG, and the listed suites; before filing a blocker, search .praxis/inbox, .praxis/processed and .ros/work/queue.json for its id (REL-GATE-*) and the linked work item.",
+  "history": [
     {
-     "id": "REL-GATE-001",
-     "repository": "kemiller2002/praxis",
-     "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
-     "workItem": "PRAXIS-REL-005",
-     "conditions": [
-      "P4",
-      "D2",
-      "I2",
-      "I3"
-     ],
-     "status": "resolved",
-     "resolvedBy": "praxis#274 (7fd7e40), released in v3.15.0"
+      "evaluatedAt": "2026-10-20T01:10Z",
+      "gate": "PASS",
+      "decision": "All 16 conditions pass on released Praxis 3.16.0, Ordo 1.17.0 and Dokimos 0.6.0. Experiment D may start under amendments A2 and A3.",
+      "pins": {
+        "praxis": {
+          "release": "v3.16.0",
+          "commit": "bb8fbad82c3266520297f345e0874f5048704bf4",
+          "asset": "praxis-linux-x64.tar.gz",
+          "sha256": "1dc197367297526e911a8e42e08854f9cc0aa96cf1733414382b1069fafe5bb2",
+          "fix": "praxis#275 (1f7c515) PRAXIS-REL-008 / REL-GATE-002"
+        },
+        "dokimos": {
+          "release": "dokimos-v0.6.0",
+          "commit": "828208f46b7d1073534bd02873d6298b62ad1de2",
+          "asset": "dokimos-linux-x64.tar.gz",
+          "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b"
+        },
+        "ordo": {
+          "release": "v1.17.0",
+          "commit": "bb43c26c106f4cbe972234636c5c67edc235c188",
+          "asset": "ordo-linux-x64.tar.gz",
+          "sha256": "ab9437f5b4c72e86eaf1a25bfa7dc167e548be91ff9112df65bee678c5fb1b5d",
+          "fix": "ordo#99 (9a8a2de) ORDO-REL-003 / REL-GATE-002"
+        },
+        "cohort-based-engineering": {
+          "commit": "808eafaea58fa266e78755218eb4542c86f49705"
+        }
+      },
+      "conditions": [
+        {
+          "id": "P1",
+          "system": "praxis",
+          "condition": "Atomic work claims prevent concurrent ownership",
+          "status": "PASS",
+          "evidence": [
+            "Praxis.Tests on 28103cff (= merged 1f7c515): 2299/2299, real Dokimos, no skips (evidence/praxis-tests-v3.16.0.txt)",
+            "praxis#273 (7221045)",
+            "evidence/praxis-tests.txt: work claims 31/31 (memory, file, git-ref races: exactly one winner)",
+            "praxis docs/work-claims.md scenario 2"
+          ]
+        },
+        {
+          "id": "P2",
+          "system": "praxis",
+          "condition": "Stale writes and expired claims are rejected",
+          "status": "PASS",
+          "evidence": [
+            "Praxis.Tests on 28103cff (= merged 1f7c515): 2299/2299, real Dokimos, no skips (evidence/praxis-tests-v3.16.0.txt)",
+            "evidence/praxis-tests.txt: work claims 31/31 (STALE_REVISION, STALE_GENERATION, EXPIRED, late completion refused)"
+          ]
+        },
+        {
+          "id": "P3",
+          "system": "praxis",
+          "condition": "State transitions are idempotent",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: work claims (re-sent acquisition, replayed completion, idempotent event sink)"
+          ]
+        },
+        {
+          "id": "P4",
+          "system": "praxis",
+          "condition": "Completion requires revision-specific verification evidence",
+          "status": "PASS",
+          "evidence": [
+            "evidence/evidence-binding-repro-v3.16.0.jsonl: GATE-1..4 rejected (exit 3), GATE-5 verified (exit 0) — released Praxis 3.16.0 + Dokimos 0.6.0",
+            "previous: evidence/evidence-binding-repro-v3.15.0.jsonl: GATE-1 failing log, GATE-2 unrelated file, GATE-3 forged unrecorded result, GATE-4 recorded failing run all rejected (exit 3); GATE-5 recorded passing run verified (exit 0) — released Praxis 3.15.0 + Dokimos 0.6.0",
+            "previous: praxis src/Praxis.Domain/Work/ValidationResult.fs: ValidatedEvidence has a private constructor; CompletionGate.packet/authority accept only ValidatedEvidence",
+            "previous: Praxis.Tests on fec427a2 (= merged code): 2292/2292, real Dokimos, no skips (orchestrator run)",
+            "previous: evidence/evidence-binding-repro.jsonl: released Praxis 3.14.0 + Dokimos 0.6.0 return verified (exit 0) for a failing test log and for an unrelated file",
+            "previous: praxis src/Praxis.Infrastructure/Work/FileWorkClaims.fs observeEvidence: existence + sha256 only"
+          ]
+        },
+        {
+          "id": "P5",
+          "system": "praxis",
+          "condition": "Agent usage and execution costs can be attributed to work items",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: reliability: 9/9",
+            "praxis EXE-20261019T155503978Z-978f54a3 carries ingested provider usage for PRAXIS-REL-001",
+            "caveat: cost requires a caller-supplied price table; automatic transcript ingestion is PRAXIS-REL-004"
+          ]
+        },
+        {
+          "id": "O1",
+          "system": "ordo",
+          "condition": "Versioned constructibility contracts are supported",
+          "status": "PASS",
+          "evidence": [
+            "ordo#99 (9a8a2de): Ordo.Tests 541 passed, 1 skipped (orchestrator run on the PR head); released as v1.17.0",
+            "previous: ordo#98 (e6fe390); evidence/ordo-tests.txt 536 passed, 1 skipped",
+            "previous: unsupported-version fixture refused (ORDO.CONTRACT.UNSUPPORTED_SCHEMA)"
+          ]
+        },
+        {
+          "id": "O2",
+          "system": "ordo",
+          "condition": "Invalid decisions and dependencies are rejected before execution",
+          "status": "PASS",
+          "evidence": [
+            "results/b/treatment.jsonl on Praxis 3.16.0 + Ordo 1.17.0: invalid accepted 0/11 (was 2/11 on 3.15.0, 11/11 baseline); all 12 cases match prediction",
+            "B6a/B6b: refused at admission by Ordo and Praxis (ORDO.CONTRACT.UNRESOLVED_CONFLICT)",
+            "B5b: admitted but refused at completion (PRX.COMPLETION.CONTRACT_NOT_READY, ORDO.CONTRACT.BLOCKED_REQUIREMENT, ORDO.CONTRACT.UNRESOLVED_CONFLICT)",
+            "decisions in scope are authorized only by the host authority's RequiredDecisionIds; BoundCompletionAuthority is constructible only from Ordo ReadyScope",
+            "previous: results/b/treatment.jsonl B6a: Ordo (sde ecir check) and Praxis admit a contract whose requirement links two contradictory decisions and an unresolved conflict node; claim -> validate-run -> complete-verified returns verified",
+            "previous: results/b/treatment.jsonl B5b: requirement with an open conflict (not modeled) is completed and verified",
+            "previous: B6b: refused only when the authority file happens to require the conflict resolution (DOK.COMPLETION.MISSING_CONFLICT_RESOLUTION)",
+            "previous: root cause: Ordo ConstructibilityContract.admitContract and the Praxis mirror check well-formedness only; Ordo's scoped readiness (ConstructionIr.validateCohort: BlockedRequirement, MissingDecisionAuthorization) is never applied on the completion path; Ordo semantic validation lacks 'modeled requirement linked to an unresolved conflict' (ecir-v1.md negative test 5)",
+            "previous: blocker: REL-GATE-002 (Ordo + Praxis)"
+          ]
+        },
+        {
+          "id": "O3",
+          "system": "ordo",
+          "condition": "Contract validation is deterministic",
+          "status": "PASS",
+          "evidence": [
+            "ordo canonical digest order-independent (reordered fixture identical digest)",
+            "evidence/praxis-tests.txt: ordo contract 11/11 incl. determinism and hostile-input cases"
+          ]
+        },
+        {
+          "id": "O4",
+          "system": "ordo",
+          "condition": "Consumer compatibility fixtures pass",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: ordo contract 11/11; Praxis reproduces every fixture digest and verdict and agrees with the vendored Ordo 1.8.2 binary"
+          ]
+        },
+        {
+          "id": "D1",
+          "system": "dokimos",
+          "condition": "Independent completion verification is operational",
+          "status": "PASS",
+          "evidence": [
+            "dokimos-v0.6.0 released (828208f); evidence/dokimos-tests.txt completion core 42/42, cli 36/36"
+          ]
+        },
+        {
+          "id": "D2",
+          "system": "dokimos",
+          "condition": "Missing, replayed, and stale evidence is rejected",
+          "status": "PASS",
+          "evidence": [
+            "Praxis 3.15.0 sends ClaimAcquiredAt/LeaseExpiresAt/EvaluatedAt and per-observation ObservedAt/Validation; stale/pre-claim evidence refused (PRX.COMPLETION.EVIDENCE_STALE) and enforced again by Dokimos",
+            "replay: praxis idempotent replay + Dokimos REPLAYED_PACKET (reliability pipeline scenario 7)",
+            "previous: Dokimos alone: PASS (MISSING/REPLAYED_PACKET/EVIDENCE_STALE/STALE_LEASE tests)",
+            "previous: End to end: FAIL, Praxis never supplies freshness members, so stale evidence is accepted (evidence/evidence-binding-repro.jsonl)"
+          ]
+        },
+        {
+          "id": "D3",
+          "system": "dokimos",
+          "condition": "Verification receipts are reproducible",
+          "status": "PASS",
+          "evidence": [
+            "dokimos completion tests: byte-stable receipts for reordered equivalent inputs"
+          ]
+        },
+        {
+          "id": "D4",
+          "system": "dokimos",
+          "condition": "Praxis can enforce the verification result",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: reliability pipeline scenarios 1,5,7 (real Dokimos); plain work complete refused for claimed items (PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED)",
+            "note: enforcement is real but the verified assertion is not (see P4)"
+          ]
+        },
+        {
+          "id": "I1",
+          "system": "integration",
+          "condition": "All three systems use compatible contracts",
+          "status": "PASS",
+          "evidence": [
+            "praxis.completion-packet/1 + dokimos.completion-authority/1 + ecir/1; packet digest parity proven against the real Dokimos CLI",
+            "distribution pending: conditor#105 (Conditor 0.10.7) and echelon-registry#86 open; echelon-current still pins Praxis 3.12.0 / Dokimos 0.2.0",
+            "distribution: Conditor 0.10.7 released (qualifies 3.14.0); 3.15.0 qualification and echelon-current 1.25.0 pending — not required for the isolated experiment, which pins release assets directly"
+          ]
+        },
+        {
+          "id": "I2",
+          "system": "integration",
+          "condition": "A complete requirement can travel through intake, claim, implementation, verification, and completion",
+          "status": "PASS",
+          "evidence": [
+            "GATE-5: admitted ecir/1 contract -> claim -> validate-run at the verification revision -> Dokimos-verified complete-verified with released binaries",
+            "full intake-to-completion by agents is exercised by Experiment D treatment runs",
+            "previous: mechanically executes (reliability pipeline scenario 1 from an admitted ecir/1 contract)",
+            "previous: blocked by P4: the verification step accepts evidence that does not prove the requirement"
+          ]
+        },
+        {
+          "id": "I3",
+          "system": "integration",
+          "condition": "No unresolved blocking failures remain",
+          "status": "PASS",
+          "evidence": [
+            "REL-GATE-001 and REL-GATE-002 resolved and released; no open blocker",
+            "previous: O2 fails (REL-GATE-002)"
+          ]
+        }
+      ],
+      "blockers": [
+        {
+          "id": "REL-GATE-001",
+          "repository": "kemiller2002/praxis",
+          "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
+          "workItem": "PRAXIS-REL-005",
+          "conditions": [
+            "P4",
+            "D2",
+            "I2",
+            "I3"
+          ],
+          "status": "resolved",
+          "resolvedBy": "praxis#274 (7fd7e40), released in v3.15.0"
+        },
+        {
+          "id": "REL-GATE-002",
+          "repository": "kemiller2002/ordo + kemiller2002/praxis",
+          "conditions": [
+            "O2",
+            "I3"
+          ],
+          "status": "resolved",
+          "findings": [
+            "B5b",
+            "B6a"
+          ],
+          "resolvedBy": "ordo#99 (9a8a2de) released in v1.17.0; praxis#275 (1f7c515) released in v3.16.0",
+          "workItems": [
+            "ORDO-REL-003",
+            "PRAXIS-REL-008"
+          ]
+        }
+      ]
     },
     {
-     "id": "REL-GATE-002",
-     "repository": "kemiller2002/ordo + kemiller2002/praxis",
-     "conditions": [
-      "O2",
-      "I3"
-     ],
-     "status": "open",
-     "findings": [
-      "B5b",
-      "B6a"
-     ]
-    }
-   ]
-  },
-  {
-   "evaluatedAt": "2026-10-19",
-   "gate": "FAIL",
-   "pins": {
-    "praxis": {
-     "release": "v3.15.0",
-     "commit": "df6a8cbe23c2cd4d22980bded3cff4da2a0141cf",
-     "asset": "praxis-linux-x64.tar.gz",
-     "sha256": "bf135fa626be82c3e5fc0c2220005ae87aacf93d427eaee45780cfde1d2336cc",
-     "fix": "praxis#274 (7fd7e40) PRAXIS-REL-005 / REL-GATE-001"
+      "evaluatedAt": "2026-10-19T22:20Z",
+      "gate": "FAIL",
+      "decision": "Experiments A-C ran under the PASS evaluation and exposed O2; Experiment D is not started until REL-GATE-002 is fixed and the gate re-passes.",
+      "pins": {
+        "praxis": {
+          "release": "v3.15.0",
+          "commit": "df6a8cbe23c2cd4d22980bded3cff4da2a0141cf",
+          "asset": "praxis-linux-x64.tar.gz",
+          "sha256": "bf135fa626be82c3e5fc0c2220005ae87aacf93d427eaee45780cfde1d2336cc",
+          "fix": "praxis#274 (7fd7e40) PRAXIS-REL-005 / REL-GATE-001"
+        },
+        "dokimos": {
+          "release": "dokimos-v0.6.0",
+          "commit": "828208f46b7d1073534bd02873d6298b62ad1de2",
+          "asset": "dokimos-linux-x64.tar.gz",
+          "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b"
+        },
+        "ordo": {
+          "release": null,
+          "commit": "e6fe390e47bf1d6d777017ced0b381f1c7d6acf7",
+          "note": "contract consumed as ecir/1 wire format; channel pins Ordo 1.8.2 whose wire code is unchanged (ordo#98)"
+        },
+        "cohort-based-engineering": {
+          "commit": "808eafaea58fa266e78755218eb4542c86f49705"
+        }
+      },
+      "conditions": [
+        {
+          "id": "P1",
+          "system": "praxis",
+          "condition": "Atomic work claims prevent concurrent ownership",
+          "status": "PASS",
+          "evidence": [
+            "praxis#273 (7221045)",
+            "evidence/praxis-tests.txt: work claims 31/31 (memory, file, git-ref races: exactly one winner)",
+            "praxis docs/work-claims.md scenario 2"
+          ]
+        },
+        {
+          "id": "P2",
+          "system": "praxis",
+          "condition": "Stale writes and expired claims are rejected",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: work claims 31/31 (STALE_REVISION, STALE_GENERATION, EXPIRED, late completion refused)"
+          ]
+        },
+        {
+          "id": "P3",
+          "system": "praxis",
+          "condition": "State transitions are idempotent",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: work claims (re-sent acquisition, replayed completion, idempotent event sink)"
+          ]
+        },
+        {
+          "id": "P4",
+          "system": "praxis",
+          "condition": "Completion requires revision-specific verification evidence",
+          "status": "PASS",
+          "evidence": [
+            "evidence/evidence-binding-repro-v3.15.0.jsonl: GATE-1 failing log, GATE-2 unrelated file, GATE-3 forged unrecorded result, GATE-4 recorded failing run all rejected (exit 3); GATE-5 recorded passing run verified (exit 0) — released Praxis 3.15.0 + Dokimos 0.6.0",
+            "praxis src/Praxis.Domain/Work/ValidationResult.fs: ValidatedEvidence has a private constructor; CompletionGate.packet/authority accept only ValidatedEvidence",
+            "Praxis.Tests on fec427a2 (= merged code): 2292/2292, real Dokimos, no skips (orchestrator run)",
+            "previous: evidence/evidence-binding-repro.jsonl: released Praxis 3.14.0 + Dokimos 0.6.0 return verified (exit 0) for a failing test log and for an unrelated file",
+            "previous: praxis src/Praxis.Infrastructure/Work/FileWorkClaims.fs observeEvidence: existence + sha256 only"
+          ]
+        },
+        {
+          "id": "P5",
+          "system": "praxis",
+          "condition": "Agent usage and execution costs can be attributed to work items",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: reliability: 9/9",
+            "praxis EXE-20261019T155503978Z-978f54a3 carries ingested provider usage for PRAXIS-REL-001",
+            "caveat: cost requires a caller-supplied price table; automatic transcript ingestion is PRAXIS-REL-004"
+          ]
+        },
+        {
+          "id": "O1",
+          "system": "ordo",
+          "condition": "Versioned constructibility contracts are supported",
+          "status": "PASS",
+          "evidence": [
+            "ordo#98 (e6fe390); evidence/ordo-tests.txt 536 passed, 1 skipped",
+            "unsupported-version fixture refused (ORDO.CONTRACT.UNSUPPORTED_SCHEMA)"
+          ]
+        },
+        {
+          "id": "O2",
+          "system": "ordo",
+          "condition": "Invalid decisions and dependencies are rejected before execution",
+          "status": "FAIL",
+          "evidence": [
+            "results/b/treatment.jsonl B6a: Ordo (sde ecir check) and Praxis admit a contract whose requirement links two contradictory decisions and an unresolved conflict node; claim -> validate-run -> complete-verified returns verified",
+            "results/b/treatment.jsonl B5b: requirement with an open conflict (not modeled) is completed and verified",
+            "B6b: refused only when the authority file happens to require the conflict resolution (DOK.COMPLETION.MISSING_CONFLICT_RESOLUTION)",
+            "root cause: Ordo ConstructibilityContract.admitContract and the Praxis mirror check well-formedness only; Ordo's scoped readiness (ConstructionIr.validateCohort: BlockedRequirement, MissingDecisionAuthorization) is never applied on the completion path; Ordo semantic validation lacks 'modeled requirement linked to an unresolved conflict' (ecir-v1.md negative test 5)",
+            "blocker: REL-GATE-002 (Ordo + Praxis)"
+          ]
+        },
+        {
+          "id": "O3",
+          "system": "ordo",
+          "condition": "Contract validation is deterministic",
+          "status": "PASS",
+          "evidence": [
+            "ordo canonical digest order-independent (reordered fixture identical digest)",
+            "evidence/praxis-tests.txt: ordo contract 11/11 incl. determinism and hostile-input cases"
+          ]
+        },
+        {
+          "id": "O4",
+          "system": "ordo",
+          "condition": "Consumer compatibility fixtures pass",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: ordo contract 11/11; Praxis reproduces every fixture digest and verdict and agrees with the vendored Ordo 1.8.2 binary"
+          ]
+        },
+        {
+          "id": "D1",
+          "system": "dokimos",
+          "condition": "Independent completion verification is operational",
+          "status": "PASS",
+          "evidence": [
+            "dokimos-v0.6.0 released (828208f); evidence/dokimos-tests.txt completion core 42/42, cli 36/36"
+          ]
+        },
+        {
+          "id": "D2",
+          "system": "dokimos",
+          "condition": "Missing, replayed, and stale evidence is rejected",
+          "status": "PASS",
+          "evidence": [
+            "Praxis 3.15.0 sends ClaimAcquiredAt/LeaseExpiresAt/EvaluatedAt and per-observation ObservedAt/Validation; stale/pre-claim evidence refused (PRX.COMPLETION.EVIDENCE_STALE) and enforced again by Dokimos",
+            "replay: praxis idempotent replay + Dokimos REPLAYED_PACKET (reliability pipeline scenario 7)",
+            "previous: Dokimos alone: PASS (MISSING/REPLAYED_PACKET/EVIDENCE_STALE/STALE_LEASE tests)",
+            "previous: End to end: FAIL, Praxis never supplies freshness members, so stale evidence is accepted (evidence/evidence-binding-repro.jsonl)"
+          ]
+        },
+        {
+          "id": "D3",
+          "system": "dokimos",
+          "condition": "Verification receipts are reproducible",
+          "status": "PASS",
+          "evidence": [
+            "dokimos completion tests: byte-stable receipts for reordered equivalent inputs"
+          ]
+        },
+        {
+          "id": "D4",
+          "system": "dokimos",
+          "condition": "Praxis can enforce the verification result",
+          "status": "PASS",
+          "evidence": [
+            "evidence/praxis-tests.txt: reliability pipeline scenarios 1,5,7 (real Dokimos); plain work complete refused for claimed items (PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED)",
+            "note: enforcement is real but the verified assertion is not (see P4)"
+          ]
+        },
+        {
+          "id": "I1",
+          "system": "integration",
+          "condition": "All three systems use compatible contracts",
+          "status": "PASS",
+          "evidence": [
+            "praxis.completion-packet/1 + dokimos.completion-authority/1 + ecir/1; packet digest parity proven against the real Dokimos CLI",
+            "distribution pending: conditor#105 (Conditor 0.10.7) and echelon-registry#86 open; echelon-current still pins Praxis 3.12.0 / Dokimos 0.2.0",
+            "distribution: Conditor 0.10.7 released (qualifies 3.14.0); 3.15.0 qualification and echelon-current 1.25.0 pending — not required for the isolated experiment, which pins release assets directly"
+          ]
+        },
+        {
+          "id": "I2",
+          "system": "integration",
+          "condition": "A complete requirement can travel through intake, claim, implementation, verification, and completion",
+          "status": "PASS",
+          "evidence": [
+            "GATE-5: admitted ecir/1 contract -> claim -> validate-run at the verification revision -> Dokimos-verified complete-verified with released binaries",
+            "full intake-to-completion by agents is exercised by Experiment D treatment runs",
+            "previous: mechanically executes (reliability pipeline scenario 1 from an admitted ecir/1 contract)",
+            "previous: blocked by P4: the verification step accepts evidence that does not prove the requirement"
+          ]
+        },
+        {
+          "id": "I3",
+          "system": "integration",
+          "condition": "No unresolved blocking failures remain",
+          "status": "FAIL",
+          "evidence": [
+            "O2 fails (REL-GATE-002)"
+          ]
+        }
+      ],
+      "blockers": [
+        {
+          "id": "REL-GATE-001",
+          "repository": "kemiller2002/praxis",
+          "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
+          "workItem": "PRAXIS-REL-005",
+          "conditions": [
+            "P4",
+            "D2",
+            "I2",
+            "I3"
+          ],
+          "status": "resolved",
+          "resolvedBy": "praxis#274 (7fd7e40), released in v3.15.0"
+        },
+        {
+          "id": "REL-GATE-002",
+          "repository": "kemiller2002/ordo + kemiller2002/praxis",
+          "conditions": [
+            "O2",
+            "I3"
+          ],
+          "status": "open",
+          "findings": [
+            "B5b",
+            "B6a"
+          ]
+        }
+      ]
     },
-    "dokimos": {
-     "release": "dokimos-v0.6.0",
-     "commit": "828208f46b7d1073534bd02873d6298b62ad1de2",
-     "asset": "dokimos-linux-x64.tar.gz",
-     "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b"
-    },
-    "ordo": {
-     "release": null,
-     "commit": "e6fe390e47bf1d6d777017ced0b381f1c7d6acf7",
-     "note": "contract consumed as ecir/1 wire format; channel pins Ordo 1.8.2 whose wire code is unchanged (ordo#98)"
-    },
-    "cohort-based-engineering": {
-     "commit": "808eafaea58fa266e78755218eb4542c86f49705"
-    }
-   },
-   "statuses": {
-    "P1": "PASS",
-    "P2": "PASS",
-    "P3": "PASS",
-    "P4": "FAIL",
-    "P5": "PASS",
-    "O1": "PASS",
-    "O2": "PASS",
-    "O3": "PASS",
-    "O4": "PASS",
-    "D1": "PASS",
-    "D2": "FAIL",
-    "D3": "PASS",
-    "D4": "PASS",
-    "I1": "PASS",
-    "I2": "BLOCKED",
-    "I3": "FAIL"
-   },
-   "blockers": [
     {
-     "id": "REL-GATE-001",
-     "repository": "kemiller2002/praxis",
-     "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
-     "workItem": "PRAXIS-REL-005",
-     "conditions": [
-      "P4",
-      "D2",
-      "I2",
-      "I3"
-     ]
+      "evaluatedAt": "2026-10-19",
+      "gate": "FAIL",
+      "pins": {
+        "praxis": {
+          "release": "v3.15.0",
+          "commit": "df6a8cbe23c2cd4d22980bded3cff4da2a0141cf",
+          "asset": "praxis-linux-x64.tar.gz",
+          "sha256": "bf135fa626be82c3e5fc0c2220005ae87aacf93d427eaee45780cfde1d2336cc",
+          "fix": "praxis#274 (7fd7e40) PRAXIS-REL-005 / REL-GATE-001"
+        },
+        "dokimos": {
+          "release": "dokimos-v0.6.0",
+          "commit": "828208f46b7d1073534bd02873d6298b62ad1de2",
+          "asset": "dokimos-linux-x64.tar.gz",
+          "sha256": "484cbc0cb2876d415ff416acf46a4d17aaa684f1c39ddcf4c59c76a4e0a1e94b"
+        },
+        "ordo": {
+          "release": null,
+          "commit": "e6fe390e47bf1d6d777017ced0b381f1c7d6acf7",
+          "note": "contract consumed as ecir/1 wire format; channel pins Ordo 1.8.2 whose wire code is unchanged (ordo#98)"
+        },
+        "cohort-based-engineering": {
+          "commit": "808eafaea58fa266e78755218eb4542c86f49705"
+        }
+      },
+      "statuses": {
+        "P1": "PASS",
+        "P2": "PASS",
+        "P3": "PASS",
+        "P4": "FAIL",
+        "P5": "PASS",
+        "O1": "PASS",
+        "O2": "PASS",
+        "O3": "PASS",
+        "O4": "PASS",
+        "D1": "PASS",
+        "D2": "FAIL",
+        "D3": "PASS",
+        "D4": "PASS",
+        "I1": "PASS",
+        "I2": "BLOCKED",
+        "I3": "FAIL"
+      },
+      "blockers": [
+        {
+          "id": "REL-GATE-001",
+          "repository": "kemiller2002/praxis",
+          "intake": ".praxis/inbox/documents/2026-10-19-REL-GATE-001-evidence-binding.md",
+          "workItem": "PRAXIS-REL-005",
+          "conditions": [
+            "P4",
+            "D2",
+            "I2",
+            "I3"
+          ]
+        }
+      ]
+    },
+    {
+      "evaluatedAt": "2026-10-19T21:45Z",
+      "gate": "PASS",
+      "statuses": {
+        "P1": "PASS",
+        "P2": "PASS",
+        "P3": "PASS",
+        "P4": "PASS",
+        "P5": "PASS",
+        "O1": "PASS",
+        "O2": "PASS",
+        "O3": "PASS",
+        "O4": "PASS",
+        "D1": "PASS",
+        "D2": "PASS",
+        "D3": "PASS",
+        "D4": "PASS",
+        "I1": "PASS",
+        "I2": "PASS",
+        "I3": "PASS"
+      },
+      "note": "PASS evaluation before Experiment B probed contradictory decisions / unresolved conflicts"
     }
-   ]
-  },
-  {
-   "evaluatedAt": "2026-10-19T21:45Z",
-   "gate": "PASS",
-   "statuses": {
-    "P1": "PASS",
-    "P2": "PASS",
-    "P3": "PASS",
-    "P4": "PASS",
-    "P5": "PASS",
-    "O1": "PASS",
-    "O2": "PASS",
-    "O3": "PASS",
-    "O4": "PASS",
-    "D1": "PASS",
-    "D2": "PASS",
-    "D3": "PASS",
-    "D4": "PASS",
-    "I1": "PASS",
-    "I2": "PASS",
-    "I3": "PASS"
-   },
-   "note": "PASS evaluation before Experiment B probed contradictory decisions / unresolved conflicts"
-  }
- ]
+  ],
+  "reruns": [
+    {
+      "evaluatedAt": "2026-10-21T01:51:42Z",
+      "praxis": {
+        "release": "v3.18.0",
+        "commit": "c66bb740",
+        "asset": "praxis-linux-x64.tar.gz",
+        "sha256": "2fca99c213c6ce69333cd88d807f0b1bd8c7c4adc20272be77cf197b2061de05",
+        "binarySha256": "410da86b8183b57c391e5b34b5de1fa9fad0bdfa8c9a5b6a3408f826daa71258"
+      },
+      "dokimos": "dokimos-v0.7.0",
+      "ordo": "v1.17.0",
+      "evidence": [
+        "gate/evidence/evidence-binding-repro-v3.18.0.jsonl",
+        "results/c/treatment-v3.18.0.jsonl",
+        "results/c/summary-v3.18.0.json"
+      ],
+      "result": "Every gate case and every experiment C case has the same outcome as on v3.17.0: GATE-A1..A4, GATE-A2B and C8a-d pass in attested mode, and experiment C matches prediction in 22/23 cases. The non-attested GATE-3/C3b forgery is still accepted in a repository that requires no attestation, now labelled unattested in the claim record and both event logs. GATE-A4 is labelled attested.",
+      "attestationLabels": {
+        "GATE-3": "unattested",
+        "GATE-5": "unattested",
+        "GATE-A4": "attested"
+      }
+    }
+  ]
 }
