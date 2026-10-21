@@ -157,7 +157,7 @@ cmd_finish() {
   jq -c '{unit, attempt, task, accepted: .verdict.accepted, claim: .claim.outcome, falseCompletion: .verdict.falseCompletion,
           earlierFailing: .verdict.earlierTasksFailing, oracleFailed: .oracle.failed, arch: .architecture.passed, dirty: .uncommittedPaths,
           build: .build.ok}' "$obs"
-  jq -c '{tokens: .tokens.total, cost: .costUsd, req: .requests, ctx: .context.last, compactions, models, x4: (.contaminationHits | length)}' "$RS/usage-$UNIT-$ATTEMPT.json"
+  jq -c '{tokens: .tokens.total, cost: .costUsd, req: .requests, ctx: .context.last, compactions, models, x4: (.contaminationHits | length), outside: (.outsideWorkspace | length)}' "$RS/usage-$UNIT-$ATTEMPT.json"
 }
 
 # Amendment A1: after the V7 unit (an unresolvable conflict; the correct outcome is a stop), the harness descopes V7

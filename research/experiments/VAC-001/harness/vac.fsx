@@ -375,6 +375,12 @@ let usage (a: Map<string, string>) =
             | _ -> [])
     let otherArm (s: string) = Regex.Matches(s, @"/home/user/vac-work/[^/\s""]+/[^/\s""]+") |> Seq.exists (fun m -> not (own.StartsWith m.Value))
     let hits = toolInputs |> List.filter (fun s -> forbidden |> List.exists s.Contains || otherArm s)
+    // Scope check: absolute paths outside the workspace and outside the toolchain the brief provides.
+    let allowedPrefixes = [ own; "/root/.dotnet"; "/usr/"; "/bin/"; "/dev/null"; "/proc/"; "/etc/"; "/root/.nuget" ]
+    let outside =
+        toolInputs |> List.filter (fun s ->
+            Regex.Matches(s, @"(?<![\w.~-])/(?:home|tmp|root|var|opt|mnt|srv)/[^\s""'`)\]]+")
+            |> Seq.exists (fun m -> not (allowedPrefixes |> List.exists (fun p -> m.Value.StartsWith p))))
     let sum f = reqs |> List.sumBy f
     let ctx r = r.Input + r.Cw5 + r.Cw1h + r.Cr
     let prices = a.TryFind "prices" |> Option.bind tryParse
@@ -399,6 +405,7 @@ let usage (a: Map<string, string>) =
            "efforts", jarr (reqs |> List.map (fun r -> r.Effort) |> List.distinct |> List.map jstr)
            "costUsd", (match cost with Some c -> jdec (Math.Round(c, 6)) | None -> jnull)
            "priceTable", (prices |> Option.bind (fun p -> str p "tableVersion") |> Option.map jstr |> Option.defaultValue jnull)
+           "outsideWorkspace", jarr (outside |> List.truncate 20 |> List.map (fun s -> jstr (if s.Length > 300 then s.Substring(0, 300) else s)))
            "contaminationHits", jarr (hits |> List.truncate 20 |> List.map (fun s -> jstr (if s.Length > 300 then s.Substring(0, 300) else s))) ]
 
 // ---------- Analysis (research-protocol.md section 9) ----------
