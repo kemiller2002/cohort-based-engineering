@@ -45,6 +45,8 @@ Other pins:
 - **Agent:**
   - Claude Code, model `claude-opus-5-5`.
   - `run-03/harness/agent-config.json`. The wrapper prompt is the run-02 prompt, byte for byte.
+  - Built-in tool set (K1): `Bash, Read, Edit, Write` (`agent-config.json` `.tools.builtIn`, passed as `--tools`),
+    identical in every arm. Draft revision R1 (2026-10-21) below.
   - Claude Code version: **TBD**.
   - Cache condition: **TBD**. K1 is preferred; rule P1 below decides.
 - **Fixtures:**
@@ -153,6 +155,7 @@ requirement.
     - `--session-id <fresh uuid>`;
     - `--append-system-prompt` carrying a random nonce;
     - `--strict-mcp-config` with no servers;
+    - `--tools Bash,Read,Edit,Write` (draft revision R1);
     - the run-02 wrapper prompt;
     - `timeout 2700`.
   - No prompt prefix is shared with an orchestrator. The nonce makes the system prompt differ between
@@ -175,6 +178,11 @@ requirement.
   - Not verified: authentication inside a fresh config dir, whether `bypassPermissions` is accepted
     headlessly, and Praxis F2 attribution of a main-session (not sidechain) transcript by `sessionId`.
     These are what the pilot checks.
+  - 2026-10-21 (draft revision R1): Claude Code **2.1.306** is installed. Headless `claude -p` authenticates
+    inside a fresh config dir under `env -i` on this host. `--permission-mode bypassPermissions` is
+    **refused when the process runs as root** ("cannot be used with root/sudo privileges") unless
+    `IS_SANDBOX=1` is set; the launcher does not set it. The trial host must run trials as a non-root user,
+    or the coordinator must decide (before the pilot) to pass `IS_SANDBOX=1`, which every R1 probe used.
 
 ## Primary outcome (H1)
 
@@ -265,6 +273,38 @@ is `analysis/power.json`.
 - **X5:** budget exceeded, or the agent gives up. Counted as failed, not excluded; its cost stays.
 - **X6:** a host file (authority, policy, contract, verifier, tool copies, price table or directives) changed
   by digest. Scored as an invalid completion attempt, not excluded.
+
+## Draft revisions (before preregistration)
+
+### R1, 2026-10-21: minimal, arm-identical built-in tool set for K1
+
+- **Change.** `harness/launch-agent.sh` passes `--tools Bash,Read,Edit,Write`, read from the new
+  `harness/agent-config.json` `.tools` object (`builtIn`, `mcpServers: []`, rationale). `launch.json` records
+  the tool list. Before R1, K1 used the Claude Code default tool set.
+- **Why.** The runtime prefix is the largest measured token item in run-01 and run-02 (OVERHEAD-ANALYSIS.md
+  §3.2, §5 item 5). Its composition was unmeasured.
+- **Evidence (exploratory, not a preregistered measurement).**
+  `research/token-efficiency/prefix/PREFIX-COMPOSITION.md` and `prefix-probes.json`: one-turn `claude -p`
+  probes mirroring this launcher, Claude Code 2.1.306, `claude-opus-5-5`.
+  - First-request context, default tool set (K1 as drafted): mean **16,513** tokens (n = 3, range 16,510–16,516).
+  - With `--tools Bash,Read,Edit,Write`: mean **5,821** tokens (n = 3, range 5,818–5,826).
+  - **Expected saving: about 10,692 tokens per request**, about 117.6k tokens per 11-request run; about
+    $0.024 per run if all of it is read from cache, about $0.107 per run if the first request writes it
+    (1-hour cache write, which these probes used). Price table 2026-10-20.1.
+- **Solvability.** Every V1–V8 brief needs only to read and edit files and run a shell (`source` the env file,
+  `dotnet test`, `git`, and `praxis` in C and D). The 2.1.306 default set has no Glob or Grep tool, so the
+  four tools are a strict subset of the default and add no capability. Removed: sub-agents (`Task`), web
+  (`WebFetch`, `WebSearch`; the brief forbids network), `NotebookEdit`, `Skill`, `ToolSearch`, background-task tools (`Monitor`, `TaskStop`; shell commands run in the foreground), scheduling,
+  worktree, messaging and workflow tools. No brief, directive or workflow step uses them.
+- **Fairness.** One tool list for every arm; Echelon arms reach Praxis through Bash, as before.
+- **K0.** The Agent tool cannot take `--tools`. If P1 selects K0, every arm keeps the general-purpose
+  sub-agent tool set, and that difference from K1 is recorded.
+- **Digests after R1.** `harness/agent-config.json`
+  `296c9dc36f150dd7d84a1283b93dece1b77115304a32a7c02bb6a5fc3670692f`; `harness/launch-agent.sh` `c3edbff8c502434f7ba695cf7499b300059579e45825f8c203ccdf15f332bfe2`. Both are re-recorded at freeze.
+- **Checks run after R1.** `fixtures/check-static.py` PASS (24/24); `analysis/selftest.py` PASS;
+  `REL003_DRY_RUN=1 harness/smoke.sh` (7 cases) ran to the end; `trial.sh launch … --print-only` renders
+  `--tools Bash,Read,Edit,Write`, and one live probe with the launcher's argv order loaded exactly those four
+  tools.
 
 ## Unresolved decisions for the coordinator (before freeze)
 

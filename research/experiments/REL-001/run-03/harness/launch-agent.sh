@@ -5,6 +5,8 @@
 # Isolation, per trial:
 #   - a fresh CLAUDE_CONFIG_DIR and HOME under the harness state (no user settings, memory, CLAUDE.md, hooks,
 #     plugins or MCP servers; --strict-mcp-config with an empty server list);
+#   - the built-in tool set restricted to agent-config.json .tools.builtIn (--tools Bash,Read,Edit,Write; identical
+#     in every arm; draft revision 2026-10-21, evidence research/token-efficiency/prefix/PREFIX-COMPOSITION.md);
 #   - a fresh --session-id (the agent id the binding and the transcript use);
 #   - a per-trial random nonce in --append-system-prompt, so the system prompt differs between trials and a
 #     cache entry written by an earlier trial cannot match past the system-prompt breakpoint;
@@ -25,17 +27,19 @@ CLAUDE_BIN="${REL003_CLAUDE:-$(command -v claude || echo claude)}"
 BRIEF=$(jq -r '.workspaces[0].brief' "$RJ")
 PROMPT=$(jq -r .prompt "$AGENT_CONFIG"); PROMPT=${PROMPT//\{BRIEF\}/$BRIEF}
 BUDGET_S=$(( $(jq -r .budgetMinutes "$AGENT_CONFIG") * 60 ))
+TOOLS=$(jq -r '.tools.builtIn // empty | join(",")' "$AGENT_CONFIG")
+[ -n "$TOOLS" ] || { echo "agent-config.json has no .tools.builtIn list" >&2; exit 2; }
 SID=$(python3 -I -c 'import uuid; print(uuid.uuid4())')
 NONCE=$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')
 CFG="$HS/claude-config"; HOME_DIR="$HS/home"
 CMD=("$CLAUDE_BIN" -p "$PROMPT" --model "$MODEL" --session-id "$SID" --output-format stream-json --verbose
      --append-system-prompt "REL-001 run-03 trial isolation nonce $NONCE. It carries no instruction."
-     --permission-mode bypassPermissions --strict-mcp-config --mcp-config '{"mcpServers":{}}')
+     --permission-mode bypassPermissions --tools "$TOOLS" --strict-mcp-config --mcp-config '{"mcpServers":{}}')
 jq -n --arg sid "$SID" --arg nonce "$NONCE" --arg cfg "$CFG" --arg root "$CFG/projects" --arg bin "$CLAUDE_BIN" \
-  --arg ver "$("$CLAUDE_BIN" --version 2>/dev/null | head -1 || echo unknown)" --argjson budget "$BUDGET_S" --arg at "$(utc)" \
+  --arg tools "$TOOLS" --arg ver "$("$CLAUDE_BIN" --version 2>/dev/null | head -1 || echo unknown)" --argjson budget "$BUDGET_S" --arg at "$(utc)" \
   --argjson argv "$(printf '%s\n' "${CMD[@]:1}" | jq -R . | jq -sc .)" \
   '{schema:"cbe.rel-001.run-03-launch/1", condition:"K1 isolated-cli", sessionId:$sid, nonce:$nonce, configDir:$cfg,
-    transcriptRoot:$root, claude:$bin, claudeVersion:$ver, budgetSeconds:$budget, argv:$argv, preparedAt:$at}' > "$HS/launch.json"
+    transcriptRoot:$root, claude:$bin, claudeVersion:$ver, tools:($tools | split(",")), budgetSeconds:$budget, argv:$argv, preparedAt:$at}' > "$HS/launch.json"
 if $PRINT_ONLY; then
   printf 'cd %q && env -i HOME=%q CLAUDE_CONFIG_DIR=%q PATH=%q timeout %s' "$RUN_DIR" "$HOME_DIR" "$CFG" "$PATH" "$BUDGET_S"
   printf ' %q' "${CMD[@]}"; echo
