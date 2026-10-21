@@ -148,7 +148,8 @@ Consequences for experiments:
   trust root.
 - **The cache-state concern is resolved.** Measured on all 88 trials, cold prefixes are balanced, and the sensitivity
   analysis changes no decision.
-- **REL-GATE-003 is owned** by the run-02 session. The fix is in praxis#280 (draft).
+- **REL-GATE-003's fix is merged** (praxis#280, run-02 session). It still counts as FAIL for gating until it is
+  released and the cohort gate cases pass on the released binary.
 - **REL-GATE-004 is unowned.** The run-02 owner declined it and asked that any fix branch from main after #280 merges,
   because both touch `FileWorkClaims.fs` and `FileDerivedCompletion.fs`.
 - **The integration gate for optimized-treatment trials is closed.** Run-03 must not start until all of the following hold:
@@ -184,7 +185,7 @@ Consequences for experiments:
 | # | P | Item | Where | Evidence |
 |---|---|---|---|---|
 | 1 | P1 / gate | REL-GATE-004: trust root from a protected source (base-branch `ros.json`, host-fixed authority) | praxis inbox (#279) | `../reliability/evidence/`, readiness-report F1 |
-| 2 | P1 / gate | REL-GATE-003: label attested or unattested; `requireVerifiedCompletion` implies attestation | **in progress: praxis#280** (run-02 session) | readiness-report PROBE-2, `gate-report.json` |
+| 2 | P1 / gate | REL-GATE-003: label attested or unattested; `requireVerifiedCompletion` implies attestation | **merged to praxis main (#280); release 3.18.0 pending; gate cases to be re-run on the release** | readiness-report PROBE-2, `gate-report.json` |
 | 3 | P1 | REL-TOKEN-001: per-request usage ledger | praxis inbox (#279) | OVERHEAD-ANALYSIS §1, §5.1 |
 | 4 | P1 | REL-TOKEN-002: final output tokens | praxis inbox (#279) | OVERHEAD-ANALYSIS §5.2 |
 | 5 | P1 | Record per-agent cache state in observations; retain trial transcripts | run-03 harness (done); run-02 (done post hoc) | `run-02/analysis/cache-sensitivity.json` |
