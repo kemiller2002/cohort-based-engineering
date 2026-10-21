@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:57d50ba4aaab56769465b60d6a91cc7a54771dd259fe3c4bf60bf6142a3217f4",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T6-followup.md#LEND-T6-F1",
+        "originalId": "LEND-T6-F1",
+        "document": "requirements/T6-followup.md",
+        "location": "L9",
+        "revision": "sha256:57d50ba4aaab56769465b60d6a91cc7a54771dd259fe3c4bf60bf6142a3217f4",
+        "contentDigest": "sha256:ab037cb7c55ce24b12e8e59d240304620f7695c0defe47cfbf06cbfa88cb0690"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-007",
+        "VERIFY-T6F-F1",
+        "COHORT-T6F"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T6-followup.md#LEND-T6-F2",
+        "originalId": "LEND-T6-F2",
+        "document": "requirements/T6-followup.md",
+        "location": "L19",
+        "revision": "sha256:57d50ba4aaab56769465b60d6a91cc7a54771dd259fe3c4bf60bf6142a3217f4",
+        "contentDigest": "sha256:5d298d85ffd777c6f03fe6e58eb1f9327e2aa82e30d1218b27435aed86e3df9d"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-007",
+        "VERIFY-T6F-F2",
+        "COHORT-T6F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-007",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND-T6-F1",
+        "requirements/T6-followup.md#LEND-T6-F2"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2: a freed copy passes to the next waiting hold; a hold on a book with a copy on the shelf gets it at once"
+    },
+    {
+      "id": "VERIFY-T6F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND-T6-F1"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "VERIFY-T6F-F2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND-T6-F2"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "COHORT-T6F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND-T6-F1",
+        "requirements/T6-followup.md#LEND-T6-F2"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    }
+  ]
+}

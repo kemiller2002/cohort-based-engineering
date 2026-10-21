@@ -1,0 +1,153 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T2",
+  "workItem": "LEND-T2",
+  "title": "T2: Loan history",
+  "categories": [
+    2,
+    3
+  ],
+  "categoryNames": [
+    "domain depending on persistence",
+    "cross-tier dependency violations"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND-T2-R1",
+      "LEND-T2-R2",
+      "LEND-T2-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T2.md#LEND-T2-R1",
+      "requirements/T2.md#LEND-T2-R2",
+      "requirements/T2.md#LEND-T2-R3"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T2 follow-up: An append-only log store",
+    "requirementIds": [
+      "LEND-T2-F1"
+    ],
+    "requirementKeys": [
+      "requirements/T2-followup.md#LEND-T2-F1"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "expectedOutcome": {
+    "initial": "implemented; history is Tier 1 state recorded by Tier 2 on return with the Clock port's date; its JSON representation lives in Lending.Host.Persistence",
+    "followup": "a LogFileStore adapter in Lending.Host.Persistence reusing the codec; Tiers 1-3 unchanged"
+  },
+  "expectedPlacement": [
+    {
+      "responsibility": "PastLoan state",
+      "tier": 1,
+      "module": "Lending.Semantic"
+    },
+    {
+      "responsibility": "recording a finished loan on return",
+      "tier": 2,
+      "module": "Lending.Transition.Loans"
+    },
+    {
+      "responsibility": "history view and use case",
+      "tier": 3,
+      "module": "Lending.Application"
+    },
+    {
+      "responsibility": "JSON representation of history; file stores",
+      "tier": 4,
+      "module": "Lending.Host.Persistence"
+    },
+    {
+      "responsibility": "history command",
+      "tier": 4,
+      "module": "Lending.Host.Cli"
+    }
+  ],
+  "trap": {
+    "exists": true,
+    "description": "the history's JSON encoder/decoder is written next to its type in Lending.Semantic (System.Text.Json.Nodes), and the JSON file store calls it",
+    "violatesRules": [
+      "ARC-SYM-01"
+    ],
+    "heuristics": [],
+    "probeIds": [
+      "T2-P1",
+      "T2-P2",
+      "T2-P3",
+      "T2-P4"
+    ],
+    "followupCost": "a second provider depends on serialization owned by Tier 1"
+  },
+  "scoringNotes": "Follow-up scope rule (probe T2-P6): the follow-up diff must not touch src/Lending.Semantic, src/Lending.Transition or src/Lending.Application; the harness scores it from git diff.",
+  "files": {
+    "requirement": {
+      "source": "tasks/T2/requirement.md",
+      "target": "requirements/T2.md",
+      "sha256": "2a16f31aab2325fdf604e801c5a88a912ea7d9ad277b946ea2c24a290858ccf4"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T2/acceptance/T2AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T2AcceptanceTests.fs",
+        "sha256": "4d4b61d4c4bf8f67ac0974b06452ee78040002ef794eb08f6a434c31adb6c89b"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T2/followup.md",
+      "target": "requirements/T2-followup.md",
+      "sha256": "e0bfeabdb60c4c35606b71059ff48a0813e18728a6e6f348879d633a1112758a"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T2/followup-acceptance/T2FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T2FollowupAcceptanceTests.fs",
+        "sha256": "2d222a243e6c4456b64a4c8c2d6826ae0651e1e20a400a2f67fc028d490583e0"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T2/InitialOracleTests.fs",
+        "sha256": "fd165c8bc22ac7fd035fcb0ed7d53fc68665475550c8df6c8e31d849a8d34f7a"
+      },
+      "followup": {
+        "path": "sealed:oracle/T2/FollowupOracleTests.fs",
+        "sha256": "6ed3b27e5b2b5e07318ef35a1efdbc0c0164e6d3d22bdad1f5f4278a4b7212d8"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T2/probes.json",
+      "sha256": "f161ec6dfac3233e615f2d84e05745a08063e6d9957117dd84e4d37848f2f985"
+    },
+    "reference": {
+      "good": "sealed:reference/T2/good",
+      "trap": "sealed:reference/T2/trap",
+      "followup-good": "sealed:reference/T2/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T2/contract.json",
+    "sha256": "15984a6941ed0d03d3b65016ffa40636d90ccd9b2bc7b6c9fb56150bbe96dd17",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:c0a7045a8235d7383d710dd5811d765b2e850813dfb2971b5f6bce2511e75663",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T2/followup-contract.json",
+    "sha256": "c08b1d1e88d469e6377192ca227d7f58bbfb6cefa04e1f71f3d6b185d424f397",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:ef36a1a981d3b8eaecaecb8a0f2f22747063e9a4125b054a85d2d57f7baffc99",
+    "ordoDiagnostics": []
+  }
+}

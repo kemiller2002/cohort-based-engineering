@@ -1,0 +1,159 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T4",
+  "workItem": "LEND-T4",
+  "title": "T4: Overdue notices",
+  "categories": [
+    6
+  ],
+  "categoryNames": [
+    "async operations"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND-T4-R1",
+      "LEND-T4-R2",
+      "LEND-T4-R3",
+      "LEND-T4-R4"
+    ],
+    "requirementKeys": [
+      "requirements/T4.md#LEND-T4-R1",
+      "requirements/T4.md#LEND-T4-R2",
+      "requirements/T4.md#LEND-T4-R3",
+      "requirements/T4.md#LEND-T4-R4"
+    ],
+    "decisionIds": [
+      "DEC-008"
+    ],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T4 follow-up: SMS notices",
+    "requirementIds": [
+      "LEND-T4-F1",
+      "LEND-T4-F2",
+      "LEND-T4-F3"
+    ],
+    "requirementKeys": [
+      "requirements/T4-followup.md#LEND-T4-F1",
+      "requirements/T4-followup.md#LEND-T4-F2",
+      "requirements/T4-followup.md#LEND-T4-F3"
+    ],
+    "decisionIds": [
+      "DEC-008"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "expectedOutcome": {
+    "initial": "implemented; Tier 2 requests notices as data and interprets Delivered/Rejected/NoAnswer as Succeeded/Failed/Unknown; Unknown is kept as a reconciliation obligation; Tier 3 awaits each send in turn",
+    "followup": "channel preference in Tier 1; the SMS-to-email fallback decided in Tier 2 and coordinated by Tier 3"
+  },
+  "expectedPlacement": [
+    {
+      "responsibility": "notice outcomes and reconciliation obligations",
+      "tier": 1,
+      "module": "Lending.Semantic"
+    },
+    {
+      "responsibility": "which loans need a notice; interpreting the report; reconciliation; fallback",
+      "tier": 2,
+      "module": "Lending.Transition.Overdue"
+    },
+    {
+      "responsibility": "sending through the Notifier port one at a time; views",
+      "tier": 3,
+      "module": "Lending.Application"
+    },
+    {
+      "responsibility": "delivery (outbox per channel); commands",
+      "tier": 4,
+      "module": "Lending.Host.Composition / Lending.Host.Cli"
+    }
+  ],
+  "trap": {
+    "exists": true,
+    "description": "notify-overdue is implemented in the command line: it filters Library.Loans by Loan.DueDate, builds notices, runs the notifier synchronously, maps reports to outcomes and writes OverdueNotices through the Store port",
+    "violatesRules": [
+      "ARC-BND-03"
+    ],
+    "heuristics": [
+      "ARC-HEU-02",
+      "ARC-HEU-03"
+    ],
+    "probeIds": [
+      "T4-P1",
+      "T4-P2",
+      "T4-P3",
+      "T4-P4"
+    ],
+    "followupCost": "the fallback rule has to be written into the CLI loop"
+  },
+  "scoringNotes": "Functional trap-adjacent failure (not an architecture trap): collapsing NoAnswer into Failed, or re-sending Unknown, fails the oracle. Sequential sending is tested with a delaying notifier.",
+  "files": {
+    "requirement": {
+      "source": "tasks/T4/requirement.md",
+      "target": "requirements/T4.md",
+      "sha256": "69f4cb4ff47e4ef01a4838044d66e7614ff5047c7b71e71aaa7952ae6ff29b21"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T4/acceptance/T4AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T4AcceptanceTests.fs",
+        "sha256": "52dadcbe37022481380589f5c03d1525a2d8917a7d24379d245b7dd5013e5631"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T4/followup.md",
+      "target": "requirements/T4-followup.md",
+      "sha256": "09c3a853a03659d2933c34071db33b2097ddbe914a17dd6dd9d5f1c3e4bf0478"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T4/followup-acceptance/T4FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T4FollowupAcceptanceTests.fs",
+        "sha256": "a259e8600ece2b43161de0dfd8311e3259d2ea6cd6cbf32fdfaff78e16b6c7ca"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T4/InitialOracleTests.fs",
+        "sha256": "c9dc08fabfbbd0a3fe6c0ff4829c6f6ef72a06af89bbc1409289898fb438d85b"
+      },
+      "followup": {
+        "path": "sealed:oracle/T4/FollowupOracleTests.fs",
+        "sha256": "2b4fddde52b1f620ddd7f48c6faf27f0d70c8b09c8197f6c7a190e81d189cd04"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T4/probes.json",
+      "sha256": "cb1384a639de51e28a66cc081285276a83df84aa9198d54848e56a494369e86f"
+    },
+    "reference": {
+      "good": "sealed:reference/T4/good",
+      "trap": "sealed:reference/T4/trap",
+      "followup-good": "sealed:reference/T4/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T4/contract.json",
+    "sha256": "a0e3cf429d0ee669687a8782041e90e6d7eb6c4cddf9678301ee5ba0e11a8e85",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:a11a01c3f44b5bfd877be02cd68c9a04187995dc2f185f8f3799f82bcd0fe34f",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T4/followup-contract.json",
+    "sha256": "75ee2f6d6b9ca91edb10fd43d032617901f6246df1bef187fe2b3dfd25510086",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:5d4aa1d4e8436b26f29d67f36f3d360f678ee059ea45c7f0dbb967e17b6caa88",
+    "ordoDiagnostics": []
+  }
+}

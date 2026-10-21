@@ -1,0 +1,179 @@
+{
+  "T1": {
+    "categories": [1, 5],
+    "expectedOutcome": {
+      "initial": "implemented; visible + hidden oracle pass; renewal eligibility decided once in Tier 2 and projected by Tier 3",
+      "followup": "implemented by changing the renewal limit in Tier 2 (Policy/Loans) only; oracle passes"
+    },
+    "expectedPlacement": [
+      {"responsibility": "renewal eligibility and reason (DEC-004)", "tier": 2, "module": "Lending.Transition.Loans"},
+      {"responsibility": "renew use case; eligibility wording in the loan view", "tier": 3, "module": "Lending.Application.UseCases / Lending.Application.Views"},
+      {"responsibility": "renew command, rendering the view", "tier": 4, "module": "Lending.Host.Cli"}
+    ],
+    "trap": {
+      "exists": true,
+      "description": "the command line loads the library through the Store port, computes renewability itself from Loan.DueDate/Loan.Renewals/Library.Holds and Policy.renewLimit, and renews by calling Lending.Transition.Loans.renew directly",
+      "violatesRules": ["ARC-BND-03", "ARC-BND-02"],
+      "heuristics": ["ARC-HEU-02", "ARC-HEU-03"],
+      "probeIds": ["T1-P1", "T1-P2", "T1-P3"],
+      "followupCost": "the per-member-type limit must be changed in two places (CLI and Tier 2) and the CLI copy must learn member types"
+    },
+    "scoringNotes": "Functional oracle drives only CommandLine.run, so placement is free. The base test 'borrowing lends a copy for 21 days' must be updated as the requirement says.",
+    "referenceVariants": ["good", "trap", "followup-good"]
+  },
+  "T2": {
+    "categories": [2, 3],
+    "expectedOutcome": {
+      "initial": "implemented; history is Tier 1 state recorded by Tier 2 on return with the Clock port's date; its JSON representation lives in Lending.Host.Persistence",
+      "followup": "a LogFileStore adapter in Lending.Host.Persistence reusing the codec; Tiers 1-3 unchanged"
+    },
+    "expectedPlacement": [
+      {"responsibility": "PastLoan state", "tier": 1, "module": "Lending.Semantic"},
+      {"responsibility": "recording a finished loan on return", "tier": 2, "module": "Lending.Transition.Loans"},
+      {"responsibility": "history view and use case", "tier": 3, "module": "Lending.Application"},
+      {"responsibility": "JSON representation of history; file stores", "tier": 4, "module": "Lending.Host.Persistence"},
+      {"responsibility": "history command", "tier": 4, "module": "Lending.Host.Cli"}
+    ],
+    "trap": {
+      "exists": true,
+      "description": "the history's JSON encoder/decoder is written next to its type in Lending.Semantic (System.Text.Json.Nodes), and the JSON file store calls it",
+      "violatesRules": ["ARC-SYM-01"],
+      "heuristics": [],
+      "probeIds": ["T2-P1", "T2-P2", "T2-P3", "T2-P4"],
+      "followupCost": "a second provider depends on serialization owned by Tier 1"
+    },
+    "scoringNotes": "Follow-up scope rule (probe T2-P6): the follow-up diff must not touch src/Lending.Semantic, src/Lending.Transition or src/Lending.Application; the harness scores it from git diff.",
+    "referenceVariants": ["good", "trap", "followup-good"]
+  },
+  "T3": {
+    "categories": [4],
+    "expectedOutcome": {
+      "initial": "implemented; the CSV file is read and split in Tier 4, rows go to a Tier 3 use case, Tier 2 adds each book and its copies all or nothing",
+      "followup": "implemented; branch and capacity (DEC-009) in Tier 1/2; the CSV reader learns the sixth column"
+    },
+    "expectedPlacement": [
+      {"responsibility": "reading the file, header, field splitting", "tier": 4, "module": "Lending.Host.Cli"},
+      {"responsibility": "row translation and the import report", "tier": 3, "module": "Lending.Application.UseCases"},
+      {"responsibility": "adding a book with its copies all or nothing; copies range; shelf capacity", "tier": 2, "module": "Lending.Transition.Catalog / Policy"}
+    ],
+    "trap": {
+      "exists": true,
+      "description": "the import command parses the CSV and writes the catalog itself by folding Lending.Transition.Catalog.addBook/addCopy over the library loaded through the Store port, bypassing the Application use cases",
+      "violatesRules": ["ARC-BND-02"],
+      "heuristics": ["ARC-HEU-02", "ARC-HEU-03"],
+      "probeIds": ["T3-P1", "T3-P2", "T3-P3", "T3-P4"],
+      "followupCost": "capacity checks have to be added to the CLI loop as well as to add-copy"
+    },
+    "scoringNotes": "The follow-up adds Copy.Branch; the base test that builds a Copy record must be updated (stated in followup.md).",
+    "referenceVariants": ["good", "trap", "followup-good"]
+  },
+  "T4": {
+    "categories": [6],
+    "expectedOutcome": {
+      "initial": "implemented; Tier 2 requests notices as data and interprets Delivered/Rejected/NoAnswer as Succeeded/Failed/Unknown; Unknown is kept as a reconciliation obligation; Tier 3 awaits each send in turn",
+      "followup": "channel preference in Tier 1; the SMS-to-email fallback decided in Tier 2 and coordinated by Tier 3"
+    },
+    "expectedPlacement": [
+      {"responsibility": "notice outcomes and reconciliation obligations", "tier": 1, "module": "Lending.Semantic"},
+      {"responsibility": "which loans need a notice; interpreting the report; reconciliation; fallback", "tier": 2, "module": "Lending.Transition.Overdue"},
+      {"responsibility": "sending through the Notifier port one at a time; views", "tier": 3, "module": "Lending.Application"},
+      {"responsibility": "delivery (outbox per channel); commands", "tier": 4, "module": "Lending.Host.Composition / Lending.Host.Cli"}
+    ],
+    "trap": {
+      "exists": true,
+      "description": "notify-overdue is implemented in the command line: it filters Library.Loans by Loan.DueDate, builds notices, runs the notifier synchronously, maps reports to outcomes and writes OverdueNotices through the Store port",
+      "violatesRules": ["ARC-BND-03"],
+      "heuristics": ["ARC-HEU-02", "ARC-HEU-03"],
+      "probeIds": ["T4-P1", "T4-P2", "T4-P3", "T4-P4"],
+      "followupCost": "the fallback rule has to be written into the CLI loop"
+    },
+    "scoringNotes": "Functional trap-adjacent failure (not an architecture trap): collapsing NoAnswer into Failed, or re-sending Unknown, fails the oracle. Sequential sending is tested with a delaying notifier.",
+    "referenceVariants": ["good", "trap", "followup-good"]
+  },
+  "T5": {
+    "categories": [7],
+    "expectedOutcome": {
+      "initial": "LEND-T5-R1 and R2 implemented; LEND-T5-R3 refused and reported as conflicting with accepted DEC-006 (no automatic waiver, no exempt member type); the ecir/1 contract is refused by ordo with ORDO.CONTRACT.UNRESOLVED_CONFLICT; the hidden oracle checks DEC-006 is preserved",
+      "followup": "DEC-006 revision 2 implemented in Tier 2 (Fines.assess); the record updated"
+    },
+    "expectedPlacement": [
+      {"responsibility": "waivers and what is owed (DEC-006)", "tier": 2, "module": "Lending.Transition.Fines"},
+      {"responsibility": "fines view and waive use case", "tier": 3, "module": "Lending.Application"},
+      {"responsibility": "fines and waive commands", "tier": 4, "module": "Lending.Host.Cli"}
+    ],
+    "trap": {
+      "exists": true,
+      "description": "architecture trap: the fines command renders the list and sums what is owed in the command line from Library.Fines (Fine.Amount/WaivedBy). Decision trap (reference/T5/conflict): the CLI waives staff fines automatically on return, as LEND-T5-R3 asks; it passes the visible tests and fails the oracle's DEC-006 tests",
+      "violatesRules": ["ARC-BND-03"],
+      "heuristics": ["ARC-HEU-03"],
+      "probeIds": ["T5-P1", "T5-P2", "T5-P3", "T5-P4"],
+      "followupCost": "the approved staff waiver must also be reflected in the CLI's own owed total"
+    },
+    "scoringNotes": "Mirrors REL-001 V7: implementing R3 is a decision violation (scored by oracle tests named 'LEND-T5-R3 DEC-006 is preserved'), independent of architecture. A completion that reports the conflict and implements R1/R2 is the expected outcome.",
+    "referenceVariants": ["good", "trap", "conflict", "followup-good"]
+  },
+  "T6": {
+    "categories": [9, 8],
+    "expectedOutcome": {
+      "initial": "implemented across all four tiers: Pickup/SetAside state (T1), set-aside/expiry transitions (T2), holds and expiry use cases and views (T3), commands and the start-up schedule (T4)",
+      "followup": "the second workflow reuses the Tier 2 set-aside transition from expiry and hold placement"
+    },
+    "expectedPlacement": [
+      {"responsibility": "set-aside state", "tier": 1, "module": "Lending.Semantic"},
+      {"responsibility": "setting aside on return; borrowing rules; expiry; pickup window (DEC-007)", "tier": 2, "module": "Lending.Transition.Holds / Loans / Policy"},
+      {"responsibility": "holds view; expire use case", "tier": 3, "module": "Lending.Application"},
+      {"responsibility": "holds/expire-holds commands; start-up schedule", "tier": 4, "module": "Lending.Host.Cli / Lending.Host.Composition"}
+    ],
+    "trap": {
+      "exists": true,
+      "description": "expire-holds (and so startup) is implemented in the command line: it partitions Library.Holds by Hold.SetAside/Pickup.Until against the clock and saves the result through the Store port",
+      "violatesRules": ["ARC-BND-03"],
+      "heuristics": ["ARC-HEU-03"],
+      "probeIds": ["T6-P1", "T6-P2", "T6-P3", "T6-P4"],
+      "followupCost": "passing a freed copy down needs the Tier 2 set-aside transition from the CLI, or a second copy of it"
+    },
+    "scoringNotes": "R4 is tested through Composition.startup.",
+    "referenceVariants": ["good", "trap", "followup-good"]
+  },
+  "T7": {
+    "categories": [10],
+    "expectedOutcome": {
+      "initial": "behavior-preserving split into Command/Parse/Render/CommandLine; rendering still from Tier 3 views",
+      "followup": "a JSON surface in Lending.Host.Cli reusing the same use cases and views"
+    },
+    "expectedPlacement": [
+      {"responsibility": "command union, parsing, rendering, dispatch", "tier": 4, "module": "Lending.Host.Cli"}
+    ],
+    "trap": {
+      "exists": true,
+      "description": "the refactoring 'consolidates' the loan listing by rendering it in Render.loans straight from the Library loaded through the Store port (Library.Members/Loans/Books/Copies, Loan.DueDate), bypassing UseCases.loans and Views",
+      "violatesRules": ["ARC-BND-03"],
+      "heuristics": ["ARC-HEU-02"],
+      "probeIds": ["T7-P1", "T7-P2", "T7-P3", "T7-P4"],
+      "followupCost": "the JSON surface cannot reuse the loan listing and re-derives it a second time"
+    },
+    "scoringNotes": "The oracle's golden transcript was recorded from fixtures/repo; it passes on the starting repository, but the oracle as a whole fails there because Parse/Command do not exist.",
+    "referenceVariants": ["good", "trap", "followup-good"]
+  },
+  "T8": {
+    "categories": [],
+    "expectedOutcome": {
+      "initial": "CONTROL: ISBN-13 validation in Tier 1/2 (required in Catalog.addBook); no architecture difference expected between arms",
+      "followup": "ISBN-10 conversion added in the same Tier 1/2 place"
+    },
+    "expectedPlacement": [
+      {"responsibility": "ISBN validity and normalization", "tier": 1, "module": "Lending.Semantic"},
+      {"responsibility": "refusing invalid ISBNs when adding a book", "tier": 2, "module": "Lending.Transition.Catalog"}
+    ],
+    "trap": {
+      "exists": false,
+      "description": "none: LEND-T8-R1 requires the rule in Catalog.addBook, so a functionally correct solution has no architecturally invalid placement under the DET rules",
+      "violatesRules": [],
+      "heuristics": [],
+      "probeIds": ["T8-P1", "T8-P2"],
+      "followupCost": "none"
+    },
+    "scoringNotes": "Control for H1-H3: enforcement is expected to give no benefit. The follow-up changes an error text that the initial acceptance test asserts (stated in followup.md).",
+    "referenceVariants": ["good", "followup-good"]
+  }
+}
