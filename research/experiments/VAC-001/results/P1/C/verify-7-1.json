@@ -1,0 +1,247 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "C",
+  "unit": 7,
+  "attempt": 1,
+  "task": "V6",
+  "fault": "none",
+  "head": "aabe370d68416718d4e2c709972b95394b095ff5",
+  "verifiedAt": "2026-10-21T08:27:40.9041042Z",
+  "verifyMs": 48398,
+  "stagedTasks": [
+    "V7",
+    "V5",
+    "V1",
+    "V4",
+    "V8",
+    "V2",
+    "V6"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 93,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 59,
+    "failed": 0,
+    "byTask": {
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V2": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 7,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U7-D1",
+        "statement": "Postings are identified by their position in the account\u0027s journal-order list, not by value, so identical postings are each matched at most once. Recorded as DEC-U7-RECONCILE-BY-POSITION.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs#Posting",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Reconciliation.fs#reconcile",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D2",
+        "statement": "Journal order comes from Ledger.postings (oldest first) filtered to the account, relying on the newest-first storage decision.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#postings",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-NEWEST-FIRST",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D3",
+        "statement": "Each line, in order, greedily takes the unmatched candidate minimising (days apart, journal position), implementing DEC-V6-CLOSEST-FIRST; no global optimisation.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "contracts/V6.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V6-CLOSEST-FIRST",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Reconciliation.fs#reconcile",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D4",
+        "statement": "Days apart is |BookedOn.DayNumber - Date.DayNumber| \u003C= 2; Memo/Reference compared with StringComparison.Ordinal; Value/Amount by decimal equality (so 5.0 equals 5.00).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Reconciliation.fs#canMatch",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D5",
+        "statement": "Parameters of BankLine and Posting are type-annotated because BankLine.Value shares a label with StandingOrder.Value.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Domain.fs#BankLine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs#StandingOrder",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D6",
+        "statement": "An account that is not open, closed accounts included, is refused with UnknownAccount; the postings of a closed account are therefore not reconcilable.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-U3-CLOSED-ACCOUNTS-SET",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 7,
+  "attempt": 1,
+  "task": "V6",
+  "fault": "none",
+  "head": "5e75c1bb29071ffa81f346b8075b32318f3f12ee",
+  "verifiedAt": "2026-10-21T08:25:33.0654096Z",
+  "verifyMs": 55971,
+  "stagedTasks": [
+    "V7",
+    "V5",
+    "V1",
+    "V4",
+    "V8",
+    "V2",
+    "V6"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 99,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 59,
+    "failed": 0,
+    "byTask": {
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V2": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 7,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U7-D1",
+        "statement": "Postings are tracked by their position in the account\u0027s journal-order list, not by value: Posting is a value record and identical postings (same account, amount, reference and date) can occur, so value equality would match one posting twice or drop both from LedgerOnly.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Domain.fs#Posting",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Reconciliation.fs#reconcile",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D2",
+        "statement": "The account\u0027s journal order is List.rev of Ledger.postingsOf (newest first), consistent with Ledger.postings. Open means in LedgerState.Accounts, so closed accounts are refused with UnknownAccount.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#postingsOf",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#postings",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U3-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D3",
+        "statement": "Date distance is the absolute difference of DateOnly.DayNumber, so \u0027at most 2 days apart\u0027 means |difference| \u003C= 2. The tie-break to the earlier posting relies on List.minBy returning the first of equal keys over candidates kept in journal order; a test pins this.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Reconciliation.fs#reconcile",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Ledger.Tests/ReconciliationTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D4",
+        "statement": "Matching is greedy per line as specified, not a globally optimal assignment; an earlier line may take a posting a later line needed (covered by a test).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}
