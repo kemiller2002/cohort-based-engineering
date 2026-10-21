@@ -134,7 +134,11 @@ let checkRef (tree: string) (knownIds: Set<string>) (r: string) : RefCheck =
     let exists p = File.Exists(Path.Combine(tree, p)) || Directory.Exists(Path.Combine(tree, p))
     let read p = let f = Path.Combine(tree, p) in if File.Exists f then File.ReadAllText f else ""
     let r' = r.Trim().Trim('`')
+    // files the brief provides outside the repository (amendment A3)
+    let briefProvided = [ "DIRECTIVES.md"; "env.sh" ]
     match r' with
+    | _ when briefProvided |> List.exists (fun f -> r'.Split('#').[0].Trim() = f || r'.Split('#').[0].Trim().EndsWith("/" + f)) ->
+        { Ref = r; Kind = "brief-provided"; Valid = Some true; Why = "" }
     | _ when Regex.IsMatch(r', @"^[0-9a-f]{7,40}$") -> { Ref = r; Kind = "commit"; Valid = None; Why = "commit refs are not checked from an exported tree" }
     | _ when Regex.IsMatch(r', @"^(DEC|U\d+-D|CONFLICT|VERIFY|LEDGER)-?[\w-]*$") && not (r'.Contains "/") ->
         { Ref = r; Kind = "record"; Valid = Some(knownIds.Contains r'); Why = if knownIds.Contains r' then "" else "identifier not found in requirements, contracts, decisions or reports" }

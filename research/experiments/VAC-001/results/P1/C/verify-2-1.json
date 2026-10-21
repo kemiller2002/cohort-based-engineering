@@ -53,7 +53,7 @@
     "decisions": [
       {
         "id": "U2-D1",
-        "statement": "Shortfall handling follows the accepted design note: an order is paid in full via one Ledger.transfer of its whole Value, or skipped with the transfer\u0027s refusal (e.g. InsufficientFunds); no partial payment. Recorded as DEC-U2-SHORTFALL-VIA-TRANSFER.",
+        "statement": "Shortfall handling follows the accepted design note: an order is paid in full via one Ledger.transfer of its whole Value, or skipped with the transfer's refusal (e.g. InsufficientFunds); no partial payment. Recorded as DEC-U2-SHORTFALL-VIA-TRANSFER.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -86,7 +86,7 @@
       },
       {
         "id": "U2-D2",
-        "statement": "Idempotency is derived from the journal: an order is AlreadyPaid when any posting carries reference standing:\u003COrderId\u003E:\u003Cyyyy-MM-dd\u003E (invariant culture); this check runs before the transfer. No paid-order state is added to LedgerState. Recorded as DEC-U2-IDEMPOTENCY-BY-REFERENCE.",
+        "statement": "Idempotency is derived from the journal: an order is AlreadyPaid when any posting carries reference standing:<OrderId>:<yyyy-MM-dd> (invariant culture); this check runs before the transfer. No paid-order state is added to LedgerState. Recorded as DEC-U2-IDEMPOTENCY-BY-REFERENCE.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -113,7 +113,7 @@
       },
       {
         "id": "U2-D3",
-        "statement": "run validates orders in one list-order pass (value \u003E 0, day 1..31, id not used by an earlier order) before the date check, moves the date via Ledger.setDate, then pays due orders sorted by String.CompareOrdinal on OrderId, folding the ledger through each payment. Recorded as DEC-U2-RUN-SHAPE.",
+        "statement": "run validates orders in one list-order pass (value > 0, day 1..31, id not used by an earlier order) before the date check, moves the date via Ledger.setDate, then pays due orders sorted by String.CompareOrdinal on OrderId, folding the ledger through each payment. Recorded as DEC-U2-RUN-SHAPE.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -204,5 +204,6 @@
     "falseCompletion": false,
     "earlierTasksFailing": [],
     "buildBroken": false
-  }
+  },
+  "evidenceRegeneratedBy": "A3"
 }

@@ -59,7 +59,7 @@
     "decisions": [
       {
         "id": "U3-D1",
-        "statement": "Closed accounts are remembered in a new LedgerState field ClosedAccounts: Set\u003CAccountId\u003E (initialised empty in Ledger.empty); closeAccount moves the id from Accounts to ClosedAccounts. Accounts keeps its type and meaning (open accounts), so every existing check (balance, credit, debit, transfer, closePeriod, Store) treats a closed id as unknown with no further change. Only Ledger.empty constructs LedgerState in the repository, so adding the field breaks no caller; existing function signatures are unchanged.",
+        "statement": "Closed accounts are remembered in a new LedgerState field ClosedAccounts: Set<AccountId> (initialised empty in Ledger.empty); closeAccount moves the id from Accounts to ClosedAccounts. Accounts keeps its type and meaning (open accounts), so every existing check (balance, credit, debit, transfer, closePeriod, Store) treats a closed id as unknown with no further change. Only Ledger.empty constructs LedgerState in the repository, so adding the field breaks no caller; existing function signatures are unchanged.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -94,13 +94,13 @@
         "id": "U3-D2",
         "statement": "A single status map (open/closed) would make the overlap of open and closed unrepresentable but would change the type of the public Accounts field; I kept two sets and documented the invariant that they are disjoint and changed only by Ledger.openAccount/closeAccount. Code that builds a LedgerState with a record copy could still violate it.",
         "basis": "evidence",
-        "layer1": "invalid-evidence",
+        "layer1": "evidence-valid",
         "refs": [
           {
             "ref": "DIRECTIVES.md",
-            "kind": "file",
-            "valid": false,
-            "why": "path does not exist"
+            "kind": "brief-provided",
+            "valid": true,
+            "why": ""
           },
           {
             "ref": "src/Ledger/Domain.fs#LedgerState",
@@ -119,7 +119,7 @@
       },
       {
         "id": "U3-D3",
-        "statement": "closeAccount reuses Ledger.balance for the first check, so \u0027not open\u0027 (never opened or already closed) yields UnknownAccount before the balance check; any balance \u003C\u003E 0m (including a negative one, reachable only via a hand-built state) yields NonZeroBalance(id, balance).",
+        "statement": "closeAccount reuses Ledger.balance for the first check, so 'not open' (never opened or already closed) yields UnknownAccount before the balance check; any balance <> 0m (including a negative one, reachable only via a hand-built state) yields NonZeroBalance(id, balance).",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -140,7 +140,7 @@
       },
       {
         "id": "U3-D4",
-        "statement": "openAccount refuses an id found in Accounts or ClosedAccounts with DuplicateAccount; Store.openAccount inherits this. The requirement wording \u0027whether or not the account ever had postings\u0027 is why reuse is not inferred from the journal.",
+        "statement": "openAccount refuses an id found in Accounts or ClosedAccounts with DuplicateAccount; Store.openAccount inherits this. The requirement wording 'whether or not the account ever had postings' is why reuse is not inferred from the journal.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -167,7 +167,7 @@
       },
       {
         "id": "U3-D5",
-        "statement": "No Store.closeAccount was added (not required). A repeated closePeriod for a period id closed before the account was closed returns the stored earlier summary, which may still list the account; I read \u0027a period close no longer charges or lists it\u0027 as applying to new closes, since the existing idempotency contract returns the first close\u0027s summary.",
+        "statement": "No Store.closeAccount was added (not required). A repeated closePeriod for a period id closed before the account was closed returns the stored earlier summary, which may still list the account; I read 'a period close no longer charges or lists it' as applying to new closes, since the existing idempotency contract returns the first close's summary.",
         "basis": "assumption",
         "layer1": "recorded-assumption",
         "refs": [
@@ -198,5 +198,6 @@
     "falseCompletion": false,
     "earlierTasksFailing": [],
     "buildBroken": false
-  }
+  },
+  "evidenceRegeneratedBy": "A3"
 }

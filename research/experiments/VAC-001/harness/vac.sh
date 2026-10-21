@@ -185,7 +185,21 @@ cmd_feedback() {
   echo "$out"
 }
 
+# Amendment A3: regenerate Layer 1 evidence for verified units from the stored verifier trees (no agent involvement).
+#   vac.sh reevidence RUN ARM
+cmd_reevidence() {
+  paths "$1" "$2"; local f u t d
+  for f in "$RS"/verify-*-*.json; do
+    case "$f" in *superseded*) continue;; esac
+    u=$(jq -r .unit "$f"); t=$(jq -r .attempt "$f"); d="$ST/verify-$u-$t"
+    [ -d "$d/tree" ] || continue
+    dotnet fsi --quiet --exec "$FSX" evidence "$d/tree" "$u" > "$d/evidence.json"
+    jq --slurpfile e "$d/evidence.json" '.evidence = $e[0] | .evidenceRegeneratedBy = "A3"' "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+  done
+}
+
 case "${1:-}" in
+  reevidence) shift; cmd_reevidence "$@";;
   feedback) shift; cmd_feedback "$@";;
   descope) shift; cmd_descope "$@";;
   finish) shift; cmd_finish "$@";;

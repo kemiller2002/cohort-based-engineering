@@ -80,7 +80,7 @@
       },
       {
         "id": "U2-D2",
-        "statement": "Validation runs over the whole list before the date check; OrderId duplicates are detected with ordinal (Set\u003Cstring\u003E) equality; Error (InvalidOrder id) names the first offending order. The date check and the business-date move reuse Ledger.setDate, so a past date yields DateInPast and payments are stamped with the new date.",
+        "statement": "Validation runs over the whole list before the date check; OrderId duplicates are detected with ordinal (Set<string>) equality; Error (InvalidOrder id) names the first offending order. The date check and the business-date move reuse Ledger.setDate, so a past date yields DateInPast and payments are stamped with the new date.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -155,7 +155,7 @@
       },
       {
         "id": "U2-D5",
-        "statement": "AlreadyPaid is detected by any journal posting whose Reference equals standing:\u003COrderId\u003E:\u003Cyyyy-MM-dd\u003E, checked before attempting the transfer and against the state including earlier payments of the same run.",
+        "statement": "AlreadyPaid is detected by any journal posting whose Reference equals standing:<OrderId>:<yyyy-MM-dd>, checked before attempting the transfer and against the state including earlier payments of the same run.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -186,5 +186,6 @@
     "falseCompletion": false,
     "earlierTasksFailing": [],
     "buildBroken": false
-  }
+  },
+  "evidenceRegeneratedBy": "A3"
 }

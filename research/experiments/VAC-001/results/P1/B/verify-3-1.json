@@ -59,7 +59,7 @@
     "decisions": [
       {
         "id": "U3-D1",
-        "statement": "Closed accounts are remembered in a new LedgerState field \u0060ClosedAccounts: Set\u003CAccountId\u003E\u0060, disjoint from \u0060Accounts\u0060. Closing moves the id from Accounts to ClosedAccounts. A field is needed because the requirement forbids reuse even for accounts that never had postings, so closure cannot be inferred from the journal.",
+        "statement": "Closed accounts are remembered in a new LedgerState field `ClosedAccounts: Set<AccountId>`, disjoint from `Accounts`. Closing moves the id from Accounts to ClosedAccounts. A field is needed because the requirement forbids reuse even for accounts that never had postings, so closure cannot be inferred from the journal.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -80,7 +80,7 @@
       },
       {
         "id": "U3-D2",
-        "statement": "Adding a record field changes LedgerState\u0027s shape (code building a LedgerState record literal must set it), but no function signature changes; the only literal in the repo is Ledger.empty, which was updated. I took \u0027existing public signatures kept\u0027 to mean function signatures.",
+        "statement": "Adding a record field changes LedgerState's shape (code building a LedgerState record literal must set it), but no function signature changes; the only literal in the repo is Ledger.empty, which was updated. I took 'existing public signatures kept' to mean function signatures.",
         "basis": "assumption",
         "layer1": "recorded-assumption",
         "refs": [
@@ -122,7 +122,7 @@
       },
       {
         "id": "U3-D4",
-        "statement": "Added Store.closeAccount, which commits the close and removes the id from the balance cache, so the Store\u0027s rule that its cache follows every operation still holds and Store.balance reports UnknownAccount for a closed account.",
+        "statement": "Added Store.closeAccount, which commits the close and removes the id from the balance cache, so the Store's rule that its cache follows every operation still holds and Store.balance reports UnknownAccount for a closed account.",
         "basis": "evidence",
         "layer1": "evidence-valid",
         "refs": [
@@ -180,5 +180,6 @@
     "falseCompletion": false,
     "earlierTasksFailing": [],
     "buildBroken": false
-  }
+  },
+  "evidenceRegeneratedBy": "A3"
 }

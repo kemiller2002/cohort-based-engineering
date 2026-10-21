@@ -244,4 +244,12 @@ following are recorded:
     compiles and runs in its own project, so failures are attributed per task.
   - **Rescoring.** Unit 2 was rescored in every arm with the corrected verifier. The defective observation is kept
     as `results/P1/B/verify-2-1.superseded-by-A2.json`. Units 1 are unaffected: no implementation oracle applied.
+- **A3 (2026-10-21, after P1 unit 3, before any arm comparison).** Layer 1 detector false positive.
+  - **Problem.** Decisions citing `DIRECTIVES.md` were marked invalid evidence. The brief supplies that file
+    outside the repository, so it is legitimate evidence (3 cases: A units 1 and 3, B unit 1).
+  - **Change.** Files the brief provides (`DIRECTIVES.md`, `env.sh`) are now valid evidence of kind
+    `brief-provided`. Evidence for completed units was regenerated from the stored verifier trees
+    (`vac.sh reevidence`).
+  - **Recording.** The 3 cases are recorded as Layer 1 false positives in the detector-accuracy table
+    (`hallucination-evaluation.md`).
 
