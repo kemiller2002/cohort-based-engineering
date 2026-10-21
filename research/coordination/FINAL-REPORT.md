@@ -148,19 +148,20 @@ Consequences for experiments:
   trust root.
 - **The cache-state concern is resolved.** Measured on all 88 trials, cold prefixes are balanced, and the sensitivity
   analysis changes no decision.
-- **REL-GATE-003's fix is merged** (praxis#280, run-02 session). It still counts as FAIL for gating until it is
-  released and the cohort gate cases pass on the released binary.
+- **REL-GATE-003 is resolved** (praxis#280, released in 3.18.0; scope: policy and labelling).
 - **REL-GATE-004's fix is merged** (praxis#279, `e29e49d2`, this session, user-approved).
   - Completion policy is read from the protected branch, which is located from `origin/HEAD` or `origin/main`, never
     from the agent's copy.
   - Attested mode trusts only verifier keyids pinned in the protected `workProtocol.trustedVerifierKeyIds`.
   - Results: 2350/2350 tests; PROBE-3 → `POLICY_CHANGED`, PROBE-4 → `UNTRUSTED_AUTHORITY`.
-  - It still counts as FAIL for gating until it is released and the cohort gate cases pass on the released binary.
+  - **Released in Praxis v3.19.0 and resolved.** On the release, GATE-A5 (PROBE-3) and GATE-A6 (PROBE-4) are rejected,
+    and GATE-A4's keyids match the host verifier (`../experiments/REL-001/gate/evidence/evidence-binding-repro-v3.19.0.jsonl`,
+    cohort #12). Experiment C with the pin: 22/23 cases match the prediction, C8a–d all match.
   - **Breaking:** attested repositories must pin their verifier keyid. Run-03, the gate script and C8 need that pin.
   - **Remaining limit (documented):** an agent able to rewrite `origin/HEAD`, `origin/main` or history still defeats
     this, so host-side audit stays required.
 - **The integration gate for optimized-treatment trials is closed.** Run-03 must not start until all of the following hold:
-  - REL-GATE-003 and REL-GATE-004 are fixed and released;
+  - ~~REL-GATE-003 and REL-GATE-004 are fixed and released~~ (done: v3.19.0, 2026-10-21);
   - the arm-D pins are frozen;
   - the fairness review is done;
   - the protocol is committed as a preregistration.
@@ -191,8 +192,8 @@ Consequences for experiments:
 
 | # | P | Item | Where | Evidence |
 |---|---|---|---|---|
-| 1 | P1 / gate | REL-GATE-004: trust root from a protected source (base-branch `ros.json`, pinned verifier keyids) | **merged (praxis#279); release and gate re-run pending** | `../reliability/evidence/`, readiness-report F1 |
-| 2 | P1 / gate | REL-GATE-003: label attested or unattested; `requireVerifiedCompletion` implies attestation | **merged to praxis main (#280); release 3.18.0 pending; gate cases to be re-run on the release** | readiness-report PROBE-2, `gate-report.json` |
+| 1 | P1 / gate | REL-GATE-004: trust root from a protected source (base-branch `ros.json`, pinned verifier keyids) | **resolved: released in v3.19.0, gate re-run passed (cohort #12)** | `../reliability/evidence/`, readiness-report F1 |
+| 2 | P1 / gate | REL-GATE-003: label attested or unattested; `requireVerifiedCompletion` implies attestation | **resolved: released in 3.18.0; gate re-run on v3.19.0** | readiness-report PROBE-2, `gate-report.json` |
 | 3 | P1 | REL-TOKEN-001: per-request usage ledger | praxis inbox (#279) | OVERHEAD-ANALYSIS §1, §5.1 |
 | 4 | P1 | REL-TOKEN-002: final output tokens | praxis inbox (#279) | OVERHEAD-ANALYSIS §5.2 |
 | 5 | P1 | Record per-agent cache state in observations; retain trial transcripts | run-03 harness (done); run-02 (done post hoc) | `run-02/analysis/cache-sensitivity.json` |

@@ -67,3 +67,12 @@ This report evaluates Praxis 3.17.0 and Dokimos 0.7.0. Its statuses are not rewr
 - **To flip either condition to PASS:** re-run `scripts/probes.sh` and the gate script, with the
   `trustedVerifierKeyIds` pin, on the released binary.
 - **F6** (PRAXIS-REL-006 rollout gate) is still open.
+
+## Status update 2026-10-21 (Praxis v3.19.0)
+- REL-GATE-003 and REL-GATE-004 are **resolved on the release**. The v319 gate script (cohort #12) shows:
+  - GATE-A5 (this report's PROBE-3) rejected with `POLICY_CHANGED`;
+  - GATE-A6 (PROBE-4) rejected with `UNTRUSTED_AUTHORITY`;
+  - GATE-A4 keyids matching the host verifier.
+- Evidence: `../experiments/REL-001/gate/evidence/evidence-binding-repro-v3.19.0.jsonl` and `gate/gate-report.json`.
+- **Remaining limit:** an agent that can rewrite `origin/HEAD`, `origin/main` or history still defeats the check.
+- **F6** (PRAXIS-REL-006 rollout gate) remains open.
