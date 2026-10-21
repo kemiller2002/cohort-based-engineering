@@ -1,0 +1,112 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "F1",
+  "arm": "D",
+  "unit": 6,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "574e0aa8f61e948ed07b90846e7a320308a2b04a",
+  "verifiedAt": "2026-10-21T09:01:57.5498519Z",
+  "verifyMs": 61258,
+  "stagedTasks": [
+    "V8",
+    "V4",
+    "V1",
+    "V6",
+    "V3",
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 49,
+    "failed": 0,
+    "byTask": {
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V3": {
+        "cases": 11,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "Did not implement sweep and did not choose between DEC-V7-EMPTY-NOOP and DEC-V7-ONE-PAIR; the conflict needs Operations and Audit (the decision owners) to resolve it in requirements/V7.md and contracts/V7.json.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "contracts/V7.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "Contract admission failed: ordo ecir check --blueprint contracts/V7.json reported ORDO.CONTRACT.UNRESOLVED_CONFLICT (requirements/V7.md#LEDGER-V7-R1 -\u003E CONFLICT-V7-EMPTY-SWEEP). DEC-V7-EMPTY-NOOP requires sweeping a zero-balance source to return Ok with the ledger unchanged; DEC-V7-ONE-PAIR requires the same call to return Error (InvalidAmount 0m). Both cannot hold; the brief forbids implementing when Ordo reports a diagnostic."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "schema": "vac.verified-state/1",
+  "updatedAfterUnit": 4,
+  "verifier": "VAC-001 host verifier (hidden oracle, build, tests, VAC-RULES 1.0.0)",
+  "head": "5cd01986ccbd9d36a1a4aaf9c982c9c8ef881bd1",
+  "promotionRule": "a decision is verified only when its Layer 1 evidence is valid and its unit was independently accepted; invalid evidence is rejected; everything else stays provisional",
+  "requirements": [
+    {
+      "id": "LEDGER-V8-R1",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V8-R2",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R1",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R2",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V1-R1",
+      "unit": 3,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V6-R1",
+      "unit": 4,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V6-R2",
+      "unit": 4,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V6-R3",
+      "unit": 4,
+      "status": "verified"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "The daily limit is inclusive: withdrawals per account and business date may total exactly 500.00; refusal only when withdrawn \u002B amount \u003E 500.00, with remaining = 500.00 - withdrawn.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D3",
+      "statement": "Refusal checks run in the required order: InvalidAmount, UnknownAccount, InsufficientFunds, DailyLimitExceeded; refusals return Error and change nothing.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D4",
+      "statement": "Relied on existing Ledger.balance/postingsOf (derived balances) and the private post helper so the withdrawal posting is stamped with LedgerState.Today.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D5",
+      "statement": "Added Store.withdraw that commits Ledger.withdraw and shifts the balance cache, keeping DEC-BASE-STORE-CACHE.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D1",
+      "statement": "The fee rule exists only in Ledger.periodFee; feeFor = balance mapped through periodFee; closePeriod charges feeFor of each account, so preview and close always agree.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D2",
+      "statement": "periodFee implements the V4-R2 table: below 1.00 -\u003E 0; at least 1.00 and below 1,000.00 -\u003E 1.00; 1,000.00 or more -\u003E 0.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D3",
+      "statement": "closePeriod records a fee:\u003CperiodId\u003E posting only when the fee is more than 0, lists every account in Fees (0 when none), and keeps its idempotence (a repeated close returns the first summary and records nothing).",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D4",
+      "statement": "feeFor refuses an unopened account with UnknownAccount by reusing Ledger.balance (derived balances); it records nothing.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D5",
+      "statement": "Store needs no change: it exposes no closePeriod, so its balance cache is unaffected by the fee rule.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D1",
+      "statement": "Closed accounts are remembered in a new LedgerState.ClosedAccounts: Set\u003CAccountId\u003E, disjoint from Accounts; closeAccount moves the id from Accounts to ClosedAccounts and records no posting.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D2",
+      "statement": "openAccount refuses an id that is open or in ClosedAccounts with DuplicateAccount, so closed ids are never reused whether or not they had postings.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D3",
+      "statement": "closeAccount checks via Ledger.balance: UnknownAccount first (never opened or already closed), then NonZeroBalance with the current derived balance; refusals change nothing.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D4",
+      "statement": "Relied on every existing operation (balance, credit, debit, transfer, closePeriod, withdraw, feeFor) checking membership in LedgerState.Accounts, so removing the id makes it unknown everywhere and excludes it from period close.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D5",
+      "statement": "Added Store.closeAccount that commits Ledger.closeAccount and removes the id from the balance cache.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D6",
+      "statement": "Kept the target framework net10.0 and SDK pin 10.0.100; did not retarget to net8.0 as the team lead asked.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D1",
+      "statement": "Greedy matching over lines in the given order; each line takes the closest-dated unmatched candidate, ties to the earlier posting in journal order; candidates need equal value, exactly equal memo/reference and at most 2 days apart (inclusive).",
+      "unit": 4,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D2",
+      "statement": "Postings are tracked by journal position, not structural equality, so identical postings are each matched at most once and independently.",
+      "unit": 4,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D3",
+      "statement": "Journal order is Ledger.postingsOf reversed, relying on the accepted newest-first storage of LedgerState.Postings.",
+      "unit": 4,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D4",
+      "statement": "An account not in LedgerState.Accounts (never opened or closed) is refused with UnknownAccount; reconcile is a pure read and returns no new ledger state.",
+      "unit": 4,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D5",
+      "statement": "Day distance is the absolute difference of DateOnly.DayNumber; the 2-day window is the named constant Reconciliation.maxDaysApart. Reconciliation.fs is a Tier 2 module compiled after Ledger.fs and before Store.fs.",
+      "unit": 4,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    }
+  ],
+  "provisional": [
+    {
+      "id": "U1-D2",
+      "statement": "A withdrawal is identified by reference \u0027withdraw\u0027, a negative amount and Date = LedgerState.Today; Posting gets no new field. Positive postings with that reference are ignored (assumption); debit/transfer with the literal reference \u0027withdraw\u0027 would count.",
+      "unit": 1,
+      "task": "V8",
+      "status": "provisional",
+      "basis": "assumption",
+      "invalidRefs": []
+    }
+  ],
+  "rejected": [],
+  "constraints": [
+    "VAC-RULES 1.0.0: docs/architecture/RULES.md"
+  ],
+  "lastUnit": {
+    "unit": 4,
+    "task": "V6",
+    "accepted": true,
+    "failingChecks": [],
+    "architectureViolations": []
+  }
+}
