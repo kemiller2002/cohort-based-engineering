@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.coordination-manifest/1",
+  "experiment": "ARCH-001 Echelon architectural correctness",
+  "coordinator": {
+    "session": "session_01E9jW5aZuFTf7HzifRjcs7y",
+    "branch": "claude/echelon-architectural-correctness-m4glhq",
+    "repo": "kemiller2002/cohort-based-engineering",
+    "owns": ["research integrity", "workstream dependencies", "version pins", "preregistration", "integration", "final analysis"]
+  },
+  "initializedAt": "2026-10-21T00:00:00Z",
+  "independence": {
+    "REL-001/run-03": "owned by another session (research/coordination/manifest.json). ARCH-001 reads REL-001 files only, copies with provenance, and never writes under research/experiments/REL-001/ or uses its worktrees, harness state or pins."
+  },
+  "pins": {
+    "cohort-based-engineering/main": "5b2ccb5747e7d7db1b6f104a9b1759d845f82a29",
+    "ordo/main": "bb43c26c106f4cbe972234636c5c67edc235c188",
+    "praxis/main": "986211c19161bab339eebc565fb4d8edb2007d38",
+    "dokimos/main": "04b5f856367b47a087285109c1fc5923ec351389",
+    "summa/main": "8b0e93ea7c57934acaa20a7eabd4d67f26efcae4",
+    "signal/main": "e19101f536e033acba8f67b479d4c767f85028f9",
+    "dotnet-sdk": "10.0.402",
+    "claude-code": "2.1.306",
+    "FSharp.Compiler.Service": "43.12.402"
+  },
+  "workstreams": [
+    {"id": "A", "name": "architecture-inventory", "agent": "subagent worker-A", "writes": "inventory/architecture-spec-inventory.md", "dependsOn": [], "status": "running"},
+    {"id": "E", "name": "capability-inventory (Ordo/Praxis/Dokimos/AST)", "agent": "subagent worker-E", "writes": "inventory/capability-inventory.md", "dependsOn": [], "status": "running"},
+    {"id": "F", "name": "prior-evidence review", "agent": "subagent worker-F", "writes": "inventory/prior-evidence.md", "dependsOn": [], "status": "running"},
+    {"id": "B", "name": "fixtures and hidden oracles", "dependsOn": ["A", "E"], "status": "pending"},
+    {"id": "C", "name": "architecture verifier", "dependsOn": ["A", "E"], "status": "pending"},
+    {"id": "D", "name": "experimental infrastructure", "dependsOn": ["F"], "status": "pending"}
+  ]
+}
