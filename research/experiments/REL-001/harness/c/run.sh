@@ -142,7 +142,12 @@ treatment() {
 # A host verifier daemon (key in memory, socket outside the repository) and a host authority that pins its
 # key and the policy digest; ros.json requires attested evidence. The policy validation fails when a file
 # named FAIL is tracked, so one daemon produces genuine passing and genuine failing receipts.
-attested_repo() { init_repo "$REPO" "$@"; jq -n '{workProtocol:{requireAttestedEvidence:true}}' > "$REPO/ros.json"
+# A6: with REL001_PIN_VERIFIER_KEY=1 (needed from Praxis with REL-GATE-004, praxis#279), ros.json also pins the host
+# verifier keyid (workProtocol.trustedVerifierKeyIds) in the same commit; unset, the 3.17.0/3.18.0 behaviour is unchanged.
+PIN_KEYID=""
+attested_repo() { init_repo "$REPO" "$@"
+  if [ "${REL001_PIN_VERIFIER_KEY:-}" = 1 ]; then jq -n --arg pin "$PIN_KEYID" '{workProtocol:{requireAttestedEvidence:true, trustedVerifierKeyIds:[$pin]}}' > "$REPO/ros.json"
+  else jq -n '{workProtocol:{requireAttestedEvidence:true}}' > "$REPO/ros.json"; fi
   git -C "$REPO" add ros.json && git -C "$REPO" commit -qm "require attested evidence"; }
 attested() {
   local s o ev head A dig vline
@@ -153,7 +158,7 @@ attested() {
   ( setsid "$PRAXIS" verifier serve --socket "$RUN_DIR/inputs/verifier.sock" --policy "$RUN_DIR/inputs/policy.json" --contract-digest "$dig" \
       > "$RUN_DIR/logs/verifier.out" 2> "$RUN_DIR/logs/verifier.err" < /dev/null & echo $! > "$RUN_DIR/logs/verifier.pid" )
   for _ in $(seq 1 120); do [ -s "$RUN_DIR/logs/verifier.out" ] && [ -S "$RUN_DIR/inputs/verifier.sock" ] && break; sleep 0.5; done
-  vline=$(head -1 "$RUN_DIR/logs/verifier.out")
+  vline=$(head -1 "$RUN_DIR/logs/verifier.out"); PIN_KEYID=$(jq -r .keyId <<<"$vline")
   write_authority "$A" "$(contract_decisions "$VALID_CONTRACT")"
   jq --argjson v "$vline" '. + {TrustedVerifierKeys:[{KeyId:$v.keyId, Algorithm:"ecdsa-p256-sha256", PublicKey:$v.publicKey}], ValidationPolicyDigest:$v.policyDigest}' "$A" > "$A.tmp" && mv "$A.tmp" "$A"
   local VDIR="$RUN_DIR" VSOCK="$RUN_DIR/inputs/verifier.sock"

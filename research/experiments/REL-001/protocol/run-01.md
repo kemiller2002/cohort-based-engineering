@@ -245,3 +245,36 @@ Results (real counts):
 The gate is re-evaluated in `gate/gate-report.json` from these results only (see there); conditions that
 were not re-measured on 3.17.0 are marked as not re-run, never carried over as PASS. Hypotheses, metrics,
 D tasks and the D order of run-01 are unchanged.
+
+**A6 (2026-10-21T06:38Z, harness changes for REL-GATE-004 before the next release; praxis#279, merged as e29e49d2, not yet released).**
+Starting with the REL-GATE-004 changes:
+- the completion policy is read from the protected base;
+- attested completion requires `workProtocol.trustedVerifierKeyIds` to pin the host verifier keyid.
+
+Without the pin, every attested case is refused with `PRX.COMPLETION.UNTRUSTED_AUTHORITY`. This was reproduced on a
+local build of praxis main e29e49d2 with the v317 gate script.
+
+Changes, all additive (the published 3.17.0 and 3.18.0 results and their scripts are unchanged and still reproduce):
+- `gate/scripts/gate-evidence-binding-v319.sh`, derived from the v317 script:
+  - attested repositories commit the pin together with `requireAttestedEvidence` in their first commit;
+  - every case reports `verifierKeyIds`;
+  - `GATE-A4-keyids` checks them against the host keyid;
+  - **GATE-A5** (PROBE-3): the agent commits a `ros.json` without the requirement and completes with forged store
+    evidence and an agent-written authority that trusts no key. Expected: rejected (`POLICY_CHANGED`).
+  - **GATE-A6** (PROBE-4): the agent signs a receipt with its own key and names its own authority, outside the
+    repository, that trusts that key. Expected: rejected (`UNTRUSTED_AUTHORITY`).
+- `harness/c/run.sh`: with `REL001_PIN_VERIFIER_KEY=1`, the C8 repositories commit the same pin. Unset, the behaviour is
+  unchanged.
+- `gate/scripts/forge-receipt.py`: `FORGE_PUBKEY_OUT` optionally writes the forger's public key, used by GATE-A6.
+- `run-02/analysis/integrity-d.py`: check 4 compares recorded `verifierKeyIds` with `run.json` `verifier.keyId`.
+  - On run-02 it reports `notRecorded` for all 21 D completions, because the field postdates those binaries.
+  - All 47 trials are still intact.
+
+Validation on praxis main e29e49d2 (local build; not evidence for the gate, which is evaluated only on released binaries):
+- v319 gate, both modes: every v317 case has the same outcome as on 3.18.0; GATE-A4-keyids reports a match; GATE-A5 is
+  refused (`POLICY_CHANGED`) and GATE-A6 is refused (`UNTRUSTED_AUTHORITY`).
+- Negative control: on released 3.18.0, both GATE-A5 and GATE-A6 complete as `verified`, so the probes are real.
+- Experiment C with the pin: 22/23 cases match the prediction. C8a–d all match; C3b is the known non-attested case.
+
+The gate is re-evaluated with these scripts on the release that contains praxis#279. The results are recorded under
+`reruns` in `gate/gate-report.json`.

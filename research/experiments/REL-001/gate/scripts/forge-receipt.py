@@ -31,4 +31,7 @@ pae = b"DSSEv1 %d %s %d %s" % (len(ptype), ptype, len(body), body)
 r, s = decode_dss_signature(key.sign(pae, ec.ECDSA(hashes.SHA256())))
 sig = base64.b64encode(r.to_bytes(32, "big") + s.to_bytes(32, "big")).decode()
 open(out, "w").write(json.dumps({"payloadType": env["payloadType"], "payload": base64.b64encode(body).decode(), "signatures": [{"keyid": keyid, "sig": sig}]}, separators=(",", ":")))
+import os
+if os.environ.get("FORGE_PUBKEY_OUT"):  # opt-in (REL-GATE-004 probe): the forger's own public key, for an authority that trusts it
+    open(os.environ["FORGE_PUBKEY_OUT"], "w").write(base64.b64encode(spki).decode())
 print(own)
