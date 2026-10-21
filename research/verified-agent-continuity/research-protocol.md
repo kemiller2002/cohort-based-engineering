@@ -252,4 +252,13 @@ following are recorded:
     (`vac.sh reevidence`).
   - **Recording.** The 3 cases are recorded as Layer 1 false positives in the detector-accuracy table
     (`hallucination-evaluation.md`).
+- **A4 (2026-10-21, after P1, before any arm comparison was reported).** Output-token measurement.
+  - **Problem.** Claude Code transcripts record `output_tokens` when a content block starts streaming. For
+    example, one message records 16 output tokens while carrying 7,918 characters of tool input. Output, and so
+    cost, is therefore a **lower bound**. This is the same limitation REL-001 documents (`OVERHEAD-ANALYSIS.md`)
+    and Praxis documents (`docs/development-telemetry.md` `tokens.output`).
+  - **Change.** CCR is reported as a lower bound. A labelled sensitivity estimate adds visible generated
+    characters ÷ 4 (text plus tool inputs) as output tokens. Hidden thinking cannot be observed, so the estimate is
+    still a lower bound. Arm contrasts are computed on both measures.
+  - **Unchanged.** Input, cache-write and cache-read tokens are recorded at request start and are exact.
 

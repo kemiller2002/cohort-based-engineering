@@ -381,6 +381,22 @@ let usage (a: Map<string, string>) =
         toolInputs |> List.filter (fun s ->
             Regex.Matches(s, @"(?<![\w.~-])/(?:home|tmp|root|var|opt|mnt|srv)/[^\s""'`)\]]+")
             |> Seq.exists (fun m -> not (allowedPrefixes |> List.exists (fun p -> m.Value.StartsWith p))))
+    // Output is recorded when a block starts streaming, so transcript output is a LOWER BOUND (REL-001 OVERHEAD-ANALYSIS,
+    // Praxis docs/development-telemetry.md). Visible generated characters (text + tool inputs) give a labelled estimate.
+    let visibleChars =
+        window |> List.sumBy (fun o ->
+            match o["message"] with
+            | :? JsonObject as m when str o "type" = Some "assistant" ->
+                (match m["content"] with
+                 | :? JsonArray as c ->
+                     c |> Seq.sumBy (fun b ->
+                         if b = null then 0L
+                         else match str b "type" with
+                              | Some "text" -> int64 ((str b "text" |> Option.defaultValue "").Length)
+                              | Some "tool_use" -> int64 (match b["input"] with null -> 0 | i -> i.ToJsonString().Length)
+                              | _ -> 0L)
+                 | _ -> 0L)
+            | _ -> 0L)
     let sum f = reqs |> List.sumBy f
     let ctx r = r.Input + r.Cw5 + r.Cw1h + r.Cr
     let prices = a.TryFind "prices" |> Option.bind tryParse
@@ -403,7 +419,19 @@ let usage (a: Map<string, string>) =
            "compactions", jint (int64 compactions.Length)
            "models", jarr (reqs |> List.map (fun r -> r.Model) |> List.distinct |> List.map jstr)
            "efforts", jarr (reqs |> List.map (fun r -> r.Effort) |> List.distinct |> List.map jstr)
+           "outputBound", jstr "lower"
+           "visibleOutputChars", jint visibleChars
+           "visibleOutputTokensEstimate", jint (visibleChars / 4L)
            "costUsd", (match cost with Some c -> jdec (Math.Round(c, 6)) | None -> jnull)
+           "costUsdBound", jstr "lower (output counted at stream start)"
+           "costUsdWithVisibleOutputEstimate",
+               (match cost, prices with
+                | Some c, Some p ->
+                    let e = items p "entries" |> List.find (fun e -> str e "model" = Some "claude-opus-5-5")
+                    let outRate = e["output"].GetValue<decimal>() / 1_000_000m
+                    let est = max 0L (visibleChars / 4L - sum (fun r -> r.Output))
+                    jdec (Math.Round(c + decimal est * outRate, 6))
+                | _ -> jnull)
            "priceTable", (prices |> Option.bind (fun p -> str p "tableVersion") |> Option.map jstr |> Option.defaultValue jnull)
            "outsideWorkspace", jarr (outside |> List.truncate 20 |> List.map (fun s -> jstr (if s.Length > 300 then s.Substring(0, 300) else s)))
            "contaminationHits", jarr (hits |> List.truncate 20 |> List.map (fun s -> jstr (if s.Length > 300 then s.Substring(0, 300) else s))) ]
@@ -413,7 +441,7 @@ type UnitRow =
     { Unit: int; Task: string; Fault: string; Claimed: string; FirstAccepted: bool; FinalAccepted: bool; Attempts: int
       FalseFirst: bool; FalseFinal: bool; ClaimedFinal: string; EarlierFailing: string list; ArchRules: string list; BuildOk: bool
       Decisions: int; Unsupported: int; Tokens: int64[]; Cost: decimal; Requests: int64; ToolUses: int64; CtxLast: int64
-      Compactions: int64; VerifyMs: int64; RepairTokens: int64; RepairCost: decimal; Models: string list; Efforts: string list; X4: int }
+      Compactions: int64; VerifyMs: int64; CostEst: decimal; OutEst: int64; RepairTokens: int64; RepairCost: decimal; Models: string list; Efforts: string list; X4: int }
 
 let loadArm (dir: string) : UnitRow list =
     let file (p: string) = tryParse (Path.Combine(dir, p))
@@ -432,6 +460,7 @@ let loadArm (dir: string) : UnitRow list =
         let usages = attempts |> List.choose usageOf
         let sumTok us = us |> List.map tok |> List.fold (Array.map2 (+)) (Array.zeroCreate 6)
         let costOf (u: JsonNode) = match u["costUsd"] with null -> 0m | v -> v.GetValue<decimal>()
+        let costEstOf (u: JsonNode) = match u["costUsdWithVisibleOutputEstimate"] with null -> 0m | v -> v.GetValue<decimal>()
         let decisions = items last["evidence"] "decisions"
         let unsupported = decisions |> List.filter (fun d -> str d "layer1" = Some "invalid-evidence" || str d "layer1" = Some "no-evidence") |> List.length
         let strs (n: JsonNode) k = items n k |> List.map (fun x -> x.GetValue<string>())
@@ -447,6 +476,7 @@ let loadArm (dir: string) : UnitRow list =
           Requests = usages |> List.sumBy (fun u -> i64 u "requests"); ToolUses = usages |> List.sumBy (fun u -> i64 u "toolUses")
           CtxLast = (match List.tryLast usages with Some u -> i64 u["context"] "last" | None -> 0L)
           Compactions = usages |> List.sumBy (fun u -> i64 u "compactions")
+          CostEst = usages |> List.sumBy costEstOf; OutEst = usages |> List.sumBy (fun u -> i64 u "visibleOutputTokensEstimate")
           VerifyMs = attempts |> List.sumBy (fun t -> i64 (obs t) "verifyMs")
           RepairTokens = (usages |> List.skip (min 1 usages.Length) |> sumTok).[5]
           RepairCost = usages |> List.skip (min 1 usages.Length) |> List.sumBy costOf
@@ -504,7 +534,11 @@ let armMetrics (fixture: string) (run: string) (arm: string) (rows: UnitRow list
                "DDR", ratio (d |> List.sumBy (fun (_, _, _, _, _, x) -> x)) (d |> List.sumBy (fun (_, _, _, _, e, _) -> e))
                "FCR", jobj [ "firstPass", ratio (claimedFirst |> List.filter (fun r -> r.FalseFirst) |> List.length) claimedFirst.Length
                              "delivered", ratio (claimedFinal |> List.filter (fun r -> r.FalseFinal) |> List.length) claimedFinal.Length ]
-               "CCR", jobj [ "costUsd", jdec (Math.Round(cost, 6)); "acceptedUnits", jint (int64 accepted)
+               "CCR", jobj [ "costUsd", jdec (Math.Round(cost, 6)); "costBound", jstr "lower (transcript output is recorded at stream start)"
+                             "costUsdWithVisibleOutputEstimate", jdec (Math.Round(rows |> List.sumBy (fun r -> r.CostEst), 6))
+                             "usdPerAcceptedWithVisibleOutputEstimate", (if accepted = 0 then jnull else jdec (Math.Round((rows |> List.sumBy (fun r -> r.CostEst)) / decimal accepted, 6)))
+                             "visibleOutputTokensEstimate", jint (rows |> List.sumBy (fun r -> r.OutEst))
+                             "acceptedUnits", jint (int64 accepted)
                              "usdPerAccepted", (if accepted = 0 then jnull else jdec (Math.Round(cost / decimal accepted, 6)))
                              "tokensPerAccepted", (if accepted = 0 then jnull else jdec (Math.Round(decimal sumTok[5] / decimal accepted, 1))); "tokens", tokObj sumTok ]
                "firstPassAcceptance", ratio (rows |> List.filter (fun r -> r.FirstAccepted) |> List.length) rows.Length
@@ -539,24 +573,25 @@ let analyze (resultsDir: string) (runs: string list) (fixture: string) =
                 let dir = Path.Combine(resultsDir, run, arm)
                 if Directory.Exists dir && File.Exists(Path.Combine(dir, "setup.json")) then yield (run, arm), loadArm dir ]
     let perArm = data |> List.map (fun ((run, arm), rows) -> armMetrics fixture run arm rows)
-    let contrast x y =
+    let contrastBy (label: string) (costOf: UnitRow -> decimal) x y =
         let blocks =
             [ for run in runs do
                 match data |> List.tryFind (fun ((r, a), _) -> r = run && a = x), data |> List.tryFind (fun ((r, a), _) -> r = run && a = y) with
                 | Some(_, rx), Some(_, ry) ->
                     for ux in rx do
                         match ry |> List.tryFind (fun uy -> uy.Unit = ux.Unit) with
-                        | Some uy -> yield ux.Cost, (if ux.FinalAccepted then 1 else 0), uy.Cost, (if uy.FinalAccepted then 1 else 0)
+                        | Some uy -> yield costOf ux, (if ux.FinalAccepted then 1 else 0), costOf uy, (if uy.FinalAccepted then 1 else 0)
                         | None -> ()
                 | _ -> () ]
         let point, lo, hi, valid = bootstrap blocks 20261021 10000
-        jobj [ "comparison", jstr (sprintf "%s vs %s" x y); "measure", jstr "cost per accepted unit, relative difference"; "blocks", jint (int64 blocks.Length)
+        jobj [ "comparison", jstr (sprintf "%s vs %s" x y); "measure", jstr (sprintf "cost per accepted unit, relative difference (%s)" label); "blocks", jint (int64 blocks.Length)
                "point", (match point with Some p -> jdec (Math.Round(decimal p, 4)) | None -> jnull)
                "ci95", jarr [ (if Double.IsNaN lo then jnull else jdec (Math.Round(decimal lo, 4))); (if Double.IsNaN hi then jnull else jdec (Math.Round(decimal hi, 4))) ]
                "validResamples", jint (int64 valid); "resamples", jint 10000L; "seed", jint 20261021L ]
     jobj [ "schema", jstr "cbe.vac-001.analysis/1"; "runs", jarr (runs |> List.map jstr); "generatedAt", jstr (DateTime.UtcNow.ToString("o"))
            "arms", jarr perArm
-           "contrasts", jarr ([ "B", "A"; "C", "B"; "D", "B"; "D", "A"; "DR", "A"; "D", "DR" ] |> List.map (fun (x, y) -> contrast x y)) ]
+           "contrasts", jarr ([ "B", "A"; "C", "B"; "D", "B"; "D", "A"; "DR", "A"; "D", "DR" ] |> List.map (fun (x, y) -> contrastBy "lower-bound cost" (fun r -> r.Cost) x y))
+           "contrastsSensitivity", jarr ([ "B", "A"; "C", "B"; "D", "B"; "D", "A"; "DR", "A"; "D", "DR" ] |> List.map (fun (x, y) -> contrastBy "cost with visible-output estimate" (fun r -> r.CostEst) x y)) ]
 
 // ---------- Dispatch ----------
 match fsi.CommandLineArgs |> Array.toList |> List.tail with
