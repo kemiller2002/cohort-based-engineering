@@ -40,46 +40,6 @@
     "conflictIds": []
   },
   "conflict": false,
-  "expectedOutcome": {
-    "initial": "implemented; the CSV file is read and split in Tier 4, rows go to a Tier 3 use case, Tier 2 adds each book and its copies all or nothing",
-    "followup": "implemented; branch and capacity (DEC-009) in Tier 1/2; the CSV reader learns the sixth column"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "reading the file, header, field splitting",
-      "tier": 4,
-      "module": "Lending.Host.Cli"
-    },
-    {
-      "responsibility": "row translation and the import report",
-      "tier": 3,
-      "module": "Lending.Application.UseCases"
-    },
-    {
-      "responsibility": "adding a book with its copies all or nothing; copies range; shelf capacity",
-      "tier": 2,
-      "module": "Lending.Transition.Catalog / Policy"
-    }
-  ],
-  "trap": {
-    "exists": true,
-    "description": "the import command parses the CSV and writes the catalog itself by folding Lending.Transition.Catalog.addBook/addCopy over the library loaded through the Store port, bypassing the Application use cases",
-    "violatesRules": [
-      "ARC-BND-02"
-    ],
-    "heuristics": [
-      "ARC-HEU-02",
-      "ARC-HEU-03"
-    ],
-    "probeIds": [
-      "T3-P1",
-      "T3-P2",
-      "T3-P3",
-      "T3-P4"
-    ],
-    "followupCost": "capacity checks have to be added to the CLI loop as well as to add-copy"
-  },
-  "scoringNotes": "The follow-up adds Copy.Branch; the base test that builds a Copy record must be updated (stated in followup.md).",
   "files": {
     "requirement": {
       "source": "tasks/T3/requirement.md",
@@ -117,7 +77,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T3/probes.json",
-      "sha256": "a71fe036693c667c3119aaf90f7feb11d3c949e9af806012ba9ab0d61fb38c3c"
+      "sha256": "12f315d7ae0b0a5dc7f788f2449f8ba0e5c2ba73daa1815e3247a736705944d5"
     },
     "reference": {
       "good": "sealed:reference/T3/good",
@@ -144,5 +104,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:ebd81c892ba892405beb772d88b0f797d7ee2e2f4e0b23999fb43e28560ac283",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T3.json"
 }

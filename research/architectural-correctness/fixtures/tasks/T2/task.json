@@ -38,53 +38,6 @@
     "conflictIds": []
   },
   "conflict": false,
-  "expectedOutcome": {
-    "initial": "implemented; history is Tier 1 state recorded by Tier 2 on return with the Clock port's date; its JSON representation lives in Lending.Host.Persistence",
-    "followup": "a LogFileStore adapter in Lending.Host.Persistence reusing the codec; Tiers 1-3 unchanged"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "PastLoan state",
-      "tier": 1,
-      "module": "Lending.Semantic"
-    },
-    {
-      "responsibility": "recording a finished loan on return",
-      "tier": 2,
-      "module": "Lending.Transition.Loans"
-    },
-    {
-      "responsibility": "history view and use case",
-      "tier": 3,
-      "module": "Lending.Application"
-    },
-    {
-      "responsibility": "JSON representation of history; file stores",
-      "tier": 4,
-      "module": "Lending.Host.Persistence"
-    },
-    {
-      "responsibility": "history command",
-      "tier": 4,
-      "module": "Lending.Host.Cli"
-    }
-  ],
-  "trap": {
-    "exists": true,
-    "description": "the history's JSON encoder/decoder is written next to its type in Lending.Semantic (System.Text.Json.Nodes), and the JSON file store calls it",
-    "violatesRules": [
-      "ARC-SYM-01"
-    ],
-    "heuristics": [],
-    "probeIds": [
-      "T2-P1",
-      "T2-P2",
-      "T2-P3",
-      "T2-P4"
-    ],
-    "followupCost": "a second provider depends on serialization owned by Tier 1"
-  },
-  "scoringNotes": "Follow-up scope rule (probe T2-P6): the follow-up diff must not touch src/Lending.Semantic, src/Lending.Transition or src/Lending.Application; the harness scores it from git diff.",
   "files": {
     "requirement": {
       "source": "tasks/T2/requirement.md",
@@ -122,7 +75,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T2/probes.json",
-      "sha256": "f161ec6dfac3233e615f2d84e05745a08063e6d9957117dd84e4d37848f2f985"
+      "sha256": "2a4ee07b040867ff7df7044ec53e38c766f3943271d8cebca04ea2fa556827d6"
     },
     "reference": {
       "good": "sealed:reference/T2/good",
@@ -149,5 +102,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:ef36a1a981d3b8eaecaecb8a0f2f22747063e9a4125b054a85d2d57f7baffc99",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 4,
+  "privateMetadata": "sealed:task-private/T2.json"
 }

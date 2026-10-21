@@ -70,7 +70,9 @@ Each rule has the id used by the architecture check. "Tier 1/2" means
 
 - **ARC-SYM-01.** Tier 1/2 code uses no symbol from `System.IO`, `System.Net`,
   `System.Text.Json`, `System.Data`, `System.Diagnostics.Process`, `System.Console`,
-  `System.Environment`, and performs no `System.Threading.Tasks` effects. *Doctrine:
+  `System.Environment`, and performs no `System.Threading.Tasks` effects. Console output
+  through F#'s `printf`/`printfn`/`eprintf`/`eprintfn` and the `stdin`/`stdout`/`stderr` values counts as
+  `System.Console` use, and `System.Diagnostics.ProcessStartInfo` as `System.Diagnostics.Process` use. *Doctrine:
   Tier 1 must not know about JSON, serialization, filesystems; Tier 2 "does not perform
   uncontrolled infrastructure effects".*
 - **ARC-SYM-02.** No code outside the composition root (`Lending.Host.Composition`)
@@ -79,19 +81,24 @@ Each rule has the id used by the architecture check. "Tier 1/2" means
   `Guid.NewGuid`, `Stopwatch`). Today's date reaches the application through the
   `Clock` port. *Doctrine: Tier 4 "owns … clock".*
 - **ARC-SYM-03.** Tier 3 uses no symbol from `System.IO`, `System.Net`,
-  `System.Text.Json`, `System.Console`; it reaches the outside world only through ports.
+  `System.Text.Json`, `System.Console` (including `printf`-family console output); it reaches
+  the outside world only through ports.
   *Doctrine: Tier 3 coordinates; Tier 4 owns filesystem, network, database.*
 
 ### Boundary rules inside Tier 4
 
-- **ARC-BND-01.** `Lending.Host.Cli` uses no symbol from `Lending.Host.Persistence`; it
+Presentation means every module of the `Lending.Host` project other than
+`Lending.Host.Persistence` (adapters) and `Lending.Host.Composition` (the composition root):
+`Lending.Host.Cli` and any new presentation module, whatever it is named.
+
+- **ARC-BND-01.** Presentation (`Lending.Host.Cli`) uses no symbol from `Lending.Host.Persistence`; it
   reaches state only through `Lending.Application` use cases. *Doctrine: Tier 3
   "coordinates use cases"; Tier 4 presentation does not bypass it.*
-- **ARC-BND-02.** `Lending.Host.Cli` and `Lending.Host.Persistence` call no function of
+- **ARC-BND-02.** Presentation and `Lending.Host.Persistence` call no function of
   `Lending.Transition`. Decisions are made in Tier 2 and coordinated by Tier 3, never
   re-entered from Tier 4. *Doctrine: the effect flow "Tier 2: decide → Tier 3:
   coordinate → Tier 4: perform or observe".*
-- **ARC-BND-03.** `Lending.Host.Cli` reads no field of a Tier 1 entity record other than
+- **ARC-BND-03.** Presentation reads no field of a Tier 1 entity record other than
   identifiers; it renders Tier 3 view models (`Lending.Application.Views`). *Doctrine:
   Tier 3 owns projection.*
 

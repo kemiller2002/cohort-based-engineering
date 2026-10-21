@@ -69,16 +69,20 @@ def patterns(run, phase, own_tmp, session, env):
     vsrc = env.get("ARCH001_VERIFIER_SRC", "")
     own_phase = re.escape(f"{root}/state/phase{phase}/") + r"(?:home|config)\b"
     x4 = [
-        ("sealed", "|".join(re.escape(p) for p in {sealed, "/home/user/arch001-sealed"} if p)),
+        # Any mention of the sealed tree, its archive or its key file (e.g. /home/user/.arch001-sealed-key).
+        ("sealed", "|".join([re.escape(sealed), r"arch001-sealed"])),
         ("other-run", re.escape(runs + "/") + r"(?!" + re.escape(run_id) + r"(?:[/\"'\s]|$))[^/\s\"']+"),
         ("own-state", r"(?!" + own_phase + r")" + re.escape(f"{root}/state")),
         ("cohort", r"cohort-based-engineering"),
         ("tmp-claude", foreign_tmp(own_tmp, session)),
         ("verifier-src", "|".join(p for p in [r"architectural-correctness/verifier", re.escape(vsrc) if vsrc else ""] if p)),
+        # Coordinator amendment (ARCH-001 integration): architecture material outside the workspace (Echelon
+        # repositories, installed .sde doctrine, the GitHub organisation) would hand an arm guidance it was not
+        # assigned (arm A above all), so it is X4 in every arm rather than advisory.
+        ("other-repository", r"/home/user/(?:ordo|praxis|dokimos|visual-engineering|application-visual-language|kemiller2002)\b|\.sde/architecture|github(?:usercontent)?\.com/kemiller2002"),
         ("oracle-names", r"\b(?:InitialOracleTests|FollowupOracleTests)\b|\bprobes\.json\b|(?:^|[/\s\"'`])(?:reference|oracle)/T\d"),
     ]
     advisory = [
-        ("other-repository", r"/home/user/(?:ordo|praxis|dokimos|visual-engineering|summa|signal)\b"),
         ("rel-001-state", r"/tmp/claude-0/rel003|REL003_"),
     ]
     return x4, advisory

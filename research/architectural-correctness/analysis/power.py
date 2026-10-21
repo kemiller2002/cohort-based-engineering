@@ -13,6 +13,9 @@ stands in for the cluster bootstrap. Two targets, both D versus A, two-sided alp
   2. primary ratio (cost per accepted requirement): delta method on the ratio of sums,
      Var(log R_arm) ~ (CV_cost^2 + CV_acc^2 - 2 r CV_cost CV_acc) / n, for detectable ratios 0.8 / 0.7 / 0.6,
      with the pilot spread and 1.5x the pilot spread (run-03's inflation convention).
+Coordinator amendment (before preregistration): the sample size must not depend on the observed treatment
+advantage, so the planning rates and spreads are POOLED over all pilot arms (no arm difference is used), and the
+detectable effects are fixed in advance: acceptance difference 0.20 and cost ratio 0.70 (PROTOCOL.md section 9).
 Trials per arm are converted into replicates per (task, arm) cell for TASKS tasks. The resource view multiplies the
 pilot's mean cost and wall time per trial by the confirmatory trial count, compares the cost with --cap-usd, and
 gives the largest replicate count the cap allows.
@@ -71,16 +74,17 @@ def main(argv):
     D, A = arm("D"), arm("A")
     if not D or not A:
         raise SystemExit("power.py needs pilot observations for arms A and D")
-    pD = clamp(sum(r["arch"] for r in D) / (2 * len(D)))
-    pA = clamp(sum(r["arch"] for r in A) / (2 * len(A)))
+    # Pooled over every pilot arm: the planning rate never sees an arm difference.
+    pooled_rate = clamp(sum(r["arch"] for r in rows) / (2 * len(rows)))
+    pD = pA = pooled_rate
     deff = 1 + (2 - 1) * 0.5
     def trials_for_diff(delta):
         n_req = (Z ** 2) * (pD * (1 - pD) + pA * (1 - pA)) / (delta ** 2) * deff
         return math.ceil(n_req / 2)
-    observed = abs(pD - pA)
     acceptance = {f"delta {d}": {"trialsPerArm": trials_for_diff(d), "replicatesPerCell": math.ceil(trials_for_diff(d) / tasks)}
-                  for d in ([round(observed, 3)] if observed >= 0.05 else []) + [0.15, 0.2, 0.3]}
-    vD, vA = log_ratio_var(D), log_ratio_var(A)
+                  for d in (0.15, 0.2, 0.3)}
+    # Pooled spread: the per-trial log-ratio variance is estimated from all pilot trials, not per arm.
+    vD = vA = log_ratio_var(rows)
     def trials_for_ratio(r, f):
         return math.ceil((Z ** 2) * (f ** 2) * (vD + vA) / (math.log(r) ** 2))
     ratio = {f"spread x{f}": {f"ratio {r}": {"trialsPerArm": trials_for_ratio(r, f), "replicatesPerCell": math.ceil(trials_for_ratio(r, f) / tasks)}
@@ -93,10 +97,15 @@ def main(argv):
                 "maxReplicatesUnderCap": math.floor(cap / per_rep) if per_rep else None,
                 "byReplicates": {str(k): {"trials": 4 * tasks * k, "costUsd": round(per_rep * k, 2),
                                           "wallHoursAtConcurrency": round(4 * tasks * k * mean_wall / 60 / conc, 2)} for k in (2, 3, 4, 5, 6)}}
-    result = {"label": "PILOT ESTIMATE (planning only; 1 replicate x 2 tasks per arm)", "pilotTrials": len(rows),
-              "archAcceptanceRate": {"D": round(pD, 4), "A": round(pA, 4), "clampedTo": [0.05, 0.95], "designEffect": deff},
+    need = max(acceptance["delta 0.2"]["replicatesPerCell"], ratio["spread x1.0"]["ratio 0.7"]["replicatesPerCell"])
+    cap_reps = resource["maxReplicatesUnderCap"] or 0
+    decision = {"rule": "replicates = max(2, min(needed, maxReplicatesUnderCap, 5)); needed = max(acceptance delta 0.20, ratio 0.70 at x1.0 spread)",
+                "needed": need, "maxReplicatesUnderCap": cap_reps, "replicates": max(2, min(need, cap_reps, 5)),
+                "capBinds": min(need, 5) > cap_reps}
+    result = {"decision": decision, "label": "PILOT ESTIMATE (planning only; 1 replicate x 2 tasks per arm)", "pilotTrials": len(rows),
+              "archAcceptanceRatePooled": {"rate": round(pooled_rate, 4), "clampedTo": [0.05, 0.95], "designEffect": deff},
               "acceptanceDifferenceD-A": acceptance,
-              "logRatioVariancePerTrial": {"D": round(vD, 6), "A": round(vA, 6)}, "primaryRatioD/A": ratio,
+              "logRatioVariancePerTrialPooled": round(vD, 6), "primaryRatioD/A": ratio,
               "resource": resource, "tasks": tasks,
               "assumptions": "two-sided alpha 0.05, power 0.80; normal approximation; rho 0.5 within trial; pilot spread is a floor estimate"}
     text = json.dumps(result, indent=2, sort_keys=True) + "\n"

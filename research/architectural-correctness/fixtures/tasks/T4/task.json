@@ -46,51 +46,6 @@
     "conflictIds": []
   },
   "conflict": false,
-  "expectedOutcome": {
-    "initial": "implemented; Tier 2 requests notices as data and interprets Delivered/Rejected/NoAnswer as Succeeded/Failed/Unknown; Unknown is kept as a reconciliation obligation; Tier 3 awaits each send in turn",
-    "followup": "channel preference in Tier 1; the SMS-to-email fallback decided in Tier 2 and coordinated by Tier 3"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "notice outcomes and reconciliation obligations",
-      "tier": 1,
-      "module": "Lending.Semantic"
-    },
-    {
-      "responsibility": "which loans need a notice; interpreting the report; reconciliation; fallback",
-      "tier": 2,
-      "module": "Lending.Transition.Overdue"
-    },
-    {
-      "responsibility": "sending through the Notifier port one at a time; views",
-      "tier": 3,
-      "module": "Lending.Application"
-    },
-    {
-      "responsibility": "delivery (outbox per channel); commands",
-      "tier": 4,
-      "module": "Lending.Host.Composition / Lending.Host.Cli"
-    }
-  ],
-  "trap": {
-    "exists": true,
-    "description": "notify-overdue is implemented in the command line: it filters Library.Loans by Loan.DueDate, builds notices, runs the notifier synchronously, maps reports to outcomes and writes OverdueNotices through the Store port",
-    "violatesRules": [
-      "ARC-BND-03"
-    ],
-    "heuristics": [
-      "ARC-HEU-02",
-      "ARC-HEU-03"
-    ],
-    "probeIds": [
-      "T4-P1",
-      "T4-P2",
-      "T4-P3",
-      "T4-P4"
-    ],
-    "followupCost": "the fallback rule has to be written into the CLI loop"
-  },
-  "scoringNotes": "Functional trap-adjacent failure (not an architecture trap): collapsing NoAnswer into Failed, or re-sending Unknown, fails the oracle. Sequential sending is tested with a delaying notifier.",
   "files": {
     "requirement": {
       "source": "tasks/T4/requirement.md",
@@ -128,7 +83,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T4/probes.json",
-      "sha256": "cb1384a639de51e28a66cc081285276a83df84aa9198d54848e56a494369e86f"
+      "sha256": "75ce3dbd7953acd4d52fe35eb916e558f06671a111675c514205eee2dc8bd511"
     },
     "reference": {
       "good": "sealed:reference/T4/good",
@@ -155,5 +110,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:5d4aa1d4e8436b26f29d67f36f3d360f678ee059ea45c7f0dbb967e17b6caa88",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 4,
+  "privateMetadata": "sealed:task-private/T4.json"
 }

@@ -1,24 +1,46 @@
 {
   "schema": "arch001.policy/1",
   "id": "lending/0.1",
-  "description": "ARCH-001 policy for the Lending fixture (INTERFACES.md §2 layout, §4 rules). Class and severity are fixed by the verifier, not by this file.",
+  "description": "ARCH-001 policy for the Lending fixture (INTERFACES.md \u00a72 layout, \u00a74 rules). Class and severity are fixed by the verifier, not by this file.",
   "projects": [
-    { "path": "src/Lending.Semantic/Lending.Semantic.fsproj", "tier": 1 },
-    { "path": "src/Lending.Transition/Lending.Transition.fsproj", "tier": 2 },
-    { "path": "src/Lending.Application/Lending.Application.fsproj", "tier": 3 },
-    { "path": "src/Lending.Host/Lending.Host.fsproj", "tier": 4 }
+    {
+      "path": "src/Lending.Semantic/Lending.Semantic.fsproj",
+      "tier": 1
+    },
+    {
+      "path": "src/Lending.Transition/Lending.Transition.fsproj",
+      "tier": 2
+    },
+    {
+      "path": "src/Lending.Application/Lending.Application.fsproj",
+      "tier": 3
+    },
+    {
+      "path": "src/Lending.Host/Lending.Host.fsproj",
+      "tier": 4
+    }
   ],
-  "testProjects": [ "tests/" ],
+  "testProjects": [
+    "tests/"
+  ],
   "rules": {
     "ARC-DEP-01": {
       "forbiddenReferences": []
     },
     "ARC-DEP-02": {
-      "tiers": [ 1, 2 ],
-      "allowedPackages": [ "FSharp.Core" ]
+      "tiers": [
+        1,
+        2
+      ],
+      "allowedPackages": [
+        "FSharp.Core"
+      ]
     },
     "ARC-SYM-01": {
-      "tiers": [ 1, 2 ],
+      "tiers": [
+        1,
+        2
+      ],
       "namespaces": [
         "System.IO",
         "System.Net",
@@ -57,10 +79,14 @@
         "System.Guid.NewGuid",
         "System.Diagnostics.Stopwatch"
       ],
-      "exceptModules": [ "Lending.Host.Composition" ]
+      "exceptModules": [
+        "Lending.Host.Composition"
+      ]
     },
     "ARC-SYM-03": {
-      "tiers": [ 3 ],
+      "tiers": [
+        3
+      ],
       "namespaces": [
         "System.IO",
         "System.Net",
@@ -78,32 +104,94 @@
       ]
     },
     "ARC-BND-01": {
-      "modules": [ "Lending.Host.Cli" ],
-      "namespaces": [ "Lending.Host.Persistence" ]
+      "tiers": [
+        4
+      ],
+      "exceptModules": [
+        "Lending.Host.Persistence",
+        "Lending.Host.Composition"
+      ],
+      "namespaces": [
+        "Lending.Host.Persistence"
+      ]
     },
     "ARC-BND-02": {
-      "modules": [ "Lending.Host.Cli", "Lending.Host.Persistence" ],
-      "namespaces": [ "Lending.Transition" ],
-      "kinds": [ "function", "method", "activePattern" ]
+      "namespaces": [
+        "Lending.Transition"
+      ],
+      "kinds": [
+        "function",
+        "method",
+        "activePattern"
+      ],
+      "tiers": [
+        4
+      ],
+      "exceptModules": [
+        "Lending.Host.Composition"
+      ]
     },
     "ARC-BND-03": {
-      "modules": [ "Lending.Host.Cli" ],
-      "entityNamespaces": [ "Lending.Semantic" ],
-      "identifierFields": [ "Id", "*Id" ]
+      "entityNamespaces": [
+        "Lending.Semantic"
+      ],
+      "identifierFields": [
+        "Id",
+        "*Id"
+      ],
+      "tiers": [
+        4
+      ],
+      "exceptModules": [
+        "Lending.Host.Persistence",
+        "Lending.Host.Composition"
+      ]
     },
     "ARC-HEU-01": {
-      "tiers": [ 1, 2, 3 ],
-      "unknownTiers": [ 1, 2, 3, 4 ],
-      "unknownCases": [ "Unknown" ],
-      "failureCases": [ "Failed", "Failure", "Error" ]
+      "tiers": [
+        1,
+        2,
+        3
+      ],
+      "unknownTiers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "unknownCases": [
+        "Unknown"
+      ],
+      "failureCases": [
+        "Failed",
+        "Failure",
+        "Error"
+      ]
     },
     "ARC-HEU-02": {
-      "tiers": [ 1, 2, 3, 4 ],
-      "ignoredLiterals": [ "0", "1", "-1", "2", "10", "100" ]
+      "tiers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "ignoredLiterals": [
+        "0",
+        "1",
+        "-1",
+        "2",
+        "10",
+        "100"
+      ]
     },
     "ARC-HEU-03": {
-      "modules": [ "Lending.Host" ],
-      "domainNamespaces": [ "Lending.Semantic", "Lending.Transition" ]
+      "modules": [
+        "Lending.Host"
+      ],
+      "domainNamespaces": [
+        "Lending.Semantic",
+        "Lending.Transition"
+      ]
     },
     "ARC-HEU-04": {
       "maxLines": 500

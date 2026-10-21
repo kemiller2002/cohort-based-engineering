@@ -82,8 +82,11 @@ CATEGORY_NAMES = {
     9: "integration across tiers", 10: "refactoring that preserves function but damages boundaries",
 }
 
-# Harness and scoring metadata (public; it names no oracle content).
-META = json.loads((root / "tasks-meta.json").read_text())
+# Harness and scoring metadata. Trap descriptions and expected placements are hidden scoring data, so the
+# source lives in the sealed store (sealed/tasks-meta.json); task.json carries only the public fields and the
+# private fields are written to sealed/task-private/<task>.json.
+META = json.loads(((sealed if (sealed / "tasks-meta.json").exists() else root) / "tasks-meta.json").read_text())
+PRIVATE_FIELDS = ("trap", "expectedPlacement", "expectedOutcome", "scoringNotes")
 
 
 def build(task, phase):
@@ -162,10 +165,6 @@ for task in sorted({t for t, _ in CONTRACTS}):
         "initial": {k: initial[k] for k in ("requirementIds", "requirementKeys", "decisionIds", "conflictIds")},
         "followup": {"title": followup["title"], **{k: followup[k] for k in ("requirementIds", "requirementKeys", "decisionIds", "conflictIds")}},
         "conflict": bool(initial["conflictIds"]),
-        "expectedOutcome": meta["expectedOutcome"],
-        "expectedPlacement": meta["expectedPlacement"],
-        "trap": meta["trap"],
-        "scoringNotes": meta["scoringNotes"],
         "files": {
             "requirement": initial["file"],
             "visibleTests": [{"source": f"tasks/{task}/acceptance/{p.name}", "target": f"tests/Lending.Tests/Acceptance/{p.name}",
@@ -179,7 +178,13 @@ for task in sorted({t for t, _ in CONTRACTS}):
         },
         "contract": initial["contract"],
         "followupContract": followup["contract"],
+        "crossTierCount": len({p["tier"] for p in meta["expectedPlacement"]}),
+        "privateMetadata": f"sealed:task-private/{task}.json",
     }
     (tdir / "task.json").write_text(json.dumps(task_json, indent=2) + "\n")
+    if sealed.is_dir():
+        private = {"id": task, **{k: meta[k] for k in PRIVATE_FIELDS}}
+        (sealed / "task-private").mkdir(exist_ok=True)
+        (sealed / "task-private" / f"{task}.json").write_text(json.dumps(private, indent=2) + "\n")
     print(task, "initial", initial["contract"]["sha256"][:12], "admits", initial["contract"]["ordoAdmits"],
           "| followup", followup["contract"]["sha256"][:12], "admits", followup["contract"]["ordoAdmits"])

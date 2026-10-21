@@ -152,7 +152,7 @@ check_task() {
 STATIC="$WORK/static.out"
 {
   echo "ARCH-001 fixture check"
-  echo "fixture tree: $(cd "$FIX" && find repo pack tasks tasks-meta.json make-contracts.py -type f -not -path '*/bin/*' -not -path '*/obj/*' | sort | xargs sha256sum | sha256sum | cut -c1-64)"
+  echo "fixture tree: $(cd "$FIX" && find repo pack tasks make-contracts.py -type f -not -path '*/bin/*' -not -path '*/obj/*' | sort | xargs sha256sum | sha256sum | cut -c1-64)"
   echo "sealed tree:  $(cd "$SEALED" && find oracle reference -type f | sort | xargs sha256sum | sha256sum | cut -c1-64)"
   echo "dotnet $(dotnet --version); ordo $(sha256sum "$ORDO" | cut -c1-16)…; archcheck ${VERIFIER:+$(sha256sum "$VERIFIER" | cut -c1-16)…}${VERIFIER:-not available}; policy ${POLICY#$EXP/}"
   doctrine=$(sha256sum "$FIX/pack/FOUR-TIER-ARCHITECTURE.md" | cut -c1-64)

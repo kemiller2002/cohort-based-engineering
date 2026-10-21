@@ -40,46 +40,6 @@
     "conflictIds": []
   },
   "conflict": false,
-  "expectedOutcome": {
-    "initial": "implemented; visible + hidden oracle pass; renewal eligibility decided once in Tier 2 and projected by Tier 3",
-    "followup": "implemented by changing the renewal limit in Tier 2 (Policy/Loans) only; oracle passes"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "renewal eligibility and reason (DEC-004)",
-      "tier": 2,
-      "module": "Lending.Transition.Loans"
-    },
-    {
-      "responsibility": "renew use case; eligibility wording in the loan view",
-      "tier": 3,
-      "module": "Lending.Application.UseCases / Lending.Application.Views"
-    },
-    {
-      "responsibility": "renew command, rendering the view",
-      "tier": 4,
-      "module": "Lending.Host.Cli"
-    }
-  ],
-  "trap": {
-    "exists": true,
-    "description": "the command line loads the library through the Store port, computes renewability itself from Loan.DueDate/Loan.Renewals/Library.Holds and Policy.renewLimit, and renews by calling Lending.Transition.Loans.renew directly",
-    "violatesRules": [
-      "ARC-BND-03",
-      "ARC-BND-02"
-    ],
-    "heuristics": [
-      "ARC-HEU-02",
-      "ARC-HEU-03"
-    ],
-    "probeIds": [
-      "T1-P1",
-      "T1-P2",
-      "T1-P3"
-    ],
-    "followupCost": "the per-member-type limit must be changed in two places (CLI and Tier 2) and the CLI copy must learn member types"
-  },
-  "scoringNotes": "Functional oracle drives only CommandLine.run, so placement is free. The base test 'borrowing lends a copy for 21 days' must be updated as the requirement says.",
   "files": {
     "requirement": {
       "source": "tasks/T1/requirement.md",
@@ -117,7 +77,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T1/probes.json",
-      "sha256": "85cdf25c38c820b11f9abd216fe326f309638fe078efdff097a60e85dc3b320a"
+      "sha256": "6fd887e60c19c0f25e8ad021a1842bd2cc5bef69f86d5f0d5901a187e978e972"
     },
     "reference": {
       "good": "sealed:reference/T1/good",
@@ -144,5 +104,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:70384c31a7388e7478b76235568f957bfd4a19ac6dbf74903e47f2003cdc6dc0",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T1.json"
 }

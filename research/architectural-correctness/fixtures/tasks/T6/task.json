@@ -47,50 +47,6 @@
     "conflictIds": []
   },
   "conflict": false,
-  "expectedOutcome": {
-    "initial": "implemented across all four tiers: Pickup/SetAside state (T1), set-aside/expiry transitions (T2), holds and expiry use cases and views (T3), commands and the start-up schedule (T4)",
-    "followup": "the second workflow reuses the Tier 2 set-aside transition from expiry and hold placement"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "set-aside state",
-      "tier": 1,
-      "module": "Lending.Semantic"
-    },
-    {
-      "responsibility": "setting aside on return; borrowing rules; expiry; pickup window (DEC-007)",
-      "tier": 2,
-      "module": "Lending.Transition.Holds / Loans / Policy"
-    },
-    {
-      "responsibility": "holds view; expire use case",
-      "tier": 3,
-      "module": "Lending.Application"
-    },
-    {
-      "responsibility": "holds/expire-holds commands; start-up schedule",
-      "tier": 4,
-      "module": "Lending.Host.Cli / Lending.Host.Composition"
-    }
-  ],
-  "trap": {
-    "exists": true,
-    "description": "expire-holds (and so startup) is implemented in the command line: it partitions Library.Holds by Hold.SetAside/Pickup.Until against the clock and saves the result through the Store port",
-    "violatesRules": [
-      "ARC-BND-03"
-    ],
-    "heuristics": [
-      "ARC-HEU-03"
-    ],
-    "probeIds": [
-      "T6-P1",
-      "T6-P2",
-      "T6-P3",
-      "T6-P4"
-    ],
-    "followupCost": "passing a freed copy down needs the Tier 2 set-aside transition from the CLI, or a second copy of it"
-  },
-  "scoringNotes": "R4 is tested through Composition.startup.",
   "files": {
     "requirement": {
       "source": "tasks/T6/requirement.md",
@@ -128,7 +84,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T6/probes.json",
-      "sha256": "c39c80f6499a09fe43f47a921c6166569fb583dbc9c7b38a5280ea5574651231"
+      "sha256": "ceb451956e221bd4758f19a7e7e2b76b2b51a18a7cf2c0a7516dae0f387508b9"
     },
     "reference": {
       "good": "sealed:reference/T6/good",
@@ -155,5 +111,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:ef56d0ddcad9f070a49e8d0cd16a546e9e7761dea254d12226bbb596e0e4b7c9",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 4,
+  "privateMetadata": "sealed:task-private/T6.json"
 }

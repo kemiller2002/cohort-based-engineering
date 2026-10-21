@@ -99,7 +99,7 @@ archcheck selftest
 ```
 fixtures/repo/                         starting repository (git-initialised by setup)
 fixtures/pack/                         architecture pack (§3)
-fixtures/policy/lending.policy.json    the full verifier policy
+verifier/policy/lending.policy.json    the full verifier policy (single copy; amendment 2026-10-21)
 fixtures/tasks/T<n>/requirement.md     initial requirement (all arms)
 fixtures/tasks/T<n>/acceptance/*.fs    visible acceptance tests (all arms)
 fixtures/tasks/T<n>/contract.json      ecir/1 decision contract (C, D) — must pass or be refused by `ordo ecir check` as designed

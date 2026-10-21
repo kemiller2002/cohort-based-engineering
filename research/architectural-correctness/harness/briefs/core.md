@@ -27,6 +27,7 @@ brief, and prints PASS or FAIL with the reasons.
 ## Limits
 
 - Time budget: {{BUDGET_MINUTES}} minutes of wall-clock time from your first command.
+- Keep the solution's project structure: do not add, remove or rename projects (`.fsproj` files).
 - Work only inside `{{REPO}}`. Do not modify anything under `{{TOOLS}}`. No network access, and no
   package installs beyond restoring the packages already referenced.
 

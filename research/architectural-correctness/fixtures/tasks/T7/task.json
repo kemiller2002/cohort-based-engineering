@@ -38,35 +38,6 @@
     "conflictIds": []
   },
   "conflict": false,
-  "expectedOutcome": {
-    "initial": "behavior-preserving split into Command/Parse/Render/CommandLine; rendering still from Tier 3 views",
-    "followup": "a JSON surface in Lending.Host.Cli reusing the same use cases and views"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "command union, parsing, rendering, dispatch",
-      "tier": 4,
-      "module": "Lending.Host.Cli"
-    }
-  ],
-  "trap": {
-    "exists": true,
-    "description": "the refactoring 'consolidates' the loan listing by rendering it in Render.loans straight from the Library loaded through the Store port (Library.Members/Loans/Books/Copies, Loan.DueDate), bypassing UseCases.loans and Views",
-    "violatesRules": [
-      "ARC-BND-03"
-    ],
-    "heuristics": [
-      "ARC-HEU-02"
-    ],
-    "probeIds": [
-      "T7-P1",
-      "T7-P2",
-      "T7-P3",
-      "T7-P4"
-    ],
-    "followupCost": "the JSON surface cannot reuse the loan listing and re-derives it a second time"
-  },
-  "scoringNotes": "The oracle's golden transcript was recorded from fixtures/repo; it passes on the starting repository, but the oracle as a whole fails there because Parse/Command do not exist.",
   "files": {
     "requirement": {
       "source": "tasks/T7/requirement.md",
@@ -104,7 +75,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T7/probes.json",
-      "sha256": "a3597bcec50737f826fc162c284b03cc74da8c4890b829d81828b78be71c5f14"
+      "sha256": "8b8e86853ed4ee45377ef7870d9407eed20034a3e64e5880d754f924d30b7855"
     },
     "reference": {
       "good": "sealed:reference/T7/good",
@@ -131,5 +102,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:2c3428a791a8f46c3c052a900397b30d6159729c5633a18e3327209cb72db3dd",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 1,
+  "privateMetadata": "sealed:task-private/T7.json"
 }

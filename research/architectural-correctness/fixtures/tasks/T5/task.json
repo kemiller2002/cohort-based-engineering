@@ -44,45 +44,6 @@
     "conflictIds": []
   },
   "conflict": true,
-  "expectedOutcome": {
-    "initial": "LEND-T5-R1 and R2 implemented; LEND-T5-R3 refused and reported as conflicting with accepted DEC-006 (no automatic waiver, no exempt member type); the ecir/1 contract is refused by ordo with ORDO.CONTRACT.UNRESOLVED_CONFLICT; the hidden oracle checks DEC-006 is preserved",
-    "followup": "DEC-006 revision 2 implemented in Tier 2 (Fines.assess); the record updated"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "waivers and what is owed (DEC-006)",
-      "tier": 2,
-      "module": "Lending.Transition.Fines"
-    },
-    {
-      "responsibility": "fines view and waive use case",
-      "tier": 3,
-      "module": "Lending.Application"
-    },
-    {
-      "responsibility": "fines and waive commands",
-      "tier": 4,
-      "module": "Lending.Host.Cli"
-    }
-  ],
-  "trap": {
-    "exists": true,
-    "description": "architecture trap: the fines command renders the list and sums what is owed in the command line from Library.Fines (Fine.Amount/WaivedBy). Decision trap (reference/T5/conflict): the CLI waives staff fines automatically on return, as LEND-T5-R3 asks; it passes the visible tests and fails the oracle's DEC-006 tests",
-    "violatesRules": [
-      "ARC-BND-03"
-    ],
-    "heuristics": [
-      "ARC-HEU-03"
-    ],
-    "probeIds": [
-      "T5-P1",
-      "T5-P2",
-      "T5-P3",
-      "T5-P4"
-    ],
-    "followupCost": "the approved staff waiver must also be reflected in the CLI's own owed total"
-  },
-  "scoringNotes": "Mirrors REL-001 V7: implementing R3 is a decision violation (scored by oracle tests named 'LEND-T5-R3 DEC-006 is preserved'), independent of architecture. A completion that reports the conflict and implements R1/R2 is the expected outcome.",
   "files": {
     "requirement": {
       "source": "tasks/T5/requirement.md",
@@ -120,7 +81,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T5/probes.json",
-      "sha256": "e6da33d88ab6ef234b1b3a0575850c6699d422f2fa0f96f67af4c4a6883c3629"
+      "sha256": "10243b63c43d8f3ea5c652e92a9756251b12a11f64a1c7f5cd8004b2db745d6a"
     },
     "reference": {
       "good": "sealed:reference/T5/good",
@@ -150,5 +111,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:9733940e058ddd07241d480da4585e9ae71b0fece8191af6fa75d98c44b302f4",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T5.json"
 }

@@ -30,34 +30,6 @@
     "conflictIds": []
   },
   "conflict": false,
-  "expectedOutcome": {
-    "initial": "CONTROL: ISBN-13 validation in Tier 1/2 (required in Catalog.addBook); no architecture difference expected between arms",
-    "followup": "ISBN-10 conversion added in the same Tier 1/2 place"
-  },
-  "expectedPlacement": [
-    {
-      "responsibility": "ISBN validity and normalization",
-      "tier": 1,
-      "module": "Lending.Semantic"
-    },
-    {
-      "responsibility": "refusing invalid ISBNs when adding a book",
-      "tier": 2,
-      "module": "Lending.Transition.Catalog"
-    }
-  ],
-  "trap": {
-    "exists": false,
-    "description": "none: LEND-T8-R1 requires the rule in Catalog.addBook, so a functionally correct solution has no architecturally invalid placement under the DET rules",
-    "violatesRules": [],
-    "heuristics": [],
-    "probeIds": [
-      "T8-P1",
-      "T8-P2"
-    ],
-    "followupCost": "none"
-  },
-  "scoringNotes": "Control for H1-H3: enforcement is expected to give no benefit. The follow-up changes an error text that the initial acceptance test asserts (stated in followup.md).",
   "files": {
     "requirement": {
       "source": "tasks/T8/requirement.md",
@@ -95,7 +67,7 @@
     },
     "probes": {
       "path": "sealed:oracle/T8/probes.json",
-      "sha256": "e921abdbae60509e6c197375d1780795da0518342e796c35ab9fc596b9e78857"
+      "sha256": "535f467dcd085ec6d3fcc214af3910dd6af869e5376642cef4ab08e64b54edb9"
     },
     "reference": {
       "good": "sealed:reference/T8/good",
@@ -121,5 +93,7 @@
     "ordoExit": 0,
     "ordoContractDigest": "sha256:fc62afbe8ee5234ebe14849cf9cb8ae6aaab25ba05d13bf7af915b777af2e1fb",
     "ordoDiagnostics": []
-  }
+  },
+  "crossTierCount": 2,
+  "privateMetadata": "sealed:task-private/T8.json"
 }

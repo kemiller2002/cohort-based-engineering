@@ -1,0 +1,87 @@
+{
+  "schema": "arch001.scoring-spec/1",
+  "version": "1.0.0",
+  "status": "frozen at preregistration (PROTOCOL.md); changes after the freeze are dated amendments",
+  "authority": {
+    "architecture": "SDE-DOCTRINE-003 Four-Tier Architecture v0.2.1 (ordo bb43c26 doctrine/FOUR-TIER-ARCHITECTURE.md)",
+    "instance": "fixtures/pack/LENDING-ARCHITECTURE.md",
+    "independence": "Correctness is defined by the doctrine, the fixture's own DEC records, the requirements and the hidden oracle, all fixed before any trial. No arm's treatment material defines correctness: the verifier policy encodes only rules from the pack, and the same full policy, probes and oracle score every arm."
+  },
+  "unit": {
+    "trial": "one (task, arm, replicate): phase 1 (initial requirement) then phase 2 (follow-up) in a new isolated session",
+    "requirement": "2 per trial: R1 scored at S1 (last submitted commit of phase 1, else HEAD), R2 scored at S2 (same for phase 2)"
+  },
+  "dimensions": {
+    "functional": {
+      "R1": "every InitialOracle test passes at S1",
+      "R2": "every FollowupOracle test passes at S2 AND every InitialOracle test labelled regression passes at S2",
+      "firstPass": "first submit of the phase printed PASS and the phase's oracle passes at that commit",
+      "escapedDefect": "submit PASS (visible tests green) but hidden oracle fails at that commit"
+    },
+    "architectural": {
+      "acceptance": "archcheck (pristine binary and full policy, plus the task's sealed probes) at the phase commit reports zero DET findings of severity >= 2",
+      "notEvaluable": "archcheck exit 2 (build failure, unmapped project): requirement not accepted; trial removed from violation-count metrics only",
+      "severityWeighted": "sum of severities of DET findings (ARC-TRC-01 excluded) at the commit",
+      "heuristic": "ARC-HEU-01..04 findings are reported descriptively and never gate",
+      "review": "ARC-REV-01..03 (0/1/2 each) from a blinded independent reviewer; descriptive and used for convergent validity, not for acceptance",
+      "newViolations": "DET findings at S2 whose (ruleId, symbol, file) is absent at S1"
+    },
+    "decisionFidelity": {
+      "decisionTests": "pass rate of oracle tests labelled in sealed oracle/T<n>/oracle.json .decisionTests (tests whose behaviour is a DEC record's content); defined for every arm",
+      "conflict": "T5: the conflicting part (R3) is not implemented and DEC-006 is preserved: every .conflictTests test passes",
+      "traceability": "ARC-TRC-01: every decision id of the phase's contract appears in a production comment and a test; arms C and D only (descriptive)",
+      "invalidDecisionAccepted": "a conflict-test failure (the conflicting decision was implemented)"
+    },
+    "changeResilience": {
+      "followupCost": "model cost of phase 2",
+      "filesChanged": "files added/modified/deleted between the follow-up commit and S2",
+      "rewritten": "pre-existing files with more than 50% of their lines changed in phase 2",
+      "rework": "lines added + deleted in files that existed before phase 2",
+      "testsBroken": "visible tests passing at S1 that fail at S2",
+      "regressionDefects": "regression-labelled InitialOracle tests failing at S2"
+    },
+    "evidenceIntegrity": {
+      "independence": "all scoring uses harness-side pristine copies; nothing from the workspace except the evaluated commit",
+      "commitBinding": "every verdict names the commit and tree hash it evaluated",
+      "oracleProtection": "hidden oracle and probes sealed outside every repository and encrypted in git until trials end (sha256 committed at preregistration)",
+      "X4": "contamination: any tool call touching sealed material, other runs, own harness state, the research repository, verifier source, oracle names, other Echelon repositories, installed doctrine outside the workspace, or the GitHub organisation; excluded",
+      "XIntegrity": "harness tools, verifier, policy, ordo, sealed store or pristine copies changed during the trial; excluded",
+      "concealment": "failed submits and oracle failures are recorded from the harness ledger and harness-run tests; an agent's own claims are not scored"
+    }
+  },
+  "costs": {
+    "model": "sum of result.total_cost_usd over both phases (includes background model calls), cross-checked against token counts x price table research/pricing/anthropic.price-table.json",
+    "tokens": ["input", "output", "cacheRead", "cacheWrite5m", "cacheWrite1h"],
+    "orchestration": "harness compute (setup, submit, scoring) is recorded as wall time, never as model cost",
+    "evaluation": "blinded-review model cost is reported separately and never charged to an arm",
+    "counts": ["toolCalls by tool", "testExecutions (Bash commands containing dotnet test)", "verificationExecutions (submit, ordo, archcheck)", "elapsed seconds"]
+  },
+  "primary": {
+    "metric": "per arm: total model cost over all trials and both phases (retries, failed and timed-out phases included) / number of requirements accepted (functional AND architectural)",
+    "companion": "total model cost / trials whose phase-2 submit passed (completed tasks), so that a small denominator cannot hide expensive failure",
+    "contrast": "D vs A, ratio - 1, 95% two-stage cluster bootstrap interval (tasks, then replicates), 10,000 resamples, seed 20261022"
+  },
+  "secondary": {
+    "H1a": {"contrast": "B - A", "metric": "severity-weighted DET violations per trial at S2", "predicted": "<"},
+    "H1b": {"contrast": "B - A", "metric": "architectural acceptance rate over requirements", "predicted": ">"},
+    "H2": {"contrast": "C - B", "metric": "decision-test pass rate", "predicted": ">"},
+    "H3": {"contrast": "D - C", "metric": "severity-weighted DET violations per trial at S2", "predicted": "<"},
+    "H4": {"contrast": "D - C", "metric": "phase-2 rework lines", "predicted": "<"},
+    "H5a": {"contrast": "D / C - 1", "metric": "primary metric", "predicted": "<"},
+    "H5b": {"contrast": "D / A - 1", "metric": "primary metric", "predicted": "<"},
+    "H6": {"contrast": "slope over tasks of mean (D - A) violation difference on crossTierCount", "predicted": "<"},
+    "family": "Holm step-down at alpha 0.05 across H1a..H6"
+  },
+  "classification": {
+    "Supported": "Holm-adjusted bootstrap p < 0.05 with the estimate in the predicted direction (primary: interval excludes 0 in the predicted direction)",
+    "NotSupported": "the same in the opposite direction, or the 95% interval lies inside the equivalence margin",
+    "Inconclusive": "otherwise, or fewer than 2 usable blocks, or more than 1% undefined resamples",
+    "margins": {"primary": 0.10, "H1a": 0.5, "H1b": 0.10, "H2": 0.10, "H3": 0.5, "H4": 10.0, "H5a": 0.10, "H5b": 0.10, "H6": 0.25}
+  },
+  "implementation": {
+    "scorer": "harness/score.py",
+    "analysis": "analysis/analyze.py",
+    "verifier": "verifier/ (archcheck), policy verifier/policy/lending.policy.json",
+    "rubric": "analysis/review-rubric.md"
+  }
+}
