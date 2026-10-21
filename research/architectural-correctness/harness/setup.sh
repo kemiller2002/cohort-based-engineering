@@ -62,6 +62,8 @@ if has_verifier "$ARM"; then
   esac
   chmod +x "$TOOLS/bin/archcheck"
   cp "$POLICY_SRC" "$TOOLS/policy/lending.policy.json"
+  # Amendment A1 (pilot): archcheck refuses a contract inside --repo, so the agent's copy lives under tools/.
+  mkdir -p "$TOOLS/contracts"; cp "$TD/contract.json" "$TOOLS/contracts/$TASK.contract.json"
 fi
 jq -n --arg root "$ROOT" --arg repo "$REPO" --arg arm "$ARM" --arg task "$TASK" --arg ledger "$LEDGER" --arg st "$ST" \
   --arg dotnet "$DOTNET_ROOT_DIR" --arg nuget "$NUGET_CACHE" --argjson max "$MAX_SUBMITS" \

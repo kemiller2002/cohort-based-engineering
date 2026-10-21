@@ -71,8 +71,11 @@ def patterns(run, phase, own_tmp, session, env):
     x4 = [
         # Any mention of the sealed tree, its archive or its key file (e.g. /home/user/.arch001-sealed-key).
         ("sealed", "|".join([re.escape(sealed), r"arch001-sealed"])),
-        ("other-run", re.escape(runs + "/") + r"(?!" + re.escape(run_id) + r"(?:[/\"'\s]|$))[^/\s\"']+"),
-        ("own-state", r"(?!" + own_phase + r")" + re.escape(f"{root}/state")),
+        # Amendment A1 (pilot): the run id ends at any non-id character (a ';' after `cd RUN` was a false positive).
+        ("other-run", re.escape(runs + "/") + r"(?!" + re.escape(run_id) + r"(?![\w.-]))[\w.-]+"),
+        # Amendment A1 (pilot): own-state is X4 for session logs (another phase's), scores, reviews and pristine copies,
+        # absolute or relative; the gate's own agent-facing outputs (state/submit*, submit-config) are advisory.
+        ("own-state", r"(?!" + own_phase + r")(?:" + re.escape(f"{root}/state/") + r"|(?:^|[\s\"'`;&|(])state/)(?:phase\d|score|review|pristine)"),
         ("cohort", r"cohort-based-engineering"),
         ("tmp-claude", foreign_tmp(own_tmp, session)),
         ("verifier-src", "|".join(p for p in [r"architectural-correctness/verifier", re.escape(vsrc) if vsrc else ""] if p)),
@@ -83,6 +86,7 @@ def patterns(run, phase, own_tmp, session, env):
         ("oracle-names", r"\b(?:InitialOracleTests|FollowupOracleTests)\b|\bprobes\.json\b|(?:^|[/\s\"'`])(?:reference|oracle)/T\d"),
     ]
     advisory = [
+        ("own-state-gate", re.escape(f"{root}/state")),
         ("rel-001-state", r"/tmp/claude-0/rel003|REL003_"),
     ]
     return x4, advisory

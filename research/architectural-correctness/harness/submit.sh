@@ -70,12 +70,14 @@ if [ ${#REASONS[@]} -eq 0 ]; then
   if [ "$ARM" = D ]; then
     CN="$TASK.contract.json"; [ "$PHASE" = 2 ] && CN="$TASK-followup.contract.json"
     EXTRA=(); archcheck verify --help 2>&1 | grep -q -- '--require-clean' && EXTRA=(--require-clean)
-    ( cd "$T" && archcheck verify --repo "$T" --policy "$ST/pristine/policy.json" --contract "$T/docs/contracts/$CN" --json \
+    ( cd "$T" && archcheck verify --repo "$T" --policy "$ST/pristine/policy.json" --contract "$ST/pristine/$CN" --json \
         --out "$W/archcheck.json" "${EXTRA[@]}" > "$W/archcheck.txt" 2>&1 ); rc=$?
     check archcheck "{\"pass\":$([ $rc -eq 0 ] && echo true || echo false),\"exit\":$rc,\"requireClean\":$([ ${#EXTRA[@]} -gt 0 ] && echo true || echo false)}"
     if [ $rc -eq 1 ]; then
       fail "archcheck: DET violations of severity >= 2:"$'\n'"$(jq -r '.findings[]? | select(.class=="DET" and .severity>=2) | "    \(.ruleId) \(.file):\(.line) \(.symbol // "") - \(.message)"' "$W/archcheck.json" 2>/dev/null | head -30)"
-    elif [ $rc -ne 0 ]; then fail "archcheck could not evaluate the repository (exit $rc):"$'\n'"$(tailf "$W/archcheck.txt" 15)"; fi
+    elif [ $rc -ne 0 ]; then
+      ERRS=$(jq -r '.errors[]? | "    " + .' "$W/archcheck.json" 2>/dev/null | head -10)
+      fail "archcheck could not evaluate the repository (exit $rc):"$'\n'"${ERRS:-$(tailf "$W/archcheck.txt" 15)}"; fi
   fi
 fi
 

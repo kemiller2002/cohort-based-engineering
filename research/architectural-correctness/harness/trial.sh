@@ -68,6 +68,7 @@ transition() {
   mkdir -p "$REPO/tests/Lending.Tests/Acceptance"
   if [ -d "$TD/followup-acceptance" ]; then cp "$TD"/followup-acceptance/*.fs "$REPO/tests/Lending.Tests/Acceptance/"; fi
   if has_contract "$arm"; then mkdir -p "$REPO/docs/contracts"; cp "$TD/followup-contract.json" "$REPO/docs/contracts/$task-followup.contract.json"; fi
+  if has_verifier "$arm"; then mkdir -p "$ROOT/tools/contracts"; cp "$TD/followup-contract.json" "$ROOT/tools/contracts/$task-followup.contract.json"; fi
   ( cd "$REPO" && git add -A && hgit commit -qm "Follow-up requirement" )
   set_run ".phase1Commit = \"$commit\" | .followupCommit = \"$(git -C "$REPO" rev-parse HEAD)\""
 }
