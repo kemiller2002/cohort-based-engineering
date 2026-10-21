@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cbe.vac-001.metrics/1",
+  "title": "VAC-001 metrics: one arm-run summary (machine-readable, stable)",
+  "description": "Every ratio carries its numerator and denominator. A value that cannot be computed is null, with a reason in `unavailable`; it is never 0. Definitions are normative; see research-protocol.md section 5.",
+  "type": "object",
+  "required": ["schema", "run", "arm", "units", "metrics", "unavailable"],
+  "additionalProperties": false,
+  "$defs": {
+    "ratio": {
+      "type": "object",
+      "required": ["numerator", "denominator", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "numerator": { "type": "integer", "minimum": 0 },
+        "denominator": { "type": "integer", "minimum": 0 },
+        "value": { "type": ["number", "null"], "description": "numerator / denominator; null when denominator is 0" }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "required": ["input", "cacheWrite5m", "cacheWrite1h", "cacheRead", "output", "total"],
+      "additionalProperties": false,
+      "properties": {
+        "input": { "type": "integer" }, "cacheWrite5m": { "type": "integer" }, "cacheWrite1h": { "type": "integer" },
+        "cacheRead": { "type": "integer" }, "output": { "type": "integer" }, "total": { "type": "integer" }
+      }
+    },
+    "unit": {
+      "type": "object",
+      "required": ["unit", "task", "fault", "claimed", "acceptedFirstPass", "acceptedFinal", "attempts", "tokens", "costUsd", "contextLast", "compactions"],
+      "properties": {
+        "unit": { "type": "integer", "minimum": 1 },
+        "task": { "type": "string", "pattern": "^V[1-8]$" },
+        "fault": { "type": "string" },
+        "claimed": { "enum": ["completed", "blocked", "no-report"] },
+        "acceptedFirstPass": { "type": "boolean" },
+        "acceptedFinal": { "type": "boolean" },
+        "attempts": { "type": "integer", "minimum": 1 },
+        "falseCompletionFirstPass": { "type": "boolean" },
+        "regressedTasks": { "type": "array", "items": { "type": "string" }, "description": "earlier tasks accepted at their own unit whose oracle fails at this unit's HEAD" },
+        "carriedDefects": { "type": "array", "items": { "type": "string" }, "description": "earlier tasks never accepted whose oracle still fails" },
+        "architectureViolations": { "type": "array", "items": { "type": "string" } },
+        "decisions": { "type": "integer" },
+        "unsupportedDecisions": { "type": ["integer", "null"] },
+        "criticalFailure": { "type": "boolean", "description": "false completion, regression of an accepted task, or broken build at HEAD" },
+        "tokens": { "$ref": "#/$defs/tokens" },
+        "costUsd": { "type": ["number", "null"] },
+        "requests": { "type": "integer" },
+        "toolUses": { "type": "integer" },
+        "contextLast": { "type": "integer", "description": "prompt tokens (input + cache write + cache read) of the unit's last request" },
+        "compactions": { "type": "integer" },
+        "wallMs": { "type": ["integer", "null"] },
+        "verifyMs": { "type": "integer", "description": "host verification time; not model cost" },
+        "excluded": { "type": ["string", "null"], "description": "X1, X2, X4 or X7, with reason" }
+      }
+    }
+  },
+  "properties": {
+    "schema": { "const": "cbe.vac-001.metrics/1" },
+    "run": { "type": "string" },
+    "arm": { "enum": ["A", "B", "C", "D", "DR"] },
+    "model": { "type": "array", "items": { "type": "string" } },
+    "effort": { "type": "array", "items": { "type": "string" } },
+    "priceTable": { "type": "string" },
+    "units": { "type": "array", "items": { "$ref": "#/$defs/unit" } },
+    "metrics": {
+      "type": "object",
+      "required": ["UDR", "AVR", "DDR", "FCR", "CCR", "longevity"],
+      "additionalProperties": false,
+      "properties": {
+        "UDR": { "allOf": [{ "$ref": "#/$defs/ratio" }], "description": "unsupported consequential decisions / consequential decisions (Layer 3 confirmed when available; layer recorded in `udrLayer`)" },
+        "udrLayer": { "enum": ["layer1", "layer3"] },
+        "AVR": { "allOf": [{ "$ref": "#/$defs/ratio" }], "description": "units whose committed HEAD violates VAC-RULES 1.0.0 / units with a commit" },
+        "DDR": { "allOf": [{ "$ref": "#/$defs/ratio" }], "description": "unjustified reversals of established decisions / applicable established decision-unit pairs" },
+        "FCR": {
+          "type": "object",
+          "properties": {
+            "firstPass": { "$ref": "#/$defs/ratio" },
+            "delivered": { "$ref": "#/$defs/ratio" }
+          },
+          "description": "claimed-completed units not independently accepted / claimed-completed units"
+        },
+        "CCR": {
+          "type": "object",
+          "required": ["costUsd", "acceptedUnits", "usdPerAccepted", "tokensPerAccepted"],
+          "properties": {
+            "costUsd": { "type": ["number", "null"] }, "acceptedUnits": { "type": "integer" },
+            "usdPerAccepted": { "type": ["number", "null"] }, "tokensPerAccepted": { "type": ["number", "null"] },
+            "tokens": { "$ref": "#/$defs/tokens" }
+          }
+        },
+        "firstPassAcceptance": { "$ref": "#/$defs/ratio" },
+        "finalAcceptance": { "$ref": "#/$defs/ratio" },
+        "longevity": {
+          "type": "object",
+          "required": ["firstCriticalFailureUnit", "censored"],
+          "properties": {
+            "firstCriticalFailureUnit": { "type": ["integer", "null"] },
+            "censored": { "type": "boolean", "description": "true when no critical failure occurred; time is then the chain length" },
+            "recoverableFailures": { "type": "array", "items": { "type": "integer" } },
+            "repairTokens": { "type": "integer" },
+            "repairCostUsd": { "type": ["number", "null"] },
+            "contextByUnit": { "type": "array", "items": { "type": "integer" } },
+            "compactions": { "type": "integer" },
+            "carriedDefectsByUnit": { "type": "array", "items": { "type": "integer" } }
+          }
+        }
+      }
+    },
+    "unavailable": { "type": "object", "additionalProperties": { "type": "string" }, "description": "metric name -> reason it could not be computed" }
+  }
+}

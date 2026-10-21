@@ -1,0 +1,79 @@
+{
+  "schema": "cbe.vac-001.manifest/1",
+  "experiment": "VAC-001",
+  "title": "Verified agent continuity",
+  "preregisteredAt": "2026-10-21",
+  "protocol": "research/verified-agent-continuity/research-protocol.md",
+  "harness": "research/experiments/VAC-001/harness/vac.sh",
+  "fixture": {
+    "path": "research/experiments/REL-001/run-03/fixtures",
+    "treeDigest": "c252b77a8e143b1b73c71126ec1ed2ff0923744e3223d4584b62aa66966c9155",
+    "oracleDigest": "0cb5bd8a76cbacc71f483800088cd382289342de2125e6946f466348701d42f9",
+    "selfCheck": "research/experiments/VAC-001/evidence/fixture-check-output.txt (RESULT: PASS)"
+  },
+  "controls": {
+    "model": "claude-opus-5-5 (verified per request from transcripts; X2 otherwise)",
+    "runtime": "Claude Code sub-agents (Agent tool, subagent_type general-purpose), condition K0 of REL-001: prompt-cache prefix shared with the orchestrator, identical in every arm",
+    "reasoningEffort": "inherited from the session and recorded per request from transcripts",
+    "tools": "general-purpose sub-agent tool set, identical in every arm",
+    "startingState": "fixture repo at the same tree in every arm; C/D add the treatment files listed in arms, D adds `praxis init`",
+    "directives": "research/experiments/VAC-001/directives/DIRECTIVES.md sha256 1ae15c1f5b398d4c18b39b4a8ff11333c640d3c858cee68c911896fbf92985cc (byte-identical to REL-001 run-03)",
+    "brief": "research/experiments/VAC-001/briefs/brief.md (one template; arm sections differ only in continuity and controls)",
+    "priceTable": "research/pricing/anthropic.price-table.json tableVersion 2026-10-20.1",
+    "budgetPerUnit": "no hard timeout (sub-agents); wall-clock recorded"
+  },
+  "tools": {
+    "ordo": { "version": "1.17.0", "source": "kemiller2002/ordo@bb43c26, dotnet build src/Sde.Cli -c Release" },
+    "praxis": { "version": "3.19.0", "source": "kemiller2002/praxis@986211c, dotnet build Praxis.slnx -c Release" },
+    "archcheck": { "rules": "VAC-RULES 1.0.0 (research/experiments/VAC-001/arm-files/RULES.md), derived from SDE-DOCTRINE-003 v0.2.1", "controls": "research/experiments/VAC-001/evidence/detector-controls-archcheck.tsv" },
+    "dotnet": "SDK 10.0.402, runtime 8.0 (for Ordo)"
+  },
+  "seed": 20261021,
+  "arms": {
+    "A": "short-lived: fresh agent per unit; handoff = previous agent-written report",
+    "B": "long-lived: one agent across units via SendMessage",
+    "C": "long-lived + Ordo contract admission + VAC-RULES/archcheck + structured decisions",
+    "D": "C + Praxis work protocol + independent host gate with one repair round + verified state",
+    "DR": "D's controls and verified state, fresh agent per unit (reconstructed context)"
+  },
+  "runs": [
+    {
+      "id": "P1", "purpose": "pilot", "arms": ["A", "B", "C", "D"], "armLaunchOrder": ["B", "A", "C", "D"],
+      "units": [
+        { "unit": 1, "task": "V7", "fault": "none" }, { "unit": 2, "task": "V5", "fault": "none" },
+        { "unit": 3, "task": "V1", "fault": "none" }, { "unit": 4, "task": "V4", "fault": "none" },
+        { "unit": 5, "task": "V8", "fault": "none" }, { "unit": 6, "task": "V2", "fault": "none" },
+        { "unit": 7, "task": "V6", "fault": "none" }, { "unit": 8, "task": "V3", "fault": "none" }
+      ]
+    },
+    {
+      "id": "R1", "purpose": "replication", "arms": ["A", "B", "C", "D"],
+      "units": [
+        { "unit": 1, "task": "V7", "fault": "none" }, { "unit": 2, "task": "V4", "fault": "none" },
+        { "unit": 3, "task": "V1", "fault": "none" }, { "unit": 4, "task": "V2", "fault": "none" },
+        { "unit": 5, "task": "V6", "fault": "none" }, { "unit": 6, "task": "V8", "fault": "none" },
+        { "unit": 7, "task": "V3", "fault": "none" }, { "unit": 8, "task": "V5", "fault": "none" }
+      ]
+    },
+    {
+      "id": "F1", "purpose": "fault injection (Phase 5) and reconstructed context (Phase 6)", "arms": ["A", "B", "D", "DR"],
+      "units": [
+        { "unit": 1, "task": "V8", "fault": "none" },
+        { "unit": 2, "task": "V4", "fault": "F3-MISLEADING-COMPLETION" },
+        { "unit": 3, "task": "V1", "fault": "F4-DEPENDENCY-VERSION" },
+        { "unit": 4, "task": "V6", "fault": "F5-INVALID-HANDOFF-ASSUMPTION" },
+        { "unit": 5, "task": "V3", "fault": "F1-NONEXISTENT-API" },
+        { "unit": 6, "task": "V7", "fault": "none" },
+        { "unit": 7, "task": "V2", "fault": "none" },
+        { "unit": 8, "task": "V5", "fault": "F2-REJECTED-DECISION" }
+      ]
+    }
+  ],
+  "exclusions": {
+    "X1": "setup failure (rerun with fresh run id)",
+    "X2": "any request not served by claude-opus-5-5",
+    "X4": "contamination: an agent tool input names the oracle, fixture, harness state or another arm's workspace",
+    "X7": "orchestrator delivery error"
+  },
+  "status": { "P1": "pending", "R1": "pending", "F1": "pending" }
+}
