@@ -93,7 +93,8 @@ cmd_stage() {
     '.units += [{unit:$u, task:$t, fault:$f, stagedAt:$at, stagedCommit:$c}]' "$ST/setup.json" > "$ST/setup.json.tmp" \
     && mv "$ST/setup.json.tmp" "$ST/setup.json"
   cp "$ST/setup.json" "$RS/setup.json"
-  echo "$ST/unit-$UNIT.brief.md"
+  mkdir -p "$WS/briefs" && cp "$ST/unit-$UNIT.brief.md" "$WS/briefs/unit-$UNIT.md"
+  echo "$WS/briefs/unit-$UNIT.md"
 }
 
 # Independent verification. Runs on an exported copy of HEAD in harness state, never in the workspace.
@@ -138,7 +139,26 @@ cmd_state() {
   echo "$prev"
 }
 
+# After the agent's turn: verify, then usage for the unit window, then (D, DR) verified state.
+#   vac.sh finish RUN ARM UNIT AGENT_ID [ATTEMPT]
+cmd_finish() {
+  paths "$1" "$2"; UNIT="$3"; AGENT="$4"; ATTEMPT="${5:-1}"
+  local obs; obs=$(cmd_verify "$RUN" "$ARM" "$UNIT" "$ATTEMPT")
+  local from; from=$(jq -r --argjson u "$UNIT" '.units[] | select(.unit == $u) | .stagedAt' "$ST/setup.json")
+  # a repair attempt's window starts where the previous attempt's ended, so no request is counted twice
+  [ "$ATTEMPT" -gt 1 ] && from=$(jq -rs --argjson u "$UNIT" --argjson t "$(( ATTEMPT - 1 ))" '[.[] | select(.unit == $u and .attempt == $t)][-1].finishedAt' "$ST/finish.jsonl")
+  local tr="${VAC_TRANSCRIPTS:-/root/.claude/projects/-home-user/33f5e1ff-fd17-5061-b88b-9980676c7c5b/subagents}/agent-$AGENT.jsonl"
+  dotnet fsi --quiet --exec "$FSX" usage --transcript "$tr" --from "$from" --to "$(utc)" --workspace "$WS" \
+    --prices "$EXP/../../pricing/anthropic.price-table.json" > "$RS/usage-$UNIT-$ATTEMPT.json"
+  jq -n --arg a "$AGENT" --argjson u "$UNIT" --argjson t "$ATTEMPT" --arg at "$(utc)" '{agentId:$a, unit:$u, attempt:$t, finishedAt:$at}' >> "$ST/finish.jsonl"
+  jq -c '{unit, attempt, task, accepted: .verdict.accepted, claim: .claim.outcome, falseCompletion: .verdict.falseCompletion,
+          earlierFailing: .verdict.earlierTasksFailing, oracleFailed: .oracle.failed, arch: .architecture.passed, dirty: .uncommittedPaths,
+          build: .build.ok}' "$obs"
+  jq -c '{tokens: .tokens.total, cost: .costUsd, req: .requests, ctx: .context.last, compactions, models, x4: (.contaminationHits | length)}' "$RS/usage-$UNIT-$ATTEMPT.json"
+}
+
 case "${1:-}" in
+  finish) shift; cmd_finish "$@";;
   setup)  shift; cmd_setup "$@";;
   stage)  shift; cmd_stage "$@";;
   verify) shift; cmd_verify "$@";;
