@@ -6,7 +6,7 @@
 source "$(dirname "$0")/../lib.sh"
 arm_init "$1"
 FIX="$REL/fixtures/b"
-OUT_FILE="$REL/results/b/$ARM.jsonl"; mkdir -p "$(dirname "$OUT_FILE")"; : > "$OUT_FILE"
+OUT_FILE="$REL/results/b/$ARM${REL001_RESULTS_TAG:+-$REL001_RESULTS_TAG}.jsonl"; mkdir -p "$(dirname "$OUT_FILE")"; : > "$OUT_FILE"  # A5: REL001_RESULTS_TAG names a re-run file, never overwriting
 
 resolve() { case "$1" in ordo:*) echo "$ORDO_FIXTURES/${1#ordo:}" ;; *) echo "$FIX/$1" ;; esac; }
 

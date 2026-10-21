@@ -11,7 +11,7 @@
     "experimentId": { "const": "REL-001" },
     "runId": { "type": "string", "pattern": "^REL-001-[A-Za-z0-9-]+$" },
     "supersedes": { "type": ["string", "null"] },
-    "arm": { "enum": ["baseline", "treatment"] },
+    "arm": { "enum": ["baseline", "treatment", "bare", "directives", "echelon-original", "echelon-optimized"], "description": "run-01: baseline, treatment; run-02 (additive): bare (A), directives (B), echelon-original (C), echelon-optimized (D)." },
     "scenario": { "enum": ["nominal", "duplicate-claim", "stale-completion", "expired-lease", "failure-injection"] },
     "replicate": { "type": "integer", "minimum": 1 },
     "status": { "enum": ["completed", "failed", "aborted", "excluded"] },
@@ -34,7 +34,7 @@
           "type": "object",
           "additionalProperties": false,
           "required": ["class", "basis"],
-          "properties": { "class": { "enum": ["low", "medium", "high"] }, "basis": { "type": "string" } }
+          "properties": { "class": { "enum": ["low", "medium", "high", "simple", "moderate", "complex", "adversarial"], "description": "run-02 (additive): the builder-assigned task category" }, "basis": { "type": "string" } }
         }
       }
     },
@@ -134,6 +134,17 @@
         "duplicateActiveClaims": { "type": ["integer", "null"], "minimum": 0 },
         "invalidAcceptedDecisions": { "type": ["integer", "null"], "minimum": 0 },
         "unverifiedCompletions": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "run02": {
+      "type": ["object", "null"],
+      "description": "Additive (run-02): four-arm scoring from run-02/harness/score.sh, schema cbe.rel-001.run-02-observation/1 (arm letter, category, block, label, per-agent outcome lines, completion evidence, requirement units (R9), U2 rubric (R6), U6 observables (R8), reliability counts, tokens by kind with the F2 agent binding, cost, test runs by source, X2/X4/X6, per-comparison eligibility (X3)). Optional; run-01 consumers ignore it.",
+      "required": ["schema", "armLetter", "category", "block", "label", "units", "completionEvidence", "reliability", "tokens", "exclusions", "eligibility"],
+      "properties": {
+        "schema": { "const": "cbe.rel-001.run-02-observation/1" },
+        "armLetter": { "enum": ["A", "B", "C", "D"] },
+        "label": { "enum": ["trial", "pilot", "smoke"] },
+        "units": { "type": "object", "required": ["total", "correct"], "properties": { "total": { "type": "integer", "minimum": 1 }, "correct": { "type": "integer", "minimum": 0 } } }
       }
     },
     "scoring": {

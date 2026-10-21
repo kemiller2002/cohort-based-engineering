@@ -1,0 +1,112 @@
+REL-001 run-02 fixture check
+fixture tree digest: f29d1e1c990737df1bc26c4e87bf7f98b36cbdeb00b683967d2c16dc23954fce
+oracle digest:       b02728ad0d6a8433f1ea7d9729f8862e9a9f468923a67d4008cba5d7efd2cfb7
+dotnet 10.0.402; ordo 33a37628439f32a2…
+
+U1   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U1   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U1   reference: visible tests                 expected PASS got PASS ok        (passed 13, failed 0)
+U1   reference: oracle                        expected PASS got PASS ok        (passed 8, failed 0)
+U1   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 dbb38d3286e0efe4…, task.json sha/digest match yes/yes, digest sha256:d0afa88fe070422c…)
+U1   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U2   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U2   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U2   forced-allow: visible tests              expected PASS got PASS ok        (passed 12, failed 0)
+U2   forced-allow: oracle                     expected FAIL got FAIL ok        (passed 2, failed 1)
+U2   forced-final: visible tests              expected PASS got PASS ok        (passed 12, failed 0)
+U2   forced-final: oracle                     expected FAIL got FAIL ok        (passed 2, failed 1)
+U2   ordo 1.17.0 admits contract              expected false got false ok        (sha256 5e48be94d98a7cff…, task.json sha/digest match yes/yes, ORDO.CONTRACT.UNRESOLVED_CONFLICT)
+U2   praxis 3.16.0 admits contract            expected false got false ok        (exit 1)
+
+U3   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U3   start: visible tests                     expected FAIL got FAIL ok        (build failed (3 compiler errors))
+U3   reference: visible tests                 expected PASS got PASS ok        (passed 14, failed 0)
+U3   reference: oracle                        expected PASS got PASS ok        (passed 10, failed 0)
+U3   wrong (interleaved): visible tests       expected PASS got PASS ok        (passed 14, failed 0)
+U3   wrong (interleaved): oracle              expected FAIL got FAIL ok        (passed 9, failed 1)
+       interleaved fails: OracleU3.LEDGER-U3-R1 refusal order
+U3   wrong (naive): visible tests             expected PASS got PASS ok        (passed 14, failed 0)
+U3   wrong (naive): oracle                    expected FAIL got FAIL ok        (passed 2, failed 8)
+       naive fails: OracleU3.LEDGER-U3-R1 funds checked against the first account's larger share
+       naive fails: OracleU3.LEDGER-U3-R1 refusal order
+       naive fails: OracleU3.LEDGER-U3-R2 banker's rounding at the half cent
+       naive fails: OracleU3.LEDGER-U3-R2 first in list order takes the remainder
+       naive fails: OracleU3.LEDGER-U3-R2 negative remainder
+       naive fails: OracleU3.LEDGER-U3-R2 shares sum exactly to the total
+       naive fails: OracleU3.LEDGER-U3-R2 uneven split remainder to the first account
+       naive fails: OracleU3.LEDGER-U3-R2 zero shares are not posted
+U3   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 42d975478990264b…, task.json sha/digest match yes/yes, digest sha256:65947c1246b1f6f7…)
+U3   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U4   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U4   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U4   reference: visible tests                 expected PASS got PASS ok        (passed 13, failed 0)
+U4   reference: oracle                        expected PASS got PASS ok        (passed 10, failed 0)
+U4   wrong (bypass): visible tests            expected PASS got PASS ok        (passed 13, failed 0)
+U4   wrong (bypass): oracle                   expected FAIL got FAIL ok        (passed 8, failed 2)
+       bypass fails: OracleU4.LEDGER-U4-R1 recent agrees with postingsOf after reversals
+       bypass fails: OracleU4.LEDGER-U4-R1 recent hides a reversed transfer on both accounts
+U4   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 c1a6e6564b4b799e…, task.json sha/digest match yes/yes, digest sha256:e96c3b72bfce8632…)
+U4   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U5   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U5   start: visible tests                     expected FAIL got FAIL ok        (build failed (6 compiler errors))
+U5   reference: visible tests                 expected PASS got PASS ok        (passed 13, failed 0)
+U5   reference: oracle                        expected PASS got PASS ok        (passed 9, failed 0)
+U5   wrong (stale-cache): visible tests       expected PASS got PASS ok        (passed 13, failed 0)
+U5   wrong (stale-cache): oracle              expected FAIL got FAIL ok        (passed 7, failed 2)
+       stale-cache fails: OracleU5.LEDGER-U5-R2 store keeps working after a refused batch
+       stale-cache fails: OracleU5.LEDGER-U5-R2 successful batch commits everything
+U5   wrong (store-loop): visible tests        expected PASS got PASS ok        (passed 13, failed 0)
+U5   wrong (store-loop): oracle               expected FAIL got FAIL ok        (passed 6, failed 3)
+       store-loop fails: OracleU5.LEDGER-U5-R2 last instruction failing commits nothing
+       store-loop fails: OracleU5.LEDGER-U5-R2 mid-batch failure leaves the store unchanged
+       store-loop fails: OracleU5.LEDGER-U5-R2 store keeps working after a refused batch
+U5   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 584182af2b3420ce…, task.json sha/digest match yes/yes, digest sha256:3680652a952405cf…)
+U5   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U6   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U6   start: visible tests                     expected FAIL got FAIL ok        (build failed (4 compiler errors))
+U6   reference: visible tests                 expected PASS got PASS ok        (passed 13, failed 0)
+U6   reference: oracle                        expected PASS got PASS ok        (passed 8, failed 0)
+U6   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 8b2dc8e8315ec17a…, task.json sha/digest match yes/yes, digest sha256:755056029cfd9594…)
+U6   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U7   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U7   start: visible tests                     expected FAIL got FAIL ok        (build failed (5 compiler errors))
+U7   reference: visible tests                 expected PASS got PASS ok        (passed 14, failed 0)
+U7   reference: oracle                        expected PASS got PASS ok        (passed 13, failed 0)
+U7   wrong (whole-balance): visible tests     expected PASS got PASS ok        (passed 14, failed 0)
+U7   wrong (whole-balance): oracle            expected FAIL got FAIL ok        (passed 5, failed 8)
+       whole-balance fails: OracleU7.LEDGER-U7-R2 just above a boundary is continuous
+       whole-balance fails: OracleU7.LEDGER-U7-R2 marginal tiers per the design note
+       whole-balance fails: OracleU7.LEDGER-U7-R2 rounded once with banker's rounding
+       whole-balance fails: OracleU7.LEDGER-U7-R2 tier limits are inclusive
+       whole-balance fails: OracleU7.LEDGER-U7-R3 each period accrues once
+       whole-balance fails: OracleU7.LEDGER-U7-R3 pays per account on the close balances
+       whole-balance fails: OracleU7.LEDGER-U7-R3 posting shape and order
+       whole-balance fails: OracleU7.LEDGER-U7-R3 uses the close summary not the current balance
+U7   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 f7a41e1abd1a4444…, task.json sha/digest match yes/yes, digest sha256:92566630ab6a66ad…)
+U7   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U8   start: own tests                         expected PASS got PASS ok        (passed 11, failed 0)
+U8   start: visible tests                     expected FAIL got FAIL ok        (build failed (2 compiler errors))
+U8   reference: visible tests                 expected PASS got PASS ok        (passed 12, failed 0)
+U8   reference: oracle                        expected PASS got PASS ok        (passed 8, failed 0)
+U8   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 1b28bc7d080cb154…, task.json sha/digest match yes/yes, digest sha256:b9a8f6e1b8be0983…)
+U8   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+U9   start: own tests                         expected PASS got PASS ok        (passed 12, failed 0)
+U9   start: visible tests                     expected FAIL got FAIL ok        (build failed (16 compiler errors))
+U9   reference: visible tests                 expected PASS got PASS ok        (passed 16, failed 0)
+U9   reference: oracle                        expected PASS got PASS ok        (passed 12, failed 0)
+U9   wrong (accumulated): visible tests       expected PASS got PASS ok        (passed 16, failed 0)
+U9   wrong (accumulated): oracle              expected FAIL got FAIL ok        (passed 9, failed 3)
+       accumulated fails: OracleU9.LEDGER-U9-R3 statement balance converted from the native balance
+       accumulated fails: OracleU9.LEDGER-U9-R3 statement keeps the range and its errors
+       accumulated fails: OracleU9.LEDGER-U9-R3 total adds rounded lines not the rounded exact sum
+U9   ordo 1.17.0 admits contract              expected true  got true  ok        (sha256 6bbd65c55362e796…, task.json sha/digest match yes/yes, digest sha256:306a1c9539fced79…)
+U9   praxis 3.16.0 admits contract            expected true  got true  ok        (exit 0)
+
+RESULT: PASS (every expectation held)

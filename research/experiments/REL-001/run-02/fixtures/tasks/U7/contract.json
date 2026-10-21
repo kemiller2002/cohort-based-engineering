@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:55b80d2d71c178490ce3fa20e98dc8ab1c1ecc5f6b143e2debbb3fb080f00479",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/U7.md#LEDGER-U7-R1",
+        "originalId": "LEDGER-U7-R1",
+        "document": "requirements/U7.md",
+        "location": "L19",
+        "revision": "sha256:55b80d2d71c178490ce3fa20e98dc8ab1c1ecc5f6b143e2debbb3fb080f00479",
+        "contentDigest": "sha256:e81d2356acb6816cc3f767fd973fa865c89cbb0e587e7a8b21f6be7a449f7d49"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-U7-R1",
+        "COHORT-U7"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/U7.md#LEDGER-U7-R2",
+        "originalId": "LEDGER-U7-R2",
+        "document": "requirements/U7.md",
+        "location": "L36",
+        "revision": "sha256:55b80d2d71c178490ce3fa20e98dc8ab1c1ecc5f6b143e2debbb3fb080f00479",
+        "contentDigest": "sha256:b1a842555eca56d659940d8c66aa928095d72580878fe4221a87f54aa0fc7952"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-U7-MARGINAL-TIERS",
+        "VERIFY-U7-R2",
+        "COHORT-U7"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/U7.md#LEDGER-U7-R3",
+        "originalId": "LEDGER-U7-R3",
+        "document": "requirements/U7.md",
+        "location": "L53",
+        "revision": "sha256:55b80d2d71c178490ce3fa20e98dc8ab1c1ecc5f6b143e2debbb3fb080f00479",
+        "contentDigest": "sha256:819ed9c8f63a53d85a73d3a2c869811c9a80edb54e9573a9b9175f71820afa56"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-U7-R3",
+        "COHORT-U7"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-U7-MARGINAL-TIERS",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/U7.md#LEDGER-U7-R2"
+      ],
+      "dependsOn": [],
+      "justification": "binding rule in docs/design/interest.md"
+    },
+    {
+      "id": "VERIFY-U7-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U7.md#LEDGER-U7-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-U7-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U7.md#LEDGER-U7-R2"
+      ],
+      "dependsOn": [
+        "DEC-U7-MARGINAL-TIERS"
+      ]
+    },
+    {
+      "id": "VERIFY-U7-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/U7.md#LEDGER-U7-R3"
+      ],
+      "dependsOn": [
+        "DEC-U7-MARGINAL-TIERS"
+      ]
+    },
+    {
+      "id": "COHORT-U7",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/U7.md#LEDGER-U7-R1",
+        "requirements/U7.md#LEDGER-U7-R2",
+        "requirements/U7.md#LEDGER-U7-R3"
+      ],
+      "dependsOn": [
+        "DEC-U7-MARGINAL-TIERS"
+      ]
+    }
+  ]
+}
