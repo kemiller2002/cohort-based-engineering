@@ -27,8 +27,8 @@ Machine-readable index: [`evidence-index.json`](evidence-index.json) (schema `cb
 |---|---|---|
 | demonstrated-improvement | 3 | TE-H01, TE-H02, TE-H03 |
 | demonstrated-regression | 2 | TE-H04, TE-H07 |
-| inconclusive | 5 | TE-H05, TE-H06, TE-H08, TE-H09, TE-H10 |
-| implemented-unmeasured | 6 | TE-H11, TE-H12, TE-H13, TE-H14, TE-H15, TE-H19 |
+| inconclusive | 6 | TE-H05, TE-H06, TE-H08, TE-H09, TE-H10, TE-H19 |
+| implemented-unmeasured | 5 | TE-H11, TE-H12, TE-H13, TE-H14, TE-H15 |
 | proposed-unimplemented | 4 | TE-H16, TE-H17, TE-H18, TE-H20 |
 
 ## Comparable observations (same model: claude-opus-5-5)
@@ -82,7 +82,8 @@ Supporting raw observations:
   - TE-H14: cumulative usage attribution (EV-ROS-2026-A076), a validated measurement capability.
   - TE-H15: provider usage pacing, which spreads usage over the quota window rather than reducing it.
   - TE-H19: REL-001 F4 (one test run, derived completion arguments) shipped in Praxis 3.17.0
-    (PRAXIS-REL-012). Its only measurement is REL-001 run-02 arm D, which is in progress.
+    (PRAXIS-REL-012). Update 2026-10-21: run-02 H1 (D vs C) measured +2.3% cost (−4.8% to +12.1%), −0.2% tokens,
+    not distinguishable. Reclassified as inconclusive (measured, null).
 - **TE-H16 to TE-H20: proposed or absent.**
   - TE-H16: A023 is proposed.
   - TE-H17: A022 on main failed its target-repository gate.

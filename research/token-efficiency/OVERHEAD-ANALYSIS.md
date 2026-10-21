@@ -109,6 +109,18 @@ with parallel launches finding no warm prefix, but without per-request data it i
 > state as the protocol requires (for example, as a covariate or a sensitivity analysis). This file draws no conclusion
 > from it.
 
+> **Erratum (coordinator, 2026-10-21): superseded by measured data.**
+> - The 9-of-19 flag above is a heuristic: per-agent cache writes ≥ median + P/2, without transcripts. It was computed on
+>   an early snapshot (c8da63f), and the subset includes U6 two-agent runs.
+> - After run-02 completed, its owner checked all 88 confirmatory trials against the retained transcripts. The rule used:
+>   an agent's first request wrote more cache than it read; U6 excluded.
+> - Cold-prefix counts are balanced: A 2/20, B 2/20, C 2/20, D 3/20.
+> - Repricing first-request writes at the cache-read price changes no preregistered decision. D vs A goes from +35.5% to
+>   +43.9%, and D vs C from +2.3% to −1.1%.
+> - Source: `../experiments/REL-001/run-02/analysis/cache-sensitivity.json` (exploratory).
+> - The heuristic over-flags: about 47% here, against 9/80 under the measured rule. Use measured first-request data
+>   (REL-TOKEN-001) instead of this heuristic.
+
 ### 3.4 Repeated validation and test runs (measured counts)
 
 - **run-02 Echelon:** 27 agent-run full test runs and 17 boundary runs (verifier or validate-run) over 19 runs. The two U2

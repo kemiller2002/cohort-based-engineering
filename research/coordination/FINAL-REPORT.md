@@ -11,7 +11,17 @@ Date: 2026-10-20. Coordinator session `session_0174JuJ3F3WXwdPbjo3Pk5P7`. Pins a
   separate.
 - Every number is taken from a committed file. Missing metrics are marked unavailable.
 
-**Echelon has not been shown to be more efficient than bare Claude.** No valid controlled comparison of the two exists yet.
+**Echelon has not been shown to be more efficient than bare Claude.** The first valid controlled comparison went the
+other way.
+- REL-001 run-02 completed after this report was first drafted. It was preregistered, 88 trials, 0 exclusions (see
+  [`REPORT-run-02.md`](../experiments/REL-001/REPORT-run-02.md)).
+- **Optimized Echelon (D) cost +35.5% more than bare Claude (A)** per correct requirement (95% interval +24.9% to
+  +49.5%).
+- All four arms completed 39/39 requirements correctly. That ceiling means run-02 could measure cost but not the quality
+  benefit of verification.
+
+**Update 2026-10-21.** Run-02 is complete and merged on main. This report was revised to use its confirmatory results,
+REL-GATE-003's owner (praxis#280), and the measured cache-state check, which supersedes the heuristic §4 figure.
 
 | Workstream | Deliverable | Tokens (worker) |
 |---|---|---|
@@ -48,7 +58,8 @@ file names, and that inferability is recorded as a blinding-leak finding for A02
 - **TE-H15:** provider usage pacing. It redistributes usage rather than reducing it.
 - **TE-H19:** REL-001 F4 (one verifier run, derived completion arguments), shipped in Praxis 3.17.0.
   - The code works: Worker A measured 1 verifier run and 0 `validate-run` calls.
-  - Its token effect is measured only by run-02 arm D, which is in progress.
+  - **Now measured (run-02 H1, D vs C): +2.3% cost (−4.8% to +12.1%), −0.2% tokens. No detectable saving.** TE-H19 is
+    reclassified as inconclusive (measured, null).
 - **TE-H11:** orchestration-waste guards, from the A021 and A024 lessons.
 
 ## 3. Where does the current workflow spend the most tokens?
@@ -70,7 +81,7 @@ Run-02 Echelon arms are pooled and exploratory. Run-01 D is shown in parentheses
 |---|---|---|
 | Caching (read + write) | 99.96% of tokens, 98.5% of cost (98.7%) | measured; output is a lower bound |
 | Repeated context (prefix re-read) | 66.9% of cache reads, 24.0% of cost (74.5% / 30.8%) | derived |
-| Avoidable cache misses | 24% of cost (7%) | inferred |
+| Avoidable cache misses | **superseded.** The heuristic gave 24% (7%). The measured rule finds cold prefixes in 9 of 80 trials, balanced across arms, and no decision changes (`run-02/analysis/cache-sensitivity.json`) | measured by run-02 owner |
 | Verification | 9.1% of tokens (est.), 10.8% of elapsed time | estimated / measured |
 | Coordination | 10.0% of tokens (11.1%) | estimated |
 | Completion | 9.1% of tokens (est.), 1.0% of elapsed time | estimated / measured |
@@ -127,10 +138,19 @@ The ownership, readiness and evidence-binding mechanisms from run-01 removed who
 | F6 rollout gate | **FAIL** |
 
 Consequences for experiments:
-- **Run-02 arm D** was exposed to the PROBE-3 and PROBE-4 attacks, which its scoring would not have detected. No attempt
-  is observed in its committed data.
-- Worker D also found a cache-state confound in run-02: 9 of 19 Echelon trials look cold-started, unevenly across arms.
-- Both points went to the run-02 owner as validity notes. Amendments are their decision.
+- **Run-02 arm D** was exposed to the PROBE-3 and PROBE-4 attacks. Its owner then ran a post-hoc integrity check on all
+  47 C and D trials, pilots included (`run-02/analysis/integrity-d.json`). All 47 are intact:
+  - only host paths were used for the authority, contract and verifier;
+  - `ros.json` is unchanged from the base commit;
+  - no environment overrides were set.
+
+  Run-02's results therefore stand. Its report now states that attested mode resists forgery only with a host-controlled
+  trust root.
+- **The cache-state concern is resolved.** Measured on all 88 trials, cold prefixes are balanced, and the sensitivity
+  analysis changes no decision.
+- **REL-GATE-003 is owned** by the run-02 session. The fix is in praxis#280 (draft).
+- **REL-GATE-004 is unowned.** The run-02 owner declined it and asked that any fix branch from main after #280 merges,
+  because both touch `FileWorkClaims.fs` and `FileDerivedCompletion.fs`.
 - **The integration gate for optimized-treatment trials is closed.** Run-03 must not start until all of the following hold:
   - REL-GATE-003 and REL-GATE-004 are fixed and released;
   - the arm-D pins are frozen;
@@ -139,8 +159,16 @@ Consequences for experiments:
 
 ## 8. What is the next experiment needed to establish Echelon's economic advantage?
 
-1. **Let run-02 finish**, then run its preregistered analysis. It is the first four-arm comparison, but its arm D carries
-   the exposures above.
+1. **Run-02 is done.** On tasks every arm solves, Echelon is a pure cost:
+   - D vs A: +35.5%;
+   - D vs C: +2.3%, not distinguishable;
+   - directives alone (B vs A): +21.2%.
+
+   The only reliability difference is coordination. Duplicate owners on the two-agent task were 0 in D, 1 in C, and
+   2 each in A and B (2 runs per arm, exploratory).
+
+   An economic advantage can therefore only come from tasks where unverified work fails, or from multi-agent
+   coordination. Neither was exercised enough to price.
 2. **Run REL-001 run-03** (draft ready).
    - Tasks: 8 new tasks with 15 requirement units, including tasks where an unverified completion is wrong, 72 new
      hidden oracle tests and 13 trap variants.
@@ -156,11 +184,11 @@ Consequences for experiments:
 | # | P | Item | Where | Evidence |
 |---|---|---|---|---|
 | 1 | P1 / gate | REL-GATE-004: trust root from a protected source (base-branch `ros.json`, host-fixed authority) | praxis inbox (#279) | `../reliability/evidence/`, readiness-report F1 |
-| 2 | P1 / gate | REL-GATE-003: label attested or unattested; `requireVerifiedCompletion` implies attestation | praxis inbox (queued, unclaimed) | readiness-report PROBE-2, `gate-report.json` |
+| 2 | P1 / gate | REL-GATE-003: label attested or unattested; `requireVerifiedCompletion` implies attestation | **in progress: praxis#280** (run-02 session) | readiness-report PROBE-2, `gate-report.json` |
 | 3 | P1 | REL-TOKEN-001: per-request usage ledger | praxis inbox (#279) | OVERHEAD-ANALYSIS §1, §5.1 |
 | 4 | P1 | REL-TOKEN-002: final output tokens | praxis inbox (#279) | OVERHEAD-ANALYSIS §5.2 |
-| 5 | P1 | Record per-agent cache state in observations; retain trial transcripts | run-03 harness (done); run-02 (owner's call) | OVERHEAD-ANALYSIS §3.3 |
-| 6 | P1 | Move the F5 price table to cohort main | cohort (with run-02 merge) | readiness-report F5 |
+| 5 | P1 | Record per-agent cache state in observations; retain trial transcripts | run-03 harness (done); run-02 (done post hoc) | `run-02/analysis/cache-sensitivity.json` |
+| 6 | P1 | F5 price table on cohort main | **done** (`research/pricing/`, merged with run-02) | readiness-report F5 |
 | 7 | P2 | `verify` as the final agent test run, with a failure excerpt | Praxis brief and verify output | OVERHEAD-ANALYSIS §3.4, §5.4 |
 | 8 | P4/P5 | REL-TOKEN-003: `praxis work finish` | praxis inbox (#279) | OVERHEAD-ANALYSIS §5.6 |
 | 9 | P1 / gate | F6: PRAXIS-REL-006 rollout gate, after items 1–2 | praxis queue | readiness-report F6 |
