@@ -1,8 +1,9 @@
 # ARCH-001 protocol: Echelon architectural correctness
 
-**Status:** PREREGISTRATION DRAFT. It becomes frozen at the commit that records the pins in §11 and the sealed-archive
-digest in §6. Every change after the freeze is a dated amendment in §13. The pilot (§10) runs on the frozen
-instruments, and its results are excluded from confirmatory analysis.
+**Status:** PREREGISTERED. Instruments frozen at 2026-10-21T10:13:56Z (`pins.json`, `sealed/SEAL.json`) in the commit
+titled "ARCH-001 PREREGISTRATION". Every later change is a dated amendment in §13. The pilot (§10) runs on these
+frozen instruments, and its results are excluded from confirmatory analysis. The confirmatory order is generated
+after the pilot by the §9 rule and committed as an amendment before the first confirmatory trial.
 
 **Owner:** coordinator session `session_01E9jW5aZuFTf7HzifRjcs7y`, branch `claude/echelon-architectural-correctness-m4glhq`.
 
@@ -148,9 +149,10 @@ The full list is in SCORING.md and `scoring-spec.json`.
   a policy, contract or probe file inside the evaluated repository.
 - **Sealed material.** Oracle tests, probes, reference solutions and private task metadata are kept in
   `/home/user/arch001-sealed`, outside every repository. At the freeze, an encrypted archive of the sealed tree is
-  committed (`sealed/arch001-sealed.tar.gz.enc`, AES-256-CBC with PBKDF2) together with the plaintext tarball's
-  sha256 and a per-file sha256 manifest. The key is published with the results, so anyone can verify that the
-  oracle was not changed after the freeze.
+  committed (`sealed/arch001-sealed.tar.gz.enc`, AES-256-CBC with PBKDF2, 180 files). `sealed/SEAL.json` records the
+  plaintext tarball's sha256 and the sha256 of the per-file manifest. The manifest itself stays unpublished until the
+  results, because its file names would hint at the trap locations. The key and manifest are published with the
+  results, so anyone can verify that the oracle was not changed after the freeze.
 - **Agents cannot change the oracle, the policy or the verifier.**
   - OS-level separation (a different Unix user) was unavailable: the environment's policy refused it.
   - Agents therefore run as the same user, and two controls compensate. Every tool call is scanned for access to
@@ -252,7 +254,7 @@ the hypotheses, the metrics or the sample-size rule.
 
 ## 11. Version pins (frozen at preregistration)
 
-Filled in by the freeze commit (`pins.json`):
+Recorded in `pins.json` (freeze 2026-10-21T10:13:56Z):
 
 - cohort-based-engineering commit;
 - ordo, praxis and dokimos commits;
