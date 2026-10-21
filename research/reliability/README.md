@@ -58,3 +58,12 @@ Machine-readable result: [`readiness-report.json`](readiness-report.json) (`cbe.
 4. **Run-02 harness.** Add post-hoc checks for the receipt keyid, the effective authority path and `ros.json`
    edits. Run the verifier under a separate uid.
 5. **Price table.** `research/pricing/` exists only on the run-02 branch. It is needed on main once that branch merges.
+
+## Status update 2026-10-21 (after this evaluation)
+This report evaluates Praxis 3.17.0 and Dokimos 0.7.0. Its statuses are not rewritten. Since then:
+- **REL-GATE-003:** fixed in praxis#280 and released in Praxis 3.18.0.
+- **REL-GATE-004** (`F1-agent-cannot-fabricate-attestation`): fixed in praxis#279 (`e29e49d2`), merged but not yet
+  released. Results: 2350/2350 tests, PROBE-3 → `POLICY_CHANGED`, PROBE-4 → `UNTRUSTED_AUTHORITY`.
+- **To flip either condition to PASS:** re-run `scripts/probes.sh` and the gate script, with the
+  `trustedVerifierKeyIds` pin, on the released binary.
+- **F6** (PRAXIS-REL-006 rollout gate) is still open.

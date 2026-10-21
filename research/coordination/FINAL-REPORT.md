@@ -150,8 +150,15 @@ Consequences for experiments:
   analysis changes no decision.
 - **REL-GATE-003's fix is merged** (praxis#280, run-02 session). It still counts as FAIL for gating until it is
   released and the cohort gate cases pass on the released binary.
-- **REL-GATE-004 is unowned.** The run-02 owner declined it and asked that any fix branch from main after #280 merges,
-  because both touch `FileWorkClaims.fs` and `FileDerivedCompletion.fs`.
+- **REL-GATE-004's fix is merged** (praxis#279, `e29e49d2`, this session, user-approved).
+  - Completion policy is read from the protected branch, which is located from `origin/HEAD` or `origin/main`, never
+    from the agent's copy.
+  - Attested mode trusts only verifier keyids pinned in the protected `workProtocol.trustedVerifierKeyIds`.
+  - Results: 2350/2350 tests; PROBE-3 → `POLICY_CHANGED`, PROBE-4 → `UNTRUSTED_AUTHORITY`.
+  - It still counts as FAIL for gating until it is released and the cohort gate cases pass on the released binary.
+  - **Breaking:** attested repositories must pin their verifier keyid. Run-03, the gate script and C8 need that pin.
+  - **Remaining limit (documented):** an agent able to rewrite `origin/HEAD`, `origin/main` or history still defeats
+    this, so host-side audit stays required.
 - **The integration gate for optimized-treatment trials is closed.** Run-03 must not start until all of the following hold:
   - REL-GATE-003 and REL-GATE-004 are fixed and released;
   - the arm-D pins are frozen;
@@ -184,7 +191,7 @@ Consequences for experiments:
 
 | # | P | Item | Where | Evidence |
 |---|---|---|---|---|
-| 1 | P1 / gate | REL-GATE-004: trust root from a protected source (base-branch `ros.json`, host-fixed authority) | praxis inbox (#279) | `../reliability/evidence/`, readiness-report F1 |
+| 1 | P1 / gate | REL-GATE-004: trust root from a protected source (base-branch `ros.json`, pinned verifier keyids) | **merged (praxis#279); release and gate re-run pending** | `../reliability/evidence/`, readiness-report F1 |
 | 2 | P1 / gate | REL-GATE-003: label attested or unattested; `requireVerifiedCompletion` implies attestation | **merged to praxis main (#280); release 3.18.0 pending; gate cases to be re-run on the release** | readiness-report PROBE-2, `gate-report.json` |
 | 3 | P1 | REL-TOKEN-001: per-request usage ledger | praxis inbox (#279) | OVERHEAD-ANALYSIS §1, §5.1 |
 | 4 | P1 | REL-TOKEN-002: final output tokens | praxis inbox (#279) | OVERHEAD-ANALYSIS §5.2 |
@@ -197,7 +204,7 @@ Consequences for experiments:
 | 11 | P5 | Warm one agent, then fan out | orchestrator | OVERHEAD-ANALYSIS §5.7 |
 | 12 | P5 | Complete and unseal A022; fix the label leak | praxis experiment owners | HISTORICAL-EVIDENCE TE-H05, TE-H06 |
 | 13 | P5 | Default to continuity for high-affinity groups, keeping the per-member criterion check | Praxis planner | TE-H01–H03 |
-| 14 | — | Freeze run-03 pins, do the fairness review, commit the preregistration, then the pilot | cohort | run-03 README G1–G8 |
+| 14 | — | Freeze run-03 pins, do the fairness review, commit the preregistration, then the pilot. First add the `trustedVerifierKeyIds` pin to the run-03 harness (start the verifier before building the repo) and have X6 compare `verifierKeyIds` with `run.json verifier.keyId` | cohort | run-03 README G1–G8; praxis#279 |
 | 15 | P6 | Adaptive routing: **not started**; it waits on run-02 and run-03 evidence | — | — |
 
 Not covered (repositories not attached): `research-documents` (CONSTRUCT-008 raw usage, TE-H08) and `construct-010-trials`.
