@@ -64,9 +64,9 @@ let barChart name title subtitle unitLabel (value: string -> float option) (fmt:
             let label = sprintf "<text class=\"t1\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"end\">%s</text>" (left - 8) (y + 16) (esc armNames[a])
             match value a with
             | Some v ->
-                let bw = max 2.0 (plotW * v / vmax)
+                let bw = if v = 0.0 then 0.0 else max 2.0 (plotW * v / vmax)
                 [ label
-                  sprintf "<rect class=\"s%d\" x=\"%d\" y=\"%d\" width=\"%s\" height=\"18\" rx=\"4\"/>" slot[a] left (y + 3) (f1 bw)
+                  if bw = 0.0 then "" else sprintf "<rect class=\"s%d\" x=\"%d\" y=\"%d\" width=\"%s\" height=\"18\" rx=\"4\"/>" slot[a] left (y + 3) (f1 bw)
                   sprintf "<text class=\"t2\" x=\"%s\" y=\"%d\" font-size=\"12\">%s</text>" (f1 (float left + bw + 6.0)) (y + 16) (esc (fmt v)) ]
             | None -> [ label; sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"12\">unavailable</text>" (left + 4) (y + 16) ])
         |> List.concat
@@ -117,6 +117,14 @@ barChart "3-architectural-violations.svg" "Architectural violations at the final
 
 // 4. Error propagation depth: origin x arm grid of depth numbers
 let origins = present |> List.collect (fun a -> armData a |> Option.map (fun n -> items n "propagation" |> List.map (fun p -> p["origin"].GetValue<string>())) |> Option.defaultValue []) |> List.distinct
+/// Optional manual inspection beside analysis.json: matches judged not to be propagation (the computed depth is kept).
+let notPropagation =
+    let path = Path.Combine(Path.GetDirectoryName(Path.GetFullPath fsi.CommandLineArgs[1]), "propagation-adjudication.json")
+    if File.Exists path then
+        items (JsonNode.Parse(File.ReadAllText path)) "entries"
+        |> List.filter (fun e -> e["verdict"].GetValue<string>() = "not-propagation")
+        |> List.map (fun e -> e["arm"].GetValue<string>(), e["origin"].GetValue<string>())
+    else []
 let propChart () =
     let left, top, cw, rh = 230, 80, 64, 30
     let w = left + cw * present.Length + 30
@@ -129,41 +137,49 @@ let propChart () =
             :: (present |> List.mapi (fun i a ->
                 let d = armData a |> Option.bind (fun n -> items n "propagation" |> List.tryFind (fun p -> p["origin"].GetValue<string>() = o)) |> Option.bind (fun p -> num p "depth")
                 let cx = left + i * cw + cw / 2
+                let rejected = notPropagation |> List.filter ((=) (a, o)) |> List.length |> decimal
                 match d with
+                | Some v when v > 0m && rejected > 0m ->
+                    sprintf "<text class=\"t2\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"middle\">%M → %M*</text>" cx (y + 18) v (max 0m (v - rejected))
                 | Some v when v > 0m -> sprintf "<rect class=\"s%d\" x=\"%d\" y=\"%d\" width=\"%s\" height=\"16\" rx=\"4\"/><text class=\"t1\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"middle\">%M</text>" slot[a] (cx - 20) (y + 5) (f1 (min 40.0 (8.0 * float v))) cx (y + 18) v
                 | Some _ -> sprintf "<text class=\"t2\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"middle\">0</text>" cx (y + 18)
                 | None -> sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\" text-anchor=\"middle\">n/a</text>" cx (y + 18))))
         |> List.concat
-    write "4-error-propagation-depth.svg" (svg w h "Error propagation depth" "Later units whose failures or decisions trace to the origin (METRICS.md section 5)" (header @ rows) "n/a = origin not reached (chain stopped earlier).")
+    write "4-error-propagation-depth.svg" (svg w h "Error propagation depth" "Later units whose failures or decisions trace to the origin (METRICS.md section 5)" (header @ rows) (if List.isEmpty notPropagation then "n/a = origin not reached (chain stopped earlier)." else "a → b*: a computed by lexical match, b after inspection (propagation-adjudication.json)."))
 propChart ()
 
-// 5. Verification cost vs escape rate: one labelled point per arm
-let scatter name title subtitle (xs: string -> float option) (ys: string -> float option) xlab ylab note =
-    let w, h, left, top, pw, ph = 640, 400, 70, 70, 500, 260
-    let pts = present |> List.choose (fun a -> match xs a, ys a with Some x, Some y -> Some(a, x, y) | _ -> None)
-    let xmax = pts |> List.map (fun (_, x, _) -> x) |> fun v -> if List.isEmpty v then 1.0 else max 1e-9 (List.max v * 1.15)
-    let ymax = pts |> List.map (fun (_, _, y) -> y) |> fun v -> if List.isEmpty v then 1.0 else max 0.05 (List.max v * 1.15)
-    let px x = float left + float pw * x / xmax
-    let py y = float (top + ph) - float ph * y / ymax
-    let axes = [ sprintf "<line class=\"axis\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>" left (top + ph) (left + pw) (top + ph)
-                 sprintf "<line class=\"axis\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>" left top left (top + ph)
-                 sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\">%s</text>" (left + pw - 200) (top + ph + 30) (esc xlab)
-                 sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\">%s</text>" left (top - 10) (esc ylab)
-                 sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"10\" text-anchor=\"end\">%s</text>" (left - 6) (top + 4) (f1 ymax)
-                 sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"10\" text-anchor=\"end\">0</text>" (left - 6) (top + ph) ]
-    let marks = pts |> List.collect (fun (a, x, y) ->
-                    [ sprintf "<circle class=\"s%d ring\" cx=\"%s\" cy=\"%s\" r=\"6\"><title>%s: %s, %s</title></circle>" slot[a] (f1 (px x)) (f1 (py y)) armNames[a] (f1 x) (f1 y)
-                      sprintf "<text class=\"t1\" x=\"%s\" y=\"%s\" font-size=\"12\">%s</text>" (f1 (px x + 9.0)) (f1 (py y + 4.0)) (esc armNames[a]) ])
-    let missing = present |> List.filter (fun a -> not (pts |> List.exists (fun (b, _, _) -> b = a)))
-    let miss = if List.isEmpty missing then [] else [ sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\">no value: %s</text>" (left + 10) (top + 14) (String.concat ", " missing) ]
-    write name (svg w h title subtitle (axes @ marks @ miss) note)
-
-let verificationCost a =
-    armData a |> Option.map (fun n -> perUnit a |> List.filter (fun u -> num u "attempts" |> Option.exists (fun k -> k > 1m)) |> List.length |> float)
+// 5. Verification cost vs escape rate
 let gateSeconds a = armData a |> Option.bind (fun n -> num n "gateMs") |> Option.map (fun ms -> float ms / 1000.0)
 let escapeRate a = armData a |> Option.bind (fun n -> match num n "units", num n "unitFailures" with Some u, Some f when u > 0m -> Some(float f / float u) | _ -> None)
-scatter "5-verification-cost-vs-escape.svg" "Verification cost vs escaped errors" "Host gate time per arm against the share of units not accepted"
-    gateSeconds escapeRate "gate CPU seconds (host)" "share of units not accepted" "A, B and C have no gate (0 s). Model cost of in-loop controls is in figure 1."
+/// One row per arm: a bar of host gate time with the arm's escaped-error count written beside it. With every escape
+/// rate at 0 there is no trade-off to plot as a scatter (points would coincide on the x axis), so the escape rate is
+/// stated in text, never drawn as an invented position.
+let costVsEscape () =
+    let w, rowH, left, top = 640, 30, 130, 70
+    let h = top + rowH * present.Length + 50
+    let vmax = present |> List.choose gateSeconds |> List.fold max 1.0
+    let plotW = float (w - left - 200)
+    let escaped a = armData a |> Option.map (fun n -> sprintf "escaped %s/%s" (num n "unitFailures" |> Option.map string |> Option.defaultValue "?") (num n "units" |> Option.map string |> Option.defaultValue "?"))
+    let rows =
+        present |> List.mapi (fun i a ->
+            let y = top + i * rowH
+            let label = sprintf "<text class=\"t1\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"end\">%s</text>" (left - 8) (y + 16) (esc armNames[a])
+            let esc' = escaped a |> Option.defaultValue "escape unavailable"
+            match gateSeconds a with
+            | Some s when s > 0.0 ->
+                let bw = plotW * s / vmax
+                [ label
+                  sprintf "<rect class=\"s%d\" x=\"%d\" y=\"%d\" width=\"%s\" height=\"18\" rx=\"4\"><title>%s: %s s, %s</title></rect>" slot[a] left (y + 3) (f1 bw) armNames[a] (f1 s) esc'
+                  sprintf "<text class=\"t2\" x=\"%s\" y=\"%d\" font-size=\"12\">%s s · %s</text>" (f1 (float left + bw + 6.0)) (y + 16) (f1 s) (esc esc') ]
+            | _ -> [ label; sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"12\">no gate · %s</text>" (left + 4) (y + 16) (esc esc') ])
+        |> List.concat
+    let axis = [ sprintf "<line class=\"axis\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>" left (top - 4) left (top + rowH * present.Length)
+                 sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\">gate CPU seconds (host), total over the chain</text>" left (top - 10) ]
+    let allZero = present |> List.forall (fun a -> escapeRate a = Some 0.0)
+    let note = if allZero then "Escape rate is 0 in every arm, so no cost-versus-escape trade-off exists in this run. Model cost: figure 1."
+               else "Escaped = units not accepted by the hidden oracle. Model cost: figure 1."
+    write "5-verification-cost-vs-escape.svg" (svg w h "Verification cost vs escaped errors" "Host gate time per arm, with the units that escaped (not accepted)" (axis @ rows) note)
+costVsEscape ()
 
 // 6. Survival by arm: step lines from the Kaplan-Meier steps
 let survival () =
@@ -194,7 +210,7 @@ survival ()
 
 // 7. Context size vs error: units as points, accepted vs not (two classes)
 let ctxChart () =
-    let w, h, left, top, pw, ph = 640, 380, 80, 70, 500, 240
+    let w, h, left, top, pw, ph = 640, 380, 110, 70, 480, 240
     let us = present |> List.collect (fun a -> perUnit a |> List.choose (fun u -> num u "contextLast" |> Option.filter (fun c -> c > 0m) |> Option.map (fun c -> a, float c, bool u "accepted")))
     let xmax = us |> List.map (fun (_, c, _) -> c) |> fun v -> if List.isEmpty v then 1.0 else List.max v * 1.1
     let px c = float left + float pw * c / xmax
@@ -205,9 +221,12 @@ let ctxChart () =
     let labels = [ sprintf "<text class=\"t2\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"end\">accepted</text>" (left - 8) (top + 100)
                    sprintf "<text class=\"t2\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"end\">not accepted</text>" (left - 8) (top + 200)
                    sprintf "<line class=\"axis\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>" left (top + ph) (left + pw) (top + ph)
-                   sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\">prompt tokens at the unit's last request (0 .. %s)</text>" left (top + ph + 28) (f1 xmax) ]
+                   sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\">prompt tokens at the unit's last request</text>" left (top + ph + 34) ]
+    let ticks = [ 0.0 .. 50000.0 .. xmax ] |> List.map (fun v ->
+                    sprintf "<line class=\"axis\" x1=\"%s\" y1=\"%d\" x2=\"%s\" y2=\"%d\"/><text class=\"t3\" x=\"%s\" y=\"%d\" font-size=\"10\" text-anchor=\"middle\">%sk</text>" (f1 (px v)) (top + ph) (f1 (px v)) (top + ph + 4) (f1 (px v)) (top + ph + 16) (f1 (v / 1000.0)))
+    let none = if us |> List.exists (fun (_, _, ok) -> not ok) || List.isEmpty us then [] else [ sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"11\">no unit was not accepted</text>" (left + 10) (top + 200) ]
     let empty = if List.isEmpty us then [ sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"12\">no context measurements</text>" (left + 10) (top + 40) ] else []
-    write "7-context-size-vs-error.svg" (svg w h "Context size and unit outcome" "Each dot is one unit; vertical jitter only separates dots" (labels @ marks @ empty) "Observational: context size grows with position and task, so no causal reading.")
+    write "7-context-size-vs-error.svg" (svg w h "Context size and unit outcome" "Each dot is one unit; vertical jitter only separates dots" (labels @ ticks @ marks @ none @ empty) "Observational: context size grows with position and task, so no causal reading.")
 ctxChart ()
 
 // 8. Adaptive escalation frequency and cost (Arm E)
@@ -222,7 +241,7 @@ let escalation () =
                  let y = top + i * rowH
                  let bw = 380.0 * float (count t) / float maxc
                  [ sprintf "<text class=\"t1\" x=\"%d\" y=\"%d\" font-size=\"12\" text-anchor=\"end\">%s</text>" (left - 8) (y + 17) t
-                   sprintf "<rect class=\"s5\" x=\"%d\" y=\"%d\" width=\"%s\" height=\"20\" rx=\"4\"/>" left (y + 3) (f1 (max 2.0 bw))
+                   (if count t = 0 then "" else sprintf "<rect class=\"s5\" x=\"%d\" y=\"%d\" width=\"%s\" height=\"20\" rx=\"4\"/>" left (y + 3) (f1 (max 2.0 bw)))
                    sprintf "<text class=\"t2\" x=\"%s\" y=\"%d\" font-size=\"12\">%d units, $%s agent cost</text>" (f1 (float left + bw + 8.0)) (y + 17) (count t) ((cost t).ToString("0.00", Globalization.CultureInfo.InvariantCulture)) ])
                |> List.concat
     let empty = if List.isEmpty us then [ sprintf "<text class=\"t3\" x=\"%d\" y=\"%d\" font-size=\"12\">Arm E did not run</text>" left top ] else []

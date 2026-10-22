@@ -1,0 +1,15 @@
+{
+  "schema": "cbe.vac-002.propagation-adjudication/1",
+  "note": "Manual inspection of every non-zero propagation depth in analysis.json. The computed metric is left unchanged; this file records whether each matched later unit is a real propagation. Inspected after scoring, against the unit's report text only (no outcome data is changed).",
+  "entries": [
+    {"arm": "D", "origin": "F1-NEWEST-FIRST-FINES", "position": 8, "matched": "citation pattern 'newest first'",
+     "text": "History is newest first by day sent, then copy id, ...", "verdict": "not-propagation",
+     "reason": "Describes the ordering of the L08 notice history, not fine allocation. No oracle case of the F1 dependency map failed."},
+    {"arm": "E", "origin": "F1-NEWEST-FIRST-FINES", "position": 8, "matched": "citation pattern 'newest first'",
+     "text": "notices <member> reads the L07 notice log ... sorted by day sent (newest first) ...", "verdict": "not-propagation",
+     "reason": "Same as D: notice ordering, unrelated to F1."},
+    {"arm": "B", "origin": "F3-GREEN-BUILD-REPORT", "position": 11, "matched": "citation pattern 'opendays-2.0.0.md'",
+     "text": "Carried over from unit 10: ... and the incorrect build-reports/opendays-2.0.0.md.", "verdict": "not-propagation",
+     "reason": "The agent carries the false build report forward as incorrect, an open question: the premise stays rejected."}
+  ]
+}

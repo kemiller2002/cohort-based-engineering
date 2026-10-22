@@ -67,48 +67,64 @@ It exercises stage, turn, gate, repair, verified state, the dependency change, c
 
 ## 5. The pilot
 
-Seal or move the plaintext oracle out of reach, then start one chain per arm, all concurrently. The launch order
-comes from `random.Random(20261022).sample`:
+Commit and freeze, then run from a worktree of the freeze commit, so that no edit can reach a running chain. Move
+the plaintext oracle out of reach first. `pilot.sh` starts one chain per arm, all concurrently, in the order
+`random.Random(20261022).sample` gives:
 
 ```sh
-TASKS="L01 L02 L03 L04 L05 L06 L07 L08 L09 L10 L11 L12"
-for arm in $(python3 -c 'import random; print(*random.Random(20261022).sample(list("ABCDEF"),6))'); do
-  harness/vac2.sh setup P1 $arm
-  nohup harness/vac2.sh chain P1 $arm $TASKS > /home/user/.vac2-state/P1-$arm.log 2>&1 &
-done
+git worktree add /home/user/.vac2-frozen <freeze-commit>          # P1 used 0011132
+rm -rf /home/user/.vac2-sealed                                     # agents must not reach the oracle
+VAC2_RESULTS=$PWD/results /home/user/.vac2-frozen/research/experiments/VAC-002/harness/pilot.sh P1
 ```
 
-**Budget.** After each unit boundary, total the `cli-estimate` cost:
+**Budget.** After each unit boundary, run:
 
 ```sh
-jq -s 'map(.usage.costUsdCli // 0) | add' results/P1/*/turn-*.json
+harness/budget.sh results P1 95
 ```
 
-At $95, create `/home/user/.vac2-state/P1/STOP`. Every chain then stops before its next unit (`BUDGET.md`).
+It totals the cost per session, as the last cumulative `total_cost_usd` (amendment A1). Never sum `costUsdCli` over
+turns. At $95 it creates `/home/user/.vac2-state/P1/STOP`, and every chain stops before its next unit (`BUDGET.md`).
 
 ## 6. Scoring and analysis
 
+When every chain has ended, `score-all.sh` does the whole step:
+
+1. it unseals the hidden material;
+2. it scores every unit's final attempt, and attempt 1 where a repair happened;
+3. it writes `analysis.json`, `phase-g.json`, the figures and `decision-dataset.jsonl`.
+
+The exploratory contrasts are a separate step.
+
 ```sh
-# unseal (section 2), then score every unit's final attempt and, for gated arms, attempt 1
-for arm in A B C D E F; do for u in $(seq 1 12); do
-  harness/vac2.sh score P1 $arm $u
-  [ -f results/P1/$arm/gate-$u-2.json ] && harness/vac2.sh score P1 $arm $u 1
-done; done
+harness/score-all.sh P1 /root/.vac2-key     # after the run, the key is also at sealed/vac002-sealed.key
+dotnet fsi --quiet --exec harness/analyze.fsx contrasts results P1 fixture
+```
+
+The equivalent individual steps:
+
+```sh
+harness/vac2.sh score P1 ARM UNIT [ATTEMPT]
 dotnet fsi --quiet --exec harness/analyze.fsx summary results P1 fixture /home/user/.vac2-sealed
+dotnet fsi --quiet --exec harness/analyze.fsx contrasts results P1 fixture
+dotnet fsi --quiet --exec harness/analyze.fsx phaseg /home/user/.vac2-state results P1 fixture
 dotnet fsi --quiet --exec harness/plots.fsx results/P1/analysis.json results/P1/figures
 dotnet fsi --quiet --exec harness/analyze.fsx dataset results P1
 ```
 
 ## 7. Layer 3
 
+The bundle is built from the arm workspaces (`/home/user/vac-work/P1/ARM`), which hold each unit's head commit. The
+mapping from blinded key to arm stays outside the bundle.
+
 ```sh
-dotnet fsi --quiet --exec harness/analyze.fsx blind results P1 /home/user/vac-work /home/user/.vac2-state/layer3-P1 20261022 /home/user/.vac2-state/layer3-mapping.json
-harness/layer3/review.sh /home/user/.vac2-state/layer3-P1 R1
-harness/layer3/review.sh /home/user/.vac2-state/layer3-P1 R2
-python3 -I ../VAC-001/harness/adjudicate.py agree /home/user/.vac2-state/layer3-P1
-# R3 adjudicates the disagreements: review.sh BUNDLE R3 BUNDLE/disagreements-items.jsonl
-python3 -I ../VAC-001/harness/adjudicate.py final /home/user/.vac2-state/layer3-P1 /home/user/.vac2-state/layer3-mapping.json results/P1/decision-dataset.jsonl
+dotnet fsi --quiet --exec harness/analyze.fsx blind results P1 /home/user/vac-work /home/user/.vac2-state/layer3-P1 20261022 /home/user/.vac2-state/layer3-P1-mapping.json
+harness/layer3/review.sh /home/user/.vac2-state/layer3-P1 R1 &
+harness/layer3/review.sh /home/user/.vac2-state/layer3-P1 R2 &
+wait
 ```
+
+Agreement, R3 adjudication and the final labels: see `results/P1/layer3/README.md` for the exact commands run.
 
 ## 8. Confirmatory runs
 
@@ -116,5 +132,6 @@ Confirmatory runs are not authorized without a spending ceiling. To run them:
 
 1. Build L13–L25 (and the 50- and 100-change extensions) the same way, following `TASK-CORPUS.md` §4.
 2. Re-run the self-check and the freeze.
-3. Set the replicate count from `PILOT-RESULTS.md` §5.
+3. Run a second pilot first (`RECOMMENDATIONS.md` R-EXP-4), and set the replicate count from its results by
+   `PREREGISTRATION.md` §3 (for this corpus: `PILOT-RESULTS.md` §8).
 4. Run `vac2.sh chain R25 ARM ...` per replicate.

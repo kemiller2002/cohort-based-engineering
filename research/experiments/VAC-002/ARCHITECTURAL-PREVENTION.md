@@ -30,7 +30,7 @@ counted as "escaped". Neither had any.
 
 **Rates.** Prevention, detection and correction rates are **undefined**, because no invalid implementation was ever
 proposed. The escaped-error rate is **0/72**. With zero events, the upper 95% bound on the per-unit violation
-probability is 3.1% pooled over 72 units, and 22% for any single arm's 12 units.
+probability is 4.1% pooled over 72 units, and 22% for any single arm's 12 units.
 
 **What Ordo did prevent.** It refused the two contracts whose requirements contradict other requirements or an
 accepted decision (L04, L08). That is a *decision* conflict, not an architectural violation. And A and B surfaced the

@@ -58,6 +58,37 @@ engineering time, not agent-trial spend, but it is the gating cost of Phase E.
 ## 5. Projected confirmatory budget (filled after the pilot; see `PILOT-RESULTS.md`)
 
 Computed by `PREREGISTRATION.md` §3 from the pilot's failure proportions, ICC and mean cost per unit per arm.
-Reported in `PILOT-RESULTS.md` §5 and copied here:
+Reported in `PILOT-RESULTS.md` §8 and copied here.
 
-*(pending the pilot)*
+**Pilot spend (measured).**
+
+| Item | Cost |
+|---|---|
+| Agent model cost, 72 units (cli-estimate, A1) | $43.82 |
+| Layer 3 reviewers | see `results/P1/layer3/summary.json` |
+
+The pilot stayed under the $95 stop and the $120 ceiling.
+
+**Inputs.** All pilot failure proportions were 0, floored to p = 0.05. ρ could not be estimated, so the default 0.05
+is used.
+
+**Units per arm required:**
+
+| Hypothesis and effect | 25-unit chains | 50-unit chains | 100-unit chains |
+|---|---|---|---|
+| H1 / H2 / H7 (d = 0.10) | 129 | 203 | 349 |
+| **H3 and H4 (d = δ = 0.05)** | **517** | 811 | 1,398 |
+
+**Design.** 21 chains of 25 per arm, plus 3 replicates each of the 50- and 100-unit chains. That is **975 units per
+arm, 5,850 in all**.
+
+**Projected cost.**
+
+| Component | Estimate |
+|---|---|
+| Model cost: 975 × $3.65 (the sum of the six arms' pilot cost per unit) | **≈ $3,560** |
+| Plus Layer 3 (about +15%) and per-unit cost growth on long chains | **≈ $4,000–4,500 in all** |
+
+**Decision: not run.** No confirmatory spending ceiling was given. The discrimination check also failed: every arm
+was at ceiling, so the run is futile on this corpus. The next spend is a second pilot of about $45 on a harder corpus
+(`RECOMMENDATIONS.md` R-EXP-4).
