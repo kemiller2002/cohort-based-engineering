@@ -8,7 +8,8 @@
 # requirements accepted); trap -> the trap's NEW ARC-SYM-02 violation fails arm D's submit and is not accepted.
 # The live K1 check is separate: smoke-live.sh.
 H0="$(cd "$(dirname "$0")" && pwd)"
-export ARCH002_FIXTURES="$H0/smoke/fixtures" ARCH002_SEALED_DIR="$H0/smoke/sealed"
+# SMOKE_FIXTURES_DIR / SMOKE_SEALED_DIR point the smoke at a real fixture (stand-in agent, no model calls).
+export ARCH002_FIXTURES="${SMOKE_FIXTURES_DIR:-$H0/smoke/fixtures}" ARCH002_SEALED_DIR="${SMOKE_SEALED_DIR:-$H0/smoke/sealed}"
 export ARCH002_AGENT_CMD="$H0/smoke-agent.sh"
 source "$H0/lib.sh"
 FIXTURE="${SMOKE_FIXTURE:-lending-smoke}"
