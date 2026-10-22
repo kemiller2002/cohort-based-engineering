@@ -97,7 +97,7 @@ let recordFindings (startTree: string) (finalTree: string) =
 // ---------------------------------------------------------------------------------------------------------------
 open System.Text.RegularExpressions
 
-type SourceKind = Requirement | DecisionRecord | Approval | Other
+type SourceKind = Requirement | DecisionRecord | Approval | Policy | Other
 
 type SourceStatus = Accepted | Proposed | Superseded of successor: string option | Granted | Rejected | NoStatus
 
@@ -148,7 +148,12 @@ let sources (startTree: string) (finalTree: string) =
             Regex.Matches(body, @"(?m)^##\s+([A-Z]+-[A-Z0-9]+-R\d+)\s*$")
             |> Seq.map (fun m -> { Id = m.Groups.[1].Value; Path = rel; Kind = Requirement; Status = Accepted; AgentAuthored = authored rel })
             |> Seq.toList)
-    requirements @ records "docs/decisions" DecisionRecord @"^((?:DEC)-[A-Z]?\d+)" @ records "docs/approvals" Approval @"^((?:APR)-[A-Z]?\d+)"
+    // Amendment A3: the README's standing requirements and authority rules are the repository's standing policy.
+    let policy =
+        if File.Exists(Path.Combine(finalTree, "README.md")) then
+            [ { Id = "README"; Path = "README.md"; Kind = Policy; Status = Accepted; AgentAuthored = authored "README.md" } ]
+        else []
+    requirements @ policy @ records "docs/decisions" DecisionRecord @"^((?:DEC)-[A-Z]?\d+)" @ records "docs/approvals" Approval @"^((?:APR)-[A-Z]?\d+)"
 
 /// Resolves a reference such as `LEND-L04-R2`, `requirements/L04.md#LEND-L04-R2`, `DEC-005` or a record path.
 let resolve (all: Source list) (reference: string) =
@@ -192,6 +197,7 @@ let admitOne (all: Source list) (ownIds: Set<string>) (receipts: Set<string>) (d
                 | Some s ->
                     match s.Kind, s.Status with
                     | Requirement, _ -> r, Ok s
+                    | Policy, _ -> r, Ok s
                     | DecisionRecord, Accepted -> r, Ok s
                     | Approval, Granted -> r, Ok s
                     | DecisionRecord, Superseded succ -> r, Error $"""A4 '{s.Id}' is superseded{(match succ with Some x -> " by " + x | None -> "")}"""
@@ -289,7 +295,9 @@ let streamUsage (streamFile: string) (workspace: string) =
     let forbidden = [ ".p2-sealed"; ".p2-state"; ".p2-key"; ".vac2-sealed"; "cohort-based-engineering"; "OracleTests"; "meta.json"; "PREFREEZE"; "github.com"; "/root/.claude"; "/tmp/claude-0"; "/root/.p2"; "p2-sealed" ]
     let otherWorkspace (s: string) =
         Regex.Matches(s, @"/home/user/p2-work/[\w.-]+/[\w.-]+") |> Seq.exists (fun m -> not (workspace.StartsWith m.Value))
-    let hits = toolInputs |> List.filter (fun s -> forbidden |> List.exists s.Contains || otherWorkspace s)
+    // Amendment A2: a session's own workspace (for the reviewer, a snapshot under harness state) is not a hit.
+    let own (s: string) = if workspace.Length > 1 then s.Replace(workspace, "") else s
+    let hits = toolInputs |> List.filter (fun s -> forbidden |> List.exists (own s).Contains || otherWorkspace s)
     let u = r |> Option.map (fun r -> r.["usage"])
     jobj [ "schema", jstr "cbe.vac-002-p2.turn-usage/1"
            "sessionId", (r |> Option.bind (fun r -> str r "session_id") |> Option.map jstr |> Option.defaultValue null)

@@ -23,7 +23,9 @@ cat > "$T/s01.json" <<'J'
  {"decisionId":"X8","requirementIds":["LEND-L04-R2"],"decisionType":"default-rule","status":"proposed","authorityRefs":["docs/notes/anything.md"]},
  {"decisionId":"X9","requirementIds":["LEND-L04-R1"],"decisionType":"implementation","status":"proposed","authorityRefs":[]},
  {"decisionId":"X10","requirementIds":["LEND-L04-R2"],"decisionType":"override","status":"proposed","authorityRefs":["DEC-006"],"supersedes":["DEC-006"]},
- {"decisionId":"X11","requirementIds":["LEND-L04-R2"],"decisionType":"business-rule","status":"proposed","authorityRefs":["LEND-L09-R9"]}
+ {"decisionId":"X11","requirementIds":["LEND-L04-R2"],"decisionType":"business-rule","status":"proposed","authorityRefs":["LEND-L09-R9"]},
+ {"decisionId":"X12","requirementIds":["LEND-L04-R3"],"decisionType":"interpretation","status":"proposed","authorityRefs":["README.md#Authority"]},
+ {"decisionId":"X13","requirementIds":["LEND-L04-R3"],"decisionType":"exception","status":"proposed","authorityRefs":["README.md#Authority","LEND-L04-R3"]}
 ]}
 J
 dotnet fsi --quiet --exec "$H/p2.fsx" admit "$T/s01-start" "$T/s01-final" "$T/s01.json" /dev/null > "$T/s01-admission.json"
@@ -38,6 +40,8 @@ expect "$T/s01-admission.json" X8 rejected "A6/A2: a default backed by a note"
 expect "$T/s01-admission.json" X9 validated "implementation choice with no authority claim"
 expect "$T/s01-admission.json" X10 rejected "A9: only an owner supersedes an accepted record"
 expect "$T/s01-admission.json" X11 rejected "A2/A7: a reference that does not resolve"
+expect "$T/s01-admission.json" X12 authorized "A3 (amendment A3): README's authority rules are standing policy for an interpretation"
+expect "$T/s01-admission.json" X13 rejected "A6: policy cannot authorize an exception"
 # Proposed and superseded records (S02 starting tree has a proposed DEC-009; S03 a superseded DEC-003).
 "$H/corpus.sh" tree S02 base "$T/s02"; "$H/corpus.sh" tree S03 base "$T/s03"
 echo '{"decisions":[{"decisionId":"P1","requirementIds":["LEND-L13-R2"],"decisionType":"business-rule","status":"proposed","authorityRefs":["DEC-009"]},{"decisionId":"P2","requirementIds":["LEND-L13-R2"],"decisionType":"business-rule","status":"proposed","authorityRefs":["DEC-001","LEND-L13-R2"]}]}' > "$T/s02.json"

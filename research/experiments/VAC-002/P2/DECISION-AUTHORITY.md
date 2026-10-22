@@ -62,7 +62,7 @@ This is the mission's minimum record plus `decisionType`'s enumeration, `stateme
 |---|---|---|---|
 | A1 | Known `decisionType`; at least one requirement id; the agent's `status` is `proposed` (any other value is self-asserted) | yes | X3 |
 | A2 | Each authority reference resolves to a requirement heading, a decision record or an approval | when no valid authority remains | X11, X8 |
-| A3 | Only requirements, decision records and approvals are authority kinds (notes, code, other docs are not) | as A2 | X8 |
+| A3 | Only requirements, decision records, approvals and the README's standing policy are authority kinds (notes, code, other docs are not). Policy satisfies A7, never A6 (amendment A3) | as A2 | X8, X12, X13 |
 | A4 | A decision record must be `accepted`, an approval `granted`; `proposed`, `rejected` and `superseded` (reported with its successor) authorize nothing | yes for consequential types; otherwise when no valid authority remains | P1, S1 |
 | A5 | No reference to the agent's own records, or to a record or approval the agent created or changed (diff against the starting tree) | yes | X4, X5, X7 |
 | A6 | `exception`, `override`, `conflict-resolution`, `default-rule` and `scope-extension` need an accepted decision record or a granted approval; a requirement alone cannot authorize an exception to another source | yes | X1 (arm B's L04 decision, had it been declared) |

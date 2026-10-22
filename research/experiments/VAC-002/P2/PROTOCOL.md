@@ -116,3 +116,21 @@ Made 2026-10-22, before any model-backed agent turn of P2. It consists of the co
 `CLAUDE_CONFIG_DIR`, but as the same uid they could read those paths. The caches under `/tmp/claude-0` that held
 scenario material were deleted. The transcripts cannot be deleted while this session runs, so they are guarded by
 detection only. The change adds detection and changes no instrument's verdict.
+
+**A2 (2026-10-22, after the model smoke, before the pilot). The contamination scan ignores a session's own
+workspace.** The arm-E reviewer works on a snapshot under harness state (`.p2-state`). Its own paths matched the
+forbidden list, which gave 19–20 false hits per reviewer call in the smoke test. On rescan: 0 hits. No implementer
+turn was affected; implementer workspaces are not under harness state.
+
+**A3 (2026-10-22, same time). `README.md` counts as standing policy (kind `Policy`) for rules A2–A3 and A7, never for
+A6.** The contract lists "an authorized policy" as a source of authority, and every fixture's README holds the
+authority rules all arms are told to follow. The smoke's arm-E plan cited `README.md#Authority` for refusing an
+uncovered region; the checker rejected it (A7) because README was not a recognized kind. That is a false rejection of
+an authorized decision. Exceptions and other consequential types still need an accepted record or a granted approval
+(new cases X12 and X13; `authz-cases.sh`: 21 cases, PASS).
+
+**Pre-execution reduction rule (`BUDGET.md` §3.2), applied after the smoke test:**
+
+- smoke cost: A $0.26 and E $1.02 (plan $0.22, implement $0.43 cumulative, reviewers $0.28 + $0.31);
+- projection: 36 × $0.26 + 12 × $0.60 + 12 × $1.10 + $30 review ≈ **$60**, against $148.6 remaining;
+- **no reduction**: the pilot runs all 12 scenarios.
