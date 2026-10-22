@@ -1,0 +1,79 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-10",
+  "sessionId": "f8b43fb3-4260-4af7-8007-6349b7480951",
+  "kind": "new",
+  "brief": "/home/user/vac-work/P1/A/briefs/unit-10.md",
+  "briefSha256": "737f9bc35671c7224ee02312898aea562e01a1c160a25e587bea9888926b99e5",
+  "startedAt": "2026-10-22T16:32:23.287Z",
+  "endedAt": "2026-10-22T16:39:25.837Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/A/turns/unit-10.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "f8b43fb3-4260-4af7-8007-6349b7480951",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 26,
+    "durationMs": 420637,
+    "durationApiMs": 215334,
+    "costUsdCli": 1.3053970000000001,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 46,
+      "output": 24395,
+      "cacheRead": 1030615,
+      "cacheWrite": 76382
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 18,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.000134
+      },
+      "claude-opus-5-5": {
+        "input": 46,
+        "output": 24395,
+        "cacheRead": 1030615,
+        "cacheWrite": 76382,
+        "costUsd": 1.305263
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 25,
+    "finalMessage": "I implemented all three L10 hold-pickup requirements and committed the work; all 111 tests pass and the build has no warnings.\nThe team lead's note was wrong: the OpenDays 2.0.0 update broke 53 of 99 tests. Its `Calendar.nextOpen` now means \"strictly after the given day\", so I switched our wrapper to `Calendar.onOrAfter`.\nOpen questions for the Head of Lending are in `.vac/reports/unit-10.json`, mainly that L10 skips suspended members when setting a copy aside, while DEC-007 says \"head of the queue\".\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 23,
+    "tokens": {
+      "input": 46,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 76382,
+      "cacheRead": 1030615,
+      "output": 24395,
+      "total": 1131438
+    },
+    "context": {
+      "first": 5451,
+      "last": 80546,
+      "peak": 80546
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [
+      "{\"command\":\"cd /home/user/vac-work/P1/A/repo; source ../env.sh \\u003E/dev/null; git status --short; cat tests/Lending.Tests/Lending.Tests.fsproj; mkdir -p /tmp/claude-0/-home-user-vac-work-P1-A-repo/f8b43fb3-4260-4af7-8007-6349b7480951/scratchpad; sed -i \\u0027s|\\u003CCompile Include=\\u0022Acceptanc"
+    ],
+    "costUsdLowerBound": 1.305263
+  }
+}
