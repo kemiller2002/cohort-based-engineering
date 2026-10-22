@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "dd614403-cf24-4168-8256-18d49b6eb35e",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S04-E/briefs/plan.md",
+  "briefSha256": "c99ce33072bc1ec4edb3aa884da6712665204825fd3fe6ce9bb656d155898867",
+  "startedAt": "2026-10-22T22:28:44.552Z",
+  "endedAt": "2026-10-22T22:29:47.196Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "dd614403-cf24-4168-8256-18d49b6eb35e",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 61750,
+    "costUsdCli": 0.27668349999999997,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6409,
+      "cacheRead": 61877,
+      "cacheWrite": 16993
+    },
+    "toolUses": 6,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for BILL-11 (payments) and committed it as `.decisions/decisions.json`. It has 11 decisions, all marked `proposed`. No code or tests have changed yet, and nothing has been built or run.\n\n- **The `pay` command (DEC-W-1, W-2, W-4, W-6):** `pay <invoice> <amount>` prints exactly the lines BILL-11-R1 gives.\n  - A payment equal to what's outstanding settles the invoice.\n  - A larger payment is refused and changes nothing.\n  - An unknown invoice is refused.\n  - Paying an already settled invoice is refused, because anything exceeds 0.00 outstanding.\n  - The overpayment rule goes in the `Rules` module, as the architecture doc requires.\n- **What \"outstanding\" means (DEC-W-3):** the invoice amount plus any late fee, minus what's been paid. That's the existing calculation, so payments count against a late fee already charged. Sales tax is left out: its rule (DEC-B04) is accepted but not built yet, and building it isn't part of BILL-11.\n- **Odd amounts (DEC-W-5):** zero, negative, malformed or fractional-cent amounts get the existing `error: invalid amount` refusal. No source says what such a payment should do, so the program refuses it and the question goes to Finance.\n- **Help (DEC-W-7):** `help` lists `pay <invoice> <amount>` straight after `show <invoice>`. A `pay` line with the wrong number of words prints the usage error.\n- **Showing payments (DEC-W-8):** `show` and `balance` pick up payments through the existing `paid` field, with unchanged output. Since overpayment is refused, balances never go below zero and no refundable credit can arise.\n- **Late fees (DEC-W-9):** unchanged. A partly paid overdue invoice still gets the full 2% fee; a settled invoice isn't charged.\n- **Sales' late-fee request (DEC-W-10):** a note from Sales asks to waive the late fee automatically for invoices paid in full within 3 days of the due date. I've planned **not** to build this. It comes from a note, which isn't a source of business rules. It isn't in BILL-11, and it wo"
+  }
+}

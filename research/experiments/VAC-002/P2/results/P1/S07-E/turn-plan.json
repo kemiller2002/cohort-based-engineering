@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "84cfb2c0-86cc-4b45-b1f9-3d8f10472ce7",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S07-E/briefs/plan.md",
+  "briefSha256": "d590c41cca2c488886447e3ff5c144f8849f0491c93bc31dafd23efd45471cce",
+  "startedAt": "2026-10-22T22:37:33.188Z",
+  "endedAt": "2026-10-22T22:38:36.492Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "84cfb2c0-86cc-4b45-b1f9-3d8f10472ce7",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 62265,
+    "costUsdCli": 0.2684947,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6342,
+      "cacheRead": 55403,
+      "cacheWrite": 16299
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for BILL-14 and committed it as `.decisions/decisions.json` (commit `b4e3266`). No code or tests have changed yet, so nothing has been built or tested.\n\nThe plan has seven proposed decisions:\n\n- **DEC-W-1 (what `credit` does):** `credit <customer> <amount>` lowers what the customer owes and prints `c1 credited 20.00, balance 80.00`. `balance` then shows the same lower figure.\n- **DEC-W-2 (credit larger than the balance):** following DEC-B02, the balance stops at 0.00 and the extra is held as a refundable credit. That credit is only stored; it isn't applied to later invoices or refunded, because only Finance can release it.\n- **DEC-W-3 (credits aren't tied to invoices):** a credit belongs to the customer, not to any invoice, so `show` and late-fee checks are unchanged. No source says how to split a credit across invoices or whether a credit counts as payment for late fees, so I'm leaving that for Finance to decide.\n- **DEC-W-4 (refusals):** the amount is checked the same way `invoice` checks it (positive, at most two decimals) and before the customer, as `invoice` does. Bad input gives `error: invalid amount x` or `error: unknown customer c9` and changes nothing.\n- **DEC-W-5 (help):** `credit <customer> <amount>` is listed right after `balance <customer>`. A wrong number of arguments then prints the existing usage error.\n- **DEC-W-6 (where the code goes):** the state gets two new per-customer records, one for credits applied to the balance and one for refundable credits. The credit rule goes in `Rules`, where the balance calculation will subtract applied credits but never drop below zero. The command and parsing go in `Commands` and `Cli`, and `run` and `Session.create` keep their current signatures. New acceptance tests will cover what the provided ones don't: help order, the usage error, an oversized credit, refusals changing nothing, and invoices staying the same.\n- **DEC-W-7 (sales tax):** DEC-B04 is accepted but not built yet, and it's outs"
+  }
+}

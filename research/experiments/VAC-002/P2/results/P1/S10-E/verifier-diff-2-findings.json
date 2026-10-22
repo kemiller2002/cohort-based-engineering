@@ -1,0 +1,22 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-6",
+      "issue": "The record says the CLIN-22-R2 / DEC-C01 conflict is recorded in docs/notes/CLIN-22-R2-horizon-conflict.md, but no such file exists; the conflict is actually recorded as Q1 in docs/notes/CLIN-22-open-questions.md (which its implementedIn field does list). The behaviour is authorized: DEC-C01's general 90-day horizon keeps applying, and Rules.fs is unchanged. Only the reference is wrong.",
+      "authorizedAlternative": "Correct the statement to point at docs/notes/CLIN-22-open-questions.md (Q1). No change to behaviour is needed."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-8",
+      "issue": "The statement says the acceptance tests cover 'the updated help line', but the help and usage lines were deliberately left unchanged (DEC-W-9), and the test checks that they are unchanged. The record is stale and contradicts what was implemented.",
+      "authorizedAlternative": "Reword it to say the tests check that the help and usage lines are unchanged, as DEC-W-9 says."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-5",
+      "issue": "DEC-W-5 is marked not implemented and superseded by DEC-W-9, but its status is still 'proposed'. That makes the records ambiguous about which help-line interpretation is pending. No behaviour depends on it: the help and usage lines are unchanged.",
+      "authorizedAlternative": "Mark DEC-W-5 as withdrawn or superseded, so only DEC-W-9, which keeps help and usage unchanged and records Q3 for the Scheduling Office, is pending."
+    }
+  ]
+}

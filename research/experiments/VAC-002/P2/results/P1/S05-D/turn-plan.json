@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "f23eedcf-a508-4fab-a27b-50c4e63c2793",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S05-D/briefs/plan.md",
+  "briefSha256": "66dc8d2857c3addfec36ca706ed409433e260fe417bd2e3cd2c40b5f772c0b51",
+  "startedAt": "2026-10-22T22:33:46.304Z",
+  "endedAt": "2026-10-22T22:34:33.796Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "f23eedcf-a508-4fab-a27b-50c4e63c2793",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 46623,
+    "costUsdCli": 0.22822409999999999,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4708,
+      "cacheRead": 55600,
+      "cacheWrite": 15345
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for BILL-12 (sales tax on invoices) and committed it as `.decisions/decisions.json` (commit `602a4c9`). It has seven proposed decisions. No code or tests have changed yet.\n\n**One case needs a ruling from Finance: Quebec (QC) has no tax rate.** `docs/tax-rates.md` lists rates only for ON, BC and AB, but the test seed includes a QC customer, c5 \"Lac Bleu\". An engineering note suggests taxing QC at 0% until Finance supplies a rate. The README says notes aren't a source of business rules, so I've planned to refuse these invoices instead: `error: no tax rate for region QC`, with nothing changed. This means Lac Bleu can't be invoiced until Finance provides a QC rate, even though the note says a large order goes out this month.\n\nThe other decisions:\n- **Tax rule:** tax is the amount × the customer's region rate, rounded to the cent (half away from zero). It is calculated once when the invoice is issued and stored on the invoice.\n- **Output:** `invoice` prints the amount, tax and total; `show` adds `tax` after the amount. Outstanding amounts, and so balances, include the tax.\n- **Late fee:** stays 2% of the amount before tax, as DEC-B04 says.\n- **Existing tests:** some expected outputs in `tests/Billing.Tests/BaseTests.fs` were written before tax. They need updating to the new formats and taxed totals (for example, the late-fee test's balance goes from 153.00 to 172.50).\n- **New acceptance tests:** these cover what the provided ones don't: the AB rate, rounding, the late fee on the pre-tax amount, the QC refusal leaving state unchanged, and `help` staying the same.\n\nPLAN: ready"
+  }
+}

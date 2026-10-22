@@ -49,4 +49,12 @@ agents, which pay more cache writes, but they work on smaller repositories (Bill
 
 ## 4. Spend (filled in after the pilot)
 
-See `PILOT-RESULTS.md` §2.
+| Item | Cost |
+|---|---|
+| Setup check call | $0.09 |
+| Model smoke | $1.28 |
+| Pilot (60 executions; implementer and arm-E reviewer sessions) | $29.46 |
+| Blinded review (R1 $12.64, R2 $12.53, R3 $1.50) | $26.67 |
+| **Total** | **$57.50 of $150** |
+
+No stopping rule fired. Provider-billed cost and the orchestrating session's own usage are unavailable.

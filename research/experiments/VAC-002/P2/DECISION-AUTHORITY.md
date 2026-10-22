@@ -103,3 +103,17 @@ These are the failure modes arm E's independent review targets, and the hidden o
 from the status and provenance of the sources they cite, with a decision-type rule (A6) that a requirement alone
 cannot authorize an exception to another source. The existing structures cover construction contracts and
 completion; none covers a decision an agent takes mid-implementation.
+
+## 5. Contract v0.2 (after pilot P1)
+
+The pilot ran v0.1 as specified above. It found five defects that made the controls reject correct work
+(`PILOT-RESULTS.md` §5, `RECOMMENDATIONS.md` R-CON-1..5). v0.2 changes the specification as follows. The P1 checker
+stays frozen as run; v0.2 is for the next experiment.
+
+| # | Change | Defect it corrects |
+|---|---|---|
+| 1 | The agent's record has no `status`. Status is computed by the host and kept in the host's admission record. A1's "self-asserted status" check is dropped | 6 / 24 D and E executions were rejected for echoing the host's own `authorized` verdict |
+| 2 | `evidenceRefs` holds anything the implementer produced (its tests, its runs). `verificationRefs` holds only host receipts, and the brief says so. A8 applies only to `verificationRefs` that claim independence | 22 / 36 record-keeping executions listed their own tests as verification; 8 gate rejections; the S05-D block |
+| 3 | A6 applies when the overridden or excepted source is a decision record, an approval, or a requirement with a *different* owner. A same-owner requirement that revises an earlier one is a `business-rule` backed by the newer requirement | S02-D: a same-owner format revision was rejected and reverted |
+| 4 | Implementer authorship (A5) is judged per section for documents with headed sections (README), and per file otherwise | S10-D: a command-list edit disqualified the README's Authority section |
+| 5 | A rejection states the behaviour that is not authorized and, where the sources settle it, the behaviour that is. A rejection that names only a rule leaves the implementer guessing | S05-D: the agent implemented nothing after three rule-only rejections |

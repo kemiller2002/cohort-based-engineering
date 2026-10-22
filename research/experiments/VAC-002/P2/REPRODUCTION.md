@@ -81,3 +81,15 @@ dotnet fsi --quiet --exec harness/review/agreement.fsx /home/user/.p2-state/revi
 ```
 
 Adjudication by R3 runs on `disagreements.jsonl` (`REVIEW.md` gives the exact command used).
+
+## 8. Agent workspaces
+
+Every execution's repository, with every commit the agent and the harness made, is archived as a git bundle in
+`results/P1/workspaces/SCEN-ARM.bundle`. The heads in each `setup.json` resolve in it:
+
+```sh
+git clone results/P1/workspaces/S01-B.bundle /tmp/S01-B && git -C /tmp/S01-B checkout "$(jq -r .heads.final results/P1/S01-B/setup.json)"
+```
+
+Turn streams and transcripts are kept in harness state, not in the repository. Their usage summaries are in
+`turn-*.json`.

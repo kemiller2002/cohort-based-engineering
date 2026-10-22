@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-9",
+      "issue": "For a standard-plan nonprofit invoice of 0.01-0.04, APR-B01's 10% rounds to 0.00. The change prints these invoices in the undiscounted format (Commands.fs `if discount > 0m`), and the additional acceptance test pins that choice (`i3 issued to c2: 0.04 due ...`). The implementer says the sources leave this open (DEC-W-9) but implemented one answer anyway. The amount charged is the same either way, so no business rule is invented and this is not blocking. Still, the test fixes an output format that Finance has not confirmed.",
+      "authorizedAlternative": "APR-B01 sets the amount (entered amount minus a 0.00 discount, which leaves it unchanged), and BILL-13-R1 says an invoice without a discount prints as before. Keep the question open for Finance, as already recorded in docs/notes/2026-10-22-bill-13-questions-for-finance.md, and treat the 0.04 test assertion as provisional until Finance answers."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-8",
+      "issue": "The conflict between BILL-13-R1's untaxed example output and accepted DEC-B04 is correctly recorded, and no tax, exception or override is implemented. DEC-B04 was already unimplemented before this change, so the change does not create an exception for the disputed case. However, DEC-W-8 and the questions note also say which way tax and the discount would combine ('the sources point to taxing the discounted amount'). That is the implementer's own reading of how two conflicting sources fit together, and Finance has not decided it.",
+      "authorizedAlternative": "Record the conflict and the open question about tax on the discounted or undiscounted amount for Finance, which owns both BILL-13 and DEC-B04, without a recommended resolution. Nothing in code depends on this, so no code change is needed."
+    }
+  ]
+}
