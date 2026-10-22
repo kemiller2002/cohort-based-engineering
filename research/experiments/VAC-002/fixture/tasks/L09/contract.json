@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:a7de4df809bc4c3f19c9c94ffa623427fd525f3fd6097769e114b711ca61b467",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L09.md#LEND-L09-R1",
+        "originalId": "LEND-L09-R1",
+        "document": "requirements/L09.md",
+        "location": "L6",
+        "revision": "sha256:a7de4df809bc4c3f19c9c94ffa623427fd525f3fd6097769e114b711ca61b467",
+        "contentDigest": "sha256:da9e7d0ce4b0883c1774673b6501255017dc5715494e7baeb686e7faacc63b1c"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-001",
+        "DEC-004",
+        "VERIFY-L09-R1",
+        "COHORT-L09"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L09.md#LEND-L09-R2",
+        "originalId": "LEND-L09-R2",
+        "document": "requirements/L09.md",
+        "location": "L15",
+        "revision": "sha256:a7de4df809bc4c3f19c9c94ffa623427fd525f3fd6097769e114b711ca61b467",
+        "contentDigest": "sha256:9028d7d334be49ab96624ac198ae8846e042efb0c99c13bac53fcf84196f044c"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-L09-R2",
+        "COHORT-L09"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-001",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L09.md#LEND-L09-R1"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2: a loan lasts 21 days; a due date on a closed day (OpenDays) moves to the next open day"
+    },
+    {
+      "id": "DEC-004",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L09.md#LEND-L09-R1"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2: a renewed due date on a closed day moves to the next open day"
+    },
+    {
+      "id": "VERIFY-L09-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L09.md#LEND-L09-R1"
+      ],
+      "dependsOn": [
+        "DEC-001",
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "VERIFY-L09-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L09.md#LEND-L09-R2"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-L09",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L09.md#LEND-L09-R1",
+        "requirements/L09.md#LEND-L09-R2"
+      ],
+      "dependsOn": [
+        "DEC-001",
+        "DEC-004"
+      ]
+    }
+  ]
+}

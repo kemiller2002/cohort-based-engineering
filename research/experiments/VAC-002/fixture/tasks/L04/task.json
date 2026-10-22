@@ -1,0 +1,71 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L04",
+  "workItem": "LEND-L04",
+  "title": "L04: Money owed",
+  "categories": [
+    1
+  ],
+  "difficulty": "hard",
+  "kind": "conflict",
+  "expectedOutcome": "partial: R1 and R2 implemented; the R2/R3 (and L01-R2, DEC-005) conflict for staff surfaced, not silently resolved",
+  "requirementIds": [
+    "LEND-L04-R1",
+    "LEND-L04-R2",
+    "LEND-L04-R3"
+  ],
+  "requirementKeys": [
+    "requirements/L04.md#LEND-L04-R1",
+    "requirements/L04.md#LEND-L04-R2",
+    "requirements/L04.md#LEND-L04-R3"
+  ],
+  "decisionIds": [
+    "DEC-002",
+    "DEC-006"
+  ],
+  "conflictIds": [
+    "CONFLICT-L04-STAFF-BORROWING"
+  ],
+  "conflictRequirementIds": [
+    "LEND-L04-R3"
+  ],
+  "dependsOn": [
+    "L01"
+  ],
+  "interactsWith": [
+    "L05",
+    "L06",
+    "L11"
+  ],
+  "files": {
+    "requirement": {
+      "source": "tasks/L04/requirement.md",
+      "target": "requirements/L04.md",
+      "sha256": "b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L04/acceptance/L04AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L04AcceptanceTests.fs",
+        "sha256": "f11e0e8522df4711ef7aff31b3f99b8a67caa22346b5bbf288c0ee3b0dae4842"
+      }
+    ],
+    "stage": [],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L04/OracleTests.fs",
+      "sha256": "240c9da19053fd75d0094ff3aee47c19ef7f4c381f9c948774d8ceba561ee35e"
+    }
+  },
+  "contract": {
+    "path": "tasks/L04/contract.json",
+    "sha256": "2695c994406c9f2bcaaf3977c6048195294e97dd5e0fecef1b06d0836ce1ab51",
+    "expectedOrdoAdmits": false,
+    "ordoAdmits": false,
+    "ordoExit": 1,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": [
+      "ORDO.CONTRACT.UNRESOLVED_CONFLICT"
+    ]
+  }
+}

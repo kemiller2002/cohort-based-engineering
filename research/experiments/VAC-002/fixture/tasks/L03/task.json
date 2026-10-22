@@ -1,0 +1,61 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L03",
+  "workItem": "LEND-L03",
+  "title": "L03: Renewing from the command line",
+  "categories": [
+    6
+  ],
+  "difficulty": "moderate",
+  "kind": "ordinary",
+  "expectedOutcome": "completed",
+  "requirementIds": [
+    "LEND-L03-R1",
+    "LEND-L03-R2"
+  ],
+  "requirementKeys": [
+    "requirements/L03.md#LEND-L03-R1",
+    "requirements/L03.md#LEND-L03-R2"
+  ],
+  "decisionIds": [
+    "DEC-004"
+  ],
+  "conflictIds": [],
+  "conflictRequirementIds": [],
+  "dependsOn": [
+    "L01"
+  ],
+  "interactsWith": [
+    "L09",
+    "L12"
+  ],
+  "files": {
+    "requirement": {
+      "source": "tasks/L03/requirement.md",
+      "target": "requirements/L03.md",
+      "sha256": "35df55ba21105b79849bf13ccad54dcece8314aacff8bebeb3c911333e157cdc"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L03/acceptance/L03AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L03AcceptanceTests.fs",
+        "sha256": "d948f2400cf6c331b144a7680469ee52d160f0840a435894d26848839a16c81f"
+      }
+    ],
+    "stage": [],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L03/OracleTests.fs",
+      "sha256": "be21f01c980912d926535bfa944c1b428760cd9db070080cc4eb2a8f4af43922"
+    }
+  },
+  "contract": {
+    "path": "tasks/L03/contract.json",
+    "sha256": "abd156e6df39058917a7457b2676a3e188e01a1ecdc54f5db5017e356a1d66d4",
+    "expectedOrdoAdmits": true,
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:c0a26f56cdc51b6f138e98a8b1c7893f330ec9368430521c4f73583e6cb1f96c",
+    "ordoDiagnostics": []
+  }
+}

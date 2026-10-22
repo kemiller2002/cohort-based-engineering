@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:8d518be90fa4d2db32667fc071a645c2ee7f554d3f0f60d138575b6d7d62300e",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L02.md#LEND-L02-R1",
+        "originalId": "LEND-L02-R1",
+        "document": "requirements/L02.md",
+        "location": "L5",
+        "revision": "sha256:8d518be90fa4d2db32667fc071a645c2ee7f554d3f0f60d138575b6d7d62300e",
+        "contentDigest": "sha256:5693cd5aec283c26b7712a668cf232071533785eee92818f18d570183652afa6"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-L02-R1",
+        "COHORT-L02"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L02.md#LEND-L02-R2",
+        "originalId": "LEND-L02-R2",
+        "document": "requirements/L02.md",
+        "location": "L17",
+        "revision": "sha256:8d518be90fa4d2db32667fc071a645c2ee7f554d3f0f60d138575b6d7d62300e",
+        "contentDigest": "sha256:c88a1b8150f232d09fce9e6dbcd62f4730aecf23a56eb9c5613cc77b59e87a75"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-003",
+        "VERIFY-L02-R2",
+        "COHORT-L02"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-003",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L02.md#LEND-L02-R2"
+      ],
+      "dependsOn": [],
+      "justification": "0.25 per day late, at most 10.00 per loan, assessed on return"
+    },
+    {
+      "id": "VERIFY-L02-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L02.md#LEND-L02-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-L02-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L02.md#LEND-L02-R2"
+      ],
+      "dependsOn": [
+        "DEC-003"
+      ]
+    },
+    {
+      "id": "COHORT-L02",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L02.md#LEND-L02-R1",
+        "requirements/L02.md#LEND-L02-R2"
+      ],
+      "dependsOn": [
+        "DEC-003"
+      ]
+    }
+  ]
+}

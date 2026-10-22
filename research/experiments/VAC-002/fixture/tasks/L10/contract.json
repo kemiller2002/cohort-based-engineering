@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:5d1244bafc7abb6e3e177f27cb7afc8eae25634cdb53ff1ad5ad98520b1af026",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L10.md#LEND-L10-R1",
+        "originalId": "LEND-L10-R1",
+        "document": "requirements/L10.md",
+        "location": "L6",
+        "revision": "sha256:5d1244bafc7abb6e3e177f27cb7afc8eae25634cdb53ff1ad5ad98520b1af026",
+        "contentDigest": "sha256:33cc419fe4df774e4625d217e03aa68472e8e981cac5e2c750c67e675f91a831"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-007",
+        "VERIFY-L10-R1",
+        "COHORT-L10"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L10.md#LEND-L10-R2",
+        "originalId": "LEND-L10-R2",
+        "document": "requirements/L10.md",
+        "location": "L16",
+        "revision": "sha256:5d1244bafc7abb6e3e177f27cb7afc8eae25634cdb53ff1ad5ad98520b1af026",
+        "contentDigest": "sha256:0addd52f01d4b1ed20fcbcab5205792322c7223df7fcfbdac9849ad69cda4087"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-005",
+        "DEC-007",
+        "VERIFY-L10-R2",
+        "COHORT-L10"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L10.md#LEND-L10-R3",
+        "originalId": "LEND-L10-R3",
+        "document": "requirements/L10.md",
+        "location": "L25",
+        "revision": "sha256:5d1244bafc7abb6e3e177f27cb7afc8eae25634cdb53ff1ad5ad98520b1af026",
+        "contentDigest": "sha256:08fe3816bba49e85d16cba4f65d6f9042d020d250a663f3d8a822e353064011f"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-007",
+        "VERIFY-L10-R3",
+        "COHORT-L10"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-005",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L10.md#LEND-L10-R2"
+      ],
+      "dependsOn": [],
+      "justification": "per-book first-come-first-served holds; copies of a held book are lent only to the head of its queue"
+    },
+    {
+      "id": "DEC-007",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L10.md#LEND-L10-R1",
+        "requirements/L10.md#LEND-L10-R2",
+        "requirements/L10.md#LEND-L10-R3"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2: a returned held copy is set aside for 7 days for the head of the queue, deadline on an open day; uncollected holds expire"
+    },
+    {
+      "id": "VERIFY-L10-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L10.md#LEND-L10-R1"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "VERIFY-L10-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L10.md#LEND-L10-R2"
+      ],
+      "dependsOn": [
+        "DEC-005",
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "VERIFY-L10-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L10.md#LEND-L10-R3"
+      ],
+      "dependsOn": [
+        "DEC-007"
+      ]
+    },
+    {
+      "id": "COHORT-L10",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L10.md#LEND-L10-R1",
+        "requirements/L10.md#LEND-L10-R2",
+        "requirements/L10.md#LEND-L10-R3"
+      ],
+      "dependsOn": [
+        "DEC-005",
+        "DEC-007"
+      ]
+    }
+  ]
+}

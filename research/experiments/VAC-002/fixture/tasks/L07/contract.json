@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:5e930f80532c4aa7c937402d3b037764575f293cbd44f4f745d767e8846674ff",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L07.md#LEND-L07-R1",
+        "originalId": "LEND-L07-R1",
+        "document": "requirements/L07.md",
+        "location": "L6",
+        "revision": "sha256:5e930f80532c4aa7c937402d3b037764575f293cbd44f4f745d767e8846674ff",
+        "contentDigest": "sha256:d38f6bfbcd28d4e817a23a1720cb86108f49ab396aaed399d60088b33c8d1bb6"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-008",
+        "VERIFY-L07-R1",
+        "COHORT-L07"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L07.md#LEND-L07-R2",
+        "originalId": "LEND-L07-R2",
+        "document": "requirements/L07.md",
+        "location": "L21",
+        "revision": "sha256:5e930f80532c4aa7c937402d3b037764575f293cbd44f4f745d767e8846674ff",
+        "contentDigest": "sha256:e6309d18d68bd0bb3d68b76d7a46d4d93b840a3703712786e195d4375a8b18a5"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-008",
+        "VERIFY-L07-R2",
+        "COHORT-L07"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L07.md#LEND-L07-R3",
+        "originalId": "LEND-L07-R3",
+        "document": "requirements/L07.md",
+        "location": "L41",
+        "revision": "sha256:5e930f80532c4aa7c937402d3b037764575f293cbd44f4f745d767e8846674ff",
+        "contentDigest": "sha256:9d8187b6eb1188c47840a662dbb1c82604c22deabcdfae7591023ee09d247ba2"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-008",
+        "VERIFY-L07-R3",
+        "COHORT-L07"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-008",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L07.md#LEND-L07-R1",
+        "requirements/L07.md#LEND-L07-R2",
+        "requirements/L07.md#LEND-L07-R3"
+      ],
+      "dependsOn": [],
+      "justification": "one notice per overdue loan and due date; delivered is final; rejected is sent again; unknown is never resent automatically until staff record the answer"
+    },
+    {
+      "id": "VERIFY-L07-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L07.md#LEND-L07-R1"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "VERIFY-L07-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L07.md#LEND-L07-R2"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "VERIFY-L07-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L07.md#LEND-L07-R3"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "COHORT-L07",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L07.md#LEND-L07-R1",
+        "requirements/L07.md#LEND-L07-R2",
+        "requirements/L07.md#LEND-L07-R3"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    }
+  ]
+}

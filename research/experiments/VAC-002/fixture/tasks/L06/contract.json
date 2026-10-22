@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:c63d225be309a5d3aff1718be4a3fa22cd41f081c510ade0373b650a4e7ba1a3",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L06.md#LEND-L06-R1",
+        "originalId": "LEND-L06-R1",
+        "document": "requirements/L06.md",
+        "location": "L6",
+        "revision": "sha256:c63d225be309a5d3aff1718be4a3fa22cd41f081c510ade0373b650a4e7ba1a3",
+        "contentDigest": "sha256:b85239f36cff358b75e70b44d4e0a6f80d95d568629ff7bdeb93ecf02f43c9e9"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-006",
+        "VERIFY-L06-R1",
+        "COHORT-L06"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L06.md#LEND-L06-R2",
+        "originalId": "LEND-L06-R2",
+        "document": "requirements/L06.md",
+        "location": "L19",
+        "revision": "sha256:c63d225be309a5d3aff1718be4a3fa22cd41f081c510ade0373b650a4e7ba1a3",
+        "contentDigest": "sha256:35f77ac732da78e57372f1f3afc49eaefaffe5048da9217dae31d0d221762cca"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-006",
+        "VERIFY-L06-R2",
+        "COHORT-L06"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-006",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L06.md#LEND-L06-R1",
+        "requirements/L06.md#LEND-L06-R2"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2: a waiver needs a named branch manager (Grace Hopper, Alan Turing) for the specific fine"
+    },
+    {
+      "id": "VERIFY-L06-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L06.md#LEND-L06-R1"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "VERIFY-L06-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L06.md#LEND-L06-R2"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "COHORT-L06",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L06.md#LEND-L06-R1",
+        "requirements/L06.md#LEND-L06-R2"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ]
+    }
+  ]
+}

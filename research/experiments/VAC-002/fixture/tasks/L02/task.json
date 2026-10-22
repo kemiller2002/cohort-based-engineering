@@ -1,0 +1,59 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L02",
+  "workItem": "LEND-L02",
+  "title": "L02: Overdue report",
+  "categories": [
+    2
+  ],
+  "difficulty": "moderate",
+  "kind": "architecture-trap",
+  "expectedOutcome": "completed",
+  "requirementIds": [
+    "LEND-L02-R1",
+    "LEND-L02-R2"
+  ],
+  "requirementKeys": [
+    "requirements/L02.md#LEND-L02-R1",
+    "requirements/L02.md#LEND-L02-R2"
+  ],
+  "decisionIds": [
+    "DEC-003"
+  ],
+  "conflictIds": [],
+  "conflictRequirementIds": [],
+  "dependsOn": [],
+  "interactsWith": [
+    "L09",
+    "L12"
+  ],
+  "files": {
+    "requirement": {
+      "source": "tasks/L02/requirement.md",
+      "target": "requirements/L02.md",
+      "sha256": "8d518be90fa4d2db32667fc071a645c2ee7f554d3f0f60d138575b6d7d62300e"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L02/acceptance/L02AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L02AcceptanceTests.fs",
+        "sha256": "14c6e8a9b449ea3c215d9ba266d273287da98b31299090700271f7c3081423ae"
+      }
+    ],
+    "stage": [],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L02/OracleTests.fs",
+      "sha256": "71e44347be09ee36dfcba5a977a802adee8700546600dfec17fe7c96c4370deb"
+    }
+  },
+  "contract": {
+    "path": "tasks/L02/contract.json",
+    "sha256": "661ea2edbd656364cce41cb26d1351a884f6f9b9246f76f8b439fc002ce41421",
+    "expectedOrdoAdmits": true,
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:4f0700704112d62eae5cd96bb4e72f95ed3d6fc8762af1c4b92242ef8e53ef01",
+    "ordoDiagnostics": []
+  }
+}

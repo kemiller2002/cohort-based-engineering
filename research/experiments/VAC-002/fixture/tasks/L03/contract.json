@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:35df55ba21105b79849bf13ccad54dcece8314aacff8bebeb3c911333e157cdc",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L03.md#LEND-L03-R1",
+        "originalId": "LEND-L03-R1",
+        "document": "requirements/L03.md",
+        "location": "L5",
+        "revision": "sha256:35df55ba21105b79849bf13ccad54dcece8314aacff8bebeb3c911333e157cdc",
+        "contentDigest": "sha256:9477245b0ed6c0f7f1bd5cc5016c311a312ca6403b0d6618dbe3fe8e368d6d15"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-004",
+        "VERIFY-L03-R1",
+        "COHORT-L03"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L03.md#LEND-L03-R2",
+        "originalId": "LEND-L03-R2",
+        "document": "requirements/L03.md",
+        "location": "L19",
+        "revision": "sha256:35df55ba21105b79849bf13ccad54dcece8314aacff8bebeb3c911333e157cdc",
+        "contentDigest": "sha256:b8c1dec810dc096ae43655ad73951904df499c3011d45015326a565c50640e83"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-L03-R2",
+        "COHORT-L03"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-004",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L03.md#LEND-L03-R1"
+      ],
+      "dependsOn": [],
+      "justification": "at most 2 renewals; not when overdue, not when renewed twice, not when the book has holds (first reason given)"
+    },
+    {
+      "id": "VERIFY-L03-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L03.md#LEND-L03-R1"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "VERIFY-L03-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L03.md#LEND-L03-R2"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-L03",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L03.md#LEND-L03-R1",
+        "requirements/L03.md#LEND-L03-R2"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    }
+  ]
+}

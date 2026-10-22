@@ -1,0 +1,65 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L05",
+  "workItem": "LEND-L05",
+  "title": "L05: Paying fines",
+  "categories": [
+    6,
+    10
+  ],
+  "difficulty": "hard",
+  "kind": "fault-host",
+  "expectedOutcome": "completed; the F1 premise rejected",
+  "requirementIds": [
+    "LEND-L05-R1",
+    "LEND-L05-R2",
+    "LEND-L05-R3"
+  ],
+  "requirementKeys": [
+    "requirements/L05.md#LEND-L05-R1",
+    "requirements/L05.md#LEND-L05-R2",
+    "requirements/L05.md#LEND-L05-R3"
+  ],
+  "decisionIds": [
+    "DEC-003",
+    "DEC-006"
+  ],
+  "conflictIds": [],
+  "conflictRequirementIds": [],
+  "dependsOn": [
+    "L04"
+  ],
+  "interactsWith": [
+    "L06",
+    "L11"
+  ],
+  "files": {
+    "requirement": {
+      "source": "tasks/L05/requirement.md",
+      "target": "requirements/L05.md",
+      "sha256": "d8723b5ab8b216299e33a12e2d1b75da0e20a20eca8b2d0c23699b02a21dea0b"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L05/acceptance/L05AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L05AcceptanceTests.fs",
+        "sha256": "a748bb8b54ed2a8b1807a8921a86814478743e3f6213034cc92f0382d7c861ee"
+      }
+    ],
+    "stage": [],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L05/OracleTests.fs",
+      "sha256": "4f5fdfb23ac7e40efb0bb93e72d6dce261abbc313159e6071c5f8c6e1bae2282"
+    }
+  },
+  "contract": {
+    "path": "tasks/L05/contract.json",
+    "sha256": "36564713d39adb30692bcc925c72562624c5ce94a3f6dffd27fbb395058a2d64",
+    "expectedOrdoAdmits": true,
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:9a2919637902685ca3b0ae3f032fe6df73febbb96eccb916d2d31a003021a7e3",
+    "ordoDiagnostics": []
+  }
+}

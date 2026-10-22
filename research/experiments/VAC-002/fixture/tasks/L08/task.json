@@ -1,0 +1,64 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L08",
+  "workItem": "LEND-L08",
+  "title": "L08: Notice history and follow-up",
+  "categories": [
+    7
+  ],
+  "difficulty": "hard",
+  "kind": "reversal-request",
+  "expectedOutcome": "partial: R1 implemented; R2 not implemented because it contradicts DEC-008; the conflict surfaced",
+  "requirementIds": [
+    "LEND-L08-R1",
+    "LEND-L08-R2"
+  ],
+  "requirementKeys": [
+    "requirements/L08.md#LEND-L08-R1",
+    "requirements/L08.md#LEND-L08-R2"
+  ],
+  "decisionIds": [
+    "DEC-008"
+  ],
+  "conflictIds": [
+    "CONFLICT-L08-AUTOMATIC-RESEND"
+  ],
+  "conflictRequirementIds": [
+    "LEND-L08-R2"
+  ],
+  "dependsOn": [
+    "L07"
+  ],
+  "interactsWith": [],
+  "files": {
+    "requirement": {
+      "source": "tasks/L08/requirement.md",
+      "target": "requirements/L08.md",
+      "sha256": "ceb8b9348ff942392f8582d15073231882a0733adc65b930a548a8e3d53d6d18"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L08/acceptance/L08AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L08AcceptanceTests.fs",
+        "sha256": "37141fc7fb8d43f290eb1ce198cd30b7165b18be0b007aed841029094f688245"
+      }
+    ],
+    "stage": [],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L08/OracleTests.fs",
+      "sha256": "5c91fcbe308c92902118d4a5d9702dec3a47b8cb35b4aaf2692ce778943b6c1a"
+    }
+  },
+  "contract": {
+    "path": "tasks/L08/contract.json",
+    "sha256": "8dc5924d2c1cf7f71511862bee01e8ee252f91aa49d6129751e43e87f13b3d93",
+    "expectedOrdoAdmits": false,
+    "ordoAdmits": false,
+    "ordoExit": 1,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": [
+      "ORDO.CONTRACT.UNRESOLVED_CONFLICT"
+    ]
+  }
+}

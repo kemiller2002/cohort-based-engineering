@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002.agent-config/1",
+  "experiment": "VAC-002",
+  "derivedFrom": "research/architectural-correctness/harness/agent-config.json (ARCH-001 K1 profile)",
+  "runtime": "claude-code",
+  "claudeCodeVersion": "2.1.308",
+  "model": "claude-opus-5-5",
+  "effort": "medium (inherited CLAUDE_EFFORT, as in VAC-001 and ARCH-001)",
+  "condition": "K1 isolated-cli: one headless `claude -p` process per agent turn; long-lived arms continue their own session with --resume",
+  "autoCompactWindowTokens": 200000,
+  "autoCompactNote": "CLAUDE_CODE_AUTO_COMPACT_WINDOW=200000 in every arm, so that long-lived sessions reach context management within the chain (VAC-001 saw 0 compactions at 167k tokens with a 1M window). Identical in every arm; fresh agents never reach it.",
+  "budgetMinutesPerTurn": 45,
+  "maxRepairRounds": 1,
+  "tools": {
+    "builtIn": ["Bash", "Read", "Edit", "Write"],
+    "mcpServers": [],
+    "identicalAcrossArms": true,
+    "rationale": "REL-001 run-03 / ARCH-001 K1 tool profile: ordo, archcheck and praxis are reached through Bash"
+  },
+  "environment": {
+    "inherit": true,
+    "override": ["HOME", "CLAUDE_CONFIG_DIR", "PATH", "DOTNET_ROOT", "NUGET_PACKAGES", "DOTNET_CLI_TELEMETRY_OPTOUT", "DOTNET_NOLOGO",
+                 "TERM", "MSBUILDDISABLENODEREUSE", "DOTNET_CLI_USE_MSBUILD_SERVER", "UseSharedCompilation", "CLAUDE_CODE_AUTO_COMPACT_WINDOW"],
+    "unset": ["CLAUDE_ADDITIONAL_DIRECTORIES", "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD", "CLAUDE_CODE_SYNC_SKILLS", "CLAUDE_CODE_SYNC_PLUGINS",
+              "CLAUDE_CODE_MESSAGING_SOCKET", "CLAUDE_CODE_MESSAGING_TOKEN", "CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_CHILD_SESSION",
+              "CLAUDE_CODE_REMOTE_SESSION_ID", "CLAUDE_CODE_REMOTE_SDK_URL", "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE", "GH_TOKEN", "GITHUB_TOKEN",
+              "CLOUDSDK_AUTH_ACCESS_TOKEN"],
+    "note": "as ARCH-001: auth and proxy come from the inherited environment; the orchestrator's additional directories, CLAUDE.md files, skills, plugins, messaging channel and session link do not reach the agent; GitHub tokens are unset so an agent cannot fetch the experiment repositories; the orchestrator's CLAUDE_AUTOCOMPACT_PCT_OVERRIDE is unset so the compaction window is the one set here"
+  },
+  "prompt": "You are a software engineer doing one bounded task. Your complete instructions are in the brief at {BRIEF}. Read it first and follow it exactly, including its limits and workflow, and end your final message as the brief says.",
+  "continuePrompt": "The next message for you is in the brief at {BRIEF}. Read it and follow it exactly, and end your final message as it says.",
+  "promptNote": "prompt: the REL-001 run-02/03 and ARCH-001 wrapper, byte for byte; continuePrompt: the same wrapper for a continued session"
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L09",
+  "workItem": "LEND-L09",
+  "title": "L09: Due dates on open days",
+  "categories": [
+    3,
+    6
+  ],
+  "difficulty": "moderate",
+  "kind": "ordinary",
+  "expectedOutcome": "completed",
+  "requirementIds": [
+    "LEND-L09-R1",
+    "LEND-L09-R2"
+  ],
+  "requirementKeys": [
+    "requirements/L09.md#LEND-L09-R1",
+    "requirements/L09.md#LEND-L09-R2"
+  ],
+  "decisionIds": [
+    "DEC-001",
+    "DEC-004"
+  ],
+  "conflictIds": [],
+  "conflictRequirementIds": [],
+  "dependsOn": [
+    "L03"
+  ],
+  "interactsWith": [
+    "L10",
+    "L12"
+  ],
+  "files": {
+    "requirement": {
+      "source": "tasks/L09/requirement.md",
+      "target": "requirements/L09.md",
+      "sha256": "a7de4df809bc4c3f19c9c94ffa623427fd525f3fd6097769e114b711ca61b467"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L09/acceptance/L09AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L09AcceptanceTests.fs",
+        "sha256": "474ffc988e42d75947db1d7c5ce428f64d15454b65ac46a03e5209dac7839dfd"
+      }
+    ],
+    "stage": [
+      "docs/decisions/DEC-001-loan-period.md",
+      "docs/decisions/DEC-004-renewals.md"
+    ],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L09/OracleTests.fs",
+      "sha256": "9287a2f0fe93ebf83a8f75f3dfbd3f01f5bf95e24221f02812ee512ad72b194a"
+    }
+  },
+  "contract": {
+    "path": "tasks/L09/contract.json",
+    "sha256": "1d0a267819d1d7c30897e8687f0bc92f0e55c52bd7d1782c3ab2d53b7b179531",
+    "expectedOrdoAdmits": true,
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:c0a4634dfcceb3e9ceed37b92bba3c09c06a9d319214efb78c36b4e9343a2ada",
+    "ordoDiagnostics": []
+  }
+}

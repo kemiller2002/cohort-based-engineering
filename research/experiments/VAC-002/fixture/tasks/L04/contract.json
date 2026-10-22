@@ -1,0 +1,136 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L04.md#LEND-L04-R1",
+        "originalId": "LEND-L04-R1",
+        "document": "requirements/L04.md",
+        "location": "L6",
+        "revision": "sha256:b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72",
+        "contentDigest": "sha256:ab5b85f0e9a670d6d8a4c18bc9869894eb41a5c7c23a740375b23140f1088722"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-006",
+        "VERIFY-L04-R1",
+        "COHORT-L04"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L04.md#LEND-L04-R2",
+        "originalId": "LEND-L04-R2",
+        "document": "requirements/L04.md",
+        "location": "L13",
+        "revision": "sha256:b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72",
+        "contentDigest": "sha256:b5a1ceb276973dab167e86d737d8842f9cf43d14b9dc071b0126b344abbfdd62"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-006",
+        "VERIFY-L04-R2",
+        "COHORT-L04"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L04.md#LEND-L04-R3",
+        "originalId": "LEND-L04-R3",
+        "document": "requirements/L04.md",
+        "location": "L18",
+        "revision": "sha256:b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72",
+        "contentDigest": "sha256:fe85f2a68e0653c867b13cce09d2fa718eb7af6c6d574a55e1bd13a12573619e"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-002",
+        "VERIFY-L04-R3",
+        "COHORT-L04",
+        "CONFLICT-L04-STAFF-BORROWING"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-002",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L04.md#LEND-L04-R3"
+      ],
+      "dependsOn": [],
+      "justification": "loan limits per member type: standard 5, student 3, staff 10; a borrow over the limit is refused"
+    },
+    {
+      "id": "DEC-006",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L04.md#LEND-L04-R1",
+        "requirements/L04.md#LEND-L04-R2"
+      ],
+      "dependsOn": [],
+      "justification": "fines only by the schedule; no member type exempt; nothing reduces a fine on its own initiative"
+    },
+    {
+      "id": "VERIFY-L04-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L04.md#LEND-L04-R1"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "VERIFY-L04-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L04.md#LEND-L04-R2"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "VERIFY-L04-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L04.md#LEND-L04-R3"
+      ],
+      "dependsOn": [
+        "DEC-002"
+      ]
+    },
+    {
+      "id": "COHORT-L04",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L04.md#LEND-L04-R1",
+        "requirements/L04.md#LEND-L04-R2",
+        "requirements/L04.md#LEND-L04-R3"
+      ],
+      "dependsOn": [
+        "DEC-002",
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "CONFLICT-L04-STAFF-BORROWING",
+      "kind": "conflict",
+      "requirementKeys": [
+        "requirements/L04.md#LEND-L04-R3"
+      ],
+      "dependsOn": [
+        "DEC-002"
+      ],
+      "justification": "LEND-L04-R3 says a staff member below the loan limit is never refused for any other reason; LEND-L04-R2 refuses any member owing more than 5.00, LEND-L01-R2 refuses suspended members and DEC-005 reserves held copies; which rule wins for staff is unresolved"
+    }
+  ]
+}
