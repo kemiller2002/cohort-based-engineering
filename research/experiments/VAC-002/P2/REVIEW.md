@@ -93,3 +93,16 @@ check on the *corpus*, as Layer 3 was a check on the oracle in VAC-002.
 
 The reference decisions (`meta.json`) were on disk in plaintext for about two minutes after R1 and R2 started (see
 `STATISTICAL-ANALYSIS.md` §8). The scans of every reviewer turn show no access.
+
+## 7. Commands as run
+
+```sh
+harness/review/bundle.sh P1 /home/user/.p2-state/review-P1 /home/user/.p2-state/review-P1-mapping.json 20261024
+harness/review/review.sh /home/user/.p2-state/review-P1 R1 & harness/review/review.sh /home/user/.p2-state/review-P1 R2 & wait
+dotnet fsi --quiet --exec harness/review/agreement.fsx /home/user/.p2-state/review-P1 results/P1/review
+jq -r .key results/P1/review/disagreements.jsonl > keys; grep -F -f keys /home/user/.p2-state/review-P1/items.jsonl > /home/user/.p2-state/review-P1/items-R3.jsonl
+harness/review/review.sh /home/user/.p2-state/review-P1 R3 /home/user/.p2-state/review-P1/items-R3.jsonl 7
+```
+
+The majority adjudication that produced `adjudicated.jsonl` is a short script, recorded in this repository's
+history: the final value of each field is R1's where R1 and R2 agree, and otherwise R3's.
