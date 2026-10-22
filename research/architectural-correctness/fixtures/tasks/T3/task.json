@@ -1,0 +1,110 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T3",
+  "workItem": "LEND-T3",
+  "title": "T3: Bulk import of books",
+  "categories": [
+    4
+  ],
+  "categoryNames": [
+    "bypassed repository/service abstractions"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND-T3-R1",
+      "LEND-T3-R2",
+      "LEND-T3-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T3.md#LEND-T3-R1",
+      "requirements/T3.md#LEND-T3-R2",
+      "requirements/T3.md#LEND-T3-R3"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T3 follow-up: Branch shelf capacity",
+    "requirementIds": [
+      "LEND-T3-F1",
+      "LEND-T3-F2"
+    ],
+    "requirementKeys": [
+      "requirements/T3-followup.md#LEND-T3-F1",
+      "requirements/T3-followup.md#LEND-T3-F2"
+    ],
+    "decisionIds": [
+      "DEC-009"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T3/requirement.md",
+      "target": "requirements/T3.md",
+      "sha256": "999c42f04b2602aadd9f79c255049b64ef38fb95bf48ed0925792f3fae61f4bf"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T3/acceptance/T3AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T3AcceptanceTests.fs",
+        "sha256": "9ce5255b032e052b033a358c0221073d784dd28e4906786c8a4106231721f41f"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T3/followup.md",
+      "target": "requirements/T3-followup.md",
+      "sha256": "03f7bfdcaa28d51a74ca5092a550182525a43a3f305e09eddc57331db437085c"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T3/followup-acceptance/T3FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T3FollowupAcceptanceTests.fs",
+        "sha256": "79388c2a50f807f8cee0783afb7d892fba3bd37eb3d94496978301acc0ca90cf"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T3/InitialOracleTests.fs",
+        "sha256": "bf57930203706be294e8b33431372e06b417d2af3970aca7dfb13b63c7248bde"
+      },
+      "followup": {
+        "path": "sealed:oracle/T3/FollowupOracleTests.fs",
+        "sha256": "b11c9a85b4a879f91b570ac68ec9e827187c27817377a7e4fdf4dca477609440"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T3/probes.json",
+      "sha256": "12f315d7ae0b0a5dc7f788f2449f8ba0e5c2ba73daa1815e3247a736705944d5"
+    },
+    "reference": {
+      "good": "sealed:reference/T3/good",
+      "trap": "sealed:reference/T3/trap",
+      "followup-good": "sealed:reference/T3/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T3/contract.json",
+    "sha256": "868438409aeb244957a725034514847410348c19d962ad4517e9ae5480c1f256",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:0b3f9b2b811fd4f76ad2092a03fc18e8d8e3b7ead5551dfd16a169eb1d32575c",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T3/followup-contract.json",
+    "sha256": "2a57ec5e74362654e3a28694ccf2eb18e1fd7d5c58bfccc326cf471302243cbc",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:ebd81c892ba892405beb772d88b0f797d7ee2e2f4e0b23999fb43e28560ac283",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T3.json"
+}

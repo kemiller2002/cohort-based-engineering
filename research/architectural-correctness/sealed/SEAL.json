@@ -1,0 +1,11 @@
+{
+  "schema": "arch001.seal/1",
+  "plaintextTarGzSha256": "887e9383983a62d1064f6462040411a742ef6d437df86803213ad733721bf91f",
+  "ciphertextSha256": "23c2f353ec7ede554e55c1f64d138a9f5dd6943811de708092ebeba6fa331e97",
+  "manifestSha256": "22f6aa96934a729031ad6402c9d60eb1c164158ea58e4b6c3f62d41af8ca3ed4",
+  "files": 180,
+  "cipher": "aes-256-cbc pbkdf2 iter 200000 (openssl enc)",
+  "openssl": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "sealedAt": "2026-10-21T10:13:55Z",
+  "verify": "openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass file:KEY -in arch001-sealed.tar.gz.enc | sha256sum  # equals plaintextTarGzSha256"
+}

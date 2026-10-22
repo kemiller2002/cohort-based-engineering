@@ -1,0 +1,117 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T5",
+  "workItem": "LEND-T5",
+  "title": "T5: Fines at the desk",
+  "categories": [
+    7
+  ],
+  "categoryNames": [
+    "decisions conflicting with existing constraints"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND-T5-R1",
+      "LEND-T5-R2",
+      "LEND-T5-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T5.md#LEND-T5-R1",
+      "requirements/T5.md#LEND-T5-R2",
+      "requirements/T5.md#LEND-T5-R3"
+    ],
+    "decisionIds": [
+      "DEC-003",
+      "DEC-006"
+    ],
+    "conflictIds": [
+      "CONFLICT-T5-STAFF-WAIVER"
+    ]
+  },
+  "followup": {
+    "title": "T5 follow-up: Staff fine waiver approved",
+    "requirementIds": [
+      "LEND-T5-F1"
+    ],
+    "requirementKeys": [
+      "requirements/T5-followup.md#LEND-T5-F1"
+    ],
+    "decisionIds": [
+      "DEC-003",
+      "DEC-006"
+    ],
+    "conflictIds": []
+  },
+  "conflict": true,
+  "files": {
+    "requirement": {
+      "source": "tasks/T5/requirement.md",
+      "target": "requirements/T5.md",
+      "sha256": "5d3b2c81ab7cf054de3e85675a3a2eb70897124b0bc7c49e29c5af1b5ebc7107"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T5/acceptance/T5AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T5AcceptanceTests.fs",
+        "sha256": "1b436cd811036815cf3eb074e35b64282eeda2130be96c28e0e7465731bc1630"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T5/followup.md",
+      "target": "requirements/T5-followup.md",
+      "sha256": "19e94fc23f73a89488116a8d06d4bad5da3d51f3d8d9bdcb3f8e20cbbcf5f641"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T5/followup-acceptance/T5FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T5FollowupAcceptanceTests.fs",
+        "sha256": "21fa05b7d3fec7aa8963c9c06c4a669befdf150dc60ba33f1883fad6411a6348"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T5/InitialOracleTests.fs",
+        "sha256": "719730afbca72577f26aff2c31523a38710ace8daa09af7c4ead34d05cc8cd46"
+      },
+      "followup": {
+        "path": "sealed:oracle/T5/FollowupOracleTests.fs",
+        "sha256": "5e7ade9d2642d2ec96ef62888a59d486a2cb2dff5a6504b769c7e353fc9a59ed"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T5/probes.json",
+      "sha256": "10243b63c43d8f3ea5c652e92a9756251b12a11f64a1c7f5cd8004b2db745d6a"
+    },
+    "reference": {
+      "good": "sealed:reference/T5/good",
+      "trap": "sealed:reference/T5/trap",
+      "conflict": "sealed:reference/T5/conflict",
+      "followup-good": "sealed:reference/T5/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T5/contract.json",
+    "sha256": "b25339c3e6a304227f59953f73806d05f0ad452a6bb1b871f0b9d1af185b156c",
+    "expectedOrdoAdmits": false,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": false,
+    "ordoExit": 1,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": [
+      "ORDO.CONTRACT.UNRESOLVED_CONFLICT"
+    ]
+  },
+  "followupContract": {
+    "path": "tasks/T5/followup-contract.json",
+    "sha256": "d29382779c3fe99bd27565fd69e14618b271cd4cb028d0cc687cced5ea07601b",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:9733940e058ddd07241d480da4585e9ae71b0fece8191af6fa75d98c44b302f4",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T5.json"
+}

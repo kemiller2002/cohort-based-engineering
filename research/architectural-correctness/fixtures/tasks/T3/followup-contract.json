@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:03f7bfdcaa28d51a74ca5092a550182525a43a3f305e09eddc57331db437085c",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T3-followup.md#LEND-T3-F1",
+        "originalId": "LEND-T3-F1",
+        "document": "requirements/T3-followup.md",
+        "location": "L12",
+        "revision": "sha256:03f7bfdcaa28d51a74ca5092a550182525a43a3f305e09eddc57331db437085c",
+        "contentDigest": "sha256:492d357ac5a8c1a9323db425081d4ec885222e0c4d5aa2f1c7f31a59d231b158"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-009",
+        "VERIFY-T3F-F1",
+        "COHORT-T3F"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T3-followup.md#LEND-T3-F2",
+        "originalId": "LEND-T3-F2",
+        "document": "requirements/T3-followup.md",
+        "location": "L20",
+        "revision": "sha256:03f7bfdcaa28d51a74ca5092a550182525a43a3f305e09eddc57331db437085c",
+        "contentDigest": "sha256:c951d84661662736411e239a372165e859ad801ab88e5f2ccc9ca4751479c2f1"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-009",
+        "VERIFY-T3F-F2",
+        "COHORT-T3F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-009",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND-T3-F1",
+        "requirements/T3-followup.md#LEND-T3-F2"
+      ],
+      "dependsOn": [],
+      "justification": "shelf capacity: main 8, east 4; a copy is never added to a full branch"
+    },
+    {
+      "id": "VERIFY-T3F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND-T3-F1"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    },
+    {
+      "id": "VERIFY-T3F-F2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND-T3-F2"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    },
+    {
+      "id": "COHORT-T3F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND-T3-F1",
+        "requirements/T3-followup.md#LEND-T3-F2"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    }
+  ]
+}

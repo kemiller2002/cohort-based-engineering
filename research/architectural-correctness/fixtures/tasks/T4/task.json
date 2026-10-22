@@ -1,0 +1,116 @@
+{
+  "schema": "arch001.task/1",
+  "id": "T4",
+  "workItem": "LEND-T4",
+  "title": "T4: Overdue notices",
+  "categories": [
+    6
+  ],
+  "categoryNames": [
+    "async operations"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND-T4-R1",
+      "LEND-T4-R2",
+      "LEND-T4-R3",
+      "LEND-T4-R4"
+    ],
+    "requirementKeys": [
+      "requirements/T4.md#LEND-T4-R1",
+      "requirements/T4.md#LEND-T4-R2",
+      "requirements/T4.md#LEND-T4-R3",
+      "requirements/T4.md#LEND-T4-R4"
+    ],
+    "decisionIds": [
+      "DEC-008"
+    ],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T4 follow-up: SMS notices",
+    "requirementIds": [
+      "LEND-T4-F1",
+      "LEND-T4-F2",
+      "LEND-T4-F3"
+    ],
+    "requirementKeys": [
+      "requirements/T4-followup.md#LEND-T4-F1",
+      "requirements/T4-followup.md#LEND-T4-F2",
+      "requirements/T4-followup.md#LEND-T4-F3"
+    ],
+    "decisionIds": [
+      "DEC-008"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T4/requirement.md",
+      "target": "requirements/T4.md",
+      "sha256": "69f4cb4ff47e4ef01a4838044d66e7614ff5047c7b71e71aaa7952ae6ff29b21"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T4/acceptance/T4AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T4AcceptanceTests.fs",
+        "sha256": "52dadcbe37022481380589f5c03d1525a2d8917a7d24379d245b7dd5013e5631"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T4/followup.md",
+      "target": "requirements/T4-followup.md",
+      "sha256": "09c3a853a03659d2933c34071db33b2097ddbe914a17dd6dd9d5f1c3e4bf0478"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T4/followup-acceptance/T4FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T4FollowupAcceptanceTests.fs",
+        "sha256": "a259e8600ece2b43161de0dfd8311e3259d2ea6cd6cbf32fdfaff78e16b6c7ca"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T4/InitialOracleTests.fs",
+        "sha256": "c9dc08fabfbbd0a3fe6c0ff4829c6f6ef72a06af89bbc1409289898fb438d85b"
+      },
+      "followup": {
+        "path": "sealed:oracle/T4/FollowupOracleTests.fs",
+        "sha256": "2b4fddde52b1f620ddd7f48c6faf27f0d70c8b09c8197f6c7a190e81d189cd04"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T4/probes.json",
+      "sha256": "75ce3dbd7953acd4d52fe35eb916e558f06671a111675c514205eee2dc8bd511"
+    },
+    "reference": {
+      "good": "sealed:reference/T4/good",
+      "trap": "sealed:reference/T4/trap",
+      "followup-good": "sealed:reference/T4/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T4/contract.json",
+    "sha256": "a0e3cf429d0ee669687a8782041e90e6d7eb6c4cddf9678301ee5ba0e11a8e85",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:a11a01c3f44b5bfd877be02cd68c9a04187995dc2f185f8f3799f82bcd0fe34f",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T4/followup-contract.json",
+    "sha256": "75ee2f6d6b9ca91edb10fd43d032617901f6246df1bef187fe2b3dfd25510086",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:5d4aa1d4e8436b26f29d67f36f3d360f678ee059ea45c7f0dbb967e17b6caa88",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 4,
+  "privateMetadata": "sealed:task-private/T4.json"
+}

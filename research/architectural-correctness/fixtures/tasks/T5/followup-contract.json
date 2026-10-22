@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:19e94fc23f73a89488116a8d06d4bad5da3d51f3d8d9bdcb3f8e20cbbcf5f641",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T5-followup.md#LEND-T5-F1",
+        "originalId": "LEND-T5-F1",
+        "document": "requirements/T5-followup.md",
+        "location": "L13",
+        "revision": "sha256:19e94fc23f73a89488116a8d06d4bad5da3d51f3d8d9bdcb3f8e20cbbcf5f641",
+        "contentDigest": "sha256:e2de007f30232196e30b7813c4d5be6046cbe5a7762163082b4a359155a15b53"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-003",
+        "DEC-006",
+        "VERIFY-T5F-F1",
+        "COHORT-T5F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-003",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND-T5-F1"
+      ],
+      "dependsOn": [],
+      "justification": "0.25 per day late, at most 10.00 per loan, assessed on return"
+    },
+    {
+      "id": "DEC-006",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND-T5-F1"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2 (approved by Finance): a staff member's fine is waived when assessed, by the standing approval 'DEC-006 rev 2'"
+    },
+    {
+      "id": "VERIFY-T5F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND-T5-F1"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "COHORT-T5F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND-T5-F1"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-006"
+      ]
+    }
+  ]
+}

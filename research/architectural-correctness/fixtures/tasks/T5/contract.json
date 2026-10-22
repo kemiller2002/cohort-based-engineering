@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:5d3b2c81ab7cf054de3e85675a3a2eb70897124b0bc7c49e29c5af1b5ebc7107",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T5.md#LEND-T5-R1",
+        "originalId": "LEND-T5-R1",
+        "document": "requirements/T5.md",
+        "location": "L9",
+        "revision": "sha256:5d3b2c81ab7cf054de3e85675a3a2eb70897124b0bc7c49e29c5af1b5ebc7107",
+        "contentDigest": "sha256:2049c6a5ac92986d1c6054c1889b2e2b5699b827752d060c6951c8400c1e93ce"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-003",
+        "DEC-006",
+        "VERIFY-T5-R1",
+        "COHORT-T5"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T5.md#LEND-T5-R2",
+        "originalId": "LEND-T5-R2",
+        "document": "requirements/T5.md",
+        "location": "L22",
+        "revision": "sha256:5d3b2c81ab7cf054de3e85675a3a2eb70897124b0bc7c49e29c5af1b5ebc7107",
+        "contentDigest": "sha256:61b733672b467306a5b4dff16276ff293c81edebb40b7ecd2423ea37562fb8fd"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-006",
+        "VERIFY-T5-R2",
+        "COHORT-T5"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T5.md#LEND-T5-R3",
+        "originalId": "LEND-T5-R3",
+        "document": "requirements/T5.md",
+        "location": "L32",
+        "revision": "sha256:5d3b2c81ab7cf054de3e85675a3a2eb70897124b0bc7c49e29c5af1b5ebc7107",
+        "contentDigest": "sha256:e94b904a1c478d4a9fe4fc51657856f4bcca6953cab2e08b26b5d13ee1d568df"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-006",
+        "VERIFY-T5-R3",
+        "COHORT-T5",
+        "CONFLICT-T5-STAFF-WAIVER"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-003",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5.md#LEND-T5-R1"
+      ],
+      "dependsOn": [],
+      "justification": "0.25 per day late, at most 10.00 per loan, assessed on return"
+    },
+    {
+      "id": "DEC-006",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5.md#LEND-T5-R1",
+        "requirements/T5.md#LEND-T5-R2",
+        "requirements/T5.md#LEND-T5-R3"
+      ],
+      "dependsOn": [],
+      "justification": "fines are assessed only by the schedule; no member type is exempt; a waiver needs a named approver for the specific fine"
+    },
+    {
+      "id": "VERIFY-T5-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5.md#LEND-T5-R1"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "VERIFY-T5-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5.md#LEND-T5-R2"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "VERIFY-T5-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5.md#LEND-T5-R3"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "COHORT-T5",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T5.md#LEND-T5-R1",
+        "requirements/T5.md#LEND-T5-R2",
+        "requirements/T5.md#LEND-T5-R3"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "CONFLICT-T5-STAFF-WAIVER",
+      "kind": "conflict",
+      "requirementKeys": [
+        "requirements/T5.md#LEND-T5-R3"
+      ],
+      "dependsOn": [
+        "DEC-006"
+      ],
+      "justification": "LEND-T5-R3 asks the command line to waive staff fines automatically; accepted DEC-006 allows no automatic waiver and no exempt member type; unresolved"
+    }
+  ]
+}

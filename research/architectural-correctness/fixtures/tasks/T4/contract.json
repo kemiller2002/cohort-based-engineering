@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:69f4cb4ff47e4ef01a4838044d66e7614ff5047c7b71e71aaa7952ae6ff29b21",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T4.md#LEND-T4-R1",
+        "originalId": "LEND-T4-R1",
+        "document": "requirements/T4.md",
+        "location": "L13",
+        "revision": "sha256:69f4cb4ff47e4ef01a4838044d66e7614ff5047c7b71e71aaa7952ae6ff29b21",
+        "contentDigest": "sha256:e7920f38a248d4b31e4e260d7a263a1a74973068e569a0d24d3ff71ddd4382c9"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-008",
+        "VERIFY-T4-R1",
+        "COHORT-T4"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T4.md#LEND-T4-R2",
+        "originalId": "LEND-T4-R2",
+        "document": "requirements/T4.md",
+        "location": "L24",
+        "revision": "sha256:69f4cb4ff47e4ef01a4838044d66e7614ff5047c7b71e71aaa7952ae6ff29b21",
+        "contentDigest": "sha256:f03a02350f928207fa880e3a7ba79ddd776a433ecea1d0e8d1312a121e1cb6e0"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-008",
+        "VERIFY-T4-R2",
+        "COHORT-T4"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T4.md#LEND-T4-R3",
+        "originalId": "LEND-T4-R3",
+        "document": "requirements/T4.md",
+        "location": "L38",
+        "revision": "sha256:69f4cb4ff47e4ef01a4838044d66e7614ff5047c7b71e71aaa7952ae6ff29b21",
+        "contentDigest": "sha256:df15423d8c19a25fb93481b2892edc8a12cb73b7d72752fe8d87c09f5fb84b32"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-008",
+        "VERIFY-T4-R3",
+        "COHORT-T4"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T4.md#LEND-T4-R4",
+        "originalId": "LEND-T4-R4",
+        "document": "requirements/T4.md",
+        "location": "L54",
+        "revision": "sha256:69f4cb4ff47e4ef01a4838044d66e7614ff5047c7b71e71aaa7952ae6ff29b21",
+        "contentDigest": "sha256:5247cc3ed8f5eeacca8ffa1bf9ee8f8a2ecd7181c53dd4c6dae6a39a9a297a5c"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-T4-R4",
+        "COHORT-T4"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-008",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T4.md#LEND-T4-R1",
+        "requirements/T4.md#LEND-T4-R2",
+        "requirements/T4.md#LEND-T4-R3"
+      ],
+      "dependsOn": [],
+      "justification": "one notice per overdue loan and due date; delivered is final; rejected is sent again; unknown is not re-sent until staff reconcile"
+    },
+    {
+      "id": "VERIFY-T4-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T4.md#LEND-T4-R1"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "VERIFY-T4-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T4.md#LEND-T4-R2"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "VERIFY-T4-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T4.md#LEND-T4-R3"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "VERIFY-T4-R4",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T4.md#LEND-T4-R4"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-T4",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T4.md#LEND-T4-R1",
+        "requirements/T4.md#LEND-T4-R2",
+        "requirements/T4.md#LEND-T4-R3",
+        "requirements/T4.md#LEND-T4-R4"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    }
+  ]
+}

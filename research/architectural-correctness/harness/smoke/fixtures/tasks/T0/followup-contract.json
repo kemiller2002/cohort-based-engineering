@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "requirements": [
+    {
+      "source": {"key": "requirements/T0-followup.md#LENDING-T0-R2", "originalId": "LENDING-T0-R2", "document": "requirements/T0-followup.md", "location": "L3",
+                 "revision": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+                 "contentDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"},
+      "disposition": {"kind": "modeled"},
+      "nodeIds": ["DEC-T0-FEE-CAP", "VERIFY-T0-R2", "COHORT-T0-R2"]
+    }
+  ],
+  "nodes": [
+    {"id": "DEC-T0-FEE-CAP", "kind": "decision", "requirementKeys": ["requirements/T0-followup.md#LENDING-T0-R2"], "dependsOn": [], "justification": "the fee rule lives in Lending.Semantic.Fees only"},
+    {"id": "VERIFY-T0-R2", "kind": "verificationObligation", "requirementKeys": ["requirements/T0-followup.md#LENDING-T0-R2"], "dependsOn": ["DEC-T0-FEE-CAP"]},
+    {"id": "COHORT-T0-R2", "kind": "cohort", "requirementKeys": ["requirements/T0-followup.md#LENDING-T0-R2"], "dependsOn": ["DEC-T0-FEE-CAP"]}
+  ]
+}
