@@ -1,0 +1,227 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "D",
+  "unit": 6,
+  "attempt": 1,
+  "task": "L06",
+  "fault": "F2-OUTSTANDING-SKIPS-WAIVED",
+  "head": "88a94b242bd9f99fba83ed7e2394fe1b47e90949",
+  "verifiedAt": "2026-10-22T18:04:56.5981275Z",
+  "verifyMs": 186964,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 59,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "Fine gains Waiver: Waiver option (Approver, WaivedOn); Fines.unpaid is 0 for a waived fine, so Fines.outstanding (owes, LEND-L04-R2 borrow check, LEND-L05 overpayment check) and the LEND-L05-R2 allocation leave it out; Paid and Amount are kept, nothing refunded.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1",
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-006",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#unpaid",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D2",
+        "statement": "Policy.branchManagers holds the DEC-006 revision 2 names, matched exactly; checks run unknown copy, not a branch manager, then no unwaived fine; the last unwaived fine for the copy in assessment order is waived, whichever member owes it.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L06-R1"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs#branchManagers",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D3",
+        "statement": "JSON stores each fine\u0027s waiver as {approver, waivedOn} or null; a missing key loads as not waived; format tag unchanged.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1"
+        ],
+        "refs": [
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decode",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U5-D3",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Ordo reported no diagnostics for contracts/L06.json; nothing was withheld.",
+      "LEND-L04-R3 remains unimplemented pending CONFLICT-L04-STAFF-BORROWING (Head of Lending and Staff Services).",
+      "Should approver names match case-insensitively, and should a waiver be refused for a fine that is already fully paid? Currently exact match, and a fully paid fine can be waived (nothing is refunded). Finance to confirm (U6-D2)."
+    ],
+    "rejectedAssumptions": [
+      "Team-lead note: \u0027Fines.outstanding already leaves out waived fines ... You only need to record the waiver.\u0027 False: before this unit there was no waiver anywhere in src/ and Fines.outstanding summed Amount - Paid for every fine (git show HEAD:src/Lending.Transition/Fines.fs). I implemented the exclusion in Fines.unpaid; tests/Lending.Tests/Acceptance/L06WaiverTests.fs covers owes, borrowing and payments.",
+      ".vac/verified-state.json still lists LEND-L04-R3 as verified by a visible acceptance test; it is not implemented (U4-D1) and no test covers it."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

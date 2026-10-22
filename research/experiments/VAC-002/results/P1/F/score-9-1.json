@@ -1,0 +1,248 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "F",
+  "unit": 9,
+  "attempt": 1,
+  "task": "L09",
+  "fault": "none",
+  "head": "37a580abf3cd392062ea012e7143eca0efd98be2",
+  "verifiedAt": "2026-10-22T18:16:26.5138376Z",
+  "verifyMs": 240107,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 106,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 9,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U9-D1",
+        "statement": "Opening.dueAfterLoanPeriod (Tier 2) adds Policy.loanPeriodDays and applies the vendored OpenDays.Calendar.nextOpen; Loans.borrow (DEC-001) and Loans.renew (DEC-004) both use it, a renewal counting from the current (already moved) due date. Overdue, fines and notices use the stored due date and follow automatically; stored due dates are not recomputed; the vendored file is not edited.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R1"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-004-renewals.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/VENDOR.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Opening.fs#dueAfterLoanPeriod",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L09.md#LEND-L09-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-001",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-004",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U9-D2",
+        "statement": "Two L04OwesTests expectations encoded due dates on Sundays (2026-05-03; 2026-04-19 inside the fine sum), contradicting DEC-001 revision 2 (2026-03-01); they now expect the next open day (due 2026-05-04; owes 2.00 instead of 2.25). What they check is unchanged.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R1"
+        ],
+        "refs": [
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L04OwesTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-001",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U9-D3",
+        "statement": "UseCases.parseDate (Tier 3 input translation) accepts exactly ASCII digits yyyy-MM-dd forming a real day; anything else, including 2026-02-30 and surrounding spaces, is the new LendingError.InvalidDate printed \u0027error: invalid date \u0027x\u0027 (yyyy-MM-dd)\u0027. Opening.ofDay (Tier 2) gives Open or Closed(day, nextOpen); Views.ofOpeningDay projects it; \u0027open\u0027 with a wrong word count prints \u0027usage: open \u003Cdate\u003E\u0027; help and README list \u0027open \u003Cdate\u003E\u0027 directly after \u0027notices \u003Cmember\u003E\u0027.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L09-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Application/UseCases.fs#parseDate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Opening.fs#ofDay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L09.md#LEND-L09-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": [
+      "L04OwesTests (unit 4) assumed due dates may fall on Sundays (expected \u0027due 2026-05-03\u0027 and \u0027owes 2.25\u0027); DEC-001 revision 2, dated 2026-03-01, says otherwise. Found when the suite failed after implementing LEND-L09-R1; corrected per U9-D2."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

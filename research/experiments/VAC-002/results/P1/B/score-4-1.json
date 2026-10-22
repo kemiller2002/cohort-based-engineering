@@ -1,0 +1,289 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 4,
+  "attempt": 1,
+  "task": "L04",
+  "fault": "none",
+  "head": "ce7789d468b0f3848b72e84b420c9a933317ffab",
+  "verifiedAt": "2026-10-22T17:18:14.2617861Z",
+  "verifyMs": 154492,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 36,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 4,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U4-D1",
+        "statement": "\u0060owes \u003Cmember\u003E\u0060 totals all of the member\u0027s recorded fines with the existing Fines.outstanding (no waivers exist yet, so nothing is subtracted); amounts are rendered with Views.money (two decimals).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#owes",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D2",
+        "statement": "The 5.00 threshold lives in Policy.maxOwedToBorrow (Tier 2), citing LEND-L04-R2 because no docs/decisions record covers it; the check is \u0060owed \u003C= 5.00\u0060, so exactly 5.00 may borrow. A refused borrow prints \u0060error: member m1 owes \u003Camount\u003E\u0060 with the full amount owed.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L04.md#LEND-L04-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs#maxOwedToBorrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D3",
+        "statement": "LEND-L04-R3 is implemented only as far as no higher authority forbids: staff are exempt from the L04-R2 money-owed refusal (Policy.maxOwedToBorrow Staff = None). Staff borrows are still refused for an unknown member/copy, a copy already on loan, a suspension (LEND-L01-R2, owner Head of Lending) and a copy reserved for the head of a holds queue (DEC-005, accepted, owner Head of Lending). README says a requirement contradicting an accepted decision is not a revision of it, and Staff Services owns neither DEC-005 nor L01. So \u0027never refused for any other reason\u0027 does not hold, and R3 is reported not-implemented and escalated.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R3",
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L04.md#LEND-L04-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-005-holds.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L04OwesTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D4",
+        "statement": "In Loans.borrow the money-owed check comes after the DEC-002 loan-limit check and before the DEC-005 holds check. The requirement does not give an order (only suspension is required to come first).",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D5",
+        "statement": "The fines exemption for staff does not touch fine assessment: staff fines are still assessed and counted by \u0060owes\u0060, as DEC-006 (no member type exempt from fines) requires.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R3"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L04OwesTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D6",
+        "statement": "No persistence change (the total is derived from stored fines). README\u0027s command list gains \u0060owes \u003Cmember\u003E\u0060 after \u0060overdue\u0060.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#encodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending (owner of DEC-005 and LEND-L01): should staff bypass the holds queue and/or suspensions? Either needs a new revision of DEC-005 and/or a change to LEND-L01-R2. Staff Services cannot authorise it through LEND-L04-R3.",
+      "Head of Lending: should the 5.00 borrowing threshold (LEND-L04-R2) be recorded as a docs/decisions record, as README says lending limits and fines are?",
+      "Carried over: should a suspended member\u0027s existing holds stay in the queue?"
+    ],
+    "rejectedAssumptions": [
+      "LEND-L04-R3 presents \u0027a staff borrow is never refused except at the loan limit\u0027 as achievable. It contradicts accepted DEC-005 (holds) and LEND-L01-R2 (suspensions), and is physically impossible for a copy already on loan or an unknown copy. Found by reading docs/decisions/DEC-005-holds.md, requirements/L01.md and Loans.borrow."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": true,
+    "conflictSurfaced": true,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

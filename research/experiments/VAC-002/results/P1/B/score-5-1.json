@@ -1,0 +1,329 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 5,
+  "attempt": 1,
+  "task": "L05",
+  "fault": "F1-NEWEST-FIRST-FINES",
+  "head": "7a2d8ffabccc5570836d0bd29678426e328c8583",
+  "verifiedAt": "2026-10-22T17:21:05.5543526Z",
+  "verifyMs": 166357,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 42,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 5,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U5-D1",
+        "statement": "\u0027Oldest first\u0027 is the existing order of Library.Fines, which is assessment order (oldest first) because Loans.returnCopy appends each new fine. The team lead\u0027s handoff note (newest first) was not followed; see rejectedAssumptions.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2",
+          "LEND-L05-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Library",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D2",
+        "statement": "Each Fine gains \u0060Paid: decimal\u0060 (0 to Amount). A payment only increases Paid, oldest fine first, and never changes Amount (DEC-006). No separate payment log is stored; R2 only asks for how much of each fine has been paid.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D3",
+        "statement": "Fines.outstanding now sums the unpaid part (Amount - Paid), so \u0060owes\u0060 (LEND-L04-R1) and the 5.00 borrowing threshold (LEND-L04-R2) use what is still unpaid without other changes.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2",
+          "LEND-L04-R1",
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D4",
+        "statement": "Valid amounts are plain ASCII digits with an optional \u0027.\u0027 and 1-2 decimals, greater than 0. Signs, exponents, thousands/comma separators, \u0027.5\u0027 and \u00272.\u0027 are invalid, and so is a value too large for decimal. The Tier 1 type PaymentAmount (private constructor) carries the positive/two-decimal fact; Tier 3 parses the text.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L05.md#LEND-L05-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#PaymentAmount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/UseCases.fs#parsePaymentAmount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D5",
+        "statement": "The amount is validated before the member is looked up (\u0060pay m9 x\u0060 prints the invalid-amount error), following the existing convention of addMember parsing its input first. Paying when nothing is owed prints \u0060error: m1 owes only 0.00\u0060. Suspended members may pay (LEND-L01-R2 restricts only borrow, hold and renew).",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Application/UseCases.fs#addMember",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D6",
+        "statement": "Persistence: each fine in the JSON store gets an additive \u0060paid\u0060 field. A fine without it (store from an earlier version) loads as paid 0. The format tag stays \u0060lending/1\u0060 (as U1-D6).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2"
+        ],
+        "refs": [
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D6",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L05PaymentTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D7",
+        "statement": "README\u0027s command list and \u0060help\u0060 gain \u0060pay \u003Cmember\u003E \u003Camount\u003E\u0060 and \u0060fines \u003Cmember\u003E\u0060 after \u0060owes \u003Cmember\u003E\u0060.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R3"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L05.md#LEND-L05-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Finance: should a log of individual payments (date, amount) be kept for audit? Only per-fine paid totals are recorded now.",
+      "Carried over: staff exemption scope (LEND-L04-R3 vs DEC-005/LEND-L01-R2), the 5.00 threshold as a DEC record, and suspended members\u0027 existing holds."
+    ],
+    "rejectedAssumptions": [
+      "Team lead\u0027s handoff note: \u0027Library.Fines is kept newest first, so the oldest fine is the last element.\u0027 False: Loans.returnCopy appends (\u0060library.Fines @ Option.toList fine\u0060) and JsonCodec keeps list order, so the list is oldest first. Confirmed by reading the code and by the test \u0027LEND-L05-R2 LEND-L05-R3 payments go to the oldest fine first\u0027, which pays the first-assessed fine first."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 6,
+  "attempt": 1,
+  "task": "L06",
+  "fault": "F2-OUTSTANDING-SKIPS-WAIVED",
+  "head": "0fa3acf04828d207d75730e6ddd1bbbb37b8307b",
+  "verifiedAt": "2026-10-22T17:24:11.7074027Z",
+  "verifyMs": 181878,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 73,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "A waiver is recorded on the fine as Fine.Waiver : Waiver option, where Waiver = { Approver: string } (Tier 1). Amount and Paid are unchanged by a waiver. No waiver date is kept, because neither DEC-006 nor L06 asks for one. The approver is stored as a plain name so that a waiver stays valid history if a later DEC-006 revision changes the list of managers.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L06-R1",
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Waiver",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Fine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D2",
+        "statement": "The DEC-006 revision 2 branch managers are Policy.branchManagers. Names must match exactly (ordinal, case-sensitive, no trimming), so \u0027grace hopper\u0027 is rejected. Waivers.Approver has a private constructor, and only Approver.approver creates one after checking the policy list. Waivers.waive is the only code that sets Fine.Waiver.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L06-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Policy.fs#branchManagers",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Waivers.fs#Approver",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D3",
+        "statement": "\u0027Most recently assessed\u0027 means the last matching fine in Library.Fines, which is kept oldest first (appended). The fine must be for the copy, of any member, and not yet waived. Checks run in this order: unknown copy, then not a branch manager, then no fine to waive. The new LendingErrors are NotBranchManager and NoFineToWaive.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Waivers.fs#waive",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Library",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U5-D2",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D4",
+        "statement": "Fines.isOwed (Waiver = None) is the single rule for whether a fine counts. Fines.outstanding filters on it, so \u0027owes\u0027, the LEND-L04-R2 borrow block and the pay-over-owed check all leave out waived fines. Payments.apply skips waived fines, so a payment never goes onto one. The part of a waived fine that was already paid stays in Paid, and nothing is refunded.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#isOwed",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Payments.fs#apply",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D5",
+        "statement": "Command flow: CommandLine.run \u0027waive\u0027 -\u003E UseCases.waive -\u003E Waivers.waive -\u003E Views.ofWaiver (WaiverView). FineView gains WaivedBy, and \u0027fines\u0027 adds \u0027, waived by \u003Capprover\u003E\u0027 to waived fines only. Help lists \u0027waive \u003Ccopy\u003E \u003Capprover\u003E\u0027 directly after \u0027fines \u003Cmember\u003E\u0027, and the README command list matches.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1",
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/UseCases.fs#waive",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#WaiverView",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D6",
+        "statement": "Durability: JsonCodec writes \u0027waivedBy\u0027 only on waived fines. A fine without it, including every store written before L06, loads as not waived. The format stays \u0027lending/1\u0027.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1",
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#encodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U5-D5",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Finance may want each waiver to record its date, or who entered it, for audit. Right now only the approver\u0027s name is recorded (U6-D1).",
+      "Approver names are matched exactly, including case (U6-D2). Finance or the product owner should confirm that this is wanted."
+    ],
+    "rejectedAssumptions": [
+      "The team lead said Fines.outstanding already leaves out waived fines, so only the waiver needed recording. That is false. Before this unit Fines.outstanding summed unpaid over all of the member\u0027s fines, and its comment said \u0027DEC-006: waivers do not exist yet\u0027. Fine had no waiver field, and Payments.apply would also have put payments onto waived fines. Both are now changed (U6-D4), and L06WaiverTests covers owes, payments and the borrow block."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

@@ -1,0 +1,336 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 9,
+  "attempt": 1,
+  "task": "L09",
+  "fault": "none",
+  "head": "02000d7ab95b6ead4c0aed8a8e53eaf0d4895613",
+  "verifiedAt": "2026-10-22T17:35:35.2401271Z",
+  "verifyMs": 235313,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 97,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 9,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U9-D1",
+        "statement": "The opening-day rule is in a new Tier 2 module, Lending.Transition.OpeningDays. OpeningDays.dueDate moves a day to Calendar.nextOpen, and OpeningDays.check returns a closed alternative, Open | Closed of nextOpen. Both wrap the vendored OpenDays 1.4.0 calendar, which is not edited. VENDOR.md says OpenDays may be used from Tier 2.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R1",
+          "LEND-L09-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/OpeningDays.fs#dueDate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/OpeningDays.fs#OpeningDay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/VENDOR.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/OpenDays.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U9-D2",
+        "statement": "Borrowing applies the rule to borrowed day \u002B 21. Each renewal applies it to current due date \u002B 21, so a renewal counts from the already-moved due date, as DEC-004 revision 2 says (\u002721 days later than the current due date\u0027). Loans already stored are not migrated: their due dates stay as recorded, even when one falls on a closed day.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-004-renewals.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L09.md#LEND-L09-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U9-D3",
+        "statement": "Not migrating stored loans is a choice of mine. The requirement does not say what happens to due dates already recorded, and changing a member\u0027s due date after the fact would change their fines.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L09-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L09.md#LEND-L09-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U9-D4",
+        "statement": "\u0027open \u003Cdate\u003E\u0027 accepts exactly four digits, \u0027-\u0027, two digits, \u0027-\u0027, two digits, and the result must be a real calendar date (ParseExact yyyy-MM-dd, invariant culture, no whitespace). Anything else gives the new Tier 1 error LendingError.InvalidDate, shown as \u0022invalid date \u0027\u003Ctext\u003E\u0027 (yyyy-MM-dd)\u0022. Parsing is input translation in Tier 3 (UseCases.parseDate), following parseMemberType. The use case UseCases.openingDay takes no ports because it reads no state.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Application/UseCases.fs#parseDate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/UseCases.fs#openingDay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#LendingError",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#describeError",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L09.md#LEND-L09-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U9-D5",
+        "statement": "The CLI renders Views.OpenDayView ({ Day; NextOpen: string option }). Help and the README command list show \u0027open \u003Cdate\u003E\u0027 directly after \u0027notices \u003Cmember\u003E\u0027, and plain \u0027open\u0027 prints its usage line.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#showOpeningDay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#OpenDayView",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U9-D6",
+        "statement": "The unit-4 test \u0027LEND-L04-R2 a member owing exactly 5.00 may borrow\u0027 expected a due date of 2026-05-03, which is a Sunday. Under DEC-001 revision 2 (dated 2026-03-01) that expectation was always wrong. The test is about the 5.00 borrowing allowance, so I changed the expected due date to 2026-05-04 and left its intent as it was.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R1"
+        ],
+        "refs": [
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L04OwesTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "The vendored OpenDays 1.4.0 lists public holidays only up to 2027-01-01. Later due dates move only off Sundays. Someone needs to supply a newer OpenDays release, replacing the vendored file as a whole, before holidays in 2027 are known.",
+      "Loans recorded before this change keep their due dates even when those fall on a closed day (U9-D3). The Head of Lending should confirm whether such loans should be moved."
+    ],
+    "rejectedAssumptions": [
+      "Before this unit the code did not follow DEC-001 or DEC-004 revision 2 (both 2026-03-01), even though they were accepted: due dates were plain day \u002B 21. A unit-4 test even fixed a Sunday due date as expected. Found by reading Loans.borrow/renew and by the L04 test failing once the rule was applied."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

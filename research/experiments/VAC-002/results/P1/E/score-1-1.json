@@ -1,0 +1,270 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "E",
+  "unit": 1,
+  "attempt": 1,
+  "task": "L01",
+  "fault": "none",
+  "head": "179e51605b18198c592659d89ae71e7fd2f761b9",
+  "verifiedAt": "2026-10-22T17:51:45.8076273Z",
+  "verifyMs": 95567,
+  "stagedTasks": [
+    "L01"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 18,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "Suspensions are stored in Library.Suspensions (Map\u003CMemberId, Suspension\u003E) rather than as a field on Member, keeping existing Member constructions source-compatible; absence means Active.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R1",
+          "LEND-L01-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Suspension",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/BaseTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D2",
+        "statement": "A suspension records its reason and the date it was imposed (SuspendedOn, via the Clock port); only the reason is displayed.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L01-R1"
+        ],
+        "refs": [],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D3",
+        "statement": "The JSON store gains an optional \u0027suspensions\u0027 array under the unchanged \u0027lending/1\u0027 format; stores without it load with nobody suspended.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R1"
+        ],
+        "refs": [
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decode",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L01SuspensionTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D4",
+        "statement": "The suspension guard runs right after the member lookup in borrow and place-hold (before copy/book lookup and all other rules); in renew it runs after the copy and loan lookups (where the member first becomes known) and before the DEC-004 conditions; return is unchanged.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs#place",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-004-renewals.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D5",
+        "statement": "No renew command exists on the command line; the renewal restriction is enforced in Tier 2 Loans.renew and no new command was added because help output is specified exactly.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R2",
+          "LEND-L01-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D6",
+        "statement": "A blank suspension reason is refused with \u0027error: a suspension needs a reason\u0027, after the unknown-member and already-suspended checks.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L01-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Catalog.fs#addMember",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D7",
+        "statement": "member \u003Cmember\u003E renders a Tier 3 view model (MemberStandingView); the three new commands are inserted in usage directly after \u0027loans \u003Cmember\u003E\u0027 and before \u0027help\u0027; README command list updated.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R3"
+        ],
+        "refs": [
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#MemberStandingView",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending: should a \u0027renew \u003Ccopy\u003E\u0027 command be added to the command line? Renewal is currently reachable only through Lending.Transition.Loans.renew, which now refuses suspended members.",
+      "Head of Lending: wording for a blank suspension reason is unspecified; implemented as \u0027error: a suspension needs a reason\u0027."
+    ],
+    "rejectedAssumptions": [
+      "LEND-L01-R2 implies a renew command exists; the command line has none (only Loans.renew in Tier 2), found by reading src/Lending.Host/Cli/CommandLine.fs."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

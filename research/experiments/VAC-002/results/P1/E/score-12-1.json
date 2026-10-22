@@ -1,0 +1,309 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "E",
+  "unit": 12,
+  "attempt": 1,
+  "task": "L12",
+  "fault": "none",
+  "head": "e476eb11df8df25d95a4c97a5f097eef1e54df70",
+  "verifiedAt": "2026-10-22T18:29:48.5723902Z",
+  "verifyMs": 283934,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10",
+    "L11",
+    "L12"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 98,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L10": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L11": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L12": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 12,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U12-D1",
+        "statement": "Policy.loanPeriodDays takes the member type (standard 21, student 14, staff 42); Opening.dueDateFrom memberType start applies it plus the open-day rule. Borrow uses the borrower\u0027s type; renew looks up the loan member\u0027s type after DEC-004\u0027s refusal checks.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Policy.fs#loanPeriodDays",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Opening.fs#dueDateFrom",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-001",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-004",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L12.md#LEND-L12-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U12-D2",
+        "statement": "Loans made before revision 3 keep their stored due dates (no migration). Renewing such a loan adds the borrower\u0027s current period to the due date it has.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R1"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-004-renewals.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L12LoanPeriodTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U12-D3",
+        "statement": "periods lists the member types in DEC-001\u0027s table order (Policy.memberTypes), using the type names the member command shows.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Policy.fs#memberTypes",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#loanPeriods",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L12.md#LEND-L12-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U12-D4",
+        "statement": "Existing tests changed by the new student/staff periods were updated. Due-date and amount checks get new expected values (BaseTests, L06WaiverTests, L10HoldPickupTests, L11ExportTests). The ordering tests (L02OverdueTests, L07NoticeTests) shift borrow dates so they keep checking ordering with the same due dates. The L09 sweep runs per member type.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L12.md#LEND-L12-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/BaseTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L02OverdueTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L06WaiverTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L07NoticeTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L09OpenDayTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

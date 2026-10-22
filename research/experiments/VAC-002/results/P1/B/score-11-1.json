@@ -1,0 +1,295 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 11,
+  "attempt": 1,
+  "task": "L11",
+  "fault": "none",
+  "head": "076537d7fb9dbed916c8546db2530d465c7f053e",
+  "verifiedAt": "2026-10-22T17:44:47.3444706Z",
+  "verifyMs": 284241,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10",
+    "L11"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 84,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L10": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L11": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 11,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U11-D1",
+        "statement": "The rows are projected in a new Tier 3 module, MemberExport. Views.fs is already at 390 lines, near the size limit. Each row reuses Views.memberTypeName and Views.money. Status comes from Standing.suspensionOf, and owes from Fines.outstanding, the same function \u0060owes\u0060 uses. Rows are sorted with String.CompareOrdinal on the member id.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L11-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L11.md#LEND-L11-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/MemberExport.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#owes",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Standing.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U11-D2",
+        "statement": "CSV encoding is output formatting, so it lives in the Host (Cli/Csv.fs) and the CLI renders only the view (ARC-BND-03). Fields containing \u0027,\u0027, \u0027\u0022\u0027, CR or LF are quoted, with inner quotes doubled. Header names are the view\u0027s MemberExport.header.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L11-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L11.md#LEND-L11-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/Csv.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#showMemberExport",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U11-D3",
+        "statement": "Records are separated by \u0022\\n\u0022, like every other multi-line command and as the provided acceptance test expects, rather than the CRLF that RFC 4180 suggests. There is no trailing line break. An empty library prints only the header.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L11-R1",
+          "LEND-L11-R2"
+        ],
+        "refs": [
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L11AcceptanceTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L11MemberExportTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U11-D4",
+        "statement": "The command line cannot type a double quote inside a name, because the tokenizer treats quotes as grouping. Quote and line-break escaping is therefore tested with members written straight to the store, as an old or JSON-edited store could contain them. The tokenizer was not changed.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L11-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#tokenize",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L11MemberExportTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U11-D5",
+        "statement": "\u0060help\u0060 and README list \u0060export-members\u0060 directly after \u0060expire-holds\u0060. It is a read-only query with no persistence change.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L11-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L11.md#LEND-L11-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending: should the export use CRLF record separators, strict RFC 4180, for spreadsheet tools (U11-D3)?",
+      "Carried over from unit 10: whether a suspended head of the queue blocks free copies, the copy of an expired hold, and the incorrect build-reports/opendays-2.0.0.md. Also LEND-L08-R2 vs DEC-008 and LEND-L04-R3 scope."
+    ],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

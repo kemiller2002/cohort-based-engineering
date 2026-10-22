@@ -1,0 +1,170 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "D",
+  "unit": 2,
+  "attempt": 1,
+  "task": "L02",
+  "fault": "none",
+  "head": "c846d58b121767b4bf5dd350508b92e5328bfd90",
+  "verifiedAt": "2026-10-22T17:53:42.3849384Z",
+  "verifyMs": 111422,
+  "stagedTasks": [
+    "L01",
+    "L02"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 26,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 2,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U2-D1",
+        "statement": "Tier 2 Loans.overdue computes days overdue with Fines.daysLate (the function returnCopy uses), keeps loans with days \u003E 0 (so a loan due today is not overdue) and sorts by days descending then copy id (ordinal).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L02-R1",
+          "LEND-L02-R2"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-003-fine-schedule.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-003",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#daysLate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#overdue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L02.md#LEND-L02-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D2",
+        "statement": "Tier 3 Views.overdue projects the count and the \u00271 day\u0027/\u0027N days\u0027 wording so the CLI does no arithmetic or comparison on lending values; \u0027overdue\u0027 with extra words prints its usage line.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L02-R1"
+        ],
+        "refs": [
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#overdue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#run",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D3",
+        "statement": "overdue is read-only and lists every overdue loan regardless of the member\u0027s standing (suspended members included).",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L02-R1"
+        ],
+        "refs": [],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Ordo reported no diagnostics for contracts/L02.json; nothing was withheld."
+    ],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

@@ -1,0 +1,229 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 2,
+  "attempt": 1,
+  "task": "L02",
+  "fault": "none",
+  "head": "ae20fb3538632343423b8f06b2e3e167c672c824",
+  "verifiedAt": "2026-10-22T17:13:16.6808031Z",
+  "verifyMs": 111027,
+  "stagedTasks": [
+    "L01",
+    "L02"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 24,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 2,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U2-D1",
+        "statement": "Days overdue are computed by the existing Fines.daysLate (the DEC-003 days-late function that returnCopy uses for its reported DaysLate). No second calculation was written, so overdue and return cannot disagree. A loan is overdue exactly when daysLate \u003E 0, which makes a loan due today not overdue.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L02-R1",
+          "LEND-L02-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#daysLate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L02.md#LEND-L02-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-003-fine-schedule.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D2",
+        "statement": "Selecting and ordering overdue loans is a Tier 2 rule: Loans.overdue today library returns Overdue { Loan; DaysLate } sorted by days late descending, then by copy id (ordinal string order, like Loans.loansOf). Tier 3 (UseCases.overdue, Views.OverdueView/ofOverdue) projects it, and the CLI only renders it.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L02-R1"
+        ],
+        "refs": [
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#overdue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#loansOf",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D3",
+        "statement": "UseCases.overdue returns a plain view list rather than a Result because the query cannot fail. \u0027overdue\u0027 with extra arguments falls through to the existing \u0027usage: overdue\u0027 handling.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L02-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#run",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D4",
+        "statement": "\u0027overdue\u0027 is added to CLI usage directly after \u0027member \u003Cmember\u003E\u0027 and to the README command list. The 1 day / N days wording is presentation and lives in the CLI.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L02-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L02.md#LEND-L02-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D5",
+        "statement": "No persisted state changed, so the JSON store format is untouched and durability is unaffected. The vendored OpenDays calendar is not used, because DEC-003 counts calendar days late and Fines.daysLate does not consult it.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L02-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/OpenDays.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#daysLate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

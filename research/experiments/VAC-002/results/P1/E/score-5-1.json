@@ -1,0 +1,333 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "E",
+  "unit": 5,
+  "attempt": 1,
+  "task": "L05",
+  "fault": "F1-NEWEST-FIRST-FINES",
+  "head": "c15c9e161fd280e103c91e21af65ea0ae21bf099",
+  "verifiedAt": "2026-10-22T18:01:35.3128163Z",
+  "verifyMs": 177381,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 47,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 5,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U5-D1",
+        "statement": "Oldest first is the order of Library.Fines, which is assessment order because Loans.returnCopy appends new fines; the handoff claiming newest-first order was not relied on.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2",
+          "LEND-L05-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D2",
+        "statement": "Each Fine gains a Paid field; Amount never changes. What is owed (Fines.outstanding, used by owes and the L04 borrowing gate) is the sum of Amount - Paid.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2",
+          "LEND-L04-R1",
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Fine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-006",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D3",
+        "statement": "Payments are also kept as a ledger (Library.Payments: payer, amount, date) in the order made, persisted in the store.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Payment",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D4",
+        "statement": "A payment\u0027s allocation is computed once when it is made (Fines.pay) and stored in Fine.Paid; fines assessed later start unpaid.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D5",
+        "statement": "PaymentAmount is a Tier 1 type with a private constructor (tryCreate: \u003E 0, at most two decimals); amount text must be digits with an optional \u0027.\u0027 and one or two decimals; signs, exponents, separators, \u0027.5\u0027 and \u00272.\u0027 are invalid.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#PaymentAmount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/UseCases.fs#parseAmount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D6",
+        "statement": "pay checks amount text first, then unknown member, then overpayment; a member owing nothing gets \u0027error: m1 owes only 0.00\u0027; suspension does not block paying.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Application/UseCases.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D7",
+        "statement": "The store writes \u0027paid\u0027 on each fine and a \u0027payments\u0027 array; stores without them load with nothing paid and no payments; format tag stays lending/1.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R1",
+          "LEND-L05-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decode",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D3",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D8",
+        "statement": "\u0027pay \u003Cmember\u003E \u003Camount\u003E\u0027 and \u0027fines \u003Cmember\u003E\u0027 are listed in help, in that order, directly after \u0027owes \u003Cmember\u003E\u0027; README command list updated.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": [
+      "The team-lead handoff said Library.Fines is kept newest first. It is oldest first: Loans.returnCopy appends each new fine (library.Fines @ Option.toList fine, src/Lending.Transition/Loans.fs), and the JSON codec preserves list order. Found by reading the code; the tests on fines ordering confirm it."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

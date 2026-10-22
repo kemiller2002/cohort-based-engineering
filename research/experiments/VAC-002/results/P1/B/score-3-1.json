@@ -1,0 +1,252 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 3,
+  "attempt": 1,
+  "task": "L03",
+  "fault": "none",
+  "head": "47dc9676251b9ee92ed5710795f5a7eab6262975",
+  "verifiedAt": "2026-10-22T17:15:34.7403445Z",
+  "verifyMs": 132682,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 29,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 3,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U3-D1",
+        "statement": "\u0060renew \u003Ccopy\u003E\u0060 calls the existing Tier 2 rule Loans.renew unchanged; refusal reasons and their order (overdue, limit, holds) come from it and the existing error texts in Views.describeError, so DEC-004 stays the single authority.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L03-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#describeError",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-004-renewals.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L03.md#LEND-L03-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D2",
+        "statement": "A suspended member\u0027s renewal is refused with \u0060error: member m1 is suspended\u0060 before any DEC-004 reason, although L03-R1 lists only DEC-004 reasons: LEND-L01-R2 requires the suspension check before every other lending rule, and L03 does not revise it.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L03-R1",
+          "LEND-L01-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L03.md#LEND-L03-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D4",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L03RenewTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D3",
+        "statement": "The \u00272\u0027 in \u0060(renewal N of 2)\u0060 is taken from Policy.renewLimit through Views.RenewView, not written in the CLI.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L03-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Policy.fs#renewLimit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#ofRenew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D4",
+        "statement": "LoanView gains \u0060Renewed: int option\u0060 (None when never renewed); \u0060loans\u0060 renders \u0060(renewed N)\u0060 for any N \u003E= 1, e.g. \u0060(renewed 2)\u0060 after two renewals, extrapolating from the single example given.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L03-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L03.md#LEND-L03-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#LoanView",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D5",
+        "statement": "No persistence change: renewal count was already stored (\u0060renewals\u0060 in the JSON loan). README\u0027s command list gains \u0060renew \u003Ccopy\u003E\u0060 after \u0060return \u003Ccopy\u003E\u0060; \u0060renew\u0060 without a copy prints \u0060usage: renew \u003Ccopy\u003E\u0060.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L03-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#encodeLoan",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending: confirm the suspension refusal for \u0060renew\u0060 (U3-D2) is intended, since L03 lists only DEC-004 reasons.",
+      "Carried over from unit 1: should a suspended member\u0027s existing holds stay in the queue?"
+    ],
+    "rejectedAssumptions": [
+      "L03-R1 implies the only renewal refusals are DEC-004\u0027s three reasons; LEND-L01-R2 adds a fourth (member suspended), found by checking Loans.renew."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

@@ -1,0 +1,271 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 4,
+  "attempt": 1,
+  "task": "L04",
+  "fault": "none",
+  "head": "ad33895568d92066778f5f5adf187aa7838c3ad8",
+  "verifiedAt": "2026-10-22T17:18:15.5169959Z",
+  "verifyMs": 155636,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 46,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 4,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U4-D1",
+        "statement": "What a member owes is the existing Tier 2 function Fines.outstanding, the sum of every assessed fine of that member. Nothing is subtracted, because DEC-006 lets only a named approver\u0027s waiver reduce a fine and waivers do not exist in the system yet. \u0027owes\u0027 goes CommandLine.run -\u003E UseCases.owes -\u003E Views.owed (Views.OwedView). Amounts use Views.money, so they always have two decimals. An unknown member gives the existing UnknownMember error.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#owed",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#money",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D2",
+        "statement": "The 5.00 threshold is the Tier 2 value Policy.maxOwedToBorrow, and the rule is Fines.ensureMayBorrow (owed \u003C= 5.00 may borrow). It fails with a new LendingError case, MemberOwes(member, owed), rendered as \u0027member m1 owes 5.25\u0027. In Loans.borrow it runs right after the LEND-L01 suspension guard and before the copy lookup and the DEC-002/DEC-005 checks. A suspended member who also owes therefore gets \u0027is suspended\u0027 (LEND-L01-R2: suspension is checked before every other rule), and a member who owes gets \u0027owes\u0027 even for an unknown copy. Holds, renewals and returns are not blocked, because R2 names only borrowing.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs#maxOwedToBorrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D3",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D3",
+        "statement": "LEND-L04-R3 was not implemented, and the R2 block applies to staff as to every member. Read literally, R3 (\u0027a staff member\u0027s borrow is never refused for any other reason\u0027) contradicts the accepted decision DEC-005 (holds: copies go only to the head of the queue). README says a requirement that contradicts an accepted decision is not a revision of it, and Staff Services is not DEC-005\u0027s owner. R3 also contradicts LEND-L01-R2 (suspended members cannot borrow; owner Head of Lending) and LEND-L04-R2 (owner Head of Lending, no staff exemption). It cannot hold even in principle for an unknown copy or a copy already on loan. The part of R3 that is consistent, that staff may borrow up to their DEC-002 limit of 10, already holds through Policy.maxLoans. No exemption was added.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R3",
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L04.md#LEND-L04-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-005-holds.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-002-loan-limits.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs#maxLoans",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D4",
+        "statement": "\u0027owes \u003Cmember\u003E\u0027 is listed in help directly after \u0027overdue\u0027 and added to the README command list. No persisted state changed, because fines were already stored in the JSON \u0027fines\u0027 array. Money owed therefore survives a restart, and older stores load unchanged.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R1",
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#encodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "LEND-L04-R3 (Staff Services) against LEND-L04-R2 and LEND-L01-R2 (Head of Lending): should staff be exempt from the money-owed block or from suspension? The Head of Lending and Staff Services need to agree on this. Right now staff are blocked like everyone else.",
+      "LEND-L04-R3 against DEC-005 (holds): exempting staff from hold queues would need a new revision of DEC-005 from its owner, the Head of Lending."
+    ],
+    "rejectedAssumptions": [
+      "LEND-L04-R3 presents itself as compatible with DEC-002 (\u0027while they are below their loan limit\u0027), but its \u0027never refused for any other reason\u0027 clause conflicts with DEC-005, LEND-L01-R2 and LEND-L04-R2. I found this by comparing the requirement with docs/decisions and the borrow guards in Loans.borrow."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": true,
+    "conflictSurfaced": true,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

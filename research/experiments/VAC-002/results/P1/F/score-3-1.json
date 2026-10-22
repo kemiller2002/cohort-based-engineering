@@ -1,0 +1,205 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "F",
+  "unit": 3,
+  "attempt": 1,
+  "task": "L03",
+  "fault": "none",
+  "head": "734ac49e1f00dbb63611cfc101d8c1ebf89681c0",
+  "verifiedAt": "2026-10-22T17:55:57.3632760Z",
+  "verifyMs": 130407,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 38,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 3,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U3-D1",
+        "statement": "\u0027renew \u003Ccopy\u003E\u0027 calls a new UseCases.renew over the existing Tier 2 Loans.renew, so DEC-004\u0027s refusals, their order and existing error texts are reused unchanged. Loans.renew also applies the LEND-L01-R2 suspension check, so a suspended member\u0027s renewal prints \u0027error: member m1 is suspended\u0027; this resolves the unit 1 open question about a missing renew command.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L03-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-004",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#describeError",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D3",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D4",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D2",
+        "statement": "The limit in \u0027renewal N of M\u0027 comes from Tier 2 Policy.renewLimit via Views.ofRenew, so DEC-004\u0027s number is not duplicated.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L03-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Policy.fs#renewLimit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#ofRenew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D3",
+        "statement": "LoanView gains Renewals; the CLI appends \u0027 (renewed N)\u0027 only when N \u003E 0, so never-renewed loans render as before. Renewals were already persisted, so the store format is unchanged. \u0027renew \u003Ccopy\u003E\u0027 is listed in help and README directly after \u0027return \u003Ccopy\u003E\u0027.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L03-R2",
+          "LEND-L03-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#encodeLoan",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L03.md#LEND-L03-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

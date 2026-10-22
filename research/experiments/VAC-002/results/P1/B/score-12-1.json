@@ -1,0 +1,360 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 12,
+  "attempt": 1,
+  "task": "L12",
+  "fault": "none",
+  "head": "52857c0a40ac77ea45580c285878460ac0637a9e",
+  "verifiedAt": "2026-10-22T17:50:05.8702213Z",
+  "verifyMs": 313092,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10",
+    "L11",
+    "L12"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 90,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L10": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L11": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L12": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 12,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U12-D1",
+        "statement": "Policy.loanPeriodDays is now an exhaustive match on MemberType (standard 21, student 14, staff 42), and Policy.dueDateAfter takes the member type. Borrow passes the borrower\u0027s type. Renew looks up the loan\u0027s member and passes their current type. Both still move a closed-day due date with OpenDays.Calendar.onOrAfter.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L12.md#LEND-L12-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-001",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-004",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-004-renewals.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs#dueDateAfter",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U12-D2",
+        "statement": "\u0027Loans made before this change keep their due dates\u0027 is met because due dates are stored on each loan and never recomputed. No migration or store change was made. Renewing such a loan adds the borrower\u0027s new period to its stored due date (DEC-004 revision 3 says a renewal adds the borrower\u0027s loan period, with no exception for older loans).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R1"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-004-renewals.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L12LoanPeriodTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U12-D3",
+        "statement": "\u0060periods\u0060 is a pure projection, Views.loanPeriods, over Policy.memberTypes (the DEC-001 table order: standard, student, staff). It does not touch the store. The CLI renders \u0060loan periods: \u003Ctype\u003E \u003Cn\u003E days, ...\u0060. \u0060help\u0060 and README list it directly after \u0060export-members\u0060.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L12.md#LEND-L12-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#loanPeriods",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#showLoanPeriods",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U12-D4",
+        "statement": "Nine existing tests failed only because student and staff due dates changed. Each was updated where R1 changes what it checks, with a comment and without weakening its intent:\n- BaseTests (the head-of-queue student is due 2026-03-16);\n- L02 (borrow days shifted so the same due dates and ties result);\n- L04-R2 and L04-R3 (return days shifted to keep the same days late and fines);\n- L07 (the notice body shows the student due date 2026-03-18);\n- L10HoldPickupTests (four student/staff due dates; in one, staff copy c2 is no longer late on return).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L12-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L12.md#LEND-L12-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/BaseTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L02OverdueTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L04OwesTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L07NoticeTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L10HoldPickupTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U12-D5",
+        "statement": "A renewal uses the member\u0027s type at the time of renewal. Member types cannot currently change, so this has no observable difference from using the type at borrowing.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L12-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending: should renewing a loan made before revision 3 use the new period of the borrower\u0027s type (as implemented, per DEC-004 revision 3) or the old 21 days?",
+      "Carried over: U11-D3 CSV line endings; unit 10 hold questions; LEND-L08-R2 vs DEC-008; LEND-L04-R3 scope."
+    ],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

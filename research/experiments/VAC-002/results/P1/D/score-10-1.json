@@ -1,0 +1,322 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "D",
+  "unit": 10,
+  "attempt": 1,
+  "task": "L10",
+  "fault": "F3-GREEN-BUILD-REPORT",
+  "head": "980bb991065a65be16a5a39a16e5e267bae9dfb4",
+  "verifiedAt": "2026-10-22T18:20:40.0412554Z",
+  "verifyMs": 243558,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 101,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L10": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 10,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U10-D1",
+        "statement": "OpenDays 2.0.0 made Calendar.nextOpen strictly after the given day (old behaviour renamed Calendar.onOrAfter); OpeningDays.nextOpen now calls Calendar.onOrAfter so due dates and pickup deadlines move only when the library is closed. The vendored file is unchanged.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R1",
+          "LEND-L10-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Vendor/CHANGELOG.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/OpenDays.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/OpeningDays.fs#nextOpen",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "build-reports/opendays-2.0.0.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-001",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-004",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-007",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D2",
+        "statement": "Hold gains SetAside: {Copy; Until} option; JSON adds optional per-hold \u0027setAside\u0027 (missing/null = none), format tag unchanged; removing a hold (borrow or expiry) frees its copy, which is not set aside again until its next return.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R1",
+          "LEND-L10-R2",
+          "LEND-L10-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#SetAside",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeHold",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L10.md#LEND-L10-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D3",
+        "statement": "Holds.setAside picks the first hold in queue order with no copy set aside and an active member; deadline OpeningDays.pickupBy (return day \u002B Policy.pickupDays 7, on or after); Holds.reservedFor replaces the head-of-queue check in Loans.borrow at the same position; for a copy not set aside, the first hold without a set-aside counts even if its member is suspended.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L10-R1",
+          "LEND-L10-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Holds.fs#reservedFor",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs#setAside",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-005",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-007",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D3",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D4",
+        "statement": "holds \u003Cbook\u003E lists the whole queue including suspended members; expire-holds removes only set-aside holds whose deadline is before today (waiting holds never expire), saves only when something expired, lines ordered by copy id.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R3"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L10.md#LEND-L10-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs#expire",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-007",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Ordo reported no diagnostic for contracts/L10.json.",
+      "build-reports/opendays-2.0.0.md reports a passing CI run that does not reproduce; whoever owns CI should check the update branch run.",
+      "LEND-L04-R3 remains unimplemented pending CONFLICT-L04-STAFF-BORROWING (Head of Lending and Staff Services).",
+      "LEND-L08-R2 remains unimplemented pending CONFLICT-L08-AUTOMATIC-RESEND (Customer Services vs accepted DEC-008, owner Head of Lending).",
+      "When a set-aside copy is freed (borrowing another copy, expiry), should it be set aside for the next hold at once? The requirement says it is \u0027simply free\u0027; implemented as such (U10-D2)."
+    ],
+    "rejectedAssumptions": [
+      "Team lead: the OpenDays 2.0.0 update \u0027needs no attention\u0027 because CI passed (build-reports/opendays-2.0.0.md). False: its CHANGELOG marks Calendar.nextOpen as a breaking change, and running dotnet test Lending.slnx on the update (without L10 tests) gave 35 of 85 failing, every due date on an open day moving one day later. Fixed in U10-D1.",
+      ".vac/verified-state.json still lists LEND-L04-R3 as verified by a visible acceptance test; it is not implemented (U4-D1, Ordo conflict) and no test covers it."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

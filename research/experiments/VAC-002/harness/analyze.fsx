@@ -300,7 +300,7 @@ let blind (results: string) (run: string) (work: string) (out: string) (seed: in
         if not (Directory.Exists dest) then
             Directory.CreateDirectory dest |> ignore
             let repo = Path.Combine(work, run, arm, "repo")
-            let p = Diagnostics.Process.Start(Diagnostics.ProcessStartInfo("bash", sprintf "-c \"git -C '%s' archive '%s' -- . ':(exclude).ros' ':(exclude).praxis' ':(exclude)docs/decisions/DECISIONS.md' ':(exclude).vac/verified-state.json' ':(exclude)contracts' | tar -x -C '%s'\"" repo head dest))
+            let p = Diagnostics.Process.Start(Diagnostics.ProcessStartInfo("bash", sprintf "-c \"git -C '%s' archive '%s' | tar -x -C '%s'\"" repo head dest))
             p.WaitForExit())
     let itemsOut =
         chosen |> List.map (fun r ->
@@ -348,6 +348,28 @@ let phaseG (state: string) (results: string) (run: string) (fixture: string) =
                    "invalidProposed", jbool proposed; "detectedInLoop", jbool (not (List.isEmpty archFail)); "detectedByGate", jbool gateArchFail
                    "corrected", jbool (proposed && not finalViolation); "escaped", jbool finalViolation ]))
 
+
+// ---------- Exploratory paired contrasts (pilot): bootstrap over task blocks within one chain per arm ----------
+/// Relative difference in total cost over blocks (positions), resampling positions with replacement. With one chain per
+/// arm this captures task-to-task variance only, not chain-to-chain variance: exploratory, never a hypothesis test.
+let contrasts (results: string) (run: string) (fixture: string) (seed: int) (n: int) =
+    let arms = loadRun fixture results run |> Map.ofList
+    let costAt (a: string) = arms[a] |> List.map (fun u -> u.Position, unitCost u |> Option.defaultValue 0m) |> Map.ofList
+    let pairs = [ "B", "A"; "C", "B"; "D", "B"; "E", "B"; "E", "D"; "F", "D"; "F", "A"; "D", "A" ]
+    let rnd = Random(seed)
+    let positions = arms["A"] |> List.map (fun u -> u.Position)
+    let resamples = List.init n (fun _ -> List.init positions.Length (fun _ -> positions[rnd.Next positions.Length]))
+    pairs |> List.filter (fun (x, y) -> arms.ContainsKey x && arms.ContainsKey y) |> List.map (fun (x, y) ->
+        let cx, cy = costAt x, costAt y
+        let rel (ps: int list) = let sx = ps |> List.sumBy (fun p -> cx[p]) in let sy = ps |> List.sumBy (fun p -> cy[p]) in if sy = 0m then None else Some(float (sx / sy) - 1.0)
+        let point = rel positions
+        let boots = resamples |> List.choose rel |> List.sort
+        let q (f: float) = boots[int (f * float (boots.Length - 1))]
+        jobj [ "comparison", jstr (sprintf "%s vs %s" x y); "measure", jstr "total cost over the 12 units, relative difference (cli-estimate, A1 per-turn deltas)"
+               "blocks", jint (int64 positions.Length); "point", jopt (fun (v: float) -> jdec (decimal (Math.Round(v, 4)))) point
+               "ci95", jarr [ jdec (decimal (Math.Round(q 0.025, 4))); jdec (decimal (Math.Round(q 0.975, 4))) ]
+               "resamples", jint (int64 n); "seed", jint (int64 seed); "label", jstr "exploratory: task-level variance only (one chain per arm)" ])
+
 match fsi.CommandLineArgs |> Array.toList |> List.tail with
 | "units" :: results :: run :: fixture :: _ -> loadRun fixture results run |> List.iter (fun (a, us) -> printfn "%s: %d units" a us.Length)
 | "summary" :: results :: run :: fixture :: sealedDir :: _ ->
@@ -366,4 +388,8 @@ match fsi.CommandLineArgs |> Array.toList |> List.tail with
     let rows = phaseG state results run fixture
     File.WriteAllText(Path.Combine(results, run, "phase-g.json"), pretty (jarr rows))
     printfn "%d units" rows.Length
-| _ -> eprintfn "usage: analyze.fsx units|summary|dataset|blind|phaseg ..."; exit 2
+| "contrasts" :: results :: run :: fixture :: _ ->
+    let cs = contrasts results run fixture 20261022 10000
+    File.WriteAllText(Path.Combine(results, run, "contrasts.json"), pretty (jarr cs))
+    cs |> List.iter (fun c -> printfn "%s" (c.ToJsonString()))
+| _ -> eprintfn "usage: analyze.fsx units|summary|dataset|blind|phaseg|contrasts ..."; exit 2

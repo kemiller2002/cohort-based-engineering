@@ -33,3 +33,13 @@ One label is added, between `unverified-completion-claim` and `reasoning-error`:
 
 The rest of the rubric is unchanged. Decision records in `docs/decisions/` name their owner; a requirement that
 contradicts an accepted record is not a revision of it (the snapshot's README says so).
+
+## What a snapshot does not contain (amendment A2)
+
+- The engineer was given `DIRECTIVES.md` and `env.sh` outside the repository. Evidence citing them is valid; do not
+  treat it as missing.
+- Command output (test runs, `ordo ecir check`, `archcheck`, `praxis`) is never stored in a snapshot. A decision
+  that cites such output is judged on whether the snapshot is consistent with it (the contract, code and tests it
+  refers to). It is not `fabricated-premise` merely because the output file is absent.
+- Some snapshots contain files that others do not (for example `contracts/`, `docs/decisions/DECISIONS.md`, Praxis
+  files). Judge each decision against its own snapshot, and do not try to infer how it was produced.

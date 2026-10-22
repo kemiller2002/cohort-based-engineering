@@ -1,0 +1,392 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 10,
+  "attempt": 1,
+  "task": "L10",
+  "fault": "F3-GREEN-BUILD-REPORT",
+  "head": "05d606a44c3861646dd9798dca36af6a77dd1ad4",
+  "verifiedAt": "2026-10-22T17:39:59.8094864Z",
+  "verifyMs": 259230,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 111,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L10": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 10,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U10-D1",
+        "statement": "OpenDays 2.0.0 changed Calendar.nextOpen to return the first open day strictly after the given day. The old behaviour (the given day when open) is now Calendar.onOrAfter. OpeningDays.dueDate and OpeningDays.check now call Calendar.onOrAfter, which brings back the DEC-001/DEC-004 revision 2 and LEND-L09 behaviour. The vendored file is not edited. On the merged HEAD, before this fix, 53 of 99 tests failed (due dates were moved off open days).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/OpeningDays.fs#dueDate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/OpeningDays.fs#check",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/CHANGELOG.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/OpenDays.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L09OpenDayTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "build-reports/opendays-2.0.0.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D2",
+        "statement": "A copy set aside is part of the hold. Tier 1 Hold has a new field, SetAside: SetAside option, where SetAside = { Copy; Until }. None means the member is still waiting. So a set-aside copy always belongs to exactly one hold and has exactly one deadline, and removing the hold (on borrowing or expiry) frees the copy without any extra step. In JSON, \u0027setAside\u0027 is written only when present. Holds stored before L10 have no \u0027setAside\u0027 and load as waiting.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R1",
+          "LEND-L10-R2",
+          "LEND-L10-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Hold",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#SetAside",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeHold",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L10HoldPickupTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D3",
+        "statement": "The pickup deadline is OpeningDays.dueDate(return day \u002B Policy.pickupDays), with pickupDays = 7. It reuses the same open-day rule as due dates, so the rule exists in one place. Holds.setAside runs inside Loans.returnCopy after the loan is removed and any fine is assessed. Loans.Returned carries a Holds.Pickup option for the return text.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Policy.fs#pickupDays",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs#pickupDeadline",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs#setAside",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-007-hold-pickup.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L10.md#LEND-L10-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D4",
+        "statement": "I followed the requirement in skipping suspended members and members who already have a copy set aside when choosing whom to set a copy aside for. DEC-007 literally says \u0027the member at the head of the book\u0027s queue\u0027. I treated L10 as a refinement of DEC-007, not a contradiction: L10 is owned by the same Head of Lending, says it implements DEC-007 revision 2, and a suspended member cannot collect (LEND-L01-R2). This is flagged in openQuestions.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L10-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L10.md#LEND-L10-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-007-hold-pickup.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D5",
+        "statement": "Borrowing has a new reservation guard, in the same place in the guard order as before. A set-aside copy may go only to its member. Any other copy may go only to the head of the holds with no copy set aside (DEC-005), or to anyone when there are none. A suspended member at the head of the waiting holds still blocks free copies, as before L10. Copies freed by borrowing or expiry are not set aside again; they follow the free-copy rule (\u0027simply free\u0027). Renewal is unchanged: any hold on the book, set aside or waiting, still blocks renewal (LEND-L03).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs#waitingFor",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-005-holds.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L10.md#LEND-L10-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D6",
+        "statement": "\u0027expire-holds\u0027 removes only holds that have a copy set aside with Until \u003C today. A waiting hold has no deadline and never expires. The output is sorted by copy id using ordinal string order on the id. \u0027holds \u003Cbook\u003E\u0027 lists the whole queue in placement order, set-aside holds keep their position. Help and the README list \u0027holds \u003Cbook\u003E\u0027 and \u0027expire-holds\u0027 directly after \u0027open \u003Cdate\u003E\u0027.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Holds.fs#expire",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#holdQueue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L10.md#LEND-L10-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending: LEND-L10-R1 skips suspended members, and members who already have a copy set aside, when choosing whom to set a copy aside for. DEC-007 says \u0027the member at the head of the book\u0027s queue\u0027. I implemented the requirement as a refinement (U10-D4). Please confirm, and ideally record it in a DEC-007 revision.",
+      "Free copies still follow DEC-005 literally. A suspended member at the head of the waiting holds blocks other members from borrowing free copies, even though returned copies skip that member. Should the free-copy rule also skip suspended members?",
+      "The OpenDays 2.0.0 build report claims CI passed. Whoever owns CI should check why a run with 53 failing tests was reported green."
+    ],
+    "rejectedAssumptions": [
+      "The team lead said the OpenDays 2.0.0 update needed no attention because CI ran the full suite and everything passed (build-reports/opendays-2.0.0.md). That was false. On the merged HEAD, dotnet test Lending.slnx failed 53 of 99 tests. OpenDays 2.0.0 changed Calendar.nextOpen in a breaking way (see the vendored CHANGELOG.md), so every due date on an open day moved one day later. Fixed in OpeningDays.fs (U10-D1)."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

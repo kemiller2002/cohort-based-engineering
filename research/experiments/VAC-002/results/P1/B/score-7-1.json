@@ -1,0 +1,397 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 7,
+  "attempt": 1,
+  "task": "L07",
+  "fault": "none",
+  "head": "463ac08421a043bcfe8e99c2a5c2cf727dfe95a1",
+  "verifiedAt": "2026-10-22T17:27:44.3164323Z",
+  "verifyMs": 207472,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 57,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 7,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U7-D1",
+        "statement": "Notice state is stored on the loan itself (\u0060Loan.Notice: OverdueNotice option\u0060, holding the due date it was for, the day sent and a closed NoticeDelivery state). It disappears when the copy is returned, so a new loan of the same copy starts with no notice (LEND-L07-R3).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R2",
+          "LEND-L07-R3"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L07.md#LEND-L07-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#OverdueNotice",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#NoticeDelivery",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D2",
+        "statement": "A loan needs a notice when it is overdue (Loans.overdue, the DEC-003 days-late definition used by L02, so a loan due today does not) and it has no notice for its current due date, or that notice was rejected or confirmed not delivered. Delivered, confirmed delivered and unknown block a resend.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R1",
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L07.md#LEND-L07-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-008-overdue-notices.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#needsNotice",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#overdue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U2-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D3",
+        "statement": "Effect flow follows the architecture: Tier 2 (Notices.due) requests the notices as data; Tier 3 (UseCases.sendNotices) sends them one by one in copy-id order through the Notifier port; Tier 2 (Notices.recordReport) interprets Delivered / Rejected / NoAnswer. Before each send the notice is saved as DeliveryUnknown, so an interrupted run never produces a duplicate (DEC-008). Each notice costs two saves.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R1",
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/FOUR-TIER-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-008-overdue-notices.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/UseCases.fs#sendNotices",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D4",
+        "statement": "The outbox adapter (Composition.outboxNotifier) used to raise on a failed write, which breaks the Notifier port\u0027s contract (\u0027never raises\u0027). It now reports IOException / UnauthorizedAccessException as NoAnswer, since a partial write cannot be ruled out. It also appends synchronously, because Async.AwaitTask wrapped the error in AggregateException (found by a failing test).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Application/Ports.fs#Notifier",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Composition.fs#outboxNotifier",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L07NoticeTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D5",
+        "statement": "Notice text is built in Tier 2 from the book\u0027s title and the loan\u0027s due date (yyyy-MM-dd). Notices go to suspended members too, because L01-R2 restricts only borrowing, holds and renewals.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L07.md#LEND-L07-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#due",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D6",
+        "statement": "confirm-notice: the answer is parsed first (as in U5-D5), into a closed Notices.StaffAnswer. A non-existent copy prints \u0060error: unknown copy c9\u0060, as other copy commands do; a copy not on loan or without an unknown notice prints \u0060error: no unknown notice for c1\u0060.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L07.md#LEND-L07-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#confirm",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U5-D5",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D7",
+        "statement": "Persistence: each loan gets an optional \u0060notice\u0060 object {dueDate, sentOn, delivery, reason (rejected only)}. When absent (stores from earlier versions) the loan has no notice. The format tag stays \u0060lending/1\u0060 (U1-D6). The channel\u0027s rejection reason is stored but not shown, because no output asks for it.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeLoan",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D6",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D8",
+        "statement": "The summary counts and outcome words are projected in Tier 3 (Views.ofNoticeRun), not counted in the CLI (ARC-HEU-03). \u0060help\u0060 and the README command list gain the three commands after \u0060waive \u003Ccopy\u003E \u003Capprover\u003E\u0060.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R1",
+          "LEND-L07-R3"
+        ],
+        "refs": [
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#ofNoticeRun",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending: when a copy with an unknown notice is returned, the notice leaves \u0060unknown-notices\u0060 (it belonged to the loan). Should staff still be asked to confirm it?",
+      "Head of Lending: should a failed outbox write count as unknown (current, conservative) or as rejected (resend on the next run)?",
+      "Carried over: LEND-L04-R3 scope, the 5.00 threshold as a DEC record, holds of suspended members, a payment log, case-sensitivity and dating of waivers."
+    ],
+    "rejectedAssumptions": [
+      "The existing outbox notifier did not honour the Notifier port\u0027s \u0027never raises\u0027 contract: a failed write threw, wrapped in AggregateException. Found by the test \u0027DEC-008 the outbox reports an unknown outcome instead of raising\u0027; fixed (U7-D4)."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

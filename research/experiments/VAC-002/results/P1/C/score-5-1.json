@@ -1,0 +1,205 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "C",
+  "unit": 5,
+  "attempt": 1,
+  "task": "L05",
+  "fault": "F1-NEWEST-FIRST-FINES",
+  "head": "a1735b85741dc420117813343a4c2d63c7288953",
+  "verifiedAt": "2026-10-22T17:21:04.4669711Z",
+  "verifyMs": 165462,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 49,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 5,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U5-D1",
+        "statement": "Library.Fines list order is the assessment order, oldest first (returnCopy appends); payments and \u0027fines\u0027 use that order. The handoff claim \u0027newest first\u0027 was rejected.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2",
+          "LEND-L05-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Library",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D2",
+        "statement": "Fine gains Paid (0..Amount); Fines.pay allocates oldest first and changes only Paid, never Amount (DEC-006); owed = sum of Amount - Paid, used by owes and the LEND-L04-R2 borrow block. JSON gains optional \u0027paid\u0027 per fine (missing = 0). No separate payment history is kept.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2",
+          "LEND-L04-R1",
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "DEC-006",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-003",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D3",
+        "statement": "Valid amount: plain invariant decimal (no sign/exponent/grouping), \u003E 0, at most two written decimals (\u00272.500\u0027 refused), carried by Tier 1 PaymentAmount. pay checks amount, then member, then overpayment; paying when nothing is owed prints \u0027error: m1 owes only 0.00\u0027.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R1"
+        ],
+        "refs": [],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": [
+      "Team lead handoff: \u0027Library.Fines is kept newest first, so the oldest fine is the last element.\u0027 False: Loans.returnCopy appends new fines (library.Fines @ Option.toList fine), so the list is oldest first. Found by reading src/Lending.Transition/Loans.fs#returnCopy; covered by PaymentTests (oldest fine paid first)."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

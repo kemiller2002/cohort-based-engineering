@@ -1,0 +1,194 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "F",
+  "unit": 8,
+  "attempt": 1,
+  "task": "L08",
+  "fault": "none",
+  "head": "ce5b8136b5be15f1e3f9ed3280136fe0a9459b12",
+  "verifiedAt": "2026-10-22T18:12:19.8116087Z",
+  "verifyMs": 227841,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 90,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 8,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U8-D1",
+        "statement": "LEND-L08-R2 is not implemented because Ordo reports ORDO.CONTRACT.UNRESOLVED_CONFLICT (CONFLICT-L08-AUTOMATIC-RESEND); DEC-008 stays in force: an unknown notice is never resent automatically, pinned by a test.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L08-R2"
+        ],
+        "refs": [
+          {
+            "ref": "contracts/L08.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L08.md#LEND-L08-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-008",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L08NoticeHistoryTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D2",
+        "statement": "notices \u003Cmember\u003E lists Notices.ofMember (Tier 2): day sent descending, then copy id ordinal, then the later of two notices for the same copy on the same day first; delivery names from Views.deliveryName; title from Views.titleOf; listed in help and README directly after confirm-notice.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L08-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Notices.fs#ofMember",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#deliveryName",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L08.md#LEND-L08-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Ordo diagnostic ORDO.CONTRACT.UNRESOLVED_CONFLICT (subject requirements/L08.md#LEND-L08-R2-\u003ECONFLICT-L08-AUTOMATIC-RESEND) names LEND-L08-R2: Customer Services wants send-notices to resend notices whose delivery has been unknown for 2 days or more, but accepted DEC-008 (owner: Head of Lending) forbids resending unknown notices automatically until staff record the answer. LEND-L08-R2 was not implemented; the Head of Lending must decide whether to revise DEC-008."
+    ],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": true,
+    "conflictSurfaced": true,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}
