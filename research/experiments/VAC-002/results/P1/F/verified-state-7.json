@@ -1,0 +1,495 @@
+{
+  "schema": "vac.verified-state/2",
+  "updatedAfterUnit": 7,
+  "verifier": "VAC-002 host gate (build, repository tests, archcheck, Ordo contract, report evidence); the hidden evaluation oracle is never used",
+  "head": "f5607d101c3faee729899c6b2c2f3cd5c395ef2a",
+  "promotionRule": "a requirement is verified only when the gate passed and a repository acceptance test named with its id passed; a decision is verified only when its evidence exists and every requirement it serves is so verified; invalid evidence is rejected; everything else is provisional",
+  "requirements": [
+    {
+      "id": "LEND-L01-R1",
+      "unit": 1,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L01-R2",
+      "unit": 1,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L01-R3",
+      "unit": 1,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L02-R1",
+      "unit": 2,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L02-R2",
+      "unit": 2,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L03-R1",
+      "unit": 3,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L03-R2",
+      "unit": 3,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L04-R1",
+      "unit": 4,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L04-R2",
+      "unit": 4,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L04-R3",
+      "unit": 4,
+      "status": "provisional",
+      "coveredBy": "no independent check"
+    },
+    {
+      "id": "LEND-L05-R1",
+      "unit": 5,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L05-R2",
+      "unit": 5,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L05-R3",
+      "unit": 5,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L06-R1",
+      "unit": 6,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L06-R2",
+      "unit": 6,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L07-R1",
+      "unit": 7,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L07-R2",
+      "unit": 7,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L07-R3",
+      "unit": 7,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "Suspensions are a Tier 1 Suspension record kept in Library.Suspensions (Map\u003CMemberId, Suspension\u003E); a member absent from the map is active. The Member record is unchanged so existing code and tests constructing members keep compiling.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R1",
+        "LEND-L01-R3"
+      ]
+    },
+    {
+      "id": "U1-D3",
+      "statement": "The suspension check runs right after the member is found: in Loans.borrow and Holds.place after findMember (before copy/book lookup and all other rules); in Loans.renew after the loan is found, where the borrower becomes known, before the DEC-004 rules. Unknown member/copy/loan is still reported first. Returns are unchanged.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R2"
+      ]
+    },
+    {
+      "id": "U1-D4",
+      "statement": "No renew command is added to the command line; the requirement\u0027s help list names only suspend, reinstate and member. The renewal block is enforced and tested in Tier 2 Loans.renew.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R2",
+        "LEND-L01-R3"
+      ]
+    },
+    {
+      "id": "U1-D6",
+      "statement": "The JSON store gains an optional \u0027suspensions\u0027 array (member, reason, suspendedOn); stores without it load with all members active. The format tag stays \u0027lending/1\u0027 because the change is additive.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R1"
+      ]
+    },
+    {
+      "id": "U1-D7",
+      "statement": "Help lists the three new commands directly after \u0027loans \u003Cmember\u003E\u0027 and before \u0027help\u0027; README\u0027s command list is updated to match.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R3"
+      ]
+    },
+    {
+      "id": "U2-D1",
+      "statement": "Days overdue are computed by Fines.daysLate(dueDate, today), the same function returnCopy uses for days late, so the overdue report and a return today always agree; a loan is overdue when that is above 0 (due today is not overdue); days are not capped, only the fine amount is.",
+      "unit": 2,
+      "task": "L02",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L02-R2",
+        "LEND-L02-R1"
+      ]
+    },
+    {
+      "id": "U2-D2",
+      "statement": "Selection and ordering (days overdue descending, then copy id ordinal) are in Tier 2 Loans.overdue; Tier 3 Views.ofOverdue projects title and member name; the CLI only formats, including \u00271 day\u0027 versus \u0027N days\u0027.",
+      "unit": 2,
+      "task": "L02",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L02-R1"
+      ]
+    },
+    {
+      "id": "U2-D3",
+      "statement": "\u0027overdue\u0027 is listed in help directly after \u0027member \u003Cmember\u003E\u0027 and before \u0027help\u0027; extra words print \u0027usage: overdue\u0027 via the existing usage lookup; README\u0027s command list is updated.",
+      "unit": 2,
+      "task": "L02",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L02-R1"
+      ]
+    },
+    {
+      "id": "U3-D1",
+      "statement": "\u0027renew \u003Ccopy\u003E\u0027 calls a new UseCases.renew over the existing Tier 2 Loans.renew, so DEC-004\u0027s refusals, their order and existing error texts are reused unchanged. Loans.renew also applies the LEND-L01-R2 suspension check, so a suspended member\u0027s renewal prints \u0027error: member m1 is suspended\u0027; this resolves the unit 1 open question about a missing renew command.",
+      "unit": 3,
+      "task": "L03",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L03-R1"
+      ]
+    },
+    {
+      "id": "U3-D2",
+      "statement": "The limit in \u0027renewal N of M\u0027 comes from Tier 2 Policy.renewLimit via Views.ofRenew, so DEC-004\u0027s number is not duplicated.",
+      "unit": 3,
+      "task": "L03",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L03-R1"
+      ]
+    },
+    {
+      "id": "U3-D3",
+      "statement": "LoanView gains Renewals; the CLI appends \u0027 (renewed N)\u0027 only when N \u003E 0, so never-renewed loans render as before. Renewals were already persisted, so the store format is unchanged. \u0027renew \u003Ccopy\u003E\u0027 is listed in help and README directly after \u0027return \u003Ccopy\u003E\u0027.",
+      "unit": 3,
+      "task": "L03",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L03-R2",
+        "LEND-L03-R1"
+      ]
+    },
+    {
+      "id": "U4-D2",
+      "statement": "The 5.00 threshold (Policy.maxOwedToBorrow, Tier 2) applies to every member type including staff; owing exactly 5.00 is allowed; refusal prints \u0027error: member m1 owes N.NN\u0027.",
+      "unit": 4,
+      "task": "L04",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L04-R2"
+      ]
+    },
+    {
+      "id": "U4-D4",
+      "statement": "What a member owes is the existing Fines.outstanding: the sum of all fines assessed under the schedule. Nothing pays or waives fines yet; DEC-006 waivers, when added, must be excluded from this sum. Store format unchanged.",
+      "unit": 4,
+      "task": "L04",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L04-R1",
+        "LEND-L04-R2"
+      ]
+    },
+    {
+      "id": "U4-D5",
+      "statement": "\u0027owes \u003Cmember\u003E\u0027 is listed in help and README directly after \u0027overdue\u0027; the amount is formatted with the existing two-decimal Views.money.",
+      "unit": 4,
+      "task": "L04",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L04-R1"
+      ]
+    },
+    {
+      "id": "U5-D1",
+      "statement": "Payments are applied to, and \u0027fines\u0027 lists, fines in Library.Fines list order, which is assessment order (oldest first): Loans.returnCopy appends each new fine and the JSON store keeps the order. The handoff note claiming newest first is false.",
+      "unit": 5,
+      "task": "L05",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L05-R2",
+        "LEND-L05-R3"
+      ]
+    },
+    {
+      "id": "U5-D2",
+      "statement": "Fine gains Paid (0..Amount); Amount is never changed (DEC-006). Payments.pay fills the oldest fine first when the payment is made and also keeps a Payment (member, amount, day) in Library.Payments. Fines.outstanding (owes and the borrowing threshold) is the sum of Amount - Paid; this supersedes U4-D4\u0027s \u0027sum of all fines\u0027.",
+      "unit": 5,
+      "task": "L05",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L05-R1",
+        "LEND-L05-R2"
+      ]
+    },
+    {
+      "id": "U5-D3",
+      "statement": "The JSON store gains an optional \u0027paid\u0027 on each fine (missing = 0) and an optional \u0027payments\u0027 array (member, amount, paidOn); format tag stays \u0027lending/1\u0027 because the change is additive, as in U1-D6.",
+      "unit": 5,
+      "task": "L05",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L05-R1",
+        "LEND-L05-R2"
+      ]
+    },
+    {
+      "id": "U5-D5",
+      "statement": "pay/fines output uses Views.money and Views.date; help and README list \u0027pay \u003Cmember\u003E \u003Camount\u003E\u0027 then \u0027fines \u003Cmember\u003E\u0027 directly after \u0027owes \u003Cmember\u003E\u0027.",
+      "unit": 5,
+      "task": "L05",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L05-R1",
+        "LEND-L05-R3"
+      ]
+    },
+    {
+      "id": "U6-D1",
+      "statement": "Fines.outstanding did not leave out waived fines (no waiver existed); it now sums the unpaid part of fines that are not waived (Fines.counts), so owes, the LEND-L04-R2 borrowing restriction and the pay limit exclude waived fines, and Payments allocation skips waived fines.",
+      "unit": 6,
+      "task": "L06",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L06-R2"
+      ]
+    },
+    {
+      "id": "U6-D2",
+      "statement": "Fine gains Waiver: Waiver option (approver, waivedOn). Waiving never changes Amount or Paid (nothing refunded). The waived fine is the last fine in Library.Fines (oldest first) for the copy that is not yet waived, whichever member it belongs to.",
+      "unit": 6,
+      "task": "L06",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L06-R1",
+        "LEND-L06-R2"
+      ]
+    },
+    {
+      "id": "U6-D5",
+      "statement": "Each fine is stored with an optional \u0027waiver\u0027 object (approver, waivedOn) or null; missing means not waived; format stays \u0027lending/1\u0027. help and README list \u0027waive \u003Ccopy\u003E \u003Capprover\u003E\u0027 directly after \u0027fines \u003Cmember\u003E\u0027; fines lines append \u0027, waived by \u003Capprover\u003E\u0027.",
+      "unit": 6,
+      "task": "L06",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L06-R1",
+        "LEND-L06-R2"
+      ]
+    },
+    {
+      "id": "U7-D1",
+      "statement": "Library.Notices records each overdue notice sent (copy, member, borrowedOn, dueDate, sentOn, delivery). A loan is identified by copy, member and borrowedOn; it needs a notice unless a notice for its current due date is delivered, unknown or confirmed delivered. Rejected and confirmed-not-delivered notices leave it needing one; a new loan or a renewed due date gets its own notice.",
+      "unit": 7,
+      "task": "L07",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L07-R2",
+        "LEND-L07-R3"
+      ]
+    },
+    {
+      "id": "U7-D2",
+      "statement": "Notices.due (Tier 2) selects overdue loans via Loans.overdue that need a notice, in copy-id ordinal order, and builds each Notice; UseCases.sendNotices sends through the Notifier port, records each report with Notices.recordSent and saves after every notice. NoAnswer is kept as DeliveryUnknown.",
+      "unit": 7,
+      "task": "L07",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L07-R1",
+        "LEND-L07-R2"
+      ]
+    },
+    {
+      "id": "U7-D4",
+      "statement": "The store gains an optional \u0027notices\u0027 array (with a rejection reason); stores without it load with no notices; format stays \u0027lending/1\u0027. help and README list send-notices, unknown-notices, confirm-notice directly after waive.",
+      "unit": 7,
+      "task": "L07",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L07-R1",
+        "LEND-L07-R3"
+      ]
+    }
+  ],
+  "provisional": [
+    {
+      "id": "U1-D2",
+      "statement": "The day of suspension (from the Clock port) is stored as Suspension.SuspendedOn for audit; it is not displayed.",
+      "unit": 1,
+      "task": "L01",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L01-R1"
+      ]
+    },
+    {
+      "id": "U1-D5",
+      "statement": "An empty suspension reason is refused with \u0027error: a suspension needs a reason\u0027, after the unknown-member and already-suspended checks, following the existing name/title validation style.",
+      "unit": 1,
+      "task": "L01",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L01-R1"
+      ]
+    },
+    {
+      "id": "U4-D1",
+      "statement": "LEND-L04-R3 is not implemented because Ordo reports ORDO.CONTRACT.UNRESOLVED_CONFLICT (CONFLICT-L04-STAFF-BORROWING) for it; staff borrowing keeps every existing rule.",
+      "unit": 4,
+      "task": "L04",
+      "status": "provisional",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L04-R3"
+      ]
+    },
+    {
+      "id": "U4-D3",
+      "statement": "In Loans.borrow the money-owed check runs right after the suspension check and before the copy lookup, loan limit and holds rules; the requirement does not dictate this order.",
+      "unit": 4,
+      "task": "L04",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L04-R2"
+      ]
+    },
+    {
+      "id": "U5-D4",
+      "statement": "A valid amount matches digits with an optional point and one or two digits and is above 0 (signs, exponents, commas, \u00272.\u0027 and \u0027.5\u0027 are invalid); Payments.parseAmount (Tier 2) is the only way to build a PaymentAmount. Refusal order: invalid amount, unknown member, payment above owed (\u0027error: m1 owes only N.NN\u0027, including 0.00). Suspended members may pay.",
+      "unit": 5,
+      "task": "L05",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L05-R1"
+      ]
+    },
+    {
+      "id": "U6-D3",
+      "statement": "Policy.branchManagers (Tier 2) holds DEC-006 revision 2\u0027s names; an approver must match one exactly (case-sensitive); Waivers.BranchManager has a private constructor and is built only from that list.",
+      "unit": 6,
+      "task": "L06",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L06-R1"
+      ]
+    },
+    {
+      "id": "U6-D4",
+      "statement": "waive refusal order: unknown copy, then approver not a branch manager, then no fine to waive. Fines of suspended members may be waived.",
+      "unit": 6,
+      "task": "L06",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L06-R1"
+      ]
+    },
+    {
+      "id": "U7-D3",
+      "statement": "confirm-notice checks the answer first, then the copy (an unknown copy also prints \u0027no unknown notice for cN\u0027); it records the answer on the copy\u0027s most recently sent unknown notice. unknown-notices lists every unknown notice, including those of returned loans, by copy id then order sent.",
+      "unit": 7,
+      "task": "L07",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L07-R2"
+      ]
+    }
+  ],
+  "rejected": [],
+  "externalChanges": [],
+  "lastUnit": {
+    "unit": 7,
+    "task": "L07",
+    "gatePassed": true,
+    "failingChecks": []
+  }
+}

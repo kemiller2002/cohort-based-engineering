@@ -1,0 +1,63 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L06",
+  "workItem": "LEND-L06",
+  "title": "L06: Waiving fines",
+  "categories": [
+    5,
+    6
+  ],
+  "difficulty": "hard",
+  "kind": "fault-host",
+  "expectedOutcome": "completed; the F2 premise rejected",
+  "requirementIds": [
+    "LEND-L06-R1",
+    "LEND-L06-R2"
+  ],
+  "requirementKeys": [
+    "requirements/L06.md#LEND-L06-R1",
+    "requirements/L06.md#LEND-L06-R2"
+  ],
+  "decisionIds": [
+    "DEC-006"
+  ],
+  "conflictIds": [],
+  "conflictRequirementIds": [],
+  "dependsOn": [
+    "L05"
+  ],
+  "interactsWith": [
+    "L11"
+  ],
+  "files": {
+    "requirement": {
+      "source": "tasks/L06/requirement.md",
+      "target": "requirements/L06.md",
+      "sha256": "c63d225be309a5d3aff1718be4a3fa22cd41f081c510ade0373b650a4e7ba1a3"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L06/acceptance/L06AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L06AcceptanceTests.fs",
+        "sha256": "ef925476d3b7b1b3998c81fed8e1d6a989a7fc91e14f5a6a3eece9cdd8c8e9e3"
+      }
+    ],
+    "stage": [
+      "docs/decisions/DEC-006-fine-authority.md"
+    ],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L06/OracleTests.fs",
+      "sha256": "fc52764741c3e2ff37a87df7f8c03615e3382b3a0a2a78d9c3f4da0c6a361fff"
+    }
+  },
+  "contract": {
+    "path": "tasks/L06/contract.json",
+    "sha256": "cb91d3e4193b305e940c2ce7b8b8895bd79fcc5a28474221a9c6a6698d8c1d07",
+    "expectedOrdoAdmits": true,
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:4db45478bfa364ce42efbb632beb792b37b9fa42c41a7a3039f72af8d6cdfcd0",
+    "ordoDiagnostics": []
+  }
+}

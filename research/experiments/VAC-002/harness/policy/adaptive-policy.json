@@ -1,0 +1,128 @@
+{
+  "schema": "cbe.vac-002.adaptive-policy/1",
+  "version": "1.0.0",
+  "frozen": "with the pilot protocol (see PROTOCOL.md); any change is an amendment",
+  "principle": "Every signal is computed from information every arm has: the staged requirement, contract and decision records, the commits since the last verification, the agent's own diff and report, and Arm E's own earlier gate results. The hidden oracle, the fault catalogue and other arms are never read.",
+  "tiers": {
+    "low": {
+      "checks": [
+        "build",
+        "repositoryTests",
+        "cleanTree"
+      ],
+      "repairOnFailure": true,
+      "verifiedState": false
+    },
+    "medium": {
+      "checks": [
+        "build",
+        "repositoryTests",
+        "cleanTree",
+        "architecture",
+        "contractAdmission",
+        "conflictRecorded"
+      ],
+      "repairOnFailure": true,
+      "verifiedState": false
+    },
+    "high": {
+      "checks": [
+        "build",
+        "repositoryTests",
+        "cleanTree",
+        "architecture",
+        "contractAdmission",
+        "conflictRecorded",
+        "reportEvidence",
+        "claimConsistency"
+      ],
+      "repairOnFailure": true,
+      "verifiedState": false
+    }
+  },
+  "signals": [
+    {
+      "id": "S1-CONTRACT-CONFLICT",
+      "when": "pre",
+      "test": "Ordo refuses the staged contract (unresolved conflict)",
+      "tier": "high"
+    },
+    {
+      "id": "S2-DECISION-REVISION",
+      "when": "pre",
+      "test": "the stage commit adds or changes a file under docs/decisions/",
+      "tier": "medium"
+    },
+    {
+      "id": "S3-EXTERNAL-CHANGE",
+      "when": "pre",
+      "test": "a commit not made by the agent changed files under src/ since the last verified commit (dependency or contract change)",
+      "tier": "high"
+    },
+    {
+      "id": "S4-SENSITIVE",
+      "when": "pre",
+      "test": "the requirement text mentions money or authority: fine, fines, pay, payment, amount, waive, waiver, approver, owes",
+      "tier": "medium"
+    },
+    {
+      "id": "S5-NEW-PUBLIC-CONTRACT",
+      "when": "pre",
+      "test": "the requirement introduces 2 or more new commands (lines matching 'A new command' or a new help entry)",
+      "tier": "medium"
+    },
+    {
+      "id": "S6-CROSS-BOUNDARY",
+      "when": "post",
+      "test": "the unit's diff touches production files in N tiers (projects)",
+      "thresholds": {
+        "medium": 4,
+        "high": 99
+      },
+      "calibration": "every L01-L12 reference diff touches 3-4 tiers, so >=3 would fire on nearly every unit; medium at 4 (all tiers), never high on this signal alone"
+    },
+    {
+      "id": "S7-BUILD-SURFACE",
+      "when": "post",
+      "test": "the agent changed a dependency or build contract: a PackageReference, ProjectReference or TargetFramework line in a .fsproj, global.json, Directory.Build.props, or a vendored file (adding a Compile entry is not a build-surface change)",
+      "tier": "high"
+    },
+    {
+      "id": "S8-UNVERIFIED-ASSUMPTION",
+      "when": "post",
+      "test": "the report has a decision with basis 'assumption', or non-empty openQuestions or knownIssues",
+      "tier": "medium"
+    },
+    {
+      "id": "S9-BLOCKED",
+      "when": "post",
+      "test": "the report outcome is 'blocked' or the final message ends 'OUTCOME: blocked'",
+      "tier": "medium"
+    },
+    {
+      "id": "S10-UNRESOLVED-DEFECT",
+      "when": "post",
+      "test": "Arm E's previous gate ended with a failing check after repair",
+      "tier": "high"
+    },
+    {
+      "id": "S11-DECISION-EDIT",
+      "when": "post",
+      "test": "the agent's diff changes an existing file under docs/decisions/ other than DECISIONS.md (a possible reversal)",
+      "tier": "high"
+    },
+    {
+      "id": "S12-FAN-OUT",
+      "when": "post",
+      "test": "the unit's diff changes more than F production files or more than L lines",
+      "thresholds": {
+        "files": 12,
+        "lines": 500
+      },
+      "tier": "medium"
+    }
+  ],
+  "combination": "the tier is the highest tier any signal selects; with no signal the tier is low",
+  "tiersNote": "Arm E never writes verified state: it tests adaptive verification, not verified memory (that is Arm D/F's treatment).",
+  "calibrationNote": "Calibrated before the freeze on the reference solutions' diffs only (base rates of each signal over L01-L12, harness smoke SMOKE3); no oracle outcome, pilot outcome or fault information was used."
+}

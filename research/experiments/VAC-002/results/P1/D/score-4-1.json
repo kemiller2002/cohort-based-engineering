@@ -1,0 +1,196 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "D",
+  "unit": 4,
+  "attempt": 1,
+  "task": "L04",
+  "fault": "none",
+  "head": "6c61c74406a4fb764d91e36efd052f19ef191fd5",
+  "verifiedAt": "2026-10-22T17:58:38.2608454Z",
+  "verifyMs": 153986,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 45,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 4,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U4-D1",
+        "statement": "LEND-L04-R3 is not implemented because Ordo reports ORDO.CONTRACT.UNRESOLVED_CONFLICT (CONFLICT-L04-STAFF-BORROWING); staff are treated like every other member (including the LEND-L04-R2 refusal) until the owners resolve it.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R3"
+        ],
+        "refs": [
+          {
+            "ref": "contracts/L04.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D2",
+        "statement": "What a member owes is the sum of all assessed fines via the existing Fines.outstanding (no exemption, no reduction; no payments or waivers exist yet).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R1",
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-006",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D3",
+        "statement": "Fines.ensureMayBorrow runs in Loans.borrow right after the suspension check and before the copy lookup and DEC-002/DEC-005 rules; threshold Policy.maxOwedToBorrow = 5.00, owing exactly 5.00 is allowed; holds and returns are unaffected.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L04-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs#maxOwedToBorrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D3",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L04.md#LEND-L04-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Ordo diagnostic ORDO.CONTRACT.UNRESOLVED_CONFLICT (CONFLICT-L04-STAFF-BORROWING) names LEND-L04-R3: R3 (Staff Services) says staff below the DEC-002 limit are never refused for any other reason, but LEND-L04-R2 (owing over 5.00), LEND-L01-R2 (suspension) and DEC-005 (holds) refuse borrows. Head of Lending and Staff Services must decide which rule wins for staff; R3 was not implemented.",
+      "Should staff owing more than 5.00 be refused? Currently yes (LEND-L04-R2 as written); this depends on the R3 resolution."
+    ],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": true,
+    "conflictSurfaced": true,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema": "cbe.vac-002.policy-decision/1",
+  "policyVersion": "1.0.0",
+  "tier": "high",
+  "signals": [
+    {
+      "id": "S2-DECISION-REVISION",
+      "reason": "1 decision record(s) staged",
+      "tier": "medium"
+    },
+    {
+      "id": "S3-EXTERNAL-CHANGE",
+      "reason": "3 src file(s) changed by others since the last verification",
+      "tier": "high"
+    },
+    {
+      "id": "S4-SENSITIVE",
+      "reason": "money or authority terms in the requirement",
+      "tier": "medium"
+    },
+    {
+      "id": "S6-CROSS-BOUNDARY",
+      "reason": "4 tiers touched",
+      "tier": "medium"
+    },
+    {
+      "id": "S8-UNVERIFIED-ASSUMPTION",
+      "reason": "assumptions, open questions or known issues in the report",
+      "tier": "medium"
+    }
+  ],
+  "inputs": {
+    "pre": {
+      "contractRefused": false,
+      "decisionFilesStaged": 1,
+      "externalSrcChanges": 3,
+      "sensitive": true,
+      "newCommands": 1
+    },
+    "post": {
+      "filesChanged": 9,
+      "linesChanged": 227,
+      "tiersTouched": 4,
+      "buildSurfaceChanged": false,
+      "decisionRecordEdited": false,
+      "assumptions": true,
+      "blocked": false,
+      "previousUnresolved": false
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-12",
+  "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/C/briefs/unit-12.md",
+  "briefSha256": "6679b1c26b8aa7e1a86c9caeaaf2896ea119edf21da4aa328351cb93dd247476",
+  "startedAt": "2026-10-22T16:40:16.686Z",
+  "endedAt": "2026-10-22T16:44:15.307Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/C/turns/unit-12.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 13,
+    "durationMs": 237226,
+    "durationApiMs": 1111103,
+    "costUsdCli": 6.146973100000002,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 24,
+      "output": 10179,
+      "cacheRead": 676576,
+      "cacheWrite": 20469
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 19,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.00013450000000000002
+      },
+      "claude-opus-5-5": {
+        "input": 2500,
+        "output": 130782,
+        "cacheRead": 8574073,
+        "cacheWrite": 225798,
+        "costUsd": 6.146838600000002
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 12,
+    "finalMessage": "Loans and renewals now use the borrower's member type (standard 21 days, student 14, staff 42), and I added the `periods` command; build, all 106 tests and archcheck pass, committed as bebeead.\nThree older tests (in BaseTests, OverdueTests and NoticeTests) had expectations based on 21-day student and staff loans; I changed only those expectations, and moved the copy-id tie-break check to the new LoanPeriodTests.\nLoans made before this change keep their stored due dates, but renewing one adds the new period for the borrower's type.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 12,
+    "tokens": {
+      "input": 24,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 20469,
+      "cacheRead": 676576,
+      "output": 10179,
+      "total": 707248
+    },
+    "context": {
+      "first": 48153,
+      "last": 68392,
+      "peak": 68392
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [],
+    "costUsdLowerBound": 0.502743
+  }
+}

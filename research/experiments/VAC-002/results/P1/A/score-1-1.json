@@ -1,0 +1,288 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 1,
+  "attempt": 1,
+  "task": "L01",
+  "fault": "none",
+  "head": "8ace6b2de6867fe0c7145f124b031514db2ef3ca",
+  "verifiedAt": "2026-10-22T17:11:20.9660385Z",
+  "verifyMs": 93123,
+  "stagedTasks": [
+    "L01"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 19,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "Suspensions are kept in a new Library field \u0060Suspensions: Map\u003CMemberId, Suspension\u003E\u0060 (Suspension = { Reason }) rather than as a field on Member. A member is suspended exactly when it has an entry, so \u0027suspended\u0027 and \u0027reason\u0027 cannot disagree, and Member records constructed elsewhere (e.g. tests) stay source-compatible.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Library",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/BaseTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L01.md#LEND-L01-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D2",
+        "statement": "Suspension rules live in a new Tier 2 module Lending.Transition.Suspensions (suspend, reinstate, ensureNotSuspended). Application and CLI only coordinate and render, following the four-tier placement.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R1",
+          "LEND-L01-R2"
+        ],
+        "refs": [
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Suspensions.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D3",
+        "statement": "The suspension guard runs immediately after the member lookup in Loans.borrow and Holds.place, before copy/book lookup and every DEC rule. In Loans.renew the member is only known from the loan, so the guard runs right after the copy and loan lookups and before the DEC-004 rules. A suspended member therefore gets \u0027member is suspended\u0027 even for an unknown copy or book.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs#place",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D4",
+        "statement": "Renewing has no command-line command or use case, so the renewal block is enforced only in Lending.Transition.Loans.renew. No renew command was added because the requirement does not specify one.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#renew",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D5",
+        "statement": "A blank or whitespace reason is rejected with InvalidInput \u0027a suspension needs a reason\u0027. It is checked after the unknown-member and already-suspended checks. This mirrors how Catalog validates names and titles.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L01-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Catalog.fs#addMember",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D6",
+        "statement": "The JSON store gains an optional \u0060suspensions\u0060 array of { member, reason }, and the format tag stays \u0027lending/1\u0027. A missing array decodes as no suspensions, so stores written by earlier versions still load. A store written now can still be read by older code, which ignores the extra array.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R1"
+        ],
+        "refs": [
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decode",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D7",
+        "statement": "Suspension does not touch existing loans, holds or fines. A suspended member\u0027s existing holds stay in their queues, and returns work as before.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L01-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L01.md#LEND-L01-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-005-holds.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D8",
+        "statement": "Suspend/reinstate/member are added to the CLI usage list directly after \u0027loans \u003Cmember\u003E\u0027 and before \u0027help\u0027. The README command list is updated to match.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L01-R3"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L01.md#LEND-L01-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "If a suspended member is at the head of a book\u0027s hold queue, other members still cannot borrow that book\u0027s copies under DEC-005. Should a suspension pause, skip or drop the member\u0027s holds? This is for the Head of Lending (DEC-005 owner) to decide.",
+      "Should a suspension record when it started and who imposed it? The requirement asks only for the reason."
+    ],
+    "rejectedAssumptions": [
+      "The requirement says suspended members cannot \u0027renew loans\u0027, which suggests a renew command exists. There is none: CommandLine.usage and UseCases have no renew. Only Lending.Transition.Loans.renew exists, and that is where the guard went."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

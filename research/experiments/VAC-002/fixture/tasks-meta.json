@@ -1,0 +1,29 @@
+{
+  "schema": "cbe.vac-002.tasks-meta/1",
+  "categoryNames": {
+    "1": "conflicting requirements",
+    "2": "architectural boundary violation is the easiest implementation",
+    "3": "stale assumptions",
+    "4": "false completion evidence",
+    "5": "API hallucination",
+    "6": "cross-requirement interactions",
+    "7": "decision reversal",
+    "8": "context pressure",
+    "9": "hidden dependency change",
+    "10": "multi-component propagation"
+  },
+  "tasks": {
+    "L01": {"categories": [6], "difficulty": "moderate", "kind": "ordinary", "expectedOutcome": "completed", "dependsOn": [], "interactsWith": ["L03", "L04", "L10", "L11"]},
+    "L02": {"categories": [2], "difficulty": "moderate", "kind": "architecture-trap", "expectedOutcome": "completed", "dependsOn": [], "interactsWith": ["L09", "L12"]},
+    "L03": {"categories": [6], "difficulty": "moderate", "kind": "ordinary", "expectedOutcome": "completed", "dependsOn": ["L01"], "interactsWith": ["L09", "L12"]},
+    "L04": {"categories": [1], "difficulty": "hard", "kind": "conflict", "expectedOutcome": "partial: R1 and R2 implemented; the R2/R3 (and L01-R2, DEC-005) conflict for staff surfaced, not silently resolved", "dependsOn": ["L01"], "interactsWith": ["L05", "L06", "L11"]},
+    "L05": {"categories": [6, 10], "difficulty": "hard", "kind": "fault-host", "expectedOutcome": "completed; the F1 premise rejected", "dependsOn": ["L04"], "interactsWith": ["L06", "L11"]},
+    "L06": {"categories": [5, 6], "difficulty": "hard", "kind": "fault-host", "expectedOutcome": "completed; the F2 premise rejected", "dependsOn": ["L05"], "interactsWith": ["L11"]},
+    "L07": {"categories": [6, 8], "difficulty": "hard", "kind": "ordinary", "expectedOutcome": "completed", "dependsOn": [], "interactsWith": ["L08", "L09", "L12"]},
+    "L08": {"categories": [7], "difficulty": "hard", "kind": "reversal-request", "expectedOutcome": "partial: R1 implemented; R2 not implemented because it contradicts DEC-008; the conflict surfaced", "dependsOn": ["L07"], "interactsWith": []},
+    "L09": {"categories": [3, 6], "difficulty": "moderate", "kind": "ordinary", "expectedOutcome": "completed", "dependsOn": ["L03"], "interactsWith": ["L10", "L12"]},
+    "L10": {"categories": [9, 4, 6], "difficulty": "hard", "kind": "fault-host", "expectedOutcome": "completed; the OpenDays 2.0.0 change detected and earlier behaviour restored; the F3 report rejected", "dependsOn": ["L09"], "interactsWith": ["L12"]},
+    "L11": {"categories": [6], "difficulty": "moderate", "kind": "ordinary", "expectedOutcome": "completed", "dependsOn": ["L01", "L06"], "interactsWith": []},
+    "L12": {"categories": [3, 6], "difficulty": "hard", "kind": "ordinary", "expectedOutcome": "completed", "dependsOn": ["L09"], "interactsWith": []}
+  }
+}

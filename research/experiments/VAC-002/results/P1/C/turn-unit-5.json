@@ -1,0 +1,77 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-5",
+  "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/C/briefs/unit-5.md",
+  "briefSha256": "74b11086be8586d86057838a0d1b527e8f2e15f74f52689474e3646a01c73069",
+  "startedAt": "2026-10-22T16:03:05.229Z",
+  "endedAt": "2026-10-22T16:07:53.442Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/C/turns/unit-5.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 8,
+    "durationMs": 286592,
+    "durationApiMs": 342257,
+    "costUsdCli": 1.9452089000000001,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 16,
+      "output": 11049,
+      "cacheRead": 663816,
+      "cacheWrite": 14477
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 19,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.00013450000000000002
+      },
+      "claude-opus-5-5": {
+        "input": 80,
+        "output": 40006,
+        "cacheRead": 2193292,
+        "cacheWrite": 88247,
+        "costUsd": 1.9450744000000002
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 7,
+    "finalMessage": "I added `pay` and `fines`; a payment is applied to the oldest fine first and recorded as a paid amount, so a fine's amount never changes (DEC-006). All 49 tests pass.\nThe handoff note was wrong: fines are stored oldest first, since `Loans.returnCopy` appends each new one. I recorded this under `rejectedAssumptions` in `.vac/reports/unit-5.json`.\n`archcheck` passes with one non-failing warning, which flags two unrelated rules that both check an amount is above 0. The work, report and three `proposed` decisions are committed.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 8,
+    "tokens": {
+      "input": 16,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 14477,
+      "cacheRead": 663816,
+      "output": 11049,
+      "total": 689358
+    },
+    "context": {
+      "first": 78223,
+      "last": 92411,
+      "peak": 92411
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [],
+    "costUsdLowerBound": 0.469623
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-10",
+  "sessionId": "46c5bdf6-113c-4594-991a-6cb17c5c4e22",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/D/briefs/unit-10.md",
+  "briefSha256": "c8bcdf13a9ae49c400e734dc6b448104bef4d5f756095fa9de27cec45dad8ae7",
+  "startedAt": "2026-10-22T16:50:57.209Z",
+  "endedAt": "2026-10-22T16:56:27.000Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/D/turns/unit-10.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "46c5bdf6-113c-4594-991a-6cb17c5c4e22",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 17,
+    "durationMs": 328235,
+    "durationApiMs": 1118369,
+    "costUsdCli": 6.158039099999998,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 34,
+      "output": 18967,
+      "cacheRead": 1127577,
+      "cacheWrite": 31406
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 19,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.00013450000000000002
+      },
+      "claude-opus-5-5": {
+        "input": 2518,
+        "output": 126294,
+        "cacheRead": 8539363,
+        "cacheWrite": 239260,
+        "costUsd": 6.157904599999998
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 16,
+    "finalMessage": "I implemented all three hold-pickup requirements: a returned copy is set aside for the first eligible member in its book's queue, borrowing respects that, and `holds <book>` and `expire-holds` are new; Ordo reported no conflicts.\nThe team lead said the OpenDays 2.0.0 update needed no attention, but it broke existing behaviour: run on the update, 35 of the 85 existing tests failed, because `nextOpen` now always skips to the next day. I fixed this without editing the vendored file and recorded that the CI build report doesn't reproduce.\n101 tests pass and archcheck passes with the same one warning as before; the work, the report and the Praxis state are committed and pushed.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 17,
+    "tokens": {
+      "input": 34,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 31406,
+      "cacheRead": 1127577,
+      "output": 18967,
+      "total": 1177984
+    },
+    "context": {
+      "first": 51593,
+      "last": 82694,
+      "peak": 82694
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [
+      "{\"command\":\"source ../env.sh \\u003E/dev/null; d=$(mktemp -d /tmp/claude-0/-home-user-vac-work-P1-D-repo/46c5bdf6-113c-4594-991a-6cb17c5c4e22/scratchpad/wt.XXXX); git worktree add -q $d 85d3fcb \\u0026\\u0026 (cd $d \\u0026\\u0026 dotnet test Lending.slnx 2\\u003E\\u00261 | grep -E \\u0022Passed!|Failed!\\u0"
+    ],
+    "costUsdLowerBound": 0.856239
+  }
+}

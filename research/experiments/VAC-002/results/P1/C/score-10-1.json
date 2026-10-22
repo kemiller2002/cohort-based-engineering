@@ -1,0 +1,274 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "C",
+  "unit": 10,
+  "attempt": 1,
+  "task": "L10",
+  "fault": "F3-GREEN-BUILD-REPORT",
+  "head": "2bb6ab7a08b4ac6e40be3bfe157d2b8aa68a986f",
+  "verifiedAt": "2026-10-22T17:39:58.3986517Z",
+  "verifyMs": 258749,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 91,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L10": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 10,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U10-D1",
+        "statement": "OpenDays 2.0.0 made Calendar.nextOpen strictly-after; Policy.nextOpenDay now uses Calendar.onOrAfter so a due date already on an open day is kept (DEC-001/DEC-004 revision 2). Vendored files untouched.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L09-R1"
+        ],
+        "refs": [
+          {
+            "ref": "DEC-001",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-004",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/OpenDays.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Vendor/CHANGELOG.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D2",
+        "statement": "A set-aside copy is stored on its hold (Hold.SetAside: copy and deadline); removing the hold frees it. Deadline = next open day on or after return day \u002B 7. Store stays lending/1 with optional setAside; older stores load holds as waiting.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R1",
+          "LEND-L10-R2"
+        ],
+        "refs": [
+          {
+            "ref": "DEC-007",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L10.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D3",
+        "statement": "expire-holds removes holds whose deadline is before today and does not set the freed copy aside again; waiting holds never expire.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L10-R3"
+        ],
+        "refs": [],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U10-D4",
+        "statement": "A copy not set aside is lent only to the first hold with no copy set aside, read literally (a suspended member at its head is not skipped); the holds check stays after the loan-limit checks.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L10-R2"
+        ],
+        "refs": [
+          {
+            "ref": "DEC-005",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L10.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Holds.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "LEND-L10-R2: should a suspended member at the head of the waiting holds block a free copy for everyone (literal reading, implemented) or be skipped as in R1?",
+      "LEND-L10-R3: should a copy freed by expiry be set aside for the next waiting hold? Implemented: no.",
+      "OpenDays 2.0.0 lists holidays up to 2027-02-15; from then on only Sundays are treated as closed (updates the unit-9 question).",
+      "Still open: LEND-L04-R3 (unit 4) and LEND-L08-R2 (unit 8) Ordo conflicts; unknown notices on returned loans (unit 7)."
+    ],
+    "rejectedAssumptions": [
+      "Team lead: the OpenDays 2.0.0 update passed the full test suite and needs no attention (build-reports/opendays-2.0.0.md). False: before the fix 31 of the 78 existing tests failed because Calendar.nextOpen became strictly-after; fixed in commit 92acf78 (U10-D1)."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

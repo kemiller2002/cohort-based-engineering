@@ -1,0 +1,347 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 6,
+  "attempt": 1,
+  "task": "L06",
+  "fault": "F2-OUTSTANDING-SKIPS-WAIVED",
+  "head": "150116dd26f050a80e88580f0dae4aa6897000b2",
+  "verifiedAt": "2026-10-22T17:24:11.6449229Z",
+  "verifyMs": 181266,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 48,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "Contrary to the team lead\u0027s note, Fines.outstanding and Fines.pay did not exclude waived fines, so both were changed to skip them via a single predicate Fines.counts. \u0060owes\u0060, the LEND-L04-R2 borrowing check and payments all go through these two functions.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#counts",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#borrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D2",
+        "statement": "A waiver is recorded on the fine as \u0060Waiver: Waiver option\u0060 with the approver\u0027s name (DEC-006: \u0027recorded with the approver\u0027s name\u0027). Amount and Paid are untouched, so nothing is refunded. No waiver date is stored, because none is asked for.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1",
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Waiver",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D3",
+        "statement": "The approvers are Policy.branchManagers = {Grace Hopper, Alan Turing}, taken from DEC-006 revision 2. Names are matched exactly (case- and space-sensitive). A stored waiver keeps its approver\u0027s name even if the list is later revised, because it is a record of what happened.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1"
+        ],
+        "refs": [
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Policy.fs#branchManagers",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D4",
+        "statement": "Check order in Fines.waive: unknown copy, then approver, then whether a fine is left to waive. The requirement does not give an order.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L06-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#waive",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D5",
+        "statement": "\u0027Most recently assessed\u0027 means the last matching fine in Library.Fines, which is oldest first (U5-D1). A fully paid but unwaived fine can still be waived; the waiver changes nothing about what was paid.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1"
+        ],
+        "refs": [
+          {
+            "ref": "U5-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L06.md#LEND-L06-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D6",
+        "statement": "Persistence: each fine gets an additive \u0060waivedBy\u0060 field (approver name or null). Absent or null means not waived, so earlier stores load. The format tag stays \u0060lending/1\u0060 (U1-D6).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D6",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L05PaymentTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L06WaiverTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D7",
+        "statement": "\u0060help\u0060 and README\u0027s command list gain \u0060waive \u003Ccopy\u003E \u003Capprover\u003E\u0060 after \u0060fines \u003Cmember\u003E\u0060. \u0060fines\u0060 appends \u0060, waived by \u003Capprover\u003E\u0060 to waived fines.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L06-R1",
+          "LEND-L06-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L06.md#LEND-L06-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Finance: should the approver\u0027s name be matched case-insensitively? It is matched exactly now.",
+      "Finance: should a waiver record its date? Only the approver is stored now.",
+      "Carried over: LEND-L04-R3 scope (DEC-005/LEND-L01-R2), the 5.00 threshold as a DEC record, holds of suspended members, a payment log."
+    ],
+    "rejectedAssumptions": [
+      "Team lead\u0027s note: \u0027Fines.outstanding already leaves out waived fines ... You only need to record the waiver.\u0027 False: before this unit, Fine had no waiver field and Fines.outstanding summed Amount - Paid over all of the member\u0027s fines (src/Lending.Transition/Fines.fs, unit 5 commit 7a2d8ff); Fines.pay also applied payments to every fine. Both were changed; tests in L06WaiverTests.fs show owes, borrowing and payments leaving waived fines out."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

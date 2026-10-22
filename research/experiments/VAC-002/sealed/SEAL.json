@@ -1,0 +1,12 @@
+{
+  "schema": "cbe.vac-002.seal/1",
+  "plaintextTarGzSha256": "98e2ec9f20592b168c5b8c9c7a382b7053268787fcc7285c32bfa40b4d6d48bc",
+  "ciphertextSha256": "0371c9c9cbfddc099a565905e7c77f2899ded8ca9b2c5bcced21c5d45adb11a7",
+  "manifestSha256": "9c187992ceaefbfb15fde3a7dda4caf3ead8d2df87a41c79bbe0d7e7f11040d1",
+  "files": 508,
+  "cipher": "aes-256-cbc pbkdf2 iter 200000 (openssl enc)",
+  "openssl": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "sealedAt": "2026-10-22T15:47:06Z",
+  "contents": "oracle/ (per-task hidden oracles, OracleSupport.fs, run.sh), ref/ (reference chain git repository with tags ref-L01..ref-L12, before-L10, and trap branches), propagation-map.json",
+  "verify": "openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass file:KEY -in vac002-sealed.tar.gz.enc | sha256sum  # equals plaintextTarGzSha256"
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-8",
+  "sessionId": "c0d67f4d-3c4e-4039-9ba8-4c38ee1bbf27",
+  "kind": "new",
+  "brief": "/home/user/vac-work/P1/A/briefs/unit-8.md",
+  "briefSha256": "65f64a7cff756770a6bf2fcdf534565184ded0f10670bc889d49102fd38f36d8",
+  "startedAt": "2026-10-22T16:21:33.732Z",
+  "endedAt": "2026-10-22T16:26:34.978Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/A/turns/unit-8.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "c0d67f4d-3c4e-4039-9ba8-4c38ee1bbf27",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 16,
+    "durationMs": 299739,
+    "durationApiMs": 142236,
+    "costUsdCli": 0.8731061000000001,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 28,
+      "output": 16162,
+      "cacheRead": 499298,
+      "cacheWrite": 56220
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 19,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.00013450000000000002
+      },
+      "claude-opus-5-5": {
+        "input": 28,
+        "output": 16162,
+        "cacheRead": 499298,
+        "cacheWrite": 56220,
+        "costUsd": 0.8729716000000001
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 15,
+    "finalMessage": "I added the `notices <member>` command (R1), with a notice history that is saved in the JSON store and still lists notices after the copy is returned. A clean build has 0 warnings and all 88 tests pass.\nI did not implement R2 (automatic resend after 2 days of unknown delivery). It contradicts DEC-008, which forbids resending automatically, and only its owner, the Head of Lending, can change that, so I left it as an open question in the report.\nStores saved before this change only show the notices still kept on active loans, because earlier notices were never saved. The report and code are committed in `.vac/reports/unit-8.json`.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 14,
+    "tokens": {
+      "input": 28,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 56220,
+      "cacheRead": 499298,
+      "output": 16162,
+      "total": 571708
+    },
+    "context": {
+      "first": 5458,
+      "last": 60384,
+      "peak": 60384
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [
+      "{\"command\":\"source /home/user/vac-work/P1/A/env.sh; S=/tmp/claude-0/-home-user-vac-work-P1-A-repo/c0d67f4d-3c4e-4039-9ba8-4c38ee1bbf27/scratchpad; mv tests/Lending.Tests/Acceptance/L08AcceptanceTests.fs $S/; dotnet test Lending.slnx 2\\u003E\\u00261 | tail -5; mv $S/L08AcceptanceTests.fs tests/Lending"
+    ],
+    "costUsdLowerBound": 0.872972
+  }
+}

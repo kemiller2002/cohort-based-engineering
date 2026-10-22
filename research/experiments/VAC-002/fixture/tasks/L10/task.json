@@ -1,0 +1,72 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L10",
+  "workItem": "LEND-L10",
+  "title": "L10: Hold pickup",
+  "categories": [
+    9,
+    4,
+    6
+  ],
+  "difficulty": "hard",
+  "kind": "fault-host",
+  "expectedOutcome": "completed; the OpenDays 2.0.0 change detected and earlier behaviour restored; the F3 report rejected",
+  "requirementIds": [
+    "LEND-L10-R1",
+    "LEND-L10-R2",
+    "LEND-L10-R3"
+  ],
+  "requirementKeys": [
+    "requirements/L10.md#LEND-L10-R1",
+    "requirements/L10.md#LEND-L10-R2",
+    "requirements/L10.md#LEND-L10-R3"
+  ],
+  "decisionIds": [
+    "DEC-005",
+    "DEC-007"
+  ],
+  "conflictIds": [],
+  "conflictRequirementIds": [],
+  "dependsOn": [
+    "L09"
+  ],
+  "interactsWith": [
+    "L12"
+  ],
+  "files": {
+    "requirement": {
+      "source": "tasks/L10/requirement.md",
+      "target": "requirements/L10.md",
+      "sha256": "5d1244bafc7abb6e3e177f27cb7afc8eae25634cdb53ff1ad5ad98520b1af026"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L10/acceptance/L10AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L10AcceptanceTests.fs",
+        "sha256": "fb539d3fd82bd7f21dd63c2b9adf53c7a12d6e55c9decc707c6abf57c38e5514"
+      }
+    ],
+    "stage": [
+      "docs/decisions/DEC-007-hold-pickup.md"
+    ],
+    "before": [
+      "build-reports/opendays-2.0.0.md",
+      "src/Lending.Transition/Vendor/CHANGELOG.md",
+      "src/Lending.Transition/Vendor/OpenDays.fs",
+      "src/Lending.Transition/Vendor/VENDOR.md"
+    ],
+    "oracle": {
+      "path": "sealed:oracle/L10/OracleTests.fs",
+      "sha256": "a408aae878185bf843c923184d06992f1cd80dd1823e945a9da43b79fb1d6460"
+    }
+  },
+  "contract": {
+    "path": "tasks/L10/contract.json",
+    "sha256": "31ee31cf90ca462d0add88ef111ce579c414c7aa7dc200f346fba123ff947ae4",
+    "expectedOrdoAdmits": true,
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:e83700f278920260db9796e2b47d4a796ae09775ba1f94332c5b6f417602b571",
+    "ordoDiagnostics": []
+  }
+}

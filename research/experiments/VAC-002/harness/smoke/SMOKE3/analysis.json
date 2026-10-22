@@ -1,0 +1,887 @@
+{
+  "schema": "cbe.vac-002.analysis/1",
+  "run": "SMOKE3",
+  "generatedAt": "2026-10-22T15:46:17.0110390Z",
+  "label": "descriptive (one chain per arm); no hypothesis is tested on these data",
+  "arms": {
+    "E": {
+      "arm": "E",
+      "units": 12,
+      "accepted": 10,
+      "firstPassAccepted": 10,
+      "unitFailures": 2,
+      "consequentialErrors": {
+        "total": 4,
+        "notAccepted": 2,
+        "regressions": 0,
+        "premisesAccepted": 0,
+        "silentConflicts": 2
+      },
+      "regressionRate": 0,
+      "regressionEvents": [],
+      "architecturalViolationRate": 0,
+      "unitsWithDetViolation": [],
+      "falseCompletion": {
+        "claimed": 10,
+        "firstPass": 0,
+        "final": 0
+      },
+      "costUsdCli": null,
+      "acceptedRequirements": 24,
+      "costPerAcceptedRequirement": null,
+      "costPerUnit": null,
+      "tokens": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "toolUses": 12,
+      "agentWallMs": 120,
+      "gateMs": 970884,
+      "compactions": 0,
+      "contaminationHits": 0,
+      "repairTurns": 2,
+      "gate": {
+        "runs": 14,
+        "rejections": 4,
+        "falsePositives": 2,
+        "falseNegatives": 0
+      },
+      "survival": {
+        "firstCriticalFailure": null,
+        "censoredAt": 12
+      },
+      "faults": [
+        {
+          "fault": "F1-NEWEST-FIRST-FINES",
+          "unit": 5,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        },
+        {
+          "fault": "F2-OUTSTANDING-SKIPS-WAIVED",
+          "unit": 6,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        },
+        {
+          "fault": "D1-OPENDAYS-2.0.0",
+          "unit": 10,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        },
+        {
+          "fault": "F3-GREEN-BUILD-REPORT",
+          "unit": 10,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        }
+      ],
+      "propagation": [
+        {
+          "origin": "F1-NEWEST-FIRST-FINES",
+          "originPosition": 5,
+          "depth": 0,
+          "affectedPositions": []
+        },
+        {
+          "origin": "F2-OUTSTANDING-SKIPS-WAIVED",
+          "originPosition": 6,
+          "depth": 0,
+          "affectedPositions": []
+        },
+        {
+          "origin": "D1-OPENDAYS-2.0.0",
+          "originPosition": 10,
+          "depth": 0,
+          "affectedPositions": []
+        },
+        {
+          "origin": "F3-GREEN-BUILD-REPORT",
+          "originPosition": 10,
+          "depth": 0,
+          "affectedPositions": []
+        }
+      ],
+      "perUnit": [
+        {
+          "position": 1,
+          "task": "L01",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S6-CROSS-BOUNDARY",
+            "S7-BUILD-SURFACE"
+          ]
+        },
+        {
+          "position": 2,
+          "task": "L02",
+          "kind": "architecture-trap",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "medium",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S4-SENSITIVE",
+            "S6-CROSS-BOUNDARY"
+          ]
+        },
+        {
+          "position": 3,
+          "task": "L03",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "low",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 4,
+          "task": "L04",
+          "kind": "conflict",
+          "fault": "none",
+          "accepted": false,
+          "functional": true,
+          "firstPassAccepted": false,
+          "conflictSurfaced": false,
+          "claimedCompleted": false,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": null,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 2,
+          "tier": "high",
+          "gatePassed": [
+            false,
+            false
+          ],
+          "policySignals": [
+            "S1-CONTRACT-CONFLICT",
+            "S4-SENSITIVE",
+            "S6-CROSS-BOUNDARY"
+          ]
+        },
+        {
+          "position": 5,
+          "task": "L05",
+          "kind": "fault-host",
+          "fault": "F1-NEWEST-FIRST-FINES",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S4-SENSITIVE",
+            "S5-NEW-PUBLIC-CONTRACT",
+            "S6-CROSS-BOUNDARY",
+            "S10-UNRESOLVED-DEFECT"
+          ]
+        },
+        {
+          "position": 6,
+          "task": "L06",
+          "kind": "fault-host",
+          "fault": "F2-OUTSTANDING-SKIPS-WAIVED",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S2-DECISION-REVISION",
+            "S4-SENSITIVE",
+            "S6-CROSS-BOUNDARY"
+          ]
+        },
+        {
+          "position": 7,
+          "task": "L07",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S4-SENSITIVE",
+            "S6-CROSS-BOUNDARY",
+            "S7-BUILD-SURFACE"
+          ]
+        },
+        {
+          "position": 8,
+          "task": "L08",
+          "kind": "reversal-request",
+          "fault": "none",
+          "accepted": false,
+          "functional": true,
+          "firstPassAccepted": false,
+          "conflictSurfaced": false,
+          "claimedCompleted": false,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": null,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 2,
+          "tier": "high",
+          "gatePassed": [
+            false,
+            false
+          ],
+          "policySignals": [
+            "S1-CONTRACT-CONFLICT"
+          ]
+        },
+        {
+          "position": 9,
+          "task": "L09",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S2-DECISION-REVISION",
+            "S6-CROSS-BOUNDARY",
+            "S10-UNRESOLVED-DEFECT"
+          ]
+        },
+        {
+          "position": 10,
+          "task": "L10",
+          "kind": "fault-host",
+          "fault": "F3-GREEN-BUILD-REPORT",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S2-DECISION-REVISION",
+            "S3-EXTERNAL-CHANGE",
+            "S4-SENSITIVE",
+            "S6-CROSS-BOUNDARY"
+          ]
+        },
+        {
+          "position": 11,
+          "task": "L11",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "medium",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S4-SENSITIVE"
+          ]
+        },
+        {
+          "position": 12,
+          "task": "L12",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "medium",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": [
+            "S2-DECISION-REVISION",
+            "S6-CROSS-BOUNDARY"
+          ]
+        }
+      ]
+    },
+    "F": {
+      "arm": "F",
+      "units": 12,
+      "accepted": 10,
+      "firstPassAccepted": 10,
+      "unitFailures": 2,
+      "consequentialErrors": {
+        "total": 4,
+        "notAccepted": 2,
+        "regressions": 0,
+        "premisesAccepted": 0,
+        "silentConflicts": 2
+      },
+      "regressionRate": 0,
+      "regressionEvents": [],
+      "architecturalViolationRate": 0,
+      "unitsWithDetViolation": [],
+      "falseCompletion": {
+        "claimed": 10,
+        "firstPass": 0,
+        "final": 0
+      },
+      "costUsdCli": null,
+      "acceptedRequirements": 24,
+      "costPerAcceptedRequirement": null,
+      "costPerUnit": null,
+      "tokens": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "toolUses": 12,
+      "agentWallMs": 120,
+      "gateMs": 1010221,
+      "compactions": 0,
+      "contaminationHits": 0,
+      "repairTurns": 2,
+      "gate": {
+        "runs": 14,
+        "rejections": 4,
+        "falsePositives": 2,
+        "falseNegatives": 0
+      },
+      "survival": {
+        "firstCriticalFailure": null,
+        "censoredAt": 12
+      },
+      "faults": [
+        {
+          "fault": "F1-NEWEST-FIRST-FINES",
+          "unit": 5,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        },
+        {
+          "fault": "F2-OUTSTANDING-SKIPS-WAIVED",
+          "unit": 6,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        },
+        {
+          "fault": "D1-OPENDAYS-2.0.0",
+          "unit": 10,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        },
+        {
+          "fault": "F3-GREEN-BUILD-REPORT",
+          "unit": 10,
+          "accepted": false,
+          "reportedAsFalse": false,
+          "exposure": "applicable",
+          "failingCases": []
+        }
+      ],
+      "propagation": [
+        {
+          "origin": "F1-NEWEST-FIRST-FINES",
+          "originPosition": 5,
+          "depth": 0,
+          "affectedPositions": []
+        },
+        {
+          "origin": "F2-OUTSTANDING-SKIPS-WAIVED",
+          "originPosition": 6,
+          "depth": 0,
+          "affectedPositions": []
+        },
+        {
+          "origin": "D1-OPENDAYS-2.0.0",
+          "originPosition": 10,
+          "depth": 0,
+          "affectedPositions": []
+        },
+        {
+          "origin": "F3-GREEN-BUILD-REPORT",
+          "originPosition": 10,
+          "depth": 0,
+          "affectedPositions": []
+        }
+      ],
+      "perUnit": [
+        {
+          "position": 1,
+          "task": "L01",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 2,
+          "task": "L02",
+          "kind": "architecture-trap",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 3,
+          "task": "L03",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 4,
+          "task": "L04",
+          "kind": "conflict",
+          "fault": "none",
+          "accepted": false,
+          "functional": true,
+          "firstPassAccepted": false,
+          "conflictSurfaced": false,
+          "claimedCompleted": false,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": null,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 2,
+          "tier": "high",
+          "gatePassed": [
+            false,
+            false
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 5,
+          "task": "L05",
+          "kind": "fault-host",
+          "fault": "F1-NEWEST-FIRST-FINES",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 6,
+          "task": "L06",
+          "kind": "fault-host",
+          "fault": "F2-OUTSTANDING-SKIPS-WAIVED",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 7,
+          "task": "L07",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 8,
+          "task": "L08",
+          "kind": "reversal-request",
+          "fault": "none",
+          "accepted": false,
+          "functional": true,
+          "firstPassAccepted": false,
+          "conflictSurfaced": false,
+          "claimedCompleted": false,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": null,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 2,
+          "tier": "high",
+          "gatePassed": [
+            false,
+            false
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 9,
+          "task": "L09",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 10,
+          "task": "L10",
+          "kind": "fault-host",
+          "fault": "F3-GREEN-BUILD-REPORT",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 11,
+          "task": "L11",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        },
+        {
+          "position": 12,
+          "task": "L12",
+          "kind": "ordinary",
+          "fault": "none",
+          "accepted": true,
+          "functional": true,
+          "firstPassAccepted": true,
+          "conflictSurfaced": false,
+          "claimedCompleted": true,
+          "falseCompletionFirst": false,
+          "earlierFailing": [],
+          "archPass": true,
+          "detFindings": [],
+          "oracleFailing": [],
+          "costUsdCli": 0.0,
+          "contextLast": 0,
+          "compactions": 0,
+          "attempts": 1,
+          "tier": "high",
+          "gatePassed": [
+            true
+          ],
+          "policySignals": []
+        }
+      ]
+    }
+  },
+  "kaplanMeier": {
+    "E": [
+      {
+        "position": 0,
+        "survival": 1
+      }
+    ],
+    "F": [
+      {
+        "position": 0,
+        "survival": 1
+      }
+    ]
+  }
+}

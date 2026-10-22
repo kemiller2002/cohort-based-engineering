@@ -1,0 +1,79 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-7",
+  "sessionId": "47d67b07-2509-43ac-a234-43cb1f02d612",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/B/briefs/unit-7.md",
+  "briefSha256": "55bf28dadc0031953e0770e1c59ff0160a72db124d77c12905001e6fb6c41789",
+  "startedAt": "2026-10-22T16:09:20.911Z",
+  "endedAt": "2026-10-22T16:14:43.699Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/B/turns/unit-7.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "47d67b07-2509-43ac-a234-43cb1f02d612",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 11,
+    "durationMs": 321505,
+    "durationApiMs": 609437,
+    "costUsdCli": 3.0955952000000013,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 22,
+      "output": 19672,
+      "cacheRead": 1206906,
+      "cacheWrite": 24274
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 24,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.000137
+      },
+      "claude-opus-5-5": {
+        "input": 108,
+        "output": 69607,
+        "cacheRead": 3765871,
+        "cacheWrite": 118714,
+        "costUsd": 3.0954582000000017
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 10,
+    "finalMessage": "I added `send-notices`, `unknown-notices` and `confirm-notice`. Each loan keeps its own notice record, and a notice is marked \"unknown\" before it is sent, so an interrupted run can't send it twice. All 57 tests pass, a manual run against an older store file worked, and the work and `.vac/reports/unit-7.json` are committed.\nThe outbox writer could crash on a failed file write, though its interface says it never raises. It now reports the outcome as unknown for staff to confirm.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 11,
+    "tokens": {
+      "input": 22,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 24274,
+      "cacheRead": 1206906,
+      "output": 19672,
+      "total": 1250874
+    },
+    "context": {
+      "first": 98863,
+      "last": 122878,
+      "peak": 122878
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [
+      "{\"command\":\"cd /home/user/vac-work/P1/B/repo; d=$(mktemp -d -p /tmp/claude-0/-home-user-vac-work-P1-B-repo/47d67b07-2509-43ac-a234-43cb1f02d612/scratchpad 2\\u003E/dev/null || mktemp -d); mkdir -p \\u0022$d\\u0022; cat \\u003E $d/library.lending.json \\u003C\\u003C\\u0027EOF\\u0027\\n{ \\u0022format\\u0022: \\u"
+    ],
+    "costUsdLowerBound": 0.829101
+  }
+}

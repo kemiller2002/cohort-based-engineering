@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:d2fa432337d8250b4b16e58c720c98c103042a7d04d90ea7e1c72188c219052c",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L12.md#LEND-L12-R1",
+        "originalId": "LEND-L12-R1",
+        "document": "requirements/L12.md",
+        "location": "L6",
+        "revision": "sha256:d2fa432337d8250b4b16e58c720c98c103042a7d04d90ea7e1c72188c219052c",
+        "contentDigest": "sha256:b274da0510db2866db51670cbdd7ce0ceb7f87954bd4420995edce8afc44a3b4"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-001",
+        "DEC-004",
+        "VERIFY-L12-R1",
+        "COHORT-L12"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L12.md#LEND-L12-R2",
+        "originalId": "LEND-L12-R2",
+        "document": "requirements/L12.md",
+        "location": "L13",
+        "revision": "sha256:d2fa432337d8250b4b16e58c720c98c103042a7d04d90ea7e1c72188c219052c",
+        "contentDigest": "sha256:0a0f45d8520743d3a9a863ec2157400793d8d6930953a78a3d4b8d078027177f"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-001",
+        "VERIFY-L12-R2",
+        "COHORT-L12"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-001",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L12.md#LEND-L12-R1",
+        "requirements/L12.md#LEND-L12-R2"
+      ],
+      "dependsOn": [],
+      "justification": "revision 3: the loan period is the member type's (standard 21, student 14, staff 42 days); open-day rule kept"
+    },
+    {
+      "id": "DEC-004",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L12.md#LEND-L12-R1"
+      ],
+      "dependsOn": [],
+      "justification": "revision 3: a renewal adds the borrower's loan period (DEC-001 revision 3)"
+    },
+    {
+      "id": "VERIFY-L12-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L12.md#LEND-L12-R1"
+      ],
+      "dependsOn": [
+        "DEC-001",
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "VERIFY-L12-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L12.md#LEND-L12-R2"
+      ],
+      "dependsOn": [
+        "DEC-001"
+      ]
+    },
+    {
+      "id": "COHORT-L12",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L12.md#LEND-L12-R1",
+        "requirements/L12.md#LEND-L12-R2"
+      ],
+      "dependsOn": [
+        "DEC-001",
+        "DEC-004"
+      ]
+    }
+  ]
+}

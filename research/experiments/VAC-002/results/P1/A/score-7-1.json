@@ -1,0 +1,355 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 7,
+  "attempt": 1,
+  "task": "L07",
+  "fault": "none",
+  "head": "5ceba5b1986ad85ef2f45c5d970c807f2647f767",
+  "verifiedAt": "2026-10-22T17:27:45.2737757Z",
+  "verifyMs": 208090,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 82,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 7,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U7-D1",
+        "statement": "The notice state is stored on the loan as Loan.Notice : OverdueNotice option, where OverdueNotice = { DueDate; SentOn; Delivery } and Delivery is NoticeDelivered | NoticeDeliveryUnknown | NoticeConfirmedDelivered (Tier 1). Because it lives on the loan, returning the copy removes it, and a later loan of the same copy, even one made on the same day, starts with no notice (R3). Rejected notices and notices confirmed as not delivered are not stored (Notice = None), so \u0027needs a notice\u0027 cannot be confused with \u0027blocked\u0027.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L07-R2",
+          "LEND-L07-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#OverdueNotice",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#NoticeDelivery",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Loan",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L07.md#LEND-L07-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-008-overdue-notices.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D2",
+        "statement": "When a loan with an unknown notice is returned, that unknown notice is dropped. It no longer appears in unknown-notices, and confirm-notice for that copy reports \u0027no unknown notice\u0027. No further notice can be sent for the ended loan, so nothing needs reconciling.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Notices.fs#unknown",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U7-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D3",
+        "statement": "A loan counts as \u0027past its due date today\u0027 using the existing LEND-L02 overdue rule, Loans.overdue (days late \u003E 0, so the day after the due date). A loan needs a notice unless its stored notice is for its current due date (Notices.needsNotice).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R1",
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#overdue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#needsNotice",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L07.md#LEND-L07-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D4",
+        "statement": "Effect flow: Notices.due (Tier 2) builds the Notice values in copy-id order. UseCases.sendNotices (Tier 3) sends each one through the Notifier port and immediately saves Notices.recordSent (Tier 2 interprets Delivered/Rejected/NoAnswer). The state is saved after every notice, so a notice that was sent is never forgotten if a later step fails. The notice text and subject are built in Tier 2, with the due date as yyyy-MM-dd.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R1",
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Notices.fs#due",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#recordSent",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/UseCases.fs#sendNotices",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Ports.fs#Notifier",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/LENDING-ARCHITECTURE.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D5",
+        "statement": "confirm-notice checks the answer first (exact, case-sensitive \u0027delivered\u0027 or \u0027not-delivered\u0027; anything else gives InvalidInput \u0027answer must be delivered or not-delivered\u0027). It then looks for an active loan of the copy with an unknown notice. An unknown copy gets the same \u0027no unknown notice for \u003Ccopy\u003E\u0027 error (new LendingError NoUnknownNotice), as R2 specifies for any copy without an unknown notice. Confirmed delivered is kept as NoticeConfirmedDelivered, so the record shows staff confirmed it.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Application/UseCases.fs#parseStaffAnswer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#confirm",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L07.md#LEND-L07-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D6",
+        "statement": "Durability: JsonCodec writes an optional \u0027notice\u0027 object ({dueDate, sentOn, delivery}) only on loans that have one. A loan without it, including every store written before L07, loads with no notice. The format stays \u0027lending/1\u0027, following the pattern of U6-D6.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R1",
+          "LEND-L07-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#encodeLoan",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeLoan",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U6-D6",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U7-D7",
+        "statement": "Help lists send-notices, unknown-notices and confirm-notice \u003Ccopy\u003E \u003Cdelivered|not-delivered\u003E directly after waive, and the README command list matches. A wrong argument count prints the usage line, as other commands do.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L07-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L07.md#LEND-L07-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "The Head of Lending should confirm that an unknown notice on a loan that has since been returned can be dropped and not kept for staff follow-up (U7-D2).",
+      "The production outboxNotifier always reports Delivered once the line is written to the outbox file. Whether the mail relay\u0027s real outcome (rejected or no answer) should be fed back is out of scope here."
+    ],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

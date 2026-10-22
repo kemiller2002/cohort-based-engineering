@@ -1,0 +1,46 @@
+{
+  "schema": "cbe.vac-002.policy-decision/1",
+  "policyVersion": "1.0.0",
+  "tier": "high",
+  "signals": [
+    {
+      "id": "S4-SENSITIVE",
+      "reason": "money or authority terms in the requirement",
+      "tier": "medium"
+    },
+    {
+      "id": "S5-NEW-PUBLIC-CONTRACT",
+      "reason": "2 new commands",
+      "tier": "medium"
+    },
+    {
+      "id": "S6-CROSS-BOUNDARY",
+      "reason": "4 tiers touched",
+      "tier": "high"
+    },
+    {
+      "id": "S10-UNRESOLVED-DEFECT",
+      "reason": "the previous gate ended with a failing check",
+      "tier": "high"
+    }
+  ],
+  "inputs": {
+    "pre": {
+      "contractRefused": false,
+      "decisionFilesStaged": 0,
+      "externalSrcChanges": 0,
+      "sensitive": true,
+      "newCommands": 2
+    },
+    "post": {
+      "filesChanged": 6,
+      "linesChanged": 104,
+      "tiersTouched": 4,
+      "buildSurfaceChanged": false,
+      "decisionRecordEdited": false,
+      "assumptions": false,
+      "blocked": false,
+      "previousUnresolved": true
+    }
+  }
+}

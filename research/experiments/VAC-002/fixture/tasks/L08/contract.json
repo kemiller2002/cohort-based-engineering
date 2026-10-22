@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:ceb8b9348ff942392f8582d15073231882a0733adc65b930a548a8e3d53d6d18",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L08.md#LEND-L08-R1",
+        "originalId": "LEND-L08-R1",
+        "document": "requirements/L08.md",
+        "location": "L5",
+        "revision": "sha256:ceb8b9348ff942392f8582d15073231882a0733adc65b930a548a8e3d53d6d18",
+        "contentDigest": "sha256:ac2b0ed23c3d8e484478819ba6a8a58e73ac23a33a941cf3eedb3f35e59ce66a"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-L08-R1",
+        "COHORT-L08"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L08.md#LEND-L08-R2",
+        "originalId": "LEND-L08-R2",
+        "document": "requirements/L08.md",
+        "location": "L19",
+        "revision": "sha256:ceb8b9348ff942392f8582d15073231882a0733adc65b930a548a8e3d53d6d18",
+        "contentDigest": "sha256:80ffb4e310a0c1df0ca4db6d2378fb688d0ea8d82acef2ad8bb69da3df7b0660"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-008",
+        "VERIFY-L08-R2",
+        "COHORT-L08",
+        "CONFLICT-L08-AUTOMATIC-RESEND"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-008",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L08.md#LEND-L08-R2"
+      ],
+      "dependsOn": [],
+      "justification": "one notice per overdue loan and due date; delivered is final; rejected is sent again; unknown is never resent automatically until staff record the answer"
+    },
+    {
+      "id": "VERIFY-L08-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L08.md#LEND-L08-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-L08-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L08.md#LEND-L08-R2"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "COHORT-L08",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L08.md#LEND-L08-R1",
+        "requirements/L08.md#LEND-L08-R2"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ]
+    },
+    {
+      "id": "CONFLICT-L08-AUTOMATIC-RESEND",
+      "kind": "conflict",
+      "requirementKeys": [
+        "requirements/L08.md#LEND-L08-R2"
+      ],
+      "dependsOn": [
+        "DEC-008"
+      ],
+      "justification": "LEND-L08-R2 (Customer Services) resends notices whose delivery is unknown automatically; accepted DEC-008 (owner: Head of Lending) forbids automatic resending until staff record the answer; unresolved"
+    }
+  ]
+}

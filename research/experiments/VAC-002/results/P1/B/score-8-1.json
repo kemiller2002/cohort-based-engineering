@@ -1,0 +1,347 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 8,
+  "attempt": 1,
+  "task": "L08",
+  "fault": "none",
+  "head": "09ed9aabb68940d6ba677baee1bf77716452ce38",
+  "verifiedAt": "2026-10-22T17:31:36.0607734Z",
+  "verifyMs": 226386,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 63,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Transition/Fines.fs",
+        "line": 16,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 1, Tier 2"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 8,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U8-D1",
+        "statement": "LEND-L08-R2 (automatically resend a notice whose delivery has been unknown for 2 days or more) was not implemented. It directly contradicts accepted DEC-008 (\u0027When we do not know whether a notice arrived, we must not send it again automatically\u0027), owned by the Head of Lending. L08 is only requested by Customer Services, and README says only the owner changes an accepted decision and a contradicting requirement is not a revision. The existing DEC-008 behaviour is kept and pinned by a test.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L08-R2"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L08.md#LEND-L08-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-008-overdue-notices.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#needsNotice",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L08NoticeHistoryTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D2",
+        "statement": "To list every notice ever sent (including resends and notices for returned loans), notice state moved from Loan.Notice (U7-D1) into an append-only Library.Notices log of SentNotice. Each entry identifies its loan by copy, member and borrow date. The decision rules (needsNotice, unknown, confirm) use the latest entry for the current loan, so L07 behaviour is unchanged: unknown-notices and confirm-notice still consider only current loans.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L08-R1",
+          "LEND-L07-R3"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L08.md#LEND-L08-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U7-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#SentNotice",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L07NoticeTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D3",
+        "statement": "Copy, member and borrow date identify a loan uniquely among loans that have notices: a loan gets a notice only once overdue, so it ended after its due date, and the next loan of that copy starts later.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L08-R1",
+          "LEND-L07-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Notices.fs#due",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Loans.fs#overdue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-001-loan-period.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D4",
+        "statement": "Ordering: newest day sent first, then copy id. If one copy was notified twice on the same day (a resend after a rejection), the later notice is listed first. The title shown is the copy\u0027s book title (Views.titleOf).",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L08-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L08.md#LEND-L08-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Notices.fs#sentTo",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#titleOf",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D5",
+        "statement": "Persistence: a top-level \u0060notices\u0060 array replaces the per-loan \u0060notice\u0060 object. Stores written by the L07 version are migrated on load: each loan\u0027s \u0060notice\u0060 becomes a log entry for that loan. Earlier stores have neither field and load with no notices. The format tag stays \u0060lending/1\u0060 (U1-D6).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L08-R1"
+        ],
+        "refs": [
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decode",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U7-D7",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Lending.Tests/Acceptance/L08NoticeHistoryTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D6",
+        "statement": "\u0060help\u0060 and README\u0027s command list gain \u0060notices \u003Cmember\u003E\u0060 after \u0060confirm-notice ...\u0060.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L08-R1"
+        ],
+        "refs": [
+          {
+            "ref": "requirements/L08.md#LEND-L08-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Head of Lending (owner of DEC-008): Customer Services asks for automatic resend after 2 days of unknown delivery (LEND-L08-R2). If agreed, DEC-008 needs a new revision. The change would then be small: in Notices.needsNotice, treat DeliveryUnknown with today - SentOn \u003E= 2 as needing a notice.",
+      "Carried over: unknown notices of returned loans are not offered for confirmation (they stay in the history); LEND-L04-R3 scope; the 5.00 threshold as a DEC record; holds of suspended members; a payment log; waiver details."
+    ],
+    "rejectedAssumptions": [
+      "L08 presents Customer Services as able to decide notice resending (\u0027Customer Services has decided\u0027). DEC-008 is an accepted decision owned by the Head of Lending and says the opposite; per README only the owner can revise it. Found by reading docs/decisions/DEC-008-overdue-notices.md and README.md.",
+      "The R1 example (c1 unknown on 2026-03-30, then delivered on 2026-04-02) can only happen with R2\u0027s automatic resend or a staff \u0027not-delivered\u0027 confirmation. Under DEC-008 the second line would follow a confirm-notice c1 not-delivered."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": true,
+    "conflictSurfaced": true,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

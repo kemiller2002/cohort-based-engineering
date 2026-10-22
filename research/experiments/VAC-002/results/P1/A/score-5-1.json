@@ -1,0 +1,319 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 5,
+  "attempt": 1,
+  "task": "L05",
+  "fault": "F1-NEWEST-FIRST-FINES",
+  "head": "175179cc8888288b6674795b9dfc21c3322ef23a",
+  "verifiedAt": "2026-10-22T17:21:04.9265517Z",
+  "verifyMs": 164644,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 66,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 0,
+      "pass": true
+    },
+    "errors": [],
+    "findings": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 5,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U5-D1",
+        "statement": "A payment is recorded as a new field on the fine, Fine.Paid (0 \u003C= Paid \u003C= Amount). Fine.Amount is never changed, as DEC-006 requires. No separate payments ledger (date or payer per payment) is kept, because R2 only asks for how much of each fine has been paid. Payments.pay is the only code that changes Paid.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Semantic/Model.fs#Fine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Payments.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/decisions/DEC-006-fine-authority.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D2",
+        "statement": "\u0027Oldest first\u0027 means the order of the Library.Fines list. Loans.returnCopy appends each new fine to the end of that list, so the list is already in assessment order. It is not re-sorted by AssessedOn: the list order also settles fines assessed on the same day. The payment is spread across fines with List.mapFold when it is made, and each fine takes min(remaining, unpaid) before the next fine gets anything.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2",
+          "LEND-L05-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Loans.fs#returnCopy",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Payments.fs#apply",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#finesOf",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D3",
+        "statement": "What a member owes (Fines.outstanding) is now the sum of Amount - Paid over the member\u0027s fines. Both \u0027owes\u0027 (LEND-L04-R1) and the borrow block (Fines.ensureMayBorrow, LEND-L04-R2) use it, so paying a fine down to 5.00 or less lets the member borrow again.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Fines.fs#outstanding",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Transition/Fines.fs#ensureMayBorrow",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U4-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D4",
+        "statement": "A valid amount must match ^[0-9]\u002B(\\.[0-9]{1,2})?$ and be greater than 0. Signs, exponents, commas, a leading \u0027.\u0027 and a trailing \u0027.\u0027 are rejected with the new LendingError InvalidAmount (\u0027invalid amount \u0027x\u0027\u0027). The check lives in Tier 2 as Payments.PaymentAmount, whose constructor is private, so only parse can create one. The new error PaymentExceedsOwed renders as \u0027m1 owes only 1.50\u0027. Checks run in this order: unknown member, then invalid amount, then payment over what is owed. Paying more than is owed, including when the member owes 0.00, records nothing.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "requirementIds": [
+          "LEND-L05-R1"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Transition/Payments.fs#PaymentAmount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Semantic/Model.fs#LendingError",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#describeError",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D5",
+        "statement": "Durability: JsonCodec writes a \u0027paid\u0027 value for each fine. A fine stored without \u0027paid\u0027 (written before L05) loads with Paid = 0. The store format stays \u0027lending/1\u0027.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R1",
+          "LEND-L05-R2"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#decodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Host/Persistence/JsonCodec.fs#encodeFine",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "README.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U5-D6",
+        "statement": "Command flow: \u0027pay\u0027 goes CommandLine.run -\u003E UseCases.pay -\u003E Payments.pay -\u003E Views.ofPayment, and \u0027fines\u0027 goes UseCases.fines -\u003E Views.memberFines. Help lists \u0027pay \u003Cmember\u003E \u003Camount\u003E\u0027 and then \u0027fines \u003Cmember\u003E\u0027 directly after \u0027owes \u003Cmember\u003E\u0027, and the README command list matches. An unknown member for \u0027fines\u0027 prints the existing \u0027unknown member\u0027 error.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [
+          "LEND-L05-R1",
+          "LEND-L05-R3"
+        ],
+        "refs": [
+          {
+            "ref": "src/Lending.Host/Cli/CommandLine.fs#usage",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/UseCases.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Lending.Application/Views.fs#memberFines",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/L05.md#LEND-L05-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [
+      "Finance may want a payments ledger, with the date and amount of each payment. Right now only the paid portion of each fine is stored (U5-D1)."
+    ],
+    "rejectedAssumptions": [
+      "The team lead\u0027s handoff said Library.Fines is kept newest first, with the oldest fine last. That is false. Loans.returnCopy does \u0027library.Fines @ Option.toList fine\u0027, which appends each new fine, so the oldest fine is first. The acceptance tests confirm it: L05PaymentTests \u0027a payment covers the oldest fine first\u0027 passes with list order. Model.fs now documents the order."
+    ]
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

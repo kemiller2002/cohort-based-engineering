@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:d8723b5ab8b216299e33a12e2d1b75da0e20a20eca8b2d0c23699b02a21dea0b",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/L05.md#LEND-L05-R1",
+        "originalId": "LEND-L05-R1",
+        "document": "requirements/L05.md",
+        "location": "L5",
+        "revision": "sha256:d8723b5ab8b216299e33a12e2d1b75da0e20a20eca8b2d0c23699b02a21dea0b",
+        "contentDigest": "sha256:1f45804d69472591f82e30723f8d5f6ef282b8387aac2f6144d42f1eb2287fb6"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-L05-R1",
+        "COHORT-L05"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L05.md#LEND-L05-R2",
+        "originalId": "LEND-L05-R2",
+        "document": "requirements/L05.md",
+        "location": "L14",
+        "revision": "sha256:d8723b5ab8b216299e33a12e2d1b75da0e20a20eca8b2d0c23699b02a21dea0b",
+        "contentDigest": "sha256:f9b60cdc90dbfa37e78cbf2b1741342f6e5c9ce8bb968ed0142555aaf1071b0c"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-003",
+        "DEC-006",
+        "VERIFY-L05-R2",
+        "COHORT-L05"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/L05.md#LEND-L05-R3",
+        "originalId": "LEND-L05-R3",
+        "document": "requirements/L05.md",
+        "location": "L22",
+        "revision": "sha256:d8723b5ab8b216299e33a12e2d1b75da0e20a20eca8b2d0c23699b02a21dea0b",
+        "contentDigest": "sha256:1f04955c080f1fa4fa12fb6ae2ae05068f013d9325bf39d8a5ed1f3173ec28bc"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-L05-R3",
+        "COHORT-L05"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-003",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L05.md#LEND-L05-R2"
+      ],
+      "dependsOn": [],
+      "justification": "0.25 per day late, at most 10.00 per loan, assessed on return"
+    },
+    {
+      "id": "DEC-006",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/L05.md#LEND-L05-R2"
+      ],
+      "dependsOn": [],
+      "justification": "fines only by the schedule; no member type exempt; nothing reduces a fine on its own initiative"
+    },
+    {
+      "id": "VERIFY-L05-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L05.md#LEND-L05-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-L05-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L05.md#LEND-L05-R2"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "VERIFY-L05-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/L05.md#LEND-L05-R3"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-L05",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/L05.md#LEND-L05-R1",
+        "requirements/L05.md#LEND-L05-R2",
+        "requirements/L05.md#LEND-L05-R3"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-006"
+      ]
+    }
+  ]
+}

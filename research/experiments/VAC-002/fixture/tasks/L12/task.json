@@ -1,0 +1,63 @@
+{
+  "schema": "cbe.vac-002.task/1",
+  "id": "L12",
+  "workItem": "LEND-L12",
+  "title": "L12: Loan periods by member type",
+  "categories": [
+    3,
+    6
+  ],
+  "difficulty": "hard",
+  "kind": "ordinary",
+  "expectedOutcome": "completed",
+  "requirementIds": [
+    "LEND-L12-R1",
+    "LEND-L12-R2"
+  ],
+  "requirementKeys": [
+    "requirements/L12.md#LEND-L12-R1",
+    "requirements/L12.md#LEND-L12-R2"
+  ],
+  "decisionIds": [
+    "DEC-001",
+    "DEC-004"
+  ],
+  "conflictIds": [],
+  "conflictRequirementIds": [],
+  "dependsOn": [
+    "L09"
+  ],
+  "interactsWith": [],
+  "files": {
+    "requirement": {
+      "source": "tasks/L12/requirement.md",
+      "target": "requirements/L12.md",
+      "sha256": "d2fa432337d8250b4b16e58c720c98c103042a7d04d90ea7e1c72188c219052c"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/L12/acceptance/L12AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/L12AcceptanceTests.fs",
+        "sha256": "cb199811f0c59f13ec510e890c4dcd97ef0d6892bbc68d9fb338086129fc1a4d"
+      }
+    ],
+    "stage": [
+      "docs/decisions/DEC-001-loan-period.md",
+      "docs/decisions/DEC-004-renewals.md"
+    ],
+    "before": [],
+    "oracle": {
+      "path": "sealed:oracle/L12/OracleTests.fs",
+      "sha256": "775d38db8cea43519794a9e2a8866abf7e8283456a30c5150dc449fd2272dbd9"
+    }
+  },
+  "contract": {
+    "path": "tasks/L12/contract.json",
+    "sha256": "af9a881810dae84969c8b91a611c6a79e004eb3ed46e53ff7ef5c5fe48b11111",
+    "expectedOrdoAdmits": true,
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:2d8c291f09fb1d52dc7ab9fbdee40149e4c69290fd31221cb168aa92cfcb2b7d",
+    "ordoDiagnostics": []
+  }
+}
