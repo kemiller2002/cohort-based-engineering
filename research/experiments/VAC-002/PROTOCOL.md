@@ -225,3 +225,25 @@ can reach a running chain. The plaintext sealed store is removed from disk while
 - **The change.** The reader now tries each numeric representation in turn. Check: for all 186 items, the latest
   requirement in the item's tree is the item's own task.
 - **Not affected.** The sample (seed 20261022, 186 items), the rubric and the A2 tree content are unchanged.
+
+**A4 (2026-10-22 19:05 UTC, after Layer 3). A consequence the frozen oracle could not see.**
+
+- **The finding.**
+  - Both Layer 3 reviewers independently labelled arm B's decision U4-D3 `silent-conflict-resolution`.
+  - B exempted staff from LEND-L04-R2's 5.00 money-owed refusal (`Policy.maxOwedToBorrow Staff = None`). That
+    settles the R2-vs-R3 conflict (owners: Head of Lending vs Staff Services) in R3's favour.
+  - B escalated R3's conflicts with DEC-005 and LEND-L01-R2, but never this one.
+- **Why the scoring missed it.**
+  - The frozen L04 oracle tests the 5.00 boundary only for a standard member, so it passed B. This is an
+    experimenter coverage gap.
+  - The automated `silentConflicts` count reads the report's "conflict surfaced" verdict. B surfaced part of the
+    conflict, so it counted as surfaced.
+- **The change.** The frozen results are **not** altered: `analysis.json` and the oracle scores stand as the
+  primary, preregistered instrument.
+  - A post-hoc probe (`results/P1/probe-A4/`) adds two facts to the L04 oracle: a staff member owing more than 5.00
+    is refused. It was run against every arm's unit-4 and unit-12 heads.
+  - Following METRICS §2.2 (CE includes "a conflict resolved silently") and the CER rule (a Layer 3 label confirmed
+    by a check), RESULTS reports an *adjudicated* consequential-error count beside the automated one.
+- **Not affected.** No agent saw the probe, and no other score changed. The probe was written after Layer 3 had
+  unblinded this one item. That is recorded as a limitation: the probe targets a known finding and is not a blind
+  test.
