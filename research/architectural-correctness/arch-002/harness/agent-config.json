@@ -1,0 +1,59 @@
+{
+  "schema": "arch002.agent-config/1",
+  "experiment": "ARCH-002",
+  "runtime": "claude-code",
+  "claudeCodeVersion": "2.1.306",
+  "models": {
+    "opus": "claude-opus-5-5",
+    "sonnet": "claude-sonnet-5-5"
+  },
+  "modelNote": "model is a blocking factor; the run id names it (opus | sonnet) and launch-agent.sh resolves it here",
+  "budgetMinutes": 60,
+  "maxSubmits": 3,
+  "tools": {
+    "builtIn": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write"
+    ],
+    "mcpServers": [],
+    "identicalAcrossArms": true,
+    "rationale": "REL-001 run-03 K1 tool profile: read/edit files and run a shell; ordo, archcheck and submit are reached through Bash"
+  },
+  "environment": {
+    "inherit": true,
+    "override": [
+      "HOME",
+      "CLAUDE_CONFIG_DIR",
+      "PATH",
+      "DOTNET_ROOT",
+      "NUGET_PACKAGES",
+      "DOTNET_CLI_TELEMETRY_OPTOUT",
+      "DOTNET_NOLOGO",
+      "TERM",
+      "MSBUILDDISABLENODEREUSE",
+      "DOTNET_CLI_USE_MSBUILD_SERVER",
+      "UseSharedCompilation"
+    ],
+    "unset": [
+      "CLAUDE_ADDITIONAL_DIRECTORIES",
+      "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD",
+      "CLAUDE_CODE_SYNC_SKILLS",
+      "CLAUDE_CODE_SYNC_PLUGINS",
+      "CLAUDE_CODE_MESSAGING_SOCKET",
+      "CLAUDE_CODE_MESSAGING_TOKEN",
+      "CLAUDE_CODE_SESSION_ID",
+      "CLAUDE_CODE_CHILD_SESSION",
+      "CLAUDE_CODE_REMOTE_SESSION_ID",
+      "CLAUDE_CODE_REMOTE_SDK_URL",
+      "GH_TOKEN",
+      "GITHUB_TOKEN",
+      "CLOUDSDK_AUTH_ACCESS_TOKEN"
+    ],
+    "note": "auth and proxy come from the inherited environment (env -i is not used); the unset list stops the orchestrator's additional directories (cohort, ordo, praxis, dokimos) and its CLAUDE.md files, skills, plugins and messaging channel from reaching the trial session; CLAUDE_CODE_REMOTE_SESSION_ID and CLAUDE_CODE_REMOTE_SDK_URL are unset so the orchestrator's session link is not injected into trial sessions (verified: auth still works without them); GH_TOKEN, GITHUB_TOKEN and CLOUDSDK_AUTH_ACCESS_TOKEN are unset so a trial cannot fetch the experiment repositories over the network; MSBuild node reuse and the build server are off so concurrent trials share no build process"
+  },
+  "invocation": "K1 isolated-cli: one headless `claude -p` per phase (harness/launch-agent.sh), fresh CLAUDE_CONFIG_DIR and HOME, fresh --session-id, --model from .models[run-id model], per-phase nonce in --append-system-prompt, --tools from .tools.builtIn, --strict-mcp-config with no servers, --permission-mode bypassPermissions (IS_SANDBOX=1 inherited)",
+  "prompt": "You are a software engineer doing one bounded task. Your complete instructions are in the brief at {BRIEF}. Read it first and follow it exactly, including its limits and workflow, and end your final message as the brief says.",
+  "promptNote": "the REL-001 run-02/run-03 wrapper prompt, byte for byte; identical in every arm and phase"
+}
