@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:7c18887261ad987a60f0b5cf02dd4d7ed771b943c4ac57099d95d6c33b088a2e",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T3.md#LEND2-T3-R1",
+        "originalId": "LEND2-T3-R1",
+        "document": "requirements/T3.md",
+        "location": "L17",
+        "revision": "sha256:7c18887261ad987a60f0b5cf02dd4d7ed771b943c4ac57099d95d6c33b088a2e",
+        "contentDigest": "sha256:fbcc150707fe31c76e9ebbed20eba7d2eb59c411a068c34109d72a8e2095232e"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-011",
+        "VERIFY-T3-R1",
+        "COHORT-T3"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T3.md#LEND2-T3-R2",
+        "originalId": "LEND2-T3-R2",
+        "document": "requirements/T3.md",
+        "location": "L30",
+        "revision": "sha256:7c18887261ad987a60f0b5cf02dd4d7ed771b943c4ac57099d95d6c33b088a2e",
+        "contentDigest": "sha256:1c18b9ad6cfb3633cd7036c4ca594adfd5ea80bda6b1cf26afbaec7cfeefd5e4"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-005",
+        "VERIFY-T3-R2",
+        "COHORT-T3"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T3.md#LEND2-T3-R3",
+        "originalId": "LEND2-T3-R3",
+        "document": "requirements/T3.md",
+        "location": "L41",
+        "revision": "sha256:7c18887261ad987a60f0b5cf02dd4d7ed771b943c4ac57099d95d6c33b088a2e",
+        "contentDigest": "sha256:9b31ad3050c1d4b41e7eaf6537cec82fe39f741e2ed6b2ba1beb1b5f91f099b2"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-T3-R3",
+        "COHORT-T3"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-011",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T3.md#LEND2-T3-R1"
+      ],
+      "dependsOn": [],
+      "justification": "a main branch exists; every copy is shelved at exactly one branch; a copy is transferred only while on the shelf"
+    },
+    {
+      "id": "DEC-005",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T3.md#LEND2-T3-R2"
+      ],
+      "dependsOn": [],
+      "justification": "per-book FIFO holds queue; a member holds a book at most once"
+    },
+    {
+      "id": "VERIFY-T3-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3.md#LEND2-T3-R1"
+      ],
+      "dependsOn": [
+        "DEC-011"
+      ]
+    },
+    {
+      "id": "VERIFY-T3-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3.md#LEND2-T3-R2"
+      ],
+      "dependsOn": [
+        "DEC-005"
+      ]
+    },
+    {
+      "id": "VERIFY-T3-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3.md#LEND2-T3-R3"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-T3",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T3.md#LEND2-T3-R1",
+        "requirements/T3.md#LEND2-T3-R2",
+        "requirements/T3.md#LEND2-T3-R3"
+      ],
+      "dependsOn": [
+        "DEC-005",
+        "DEC-011"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:40dbb519d49f36c78f6b3d0986020298030ee25322344b21822e5638f61e6f06",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T1.md#SUMMA-T1-R1",
+        "originalId": "SUMMA-T1-R1",
+        "document": "requirements/T1.md",
+        "location": "L10",
+        "revision": "sha256:40dbb519d49f36c78f6b3d0986020298030ee25322344b21822e5638f61e6f06",
+        "contentDigest": "sha256:524e950f31495498a5df25a7ea76332a048f61470eaa0730419fd1a93bf42834"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0028",
+        "VERIFY-T1-R1",
+        "COHORT-T1"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T1.md#SUMMA-T1-R2",
+        "originalId": "SUMMA-T1-R2",
+        "document": "requirements/T1.md",
+        "location": "L38",
+        "revision": "sha256:40dbb519d49f36c78f6b3d0986020298030ee25322344b21822e5638f61e6f06",
+        "contentDigest": "sha256:9821a65ade6cb2de78b7a854408a77889a0e5171cae6f7e7e52bb6856c13d739"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0041",
+        "VERIFY-T1-R2",
+        "COHORT-T1"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T1.md#SUMMA-T1-R3",
+        "originalId": "SUMMA-T1-R3",
+        "document": "requirements/T1.md",
+        "location": "L56",
+        "revision": "sha256:40dbb519d49f36c78f6b3d0986020298030ee25322344b21822e5638f61e6f06",
+        "contentDigest": "sha256:1749a598e4a63bbe4ad09a166fbb92f75f68782c3314ea58c6b0aac6b5ecc43b"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0041",
+        "VERIFY-T1-R3",
+        "COHORT-T1"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DF-SUMMA-2026-0028",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T1.md#SUMMA-T1-R1"
+      ],
+      "dependsOn": [],
+      "justification": "Payments.settlement lists every event that settled or unsettled an invoice in date order, each with its effect and what was owed after; the last balance is the outstanding amount"
+    },
+    {
+      "id": "DF-SUMMA-2026-0041",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T1.md#SUMMA-T1-R2",
+        "requirements/T1.md#SUMMA-T1-R3"
+      ],
+      "dependsOn": [],
+      "justification": "financial exports are sensitive files: each says it is confidential financial data, the download is its only effect, and on books on GitHub it needs the ExportData capability"
+    },
+    {
+      "id": "VERIFY-T1-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#SUMMA-T1-R1"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0028"
+      ]
+    },
+    {
+      "id": "VERIFY-T1-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#SUMMA-T1-R2"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0041"
+      ]
+    },
+    {
+      "id": "VERIFY-T1-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#SUMMA-T1-R3"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0041"
+      ]
+    },
+    {
+      "id": "COHORT-T1",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T1.md#SUMMA-T1-R1",
+        "requirements/T1.md#SUMMA-T1-R2",
+        "requirements/T1.md#SUMMA-T1-R3"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0028",
+        "DF-SUMMA-2026-0041"
+      ]
+    }
+  ]
+}

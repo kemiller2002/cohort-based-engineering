@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:5f0f005c8eec46959b16e057ba326040e1b56d6cb24be6be1a501dcfdbd99dbe",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T1.md#LEND2-T1-R1",
+        "originalId": "LEND2-T1-R1",
+        "document": "requirements/T1.md",
+        "location": "L12",
+        "revision": "sha256:5f0f005c8eec46959b16e057ba326040e1b56d6cb24be6be1a501dcfdbd99dbe",
+        "contentDigest": "sha256:60cffffc2179e43f83478086739130bcfca71034323479e3ae14ae85ef9f4f67"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-004",
+        "VERIFY-T1-R1",
+        "COHORT-T1"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T1.md#LEND2-T1-R2",
+        "originalId": "LEND2-T1-R2",
+        "document": "requirements/T1.md",
+        "location": "L26",
+        "revision": "sha256:5f0f005c8eec46959b16e057ba326040e1b56d6cb24be6be1a501dcfdbd99dbe",
+        "contentDigest": "sha256:eb96af85378f5687545acd9cd51e7e9aa1ad89b0c06e8fe2139ec43d35123bd6"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-004",
+        "VERIFY-T1-R2",
+        "COHORT-T1"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T1.md#LEND2-T1-R3",
+        "originalId": "LEND2-T1-R3",
+        "document": "requirements/T1.md",
+        "location": "L41",
+        "revision": "sha256:5f0f005c8eec46959b16e057ba326040e1b56d6cb24be6be1a501dcfdbd99dbe",
+        "contentDigest": "sha256:4ec9f88356a724c0164ad1a946c870b6fea2e82c7a8f0316d73cc149732661ee"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-004",
+        "VERIFY-T1-R3",
+        "COHORT-T1"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-004",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T1.md#LEND2-T1-R1",
+        "requirements/T1.md#LEND2-T1-R2",
+        "requirements/T1.md#LEND2-T1-R3"
+      ],
+      "dependsOn": [],
+      "justification": "at most 2 renewals; not when overdue; not when any member holds the book; each renewal adds 21 days to the due date; the first applicable reason is given"
+    },
+    {
+      "id": "VERIFY-T1-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#LEND2-T1-R1"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "VERIFY-T1-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#LEND2-T1-R2"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "VERIFY-T1-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1.md#LEND2-T1-R3"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "COHORT-T1",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T1.md#LEND2-T1-R1",
+        "requirements/T1.md#LEND2-T1-R2",
+        "requirements/T1.md#LEND2-T1-R3"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "schema": "arch002.task/1",
+  "fixture": "summa",
+  "id": "T2",
+  "workItem": "SUMMA-T2",
+  "title": "T2: Moving local books to another browser",
+  "categories": [
+    2,
+    9
+  ],
+  "categoryNames": [
+    "domain depending on persistence",
+    "integration across tiers"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "SUMMA-T2-R1",
+      "SUMMA-T2-R2",
+      "SUMMA-T2-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T2.md#SUMMA-T2-R1",
+      "requirements/T2.md#SUMMA-T2-R2",
+      "requirements/T2.md#SUMMA-T2-R3"
+    ],
+    "decisionIds": [
+      "DF-SUMMA-2026-0009",
+      "DF-SUMMA-2026-0041"
+    ],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T2 follow-up: Saying what a transfer file holds",
+    "requirementIds": [
+      "SUMMA-T2-F1",
+      "SUMMA-T2-F2"
+    ],
+    "requirementKeys": [
+      "requirements/T2-followup.md#SUMMA-T2-F1",
+      "requirements/T2-followup.md#SUMMA-T2-F2"
+    ],
+    "decisionIds": [
+      "DF-SUMMA-2026-0009"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T2/requirement.md",
+      "target": "requirements/T2.md",
+      "sha256": "25654ed80d658f7af9d58c9e306191453658c41f3bc35df1cd219abb6afc78fa"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T2/acceptance/T2AcceptanceTests.fs",
+        "target": "tests/Summa.Acceptance.Tests/Acceptance/T2AcceptanceTests.fs",
+        "sha256": "6f63235b88df7fadcad91ef4d5c6afcd6df5d7c26f3f653c0eb1e5c1d97119e7"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T2/followup.md",
+      "target": "requirements/T2-followup.md",
+      "sha256": "cfc4858635664718f0c7df804556fa0e3f9264f854d52daac42e97e3045d38dc"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T2/followup-acceptance/T2FollowupAcceptanceTests.fs",
+        "target": "tests/Summa.Acceptance.Tests/Acceptance/T2FollowupAcceptanceTests.fs",
+        "sha256": "721fd159617ff2edeb959a5bde4644f5930adaa99541a0d26f522b2594ffe871"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T2/InitialOracleTests.fs",
+        "sha256": "acf7243571aeb5a4ed7cad3bddc23e47f4fb7907e91a491ce43bd655d92ab782"
+      },
+      "followup": {
+        "path": "sealed:oracle/T2/FollowupOracleTests.fs",
+        "sha256": "f245176ec0542ddacbf91580a49f0765ac483c1b8275d6e083a8c7cec27aad98"
+      },
+      "manifest": {
+        "path": "sealed:oracle/T2/oracle.json",
+        "sha256": "f8b0039a602836f2030e1b9602e76593c37cc40f91c570913357e74105a6ba79"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T2/probes.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "baseline": {
+      "path": "sealed:baseline/start.report.json",
+      "sha256": "c136381a92c220f6ed00c23d9e1229fe7cae13fd0aead8325661ffa76a222559"
+    },
+    "reference": {
+      "good": "sealed:reference/T2/good",
+      "followup-good": "sealed:reference/T2/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T2/contract.json",
+    "sha256": "f9058e3d291bf9c01ca6153d42658bd11b23c89ec4c532df8185004f1fbd8f52",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:e7fa899d84c1e6ebffb62a8768669e8f0767f6e22885f7a7aaab9c0df3820985",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T2/followup-contract.json",
+    "sha256": "a5a64c4ff7c98a5a4dd53ab3c51218a85decf2a0e39853f03cb7b0b3f5d7b9b9",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:6e8499eccc7e572a34db7e9a65d5ae959e4cbfa850e0ffb42f7a3474eac3a547",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T2.json"
+}

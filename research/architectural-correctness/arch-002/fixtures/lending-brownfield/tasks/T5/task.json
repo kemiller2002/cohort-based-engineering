@@ -1,0 +1,119 @@
+{
+  "schema": "arch002.task/1",
+  "fixture": "lending-brownfield",
+  "id": "T5",
+  "workItem": "LEND2-T5",
+  "title": "T5: Payments against fines",
+  "categories": [
+    7,
+    1
+  ],
+  "categoryNames": [
+    "decisions conflicting with existing constraints",
+    "business logic in UI"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND2-T5-R1",
+      "LEND2-T5-R2",
+      "LEND2-T5-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T5.md#LEND2-T5-R1",
+      "requirements/T5.md#LEND2-T5-R2",
+      "requirements/T5.md#LEND2-T5-R3"
+    ],
+    "decisionIds": [
+      "DEC-003",
+      "DEC-010",
+      "DEC-006"
+    ],
+    "conflictIds": [
+      "CONFLICT-T5-WRITE-OFF"
+    ]
+  },
+  "followup": {
+    "title": "T5 follow-up: Waivers",
+    "requirementIds": [
+      "LEND2-T5-F1"
+    ],
+    "requirementKeys": [
+      "requirements/T5-followup.md#LEND2-T5-F1"
+    ],
+    "decisionIds": [
+      "DEC-006",
+      "DEC-010"
+    ],
+    "conflictIds": []
+  },
+  "conflict": true,
+  "files": {
+    "requirement": {
+      "source": "tasks/T5/requirement.md",
+      "target": "requirements/T5.md",
+      "sha256": "4c56d45c49f065f89284596475765a413467b8e29132fae78a3d4638836f976a"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T5/acceptance/T5AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T5AcceptanceTests.fs",
+        "sha256": "549ba8685db527f7bd5a12f76a6fc19e00eccea071108177ec187625deecd4ba"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T5/followup.md",
+      "target": "requirements/T5-followup.md",
+      "sha256": "9690e94bc457e7823f480f84803d0c3b402750e1c08db9c17f4ba6a0312ca7d6"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T5/followup-acceptance/T5FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T5FollowupAcceptanceTests.fs",
+        "sha256": "43cb30df76187acf8a8f314dcffbf09a3ef8a5bc4187a4a18b72793bd44e42b0"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T5/InitialOracleTests.fs",
+        "sha256": "b19b4677c1146a289844fccd4a6740bc402fe7e8f56e7091b8bcf5da0ec7baeb"
+      },
+      "followup": {
+        "path": "sealed:oracle/T5/FollowupOracleTests.fs",
+        "sha256": "1d760b825a6e60e3d3fb1007eab68902d0f2b69f90b45a0a53c017d91b79c274"
+      },
+      "manifest": {
+        "path": "sealed:oracle/T5/oracle.json",
+        "sha256": "50fc0a653d55a92f12fd35033a7aad262ac860a7ed15150ec319a5f95db73cb7"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T5/probes.json",
+      "sha256": "394cb1739f96879330c5416657996ddd085bfe891e6167aceaee21199473c2dd"
+    }
+  },
+  "contract": {
+    "path": "tasks/T5/contract.json",
+    "sha256": "c47e8129161073da0cfb82126e0098905c963567fe850677f4e176fe687f4ac6",
+    "expectedOrdoAdmits": false,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": false,
+    "ordoExit": 1,
+    "ordoContractDigest": null,
+    "ordoDiagnostics": [
+      "ORDO.CONTRACT.UNRESOLVED_CONFLICT"
+    ]
+  },
+  "followupContract": {
+    "path": "tasks/T5/followup-contract.json",
+    "sha256": "9e753a38dac25693281ff2611adeb620b52d4eb4a3720ca4bc81132473250024",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:836b066faac60176d5d7345a6e335cd95fdec588e9e4fd82b33ee1f8a6618ece",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 4,
+  "privateMetadata": "sealed:task-private/T5.json"
+}

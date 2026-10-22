@@ -15,7 +15,7 @@ The member's loans, holds and reminders are not restored, and nothing else chang
 It is refused, changing nothing, with `error: no backup at <path>` when there is no
 backup, `error: backup has no member m9` when the backup does not hold the member, and
 `error: member m1 already exists` when the current library already has that member.
-`help` lists `restore-member <path> <member>` directly after `restore <path>`.
+`help` lists `restore-member <path> <member>` directly after `backup-info <path>`.
 
 Acceptance criteria: the statement above holds; everything else behaves as before;
 all tests pass with `dotnet test Lending.slnx`.

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:f27d61dee8ba5d40147cfd812e87d89630b72372032b80172767c7c7b9806884",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T6.md#LEND2-T6-R1",
+        "originalId": "LEND2-T6-R1",
+        "document": "requirements/T6.md",
+        "location": "L11",
+        "revision": "sha256:f27d61dee8ba5d40147cfd812e87d89630b72372032b80172767c7c7b9806884",
+        "contentDigest": "sha256:8ddeb53d515c142c690de49def720e15736b5a09230168a150b205460fea55f3"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-T6-R1",
+        "COHORT-T6"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T6.md#LEND2-T6-R2",
+        "originalId": "LEND2-T6-R2",
+        "document": "requirements/T6.md",
+        "location": "L22",
+        "revision": "sha256:f27d61dee8ba5d40147cfd812e87d89630b72372032b80172767c7c7b9806884",
+        "contentDigest": "sha256:643f127a51d47879a0ef0cad3adfb1a3ebb43453efa5a426acfadc4a7796b9f0"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-011",
+        "VERIFY-T6-R2",
+        "COHORT-T6"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T6.md#LEND2-T6-R3",
+        "originalId": "LEND2-T6-R3",
+        "document": "requirements/T6.md",
+        "location": "L34",
+        "revision": "sha256:f27d61dee8ba5d40147cfd812e87d89630b72372032b80172767c7c7b9806884",
+        "contentDigest": "sha256:8a32a2bcd989334de9fe66b4d9b032a5bb1cb8ee9f8a3c877318d5651f7e00af"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-011",
+        "VERIFY-T6-R3",
+        "COHORT-T6"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-011",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T6.md#LEND2-T6-R2",
+        "requirements/T6.md#LEND2-T6-R3"
+      ],
+      "dependsOn": [],
+      "justification": "a main branch exists; every copy is shelved at exactly one branch; a copy is transferred only while on the shelf"
+    },
+    {
+      "id": "VERIFY-T6-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6.md#LEND2-T6-R1"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "VERIFY-T6-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6.md#LEND2-T6-R2"
+      ],
+      "dependsOn": [
+        "DEC-011"
+      ]
+    },
+    {
+      "id": "VERIFY-T6-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6.md#LEND2-T6-R3"
+      ],
+      "dependsOn": [
+        "DEC-011"
+      ]
+    },
+    {
+      "id": "COHORT-T6",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T6.md#LEND2-T6-R1",
+        "requirements/T6.md#LEND2-T6-R2",
+        "requirements/T6.md#LEND2-T6-R3"
+      ],
+      "dependsOn": [
+        "DEC-011"
+      ]
+    }
+  ]
+}

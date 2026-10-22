@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:9690e94bc457e7823f480f84803d0c3b402750e1c08db9c17f4ba6a0312ca7d6",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T5-followup.md#LEND2-T5-F1",
+        "originalId": "LEND2-T5-F1",
+        "document": "requirements/T5-followup.md",
+        "location": "L8",
+        "revision": "sha256:9690e94bc457e7823f480f84803d0c3b402750e1c08db9c17f4ba6a0312ca7d6",
+        "contentDigest": "sha256:daf0c9edf5267b87e84ddb9c2a3894948ac320f57586fb5d426a4756d7025a04"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-006",
+        "DEC-010",
+        "VERIFY-T5F-F1",
+        "COHORT-T5F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-006",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND2-T5-F1"
+      ],
+      "dependsOn": [],
+      "justification": "fines are assessed only by the schedule; no part of the system may reduce or cancel a fine on its own initiative; a waiver needs a named approver for the specific fine"
+    },
+    {
+      "id": "DEC-010",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND2-T5-F1"
+      ],
+      "dependsOn": [],
+      "justification": "a payment is positive, at most two decimals, not more than is owed; payments are applied to the fines oldest first"
+    },
+    {
+      "id": "VERIFY-T5F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND2-T5-F1"
+      ],
+      "dependsOn": [
+        "DEC-006",
+        "DEC-010"
+      ]
+    },
+    {
+      "id": "COHORT-T5F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T5-followup.md#LEND2-T5-F1"
+      ],
+      "dependsOn": [
+        "DEC-006",
+        "DEC-010"
+      ]
+    }
+  ]
+}

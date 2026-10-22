@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:068109f3860192b05ea4ddc9b4d038be32d3251eeb08d9dbd9673f40d6d772c3",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T6-followup.md#LEND2-T6-F1",
+        "originalId": "LEND2-T6-F1",
+        "document": "requirements/T6-followup.md",
+        "location": "L8",
+        "revision": "sha256:068109f3860192b05ea4ddc9b4d038be32d3251eeb08d9dbd9673f40d6d772c3",
+        "contentDigest": "sha256:6994a5b9f7980c5757f352d487f1bbfc9964e995e959e60369064fb5324c80b2"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-011",
+        "VERIFY-T6F-F1",
+        "COHORT-T6F"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T6-followup.md#LEND2-T6-F2",
+        "originalId": "LEND2-T6-F2",
+        "document": "requirements/T6-followup.md",
+        "location": "L21",
+        "revision": "sha256:068109f3860192b05ea4ddc9b4d038be32d3251eeb08d9dbd9673f40d6d772c3",
+        "contentDigest": "sha256:f873d5ee8ef1c1502ab57731474b4df7fc66a41fb231cc5eb3533db2abc9a9a9"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "VERIFY-T6F-F2",
+        "COHORT-T6F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-011",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND2-T6-F1"
+      ],
+      "dependsOn": [],
+      "justification": "a main branch exists; every copy is shelved at exactly one branch; a copy is transferred only while on the shelf"
+    },
+    {
+      "id": "VERIFY-T6F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND2-T6-F1"
+      ],
+      "dependsOn": [
+        "DEC-011"
+      ]
+    },
+    {
+      "id": "VERIFY-T6F-F2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND2-T6-F2"
+      ],
+      "dependsOn": []
+    },
+    {
+      "id": "COHORT-T6F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T6-followup.md#LEND2-T6-F1",
+        "requirements/T6-followup.md#LEND2-T6-F2"
+      ],
+      "dependsOn": [
+        "DEC-011"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:1324732673a8d7bed7e8ae6eaf0afb9190aaf0cc3de2dfbc228fb8ec84207003",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T3-followup.md#LEND2-T3-F1",
+        "originalId": "LEND2-T3-F1",
+        "document": "requirements/T3-followup.md",
+        "location": "L8",
+        "revision": "sha256:1324732673a8d7bed7e8ae6eaf0afb9190aaf0cc3de2dfbc228fb8ec84207003",
+        "contentDigest": "sha256:f03c5a1494e63872e0e44249b3e8c781466f28e6654fe0a5e12aab34ed267e69"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-011",
+        "VERIFY-T3F-F1",
+        "COHORT-T3F"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T3-followup.md#LEND2-T3-F2",
+        "originalId": "LEND2-T3-F2",
+        "document": "requirements/T3-followup.md",
+        "location": "L20",
+        "revision": "sha256:1324732673a8d7bed7e8ae6eaf0afb9190aaf0cc3de2dfbc228fb8ec84207003",
+        "contentDigest": "sha256:11b146ab1ab3c316d8402929ba226dc7642e94fece0e4a8b7ee86ce2e9185892"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-005",
+        "VERIFY-T3F-F2",
+        "COHORT-T3F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-011",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND2-T3-F1"
+      ],
+      "dependsOn": [],
+      "justification": "a main branch exists; every copy is shelved at exactly one branch; a copy is transferred only while on the shelf"
+    },
+    {
+      "id": "DEC-005",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND2-T3-F2"
+      ],
+      "dependsOn": [],
+      "justification": "per-book FIFO holds queue; a member holds a book at most once"
+    },
+    {
+      "id": "VERIFY-T3F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND2-T3-F1"
+      ],
+      "dependsOn": [
+        "DEC-011"
+      ]
+    },
+    {
+      "id": "VERIFY-T3F-F2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND2-T3-F2"
+      ],
+      "dependsOn": [
+        "DEC-005"
+      ]
+    },
+    {
+      "id": "COHORT-T3F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T3-followup.md#LEND2-T3-F1",
+        "requirements/T3-followup.md#LEND2-T3-F2"
+      ],
+      "dependsOn": [
+        "DEC-005",
+        "DEC-011"
+      ]
+    }
+  ]
+}
