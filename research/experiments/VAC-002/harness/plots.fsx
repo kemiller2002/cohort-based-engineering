@@ -85,7 +85,7 @@ barChart "1-cost-per-accepted-requirement.svg" "Cost per accepted requirement" "
 // 2. Error by chain position: a dot grid, arm x position (accepted / not accepted / not run)
 let positions = present |> List.collect perUnit |> List.choose (fun u -> num u "position") |> List.map int |> fun ps -> if List.isEmpty ps then [ 1 ] else [ 1 .. List.max ps ]
 let gridChart name title subtitle (status: JsonNode -> string) (legend: (string * string) list) note =
-    let left, top, cell = 130, 80, 34
+    let left, top, cell = 130, 96, 34
     let w = left + cell * positions.Length + 40
     let h = top + cell * present.Length + 70
     let header = positions |> List.map (fun p -> sprintf "<text class=\"t2\" x=\"%d\" y=\"%d\" font-size=\"11\" text-anchor=\"middle\">%d</text>" (left + (p - 1) * cell + cell / 2) (top - 8) p)
@@ -167,7 +167,7 @@ scatter "5-verification-cost-vs-escape.svg" "Verification cost vs escaped errors
 
 // 6. Survival by arm: step lines from the Kaplan-Meier steps
 let survival () =
-    let w, h, left, top, pw, ph = 640, 380, 70, 70, 480, 240
+    let w, h, left, top, pw, ph = 680, 400, 70, 80, 480, 240
     let maxPos = float (List.max positions)
     let px p = float left + float pw * p / maxPos
     let py s = float (top + ph) - float ph * s
@@ -181,7 +181,7 @@ let survival () =
             let d = all |> List.mapi (fun j (t, s) -> sprintf "%s%s %s" (if j = 0 then "M" else "L") (f1 (px t)) (f1 (py s - off))) |> String.concat " "
             let (lt, ls) = List.last all
             [ sprintf "<path class=\"s%d\" fill=\"none\" stroke-width=\"2\" d=\"%s\" style=\"fill:none\"/>" slot[a] d
-              sprintf "<text class=\"t1\" x=\"%s\" y=\"%s\" font-size=\"11\">%s</text>" (f1 (px lt + 6.0)) (f1 (py ls - off + float i * 12.0 - 30.0)) (esc armNames[a]) ])
+              sprintf "<text class=\"t1\" x=\"%s\" y=\"%s\" font-size=\"11\">%s</text>" (f1 (px lt + 6.0)) (f1 (py ls - off + float i * 13.0 + 4.0)) (esc armNames[a]) ])
         |> List.concat
     let axes = [ sprintf "<line class=\"axis\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>" left (top + ph) (left + pw) (top + ph)
                  sprintf "<line class=\"axis\" x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>" left top left (top + ph)

@@ -168,6 +168,24 @@ observational.
 | Reviewers are the same model family | Another family is not available here |
 | Claude Code 2.1.308 (ARCH-001 used 2.1.306) | The installed version |
 
-## 12. Amendments
+## 12. Freeze record and amendments
 
-*(none yet)*
+**Freeze (pilot P1).** Made before any agent turn. It consists of this commit together with:
+
+- the corpus self-check `fixture/check-output.txt`: `RESULT: PASS (119 passed, 0 failed)`;
+- the harness smoke (`harness/smoke/SMOKE3/`). Arms E and F ran the full 12-unit chain with the reference-applying
+  stand-in agent. In each arm, 10 of 12 units are accepted; the other two (L04, L08) are correctly not accepted,
+  because the stand-in's report does not surface the conflict. The gate rejected them for the same reason;
+- the sealed store, `sealed/SEAL.json`:
+  - plaintext tar.gz sha256 `98e2ec9f20592b168c5b8c9c7a382b7053268787fcc7285c32bfa40b4d6d48bc`;
+  - ciphertext sha256 `0371c9c9cbfddc099a565905e7c77f2899ded8ca9b2c5bcced21c5d45adb11a7`;
+  - 508 files.
+
+**Pre-freeze calibration.** Adaptive policy S6 and S7 were narrowed on the base rates of the reference diffs only
+(`harness/policy/adaptive-policy.json` `calibrationNote`). Before the change, S7 fired on any `.fsproj` edit and S6 on
+3 or more tiers, which escalated nearly every unit to the high tier.
+
+**Run discipline.** The pilot runs from a git worktree of the freeze commit (`harness/pilot.sh`), so no later edit
+can reach a running chain. The plaintext sealed store is removed from disk while agents run.
+
+*Amendments: none yet.*

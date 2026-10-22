@@ -197,8 +197,8 @@ let armSummary (fixture: string) (arm: string) (units: Unit list) (propMap: Json
     let ce = uf + regressionEvents.Length + faultAccepted + silentConflict
     let firstCritical = units |> List.tryFind critical |> Option.map (fun u -> u.Position)
     let gates = units |> List.collect (fun u -> u.Gates |> List.mapi (fun i g -> u, i + 1, g))
-    let gateFp = gates |> List.filter (fun (u, k, g) -> not (bool g "passed") && verdict (if k = 1 then u.FirstScore else u.Score) "functional") |> List.length
-    let gateFn = gates |> List.filter (fun (u, k, g) -> bool g "passed" && not (verdict (if k = 1 then u.FirstScore else u.Score) "functional")) |> List.length
+    let gateFp = gates |> List.filter (fun (u, k, g) -> not (bool g "passed") && verdict (if k = 1 then u.FirstScore else u.Score) "accepted") |> List.length
+    let gateFn = gates |> List.filter (fun (u, k, g) -> bool g "passed" && not (verdict (if k = 1 then u.FirstScore else u.Score) "accepted")) |> List.length
     let claimedN = units |> List.filter claimed |> List.length
     let fcFirst = units |> List.filter falseCompletionFirst |> List.length
     let avrUnits = units |> List.filter (detFindings >> List.isEmpty >> not) |> List.length

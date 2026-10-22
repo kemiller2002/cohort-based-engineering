@@ -1,0 +1,145 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "SMOKE3",
+  "arm": "F",
+  "unit": 8,
+  "attempt": 2,
+  "task": "L08",
+  "fault": "none",
+  "head": "3d7a8e61503030022d8b634153de5a19a7e188ff",
+  "verifiedAt": "2026-10-22T15:12:00.0918196Z",
+  "verifyMs": 178656,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 22,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Application/UseCases.fs",
+        "line": 99,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 2, Tier 3"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 8,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U8-D1",
+        "statement": "smoke",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [],
+        "refs": [
+          {
+            "ref": "requirements/L08.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": true,
+    "conflictSurfaced": false,
+    "accepted": false,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

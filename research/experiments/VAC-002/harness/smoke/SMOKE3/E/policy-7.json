@@ -1,0 +1,41 @@
+{
+  "schema": "cbe.vac-002.policy-decision/1",
+  "policyVersion": "1.0.0",
+  "tier": "high",
+  "signals": [
+    {
+      "id": "S4-SENSITIVE",
+      "reason": "money or authority terms in the requirement",
+      "tier": "medium"
+    },
+    {
+      "id": "S6-CROSS-BOUNDARY",
+      "reason": "4 tiers touched",
+      "tier": "high"
+    },
+    {
+      "id": "S7-BUILD-SURFACE",
+      "reason": "project, SDK or vendored file changed",
+      "tier": "high"
+    }
+  ],
+  "inputs": {
+    "pre": {
+      "contractRefused": false,
+      "decisionFilesStaged": 0,
+      "externalSrcChanges": 0,
+      "sensitive": true,
+      "newCommands": 1
+    },
+    "post": {
+      "filesChanged": 7,
+      "linesChanged": 230,
+      "tiersTouched": 4,
+      "buildSurfaceChanged": true,
+      "decisionRecordEdited": false,
+      "assumptions": false,
+      "blocked": false,
+      "previousUnresolved": false
+    }
+  }
+}

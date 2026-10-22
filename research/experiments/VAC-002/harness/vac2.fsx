@@ -433,7 +433,7 @@ let stream (a: Map<string, string>) =
         |> List.collect (fun o -> match o["message"] with null -> [] | m -> items m "content" |> List.filter (fun c -> str c "type" = Some "tool_use"))
         |> List.map (fun c -> match c["input"] with null -> "" | i -> i.ToJsonString())
     let own = a.TryFind "workspace" |> Option.defaultValue "\u0000"
-    let forbidden = [ ".vac2-sealed"; ".vac2-state"; "cohort-based-engineering"; "/oracle"; "OracleTests"; "task.json"; "faults.json"; "tasks-meta.json"; "propagation-map" ]
+    let forbidden = [ ".vac2-sealed"; ".vac2-state"; ".vac2-key"; "/sealed/"; "cohort-based-engineering"; "/oracle"; "OracleTests"; "task.json"; "faults.json"; "tasks-meta.json"; "propagation-map" ]
     let otherArm (s: string) = Regex.Matches(s, @"/home/user/vac-work/[\w.-]+/[\w.-]+") |> Seq.exists (fun m -> not (own.StartsWith m.Value))
     let hits = toolInputs |> List.filter (fun s -> forbidden |> List.exists s.Contains || otherArm s)
     jobj [ "schema", jstr "cbe.vac-002.turn-usage/1"; "stream", jstr a["stream"]

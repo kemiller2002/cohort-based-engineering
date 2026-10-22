@@ -1,0 +1,41 @@
+{
+  "schema": "cbe.vac-002.policy-decision/1",
+  "policyVersion": "1.0.0",
+  "tier": "high",
+  "signals": [
+    {
+      "id": "S1-CONTRACT-CONFLICT",
+      "reason": "Ordo refuses the staged contract",
+      "tier": "high"
+    },
+    {
+      "id": "S4-SENSITIVE",
+      "reason": "money or authority terms in the requirement",
+      "tier": "medium"
+    },
+    {
+      "id": "S6-CROSS-BOUNDARY",
+      "reason": "4 tiers touched",
+      "tier": "high"
+    }
+  ],
+  "inputs": {
+    "pre": {
+      "contractRefused": true,
+      "decisionFilesStaged": 0,
+      "externalSrcChanges": 0,
+      "sensitive": true,
+      "newCommands": 1
+    },
+    "post": {
+      "filesChanged": 6,
+      "linesChanged": 22,
+      "tiersTouched": 4,
+      "buildSurfaceChanged": false,
+      "decisionRecordEdited": false,
+      "assumptions": false,
+      "blocked": false,
+      "previousUnresolved": false
+    }
+  }
+}

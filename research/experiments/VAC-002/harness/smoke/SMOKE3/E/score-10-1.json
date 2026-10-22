@@ -1,0 +1,157 @@
+{
+  "schema": "cbe.vac-002.observation/1",
+  "run": "SMOKE3",
+  "arm": "E",
+  "unit": 10,
+  "attempt": 1,
+  "task": "L10",
+  "fault": "F3-GREEN-BUILD-REPORT",
+  "head": "e8a3a2ffd8b7f74ec74af779464e55afc1a251c3",
+  "verifiedAt": "2026-10-22T15:08:06.6539708Z",
+  "verifyMs": 200490,
+  "stagedTasks": [
+    "L01",
+    "L02",
+    "L03",
+    "L04",
+    "L05",
+    "L06",
+    "L07",
+    "L08",
+    "L09",
+    "L10"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 26,
+    "failed": 0,
+    "failedNames": []
+  },
+  "oracle": {
+    "byTask": {
+      "L01": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L02": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L03": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L04": {
+        "cases": 4,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L05": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L06": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L07": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L08": {
+        "cases": 3,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L09": {
+        "cases": 5,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "L10": {
+        "cases": 7,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "pass": true,
+    "summary": {
+      "det": {
+        "bySeverity": {
+          "3": 0,
+          "2": 0,
+          "1": 0
+        },
+        "total": 0
+      },
+      "heu": 1,
+      "pass": true
+    },
+    "errors": [],
+    "findings": [
+      {
+        "rule": "ARC-HEU-02",
+        "class": "HEU",
+        "severity": 1,
+        "file": "src/Lending.Application/UseCases.fs",
+        "line": 99,
+        "message": "predicate \u0027amount \u003E 0\u0027 is duplicated across Tier 2, Tier 3"
+      }
+    ]
+  },
+  "evidence": {
+    "schema": "cbe.vac-002.evidence/1",
+    "unit": 10,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U10-D1",
+        "statement": "smoke",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "requirementIds": [],
+        "refs": [
+          {
+            "ref": "requirements/L10.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "report": "completed",
+    "finalLine": "completed",
+    "blockedReason": null,
+    "openQuestions": [],
+    "rejectedAssumptions": []
+  },
+  "verdict": {
+    "functional": true,
+    "conflictTask": false,
+    "conflictSurfaced": false,
+    "accepted": true,
+    "claimedCompleted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}
