@@ -60,15 +60,25 @@ def init_event(events):
     return next((e for e in events if e.get("type") == "system" and e.get("subtype") == "init"), {})
 
 
-def foreign_tmp(own_tmp, session):
-    """A predicate: the text names a /tmp/claude-0 path that is neither this session's scratchpad nor carries its id."""
+def own_task_ids(events):
+    """Ids of background tasks this session itself started (Claude Code reports them in the tool result)."""
+    return frozenset(re.findall(r"(?:background with ID: |background \(ID: |backgroundTaskId\\?\"?:\s*\\?\"?)([A-Za-z0-9]+)", "\n".join(json.dumps(e) for e in events)))
+
+
+def foreign_tmp(own_tmp, session, own_tasks=frozenset()):
+    """A predicate: the text names a /tmp/claude-0 path that is neither this session's scratchpad, nor carries its id,
+    nor is the output file of one of this session's own background tasks (often reached through a glob such as
+    /tmp/claude-0/*/*/tasks/<id>.output; calibration found that reading it was flagged as foreign)."""
+    def own_task_file(m):
+        hit = re.search(r"/tasks/([A-Za-z0-9]+)\.output$", m)
+        return bool(hit and hit.group(1) in own_tasks)
     def pred(text):
-        return any(not ((own_tmp and m.startswith(own_tmp)) or (session and session in m))
+        return any(not ((own_tmp and m.startswith(own_tmp)) or (session and session in m) or own_task_file(m))
                    for m in re.findall(r"/tmp/claude-0[^\s\"'`]*", text))
     return pred
 
 
-def patterns(run, phase, own_tmp, session, env):
+def patterns(run, phase, own_tmp, session, env, own_tasks=frozenset()):
     root = run["paths"]["root"]
     runs = os.path.dirname(root)
     run_id = run["runId"]
@@ -85,7 +95,7 @@ def patterns(run, phase, own_tmp, session, env):
         # absolute or relative; the gate's own agent-facing outputs (state/submit*, submit-config) are advisory.
         ("own-state", r"(?!" + own_phase + r")(?:" + re.escape(f"{root}/state/") + r"|(?:^|[\s\"'`;&|(])state/)(?:phase\d|score|review|pristine)"),
         ("cohort", r"cohort-based-engineering"),
-        ("tmp-claude", foreign_tmp(own_tmp, session)),
+        ("tmp-claude", foreign_tmp(own_tmp, session, own_tasks)),
         ("verifier-src", "|".join(p for p in [r"architectural-correctness/verifier", r"arch-002/verifier", re.escape(vsrc) if vsrc else ""] if p)),
         # Architecture material outside the workspace (Echelon repositories, the production source clones the
         # fixtures were snapshotted from, installed .sde doctrine, the GitHub organisation) would hand an arm
@@ -124,7 +134,7 @@ def main(argv):
     uses = tool_uses(events)
     init = init_event(events)
     own_tmp, session = init.get("scratchpad_path") or "", init.get("session_id") or ""
-    x4p, advp = patterns(run, phase, own_tmp, session, dict(os.environ))
+    x4p, advp = patterns(run, phase, own_tmp, session, dict(os.environ), own_task_ids(events))
     x4 = scan(uses, x4p)
     print(json.dumps({"schema": "arch002.contamination/1", "phase": int(phase), "toolUses": len(uses),
                       "ownScratchpad": own_tmp or None, "x4": {"contaminated": bool(x4), "hits": x4},
