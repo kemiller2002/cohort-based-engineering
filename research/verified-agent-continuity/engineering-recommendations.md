@@ -146,3 +146,18 @@ These changes are speculative, and the experiments do not justify them:
 - Mandatory verified state for every agent.
 - Fixed-interval compaction.
 - Treating the four-tier architecture as a correctness lever.
+
+## Implementation status (2026-10-22)
+
+The repository owner approved every recommendation above together with input VAC-CBE-001 (record
+[`../../requirements/VAC-CBE-001.md`](../../requirements/VAC-CBE-001.md)). This section records where each one now
+lives. The evidence status in the table above is unchanged.
+
+| ID | Status |
+|---|---|
+| R-OPS-1, R-OPS-2, R-OPS-3, R-EXP-3 | In [`docs/operating-model.md`](../../docs/operating-model.md) §4, §6, §5 and §7 |
+| R-ORDO-1, R-ORDO-2 | Method rules in the operating model §3. Enforcement is an Ordo follow-up |
+| R-PRAXIS-1 | Praxis follow-up. The operating model §7 states the measurement need |
+| R-DOK-1 | Dokimos follow-up |
+| R-EXP-1 | Preregistered: [`r-exp-1-protocol.md`](r-exp-1-protocol.md). Not run |
+| R-EXP-2 | Preregistered: [`r-exp-2-protocol.md`](r-exp-2-protocol.md). Not run |
