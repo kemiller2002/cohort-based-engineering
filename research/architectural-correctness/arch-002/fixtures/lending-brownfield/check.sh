@@ -80,13 +80,14 @@ except Exception: rs = []
 for r in rs: print(r.get("outcome"), r.get("testName").split(".", 1)[1], sep="\t")
 PY
 }
-run_verifier() {  # run_verifier TASK DIR CONTRACT [noprobes]: archcheck on a committed copy of DIR -> DIR.report.json
+run_verifier() {  # run_verifier TASK DIR CONTRACT|- [noprobes]: archcheck on a committed copy of DIR -> DIR.report.json
   local vd="$2.git"
   rm -rf "${vd:?}"; mkdir -p "$vd"
   (cd "$2" && tar --exclude=bin --exclude=obj --exclude=TestResults -cf - .) | (cd "$vd" && tar -xf -)
   (cd "$vd" && git init -q && git add -A && git -c user.email=fixture@arch002 -c user.name=fixture commit -qm fixture)
   local probes=(); [ "${4:-}" != noprobes ] && [ -f "$SEALED/oracle/$1/probes.json" ] && probes=(--probes "$SEALED/oracle/$1/probes.json")
-  dotnet "$VERIFIER" verify --repo "$vd" --policy "$POLICY" "${probes[@]}" --contract "$3" --out "$2.report.json" > "$vd.log" 2>&1
+  local contract=(); [ "$3" != - ] && contract=(--contract "$3")
+  dotnet "$VERIFIER" verify --repo "$vd" --policy "$POLICY" "${probes[@]}" "${contract[@]}" --out "$2.report.json" > "$vd.log" 2>&1
 }
 newdet() {      # newdet REPORT BASELINE: prints "<new> <fixed> <summary of new keys>"; exit 2 when a report is missing
   python3 -I - "$1" "$2" <<'PY'
@@ -209,7 +210,7 @@ STATIC="$WORK/static.out"
   after=$(cd "$FIX/tasks" && find . -name '*contract.json' -o -name task.json | sort | xargs sha256sum)
   if [ "$before" = "$after" ]; then echo "ok   S4 make-contracts.py reproduces every contract.json, followup-contract.json and task.json"; else echo "MISMATCH S4 make-contracts.py output differs"; fi
   d=$(repo base start-base); run_tests "$d"; expect "--" "start: builds and its own tests pass" PASS $? "$d.tests.log"
-  run_verifier none "$d" "$FIX/tasks/T1/contract.json" noprobes
+  run_verifier none "$d" - noprobes
   python3 -I - "$d.report.json" "$SEALED/seeded.json" <<'PY'
 import collections, json, sys
 try: r = json.load(open(sys.argv[1]))

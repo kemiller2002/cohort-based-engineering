@@ -94,3 +94,14 @@ per run in `run.json .tools`).
   (agrees), token totals gap 0; final line parsed; no X4. `submit` correctly FAILed (build: acceptance test needs
   unimplemented code).
 - `analysis/selftest.py` PASS (T1–T8).
+
+## Fixture F1 `lending-brownfield` (Worker B2, coordinator-recorded)
+
+| arch-002 path | Source | Change |
+|---|---|---|
+| `fixtures/lending-brownfield/repo/` | ARCH-001 `fixtures/repo/` | Grown to about 1,560 lines of production F#, with 8 seeded violations (sealed `seeded.json`, 14 DET findings at start) and two new ports (`Files`, `Archive`) that the seeded V3/V4 bypass |
+| `fixtures/lending-brownfield/pack/FOUR-TIER-ARCHITECTURE.md` | ARCH-001 `fixtures/pack/` | byte for byte (sha256 `725cb3d9…775b`) |
+| `fixtures/lending-brownfield/pack/LENDING-ARCHITECTURE.md` | ARCH-001 `fixtures/pack/` | adapted: new §0 on existing violations; rule ids unchanged |
+| `fixtures/lending-brownfield/{make-contracts.py,check.sh,policy.json}` | ARCH-001 `fixtures/make-contracts.py`, `fixtures/check.sh`, `verifier/policy/lending.policy.json` | adapted to F1 and baseline-delta scoring |
+
+Self-check: `fixtures/lending-brownfield/check-output.txt`, RESULT: PASS (109 checks).
