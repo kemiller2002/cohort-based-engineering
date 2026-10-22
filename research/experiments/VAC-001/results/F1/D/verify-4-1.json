@@ -1,0 +1,225 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "F1",
+  "arm": "D",
+  "unit": 4,
+  "attempt": 1,
+  "task": "V6",
+  "fault": "F5-INVALID-HANDOFF-ASSUMPTION",
+  "head": "5cd01986ccbd9d36a1a4aaf9c982c9c8ef881bd1",
+  "verifiedAt": "2026-10-21T08:53:40.7735105Z",
+  "verifyMs": 121532,
+  "stagedTasks": [
+    "V8",
+    "V4",
+    "V1",
+    "V6"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 63,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 38,
+    "failed": 0,
+    "byTask": {
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 4,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U4-D1",
+        "statement": "Greedy matching over lines in the given order; each line takes the closest-dated unmatched candidate, ties to the earlier posting in journal order; candidates need equal value, exactly equal memo/reference and at most 2 days apart (inclusive).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "contracts/V6.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V6-CLOSEST-FIRST",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Reconciliation.fs#reconcile",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D2",
+        "statement": "Postings are tracked by journal position, not structural equality, so identical postings are each matched at most once and independently.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V6-POSTING-IDENTITY",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D3",
+        "statement": "Journal order is Ledger.postingsOf reversed, relying on the accepted newest-first storage of LedgerState.Postings.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "DEC-BASE-NEWEST-FIRST",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#postingsOf",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V6-JOURNAL-ORDER",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D4",
+        "statement": "An account not in LedgerState.Accounts (never opened or closed) is refused with UnknownAccount; reconcile is a pure read and returns no new ledger state.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V1-CLOSED-ACCOUNTS-SET",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/RULES.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U4-D5",
+        "statement": "Day distance is the absolute difference of DateOnly.DayNumber; the 2-day window is the named constant Reconciliation.maxDaysApart. Reconciliation.fs is a Tier 2 module compiled after Ledger.fs and before Store.fs.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V6.md#LEDGER-V6-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fsproj",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/RULES.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

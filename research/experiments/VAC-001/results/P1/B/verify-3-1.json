@@ -1,0 +1,185 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 3,
+  "attempt": 1,
+  "task": "V1",
+  "fault": "none",
+  "head": "5da75a0b216e911b424194ecfad5e6613b76555c",
+  "verifiedAt": "2026-10-21T08:09:00.1749038Z",
+  "verifyMs": 27929,
+  "stagedTasks": [
+    "V7",
+    "V5",
+    "V1"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 45,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 23,
+    "failed": 0,
+    "byTask": {
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 3,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U3-D1",
+        "statement": "Closed accounts are remembered in a new LedgerState field `ClosedAccounts: Set<AccountId>`, disjoint from `Accounts`. Closing moves the id from Accounts to ClosedAccounts. A field is needed because the requirement forbids reuse even for accounts that never had postings, so closure cannot be inferred from the journal.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Domain.fs#LedgerState",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V1.md#LEDGER-V1-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D2",
+        "statement": "Adding a record field changes LedgerState's shape (code building a LedgerState record literal must set it), but no function signature changes; the only literal in the repo is Ledger.empty, which was updated. I took 'existing public signatures kept' to mean function signatures.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#empty",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D3",
+        "statement": "closeAccount reuses Ledger.balance for both checks: an id not in Accounts gives UnknownAccount first, then any balance other than exactly 0 gives NonZeroBalance with that balance. Because balance, credit, debit, transfer and closePeriod all consult Accounts, removing the id makes them treat the account as unknown without other changes.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#closePeriod",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D4",
+        "statement": "Added Store.closeAccount, which commits the close and removes the id from the balance cache, so the Store's rule that its cache follows every operation still holds and Store.balance reports UnknownAccount for a closed account.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Store.fs#closeAccount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Store.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D5",
+        "statement": "Earlier period summaries stored in ClosedPeriods still list a later-closed account; they are historical records and are not rewritten. Standing orders whose payer or payee is closed are Skipped with UnknownAccount via Ledger.transfer.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#closePeriod",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#run",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U2-D4",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  },
+  "evidenceRegeneratedBy": "A3"
+}

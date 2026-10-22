@@ -1,0 +1,144 @@
+REL-001 run-03 fixture check
+fixture tree digest: c252b77a8e143b1b73c71126ec1ed2ff0923744e3223d4584b62aa66966c9155
+oracle digest:       0cb5bd8a76cbacc71f483800088cd382289342de2125e6946f466348701d42f9
+ok       S1 V1 files and digests
+ok       S2 V1 tests tagged and every requirement covered — 1 requirement(s), 2 visible / 8 oracle tests
+ok       S1 V2 files and digests
+ok       S2 V2 tests tagged and every requirement covered — 1 requirement(s), 2 visible / 6 oracle tests
+ok       S1 V3 files and digests
+ok       S2 V3 tests tagged and every requirement covered — 2 requirement(s), 2 visible / 11 oracle tests
+ok       S1 V4 files and digests
+ok       S2 V4 tests tagged and every requirement covered — 2 requirement(s), 3 visible / 8 oracle tests
+ok       S1 V5 files and digests
+ok       S2 V5 tests tagged and every requirement covered — 3 requirement(s), 3 visible / 15 oracle tests
+ok       S1 V6 files and digests
+ok       S2 V6 tests tagged and every requirement covered — 3 requirement(s), 3 visible / 10 oracle tests
+ok       S1 V7 files and digests
+ok       S2 V7 tests tagged and every requirement covered — 1 requirement(s), 1 visible / 4 oracle tests
+ok       S1 V8 files and digests
+ok       S2 V8 tests tagged and every requirement covered — 2 requirement(s), 3 visible / 12 oracle tests
+ok       S3 nothing given to an agent names the oracle, references or task.json
+ok       S4 independence from run-02 (skipped: no RUN02_FIXTURE_DIR)
+ok       S5 make-references.py reproduces reference/
+ok       S5 make-contracts.py reproduces contract.json and task.json files
+ok       S6 every wrong variant differs from its reference — 13 variants: V1-reopen, V2-tie-descending, V3-debit-only, V4-boundary, V4-stale-preview, V5-exact-day, V5-list-order, V5-partial, V6-exclusive-window, V6-first-candidate, V8-all-debits, V8-exclusive, V8-per-call
+ok       S6 V7 has only the two forced variants — forced-noop, forced-refuse
+ok       S7 F# hygiene (tabs, bracket balance, module line) — 48 files
+ok       S8 new modules are in Ledger.fsproj right after Ledger.fs
+STATIC RESULT: PASS (24/24 checks)
+dotnet 10.0.402; ordo not given (contract admission skipped)
+
+V1   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V1   start: visible tests                         expected FAIL got FAIL ok        (build failed (3 compiler errors))
+V1   reference: visible tests                     expected PASS got PASS ok        (passed 13, failed 0)
+V1   reference: oracle                            expected PASS got PASS ok        (passed 8, failed 0)
+V1   wrong (reopen): visible tests                expected PASS got PASS ok        (passed 13, failed 0)
+V1   wrong (reopen): oracle                       expected FAIL got FAIL ok        (passed 6, failed 2)
+       reopen fails: OracleV1.LEDGER-V1-R1 a closed id with history is never reopened
+       reopen fails: OracleV1.LEDGER-V1-R1 a closed id without postings is never reopened
+V1   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+V2   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V2   start: visible tests                         expected FAIL got FAIL ok        (build failed (3 compiler errors))
+V2   reference: visible tests                     expected PASS got PASS ok        (passed 13, failed 0)
+V2   reference: oracle                            expected PASS got PASS ok        (passed 6, failed 0)
+V2   wrong (tie-descending): visible tests        expected PASS got PASS ok        (passed 13, failed 0)
+V2   wrong (tie-descending): oracle               expected FAIL got FAIL ok        (passed 4, failed 2)
+       tie-descending fails: OracleV2.LEDGER-V2-R1 equal balances are ordered by id ordinally
+       tie-descending fails: OracleV2.LEDGER-V2-R1 zero balances take part and a large count gives every account
+V2   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+V3   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V3   start: visible tests                         expected FAIL got FAIL ok        (build failed (3 compiler errors))
+V3   reference: visible tests                     expected PASS got PASS ok        (passed 13, failed 0)
+V3   reference: oracle                            expected PASS got PASS ok        (passed 11, failed 0)
+V3   wrong (debit-only): visible tests            expected PASS got PASS ok        (passed 13, failed 0)
+V3   wrong (debit-only): oracle                   expected FAIL got FAIL ok        (passed 9, failed 2)
+       debit-only fails: OracleV3.LEDGER-V3-R2 held money cannot be transferred
+       debit-only fails: OracleV3.LEDGER-V3-R2 holds on another account do not block
+V3   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+V4   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V4   start: visible tests                         expected FAIL got FAIL ok        (build failed (2 compiler errors))
+V4   reference: visible tests                     expected PASS got PASS ok        (passed 14, failed 0)
+V4   reference: oracle                            expected PASS got PASS ok        (passed 8, failed 0)
+V4   wrong (boundary): visible tests              expected PASS got PASS ok        (passed 14, failed 0)
+V4   wrong (boundary): oracle                     expected FAIL got FAIL ok        (passed 4, failed 4)
+       boundary fails: OracleV4.LEDGER-V4-R2 only paying accounts get a fee posting
+       boundary fails: OracleV4.LEDGER-V4-R2 periodFee implements the new table
+       boundary fails: OracleV4.LEDGER-V4-R2 preview and close agree for every balance
+       boundary fails: OracleV4.LEDGER-V4-R2 the preview follows the new rule
+V4   wrong (stale-preview): visible tests         expected PASS got PASS ok        (passed 14, failed 0)
+V4   wrong (stale-preview): oracle                expected FAIL got FAIL ok        (passed 6, failed 2)
+       stale-preview fails: OracleV4.LEDGER-V4-R2 preview and close agree for every balance
+       stale-preview fails: OracleV4.LEDGER-V4-R2 the preview follows the new rule
+V4   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+V5   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V5   start: visible tests                         expected FAIL got FAIL ok        (build failed (12 compiler errors))
+V5   reference: visible tests                     expected PASS got PASS ok        (passed 14, failed 0)
+V5   reference: oracle                            expected PASS got PASS ok        (passed 15, failed 0)
+V5   wrong (exact-day): visible tests             expected PASS got PASS ok        (passed 14, failed 0)
+V5   wrong (exact-day): oracle                    expected FAIL got FAIL ok        (passed 13, failed 2)
+       exact-day fails: OracleV5.LEDGER-V5-R2 29th and 30th orders are due on 28 February in a common year
+       exact-day fails: OracleV5.LEDGER-V5-R2 a 31st order is due on the last day of shorter months
+V5   wrong (list-order): visible tests            expected PASS got PASS ok        (passed 14, failed 0)
+V5   wrong (list-order): oracle                   expected FAIL got FAIL ok        (passed 10, failed 5)
+       list-order fails: OracleV5.LEDGER-V5-R2 29th and 30th orders are due on 28 February in a common year
+       list-order fails: OracleV5.LEDGER-V5-R2 a skipped order does not stop later orders
+       list-order fails: OracleV5.LEDGER-V5-R2 due orders are paid in ascending id order whatever the list order
+       list-order fails: OracleV5.LEDGER-V5-R2 ids are compared ordinally
+       list-order fails: OracleV5.LEDGER-V5-R3 a rerun for the same date pays nothing twice
+V5   wrong (partial): visible tests               expected PASS got PASS ok        (passed 14, failed 0)
+V5   wrong (partial): oracle                      expected FAIL got FAIL ok        (passed 12, failed 3)
+       partial fails: OracleV5.LEDGER-V5-R2 a skipped order does not stop later orders
+       partial fails: OracleV5.LEDGER-V5-R2 an order the payer cannot cover is skipped whole
+       partial fails: OracleV5.LEDGER-V5-R3 a skipped order is paid by a later run for the same date
+V5   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+V6   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V6   start: visible tests                         expected FAIL got FAIL ok        (build failed (13 compiler errors))
+V6   reference: visible tests                     expected PASS got PASS ok        (passed 14, failed 0)
+V6   reference: oracle                            expected PASS got PASS ok        (passed 10, failed 0)
+V6   wrong (exclusive-window): visible tests      expected PASS got PASS ok        (passed 14, failed 0)
+V6   wrong (exclusive-window): oracle             expected FAIL got FAIL ok        (passed 8, failed 2)
+       exclusive-window fails: OracleV6.LEDGER-V6-R2 lines are matched one at a time in the order given
+       exclusive-window fails: OracleV6.LEDGER-V6-R2 the date window is two days either way, inclusive
+V6   wrong (first-candidate): visible tests       expected PASS got PASS ok        (passed 14, failed 0)
+V6   wrong (first-candidate): oracle              expected FAIL got FAIL ok        (passed 9, failed 1)
+       first-candidate fails: OracleV6.LEDGER-V6-R2 each line takes the closest posting
+V6   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+V7   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V7   start: visible tests                         expected FAIL got FAIL ok        (build failed (1 compiler errors))
+V7   forced-noop: visible tests                   expected PASS got PASS ok        (passed 12, failed 0)
+V7   forced-noop: oracle                          expected FAIL got FAIL ok        (passed 3, failed 1)
+       forced-noop fails: OracleV7.LEDGER-V7-R1 DEC-V7-ONE-PAIR an empty sweep is refused
+V7   forced-refuse: visible tests                 expected PASS got PASS ok        (passed 12, failed 0)
+V7   forced-refuse: oracle                        expected FAIL got FAIL ok        (passed 3, failed 1)
+       forced-refuse fails: OracleV7.LEDGER-V7-R1 DEC-V7-EMPTY-NOOP an empty sweep succeeds and changes nothing
+V7   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+V8   start: own tests                             expected PASS got PASS ok        (passed 11, failed 0)
+V8   start: visible tests                         expected FAIL got FAIL ok        (build failed (4 compiler errors))
+V8   reference: visible tests                     expected PASS got PASS ok        (passed 14, failed 0)
+V8   reference: oracle                            expected PASS got PASS ok        (passed 12, failed 0)
+V8   wrong (all-debits): visible tests            expected PASS got PASS ok        (passed 14, failed 0)
+V8   wrong (all-debits): oracle                   expected FAIL got FAIL ok        (passed 10, failed 2)
+       all-debits fails: OracleV8.LEDGER-V8-R1 debits and transfers do not count
+       all-debits fails: OracleV8.LEDGER-V8-R2 debits are not withdrawals
+V8   wrong (exclusive): visible tests             expected PASS got PASS ok        (passed 14, failed 0)
+V8   wrong (exclusive): oracle                    expected FAIL got FAIL ok        (passed 7, failed 5)
+       exclusive fails: OracleV8.LEDGER-V8-R1 a single withdrawal of exactly the limit is allowed
+       exclusive fails: OracleV8.LEDGER-V8-R1 debits and transfers do not count
+       exclusive fails: OracleV8.LEDGER-V8-R1 refused withdrawals do not count
+       exclusive fails: OracleV8.LEDGER-V8-R1 the limit is inclusive
+       exclusive fails: OracleV8.LEDGER-V8-R1 the limit starts again on a new business date
+V8   wrong (per-call): visible tests              expected PASS got PASS ok        (passed 14, failed 0)
+V8   wrong (per-call): oracle                     expected FAIL got FAIL ok        (passed 9, failed 3)
+       per-call fails: OracleV8.LEDGER-V8-R1 refused withdrawals do not count
+       per-call fails: OracleV8.LEDGER-V8-R1 the limit counts the day's earlier withdrawals
+       per-call fails: OracleV8.LEDGER-V8-R1 the limit is inclusive
+V8   ordo admits contract                         SKIPPED (REL003_ORDO not set)
+
+RESULT: PASS (every expectation held)

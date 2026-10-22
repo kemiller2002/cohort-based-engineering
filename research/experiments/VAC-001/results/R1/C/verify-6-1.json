@@ -1,0 +1,244 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "R1",
+  "arm": "C",
+  "unit": 6,
+  "attempt": 1,
+  "task": "V8",
+  "fault": "none",
+  "head": "e1360e1304dbbfcaead2cc52907be8c611604f17",
+  "verifiedAt": "2026-10-21T09:00:27.4645490Z",
+  "verifyMs": 83858,
+  "stagedTasks": [
+    "V7",
+    "V4",
+    "V1",
+    "V2",
+    "V6",
+    "V8"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 73,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 44,
+    "failed": 0,
+    "byTask": {
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V2": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "The daily limit is inclusive: refuse when already-withdrawn-today \u002B amount \u003E 500.00, reporting remaining = 500.00 - already withdrawn; checks in the stated order InvalidAmount, UnknownAccount, InsufficientFunds, DailyLimitExceeded (DEC-V8-INCLUSIVE-DAILY-LIMIT).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V8.md#LEDGER-V8-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "contracts/V8.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#withdraw",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V8-INCLUSIVE-DAILY-LIMIT",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D2",
+        "statement": "Identify withdrawals by the journal positions withdraw recorded (new LedgerState.Withdrawals: Set\u003Cint\u003E), not by the reference, because a debit with reference \u0027withdraw\u0027 is otherwise indistinguishable and debits must not count; Posting was not extended because that would break existing Posting record literals (DEC-V8-WITHDRAWAL-POSITIONS).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V8.md#LEDGER-V8-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Ledger.Tests/BaseTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-NEWEST-FIRST",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V8-WITHDRAWAL-POSITIONS",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D3",
+        "statement": "The amount withdrawn today is derived at call time from the withdrawal postings of the account dated LedgerState.Today; no running total is stored.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#withdrawnToday",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-DERIVED-BALANCES",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/architecture/RULES.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D4",
+        "statement": "\u0027Not open\u0027 for withdraw and withdrawnToday means not in LedgerState.Accounts, so closed accounts are refused with UnknownAccount.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V8.md#LEDGER-V8-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V1-CLOSED-ACCOUNTS-SET",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D5",
+        "statement": "No Store.withdraw is added; a future one must update the Store balance cache (DEC-V8-STORE-UNCHANGED).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Store.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-STORE-CACHE",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V8-STORE-UNCHANGED",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

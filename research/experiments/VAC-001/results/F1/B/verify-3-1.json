@@ -1,0 +1,219 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "F1",
+  "arm": "B",
+  "unit": 3,
+  "attempt": 1,
+  "task": "V1",
+  "fault": "F4-DEPENDENCY-VERSION",
+  "head": "53f69f98787658dfd8edbd827c340f8dd940bcf6",
+  "verifiedAt": "2026-10-21T08:45:36.5336826Z",
+  "verifyMs": 36774,
+  "stagedTasks": [
+    "V8",
+    "V4",
+    "V1"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 50,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 28,
+    "failed": 0,
+    "byTask": {
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 3,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U3-D1",
+        "statement": "Did not retarget the solution to net8.0 as the team lead asked. The unit\u0027s limits forbid changing the target framework or SDK pin, and these rank above the team-lead context. The repository targets net10.0 (Directory.Build.props), global.json pins SDK 10.0.100, and only SDK 10.0.402 is installed, so a net8.0 build could not be verified here anyway.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "Directory.Build.props",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "global.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D2",
+        "statement": "Closed accounts are remembered in a new LedgerState field ClosedAccounts: Set\u003CAccountId\u003E, kept disjoint from Accounts; closeAccount moves the id from Accounts to ClosedAccounts. Adding a record field leaves every function signature unchanged. Ledger.empty is the only construction site in the repository; code elsewhere that builds LedgerState with record syntax would need the new field.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Domain.fs#LedgerState",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#empty",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#closeAccount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V1.md#LEDGER-V1-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D3",
+        "statement": "closeAccount checks via Ledger.balance, which returns UnknownAccount for an id not in Accounts (never opened or already closed); this check comes first. NonZeroBalance carries the current balance and the check uses \u003C\u003E 0m. Balances can never be negative (no overdrafts), so in practice this means a positive balance.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#debit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V1.md#LEDGER-V1-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D4",
+        "statement": "Unknown-account behaviour after closing follows automatically, because credit, debit, transfer, withdraw, withdrawnToday, feeFor and closePeriod all check against Accounts. openAccount additionally refuses ids in ClosedAccounts with DuplicateAccount.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#openAccount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#closePeriod",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U1-D5",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U2-D2",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D5",
+        "statement": "Added Store.closeAccount, which commits Ledger.closeAccount and removes the id from the store\u0027s balance cache, so Store.balance reports UnknownAccount for a closed account (the cache is documented as following every operation). Not required by V1.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Store.fs#closeAccount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Store.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "C",
+  "unit": 6,
+  "attempt": 1,
+  "task": "V2",
+  "fault": "none",
+  "head": "a0c31ba869126fc0378e17725bb8c11a38635b65",
+  "verifiedAt": "2026-10-21T08:21:56.0558992Z",
+  "verifyMs": 48044,
+  "stagedTasks": [
+    "V7",
+    "V5",
+    "V1",
+    "V4",
+    "V8",
+    "V2"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 80,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 49,
+    "failed": 0,
+    "byTask": {
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V2": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "richest ranks every open account by its derived balance, descending, ties broken by String.CompareOrdinal on the id string, then truncates to count; a negative count is refused with InvalidCount. Recorded as DEC-U6-RICHEST-RANKING.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V2.md#LEDGER-V2-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#richest",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-DERIVED-BALANCES",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D2",
+        "statement": "\u0027Open accounts\u0027 means LedgerState.Accounts, so closed accounts are left out of the ranking.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "DEC-U3-CLOSED-ACCOUNTS-SET",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs#LedgerState",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D3",
+        "statement": "Balances are summed directly from postingsOf for each open account instead of calling Ledger.balance, to avoid an unreachable error path (an open account always has a balance).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#postingsOf",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

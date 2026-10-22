@@ -1,0 +1,213 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "R1",
+  "arm": "C",
+  "unit": 3,
+  "attempt": 1,
+  "task": "V1",
+  "fault": "none",
+  "head": "c7e32b27874f822598dee8c21488b273a069f20c",
+  "verifiedAt": "2026-10-21T08:44:37.4801028Z",
+  "verifyMs": 56266,
+  "stagedTasks": [
+    "V7",
+    "V4",
+    "V1"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 38,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 16,
+    "failed": 0,
+    "byTask": {
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 3,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U3-D1",
+        "statement": "Remember closed account ids in a new LedgerState.ClosedAccounts set, disjoint from Accounts (open accounts); closeAccount moves the id between the sets and records no posting; openAccount refuses ids in either set with DuplicateAccount (DEC-V1-CLOSED-ACCOUNTS-SET).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V1.md#LEDGER-V1-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#closeAccount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#openAccount",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V1-CLOSED-ACCOUNTS-SET",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D2",
+        "statement": "Rely on the existing Accounts checks in balance, credit, debit, transfer and closePeriod so a closed account is unknown to them and not charged or listed at a period close, rather than adding closed-account checks to each operation.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#closePeriod",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Ledger.Tests/CloseAccountTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D3",
+        "statement": "closeAccount uses Ledger.balance for both the open check (first) and the derived current balance; any non-zero balance is refused with NonZeroBalance (id, balance) and the ledger is left unchanged (DEC-V1-CLOSE-REUSES-BALANCE).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-DERIVED-BALANCES",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-REFUSALS-AS-DATA",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V1-CLOSE-REUSES-BALANCE",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D4",
+        "statement": "Do not add a Store close operation; the requirement only asks for Ledger.closeAccount. A future Store.closeAccount must also drop the id from the balance cache (DEC-V1-STORE-UNCHANGED).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Store.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-BASE-STORE-CACHE",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V1-STORE-UNCHANGED",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U3-D5",
+        "statement": "Earlier period summaries in ClosedPeriods are not rewritten when an account is closed; they still list the account as it was at that close.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

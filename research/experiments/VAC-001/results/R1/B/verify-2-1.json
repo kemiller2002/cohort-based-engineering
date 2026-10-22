@@ -1,0 +1,190 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "R1",
+  "arm": "B",
+  "unit": 2,
+  "attempt": 1,
+  "task": "V4",
+  "fault": "none",
+  "head": "66731c88513ae017b89430e4b5a555c47b7184bf",
+  "verifiedAt": "2026-10-21T08:40:49.6964850Z",
+  "verifyMs": 60849,
+  "stagedTasks": [
+    "V7",
+    "V4"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 26,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 8,
+    "failed": 0,
+    "byTask": {
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 2,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U2-D1",
+        "statement": "periodFee is the single fee rule; feeFor is defined as balance |\u003E Result.map periodFee, so the UnknownAccount refusal is inherited from Ledger.balance.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#periodFee",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#feeFor",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V4.md#LEDGER-V4-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D2",
+        "statement": "closePeriod derives each account\u0027s fee by calling feeFor (hence periodFee) instead of its own threshold, posting -fee with reference fee:\u003CperiodId\u003E only when fee \u003E 0 and recording 0 in Fees otherwise; Balances and idempotence logic are unchanged. This makes closePeriod/feeFor/periodFee agreement structural rather than duplicated.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#closePeriod",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V4.md#LEDGER-V4-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U2-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D3",
+        "statement": "Band boundaries read as: balance \u003C 1.00 -\u003E 0; 1.00 \u003C= balance \u003C 1000.00 -\u003E 1.00; balance \u003E= 1000.00 -\u003E 0. Negative balances (not reachable, overdrafts are refused) fall in the first band.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V4.md#LEDGER-V4-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#debit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D4",
+        "statement": "R1 and R2 were delivered in one commit: the R1 extraction was written against the new table directly since R2 supersedes the R1 rule; the old rule\u0027s behaviour for balances below 1000 is still covered by the existing BaseTests closePeriod test.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [
+          {
+            "ref": "requirements/V4.md#LEDGER-V4-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Ledger.Tests/BaseTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D5",
+        "statement": "Store gains no fee operations: Store has no closePeriod, and the requirement only names Ledger.fs; Store is untouched.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Store.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V4.md#LEDGER-V4-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

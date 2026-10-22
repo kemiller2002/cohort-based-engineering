@@ -1,0 +1,187 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "B",
+  "unit": 2,
+  "attempt": 1,
+  "task": "V5",
+  "fault": "none",
+  "head": "0e00757c51edae5b95587ba5abc231b18bd15392",
+  "verifiedAt": "2026-10-21T08:05:22.6399879Z",
+  "verifyMs": 20796,
+  "stagedTasks": [
+    "V7",
+    "V5"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 34,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 15,
+    "failed": 0,
+    "byTask": {
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 2,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U2-D1",
+        "statement": "An order the payer cannot fully cover is not paid at all and is reported Skipped with the transfer's InsufficientFunds error; this is achieved by delegating to Ledger.transfer, which never moves part of an amount.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "docs/design/standing-orders.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D2",
+        "statement": "The date move reuses Ledger.setDate after order validation, so DateInPast and the date move behave exactly as setDate does, and payments are stamped with the run date through Ledger.transfer.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#setDate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D3",
+        "statement": "AlreadyPaid is detected by any posting in the journal (any account) whose Reference equals standing:<OrderId>:<yyyy-MM-dd>; the date is formatted with the invariant culture. Duplicate ids are refused up front, so payments within one run cannot trigger it.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/StandingOrders.fs#reference",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D4",
+        "statement": "A transfer refusal other than insufficient funds (unknown payer or payee, payer equal to payee) is also reported as Skipped with that error rather than refusing the run, since the requirement says any refused transfer is Skipped and only lists Value, DayOfMonth and duplicate id as InvalidOrder checks.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D5",
+        "statement": "Ordinal ordering uses String.CompareOrdinal; the sort is stable but ids are unique after validation, so ties cannot occur.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/StandingOrders.fs#run",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U2-D6",
+        "statement": "No Store.run was added; the requirement only asks for the pure StandingOrders.run, and Store's balance cache is unaffected because Store is not involved.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  },
+  "evidenceRegeneratedBy": "A3"
+}

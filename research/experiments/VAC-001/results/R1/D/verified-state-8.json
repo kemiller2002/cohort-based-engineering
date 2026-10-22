@@ -1,0 +1,377 @@
+{
+  "schema": "vac.verified-state/1",
+  "updatedAfterUnit": 8,
+  "verifier": "VAC-001 host verifier (hidden oracle, build, tests, VAC-RULES 1.0.0)",
+  "head": "ede6ac453dbd89ce4c3fd0f62a762e1128b9fdc0",
+  "promotionRule": "a decision is verified only when its Layer 1 evidence is valid and its unit was independently accepted; invalid evidence is rejected; everything else stays provisional",
+  "requirements": [
+    {
+      "id": "LEDGER-V7-R1",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R1",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R2",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V1-R1",
+      "unit": 3,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V2-R1",
+      "unit": 4,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V6-R1",
+      "unit": 5,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V6-R2",
+      "unit": 5,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V6-R3",
+      "unit": 5,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V8-R1",
+      "unit": 6,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V8-R2",
+      "unit": 6,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V3-R1",
+      "unit": 7,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V3-R2",
+      "unit": 7,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V5-R1",
+      "unit": 8,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V5-R2",
+      "unit": 8,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V5-R3",
+      "unit": 8,
+      "status": "verified"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "Did not implement sweep: engineering control 1 forbids implementation when Ordo reports any diagnostic; work item LEDGER-V7 recorded as blocked in Praxis.",
+      "unit": 1,
+      "task": "V7",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D1",
+      "statement": "The fee rule exists only in Ledger.periodFee; feeFor maps balance through periodFee (so it inherits UnknownAccount from balance) and closePeriod charges periodFee of each balance.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D2",
+      "statement": "R2 table boundaries are inclusive lower bounds: 1.00 pays 1.00, 999.99 pays 1.00, 1000.00 pays 0.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D3",
+      "statement": "closePeriod records a fee posting only when the fee is more than 0, lists every account in Fees (0 when none), and keeps its ClosedPeriods-based idempotence; Store needs no change because it has no closePeriod operation.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D4",
+      "statement": "Implemented R1 (old rule extracted unchanged) as its own commit before changing the rule for R2, as the requirement orders.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D1",
+      "statement": "Closed accounts are remembered in a new LedgerState.ClosedAccounts set; closeAccount moves the id from Accounts to ClosedAccounts, so every existing operation (balance, credit, debit, transfer, feeFor, closePeriod) treats it as unknown without changes. This adds a record field but changes no function signature; it stores ids, not balances.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D2",
+      "statement": "openAccount refuses an id in Accounts or ClosedAccounts with DuplicateAccount, whether or not the closed account had postings.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D3",
+      "statement": "closeAccount is built on balance: UnknownAccount comes first, then NonZeroBalance(id, current balance) for any balance other than 0; refusals change nothing.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D4",
+      "statement": "Store gets no closeAccount in this unit, so its balance cache cannot drift; a future Store.closeAccount must also drop the id from the cache.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D5",
+      "statement": "Earlier period summaries in ClosedPeriods keep listing an account closed later; only closes after the account is closed omit it.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D1",
+      "statement": "richest orders open accounts by balance descending, then id ascending with String.CompareOrdinal, and truncates to count (0 gives [], a larger count gives all open accounts); a negative count is refused with InvalidCount count.",
+      "unit": 4,
+      "task": "V2",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D2",
+      "statement": "Open accounts are LedgerState.Accounts; closed accounts (ClosedAccounts) do not take part and zero-balance open accounts do.",
+      "unit": 4,
+      "task": "V2",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U4-D3",
+      "statement": "Balances for richest are derived in one fold over the journal rather than per-account balance calls; still derived from postings, and records nothing.",
+      "unit": 4,
+      "task": "V2",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U5-D1",
+      "statement": "Lines are matched greedily in the given order; each takes the unmatched candidate (equal value, exact case-sensitive memo/reference, at most 2 days apart either way) with the smallest day distance, ties to the earlier journal position.",
+      "unit": 5,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U5-D2",
+      "statement": "Postings are identified by journal position, not structural equality, so identical postings are distinct and each is matched at most once.",
+      "unit": 5,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U5-D3",
+      "statement": "An account is open when it is in LedgerState.Accounts, so closed accounts are refused with UnknownAccount; the account\u0027s postings are Ledger.postingsOf reversed into journal order.",
+      "unit": 5,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U5-D4",
+      "statement": "Reconciliation.fs is a pure Tier 2 module compiled after Ledger.fs and before Store.fs; the 2-day window is the named value maxDaysApart.",
+      "unit": 5,
+      "task": "V6",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U6-D1",
+      "statement": "The daily limit is inclusive: withdraw is refused with DailyLimitExceeded(id, 500.00 - withdrawnToday) only when withdrawnToday \u002B amount \u003E 500.00; refusal order InvalidAmount, UnknownAccount, InsufficientFunds, DailyLimitExceeded; the limit is the named value dailyWithdrawalLimit.",
+      "unit": 6,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U6-D2",
+      "statement": "withdrawnToday is derived from the journal: minus the sum of the account\u0027s postings with reference exactly \u0027withdraw\u0027, negative amount and Date = LedgerState.Today. Nothing is stored, so refused withdrawals never count and a new business date resets the total.",
+      "unit": 6,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U6-D3",
+      "statement": "Per the requirement\u0027s definition, any posting with reference \u0027withdraw\u0027 is a withdrawal, so a debit a caller labels \u0027withdraw\u0027 counts towards the limit; debits, transfers and fees with other references do not. debit was not changed to reject that reference.",
+      "unit": 6,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U6-D4",
+      "statement": "Store gets no withdraw operation in this unit; a future Store.withdraw must shift the balance cache.",
+      "unit": 6,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U7-D1",
+      "statement": "Active holds are stored in LedgerState.Holds: Map\u003Cstring, Hold\u003E keyed by hold id (Hold = { HeldAccount; HeldAmount }); release removes the entry so the id can be reused; DuplicateHold is checked across all accounts. Labels differ from Posting\u0027s to avoid ambiguous record inference.",
+      "unit": 7,
+      "task": "V3",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U7-D2",
+      "statement": "available = balance minus the account\u0027s active holds; placeHold, debit and transfer (source only) refuse InsufficientFunds when amount exceeds it, with their other refusals and order unchanged; a hold may take exactly the available amount; holds on the destination never block a transfer in.",
+      "unit": 7,
+      "task": "V3",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U7-D3",
+      "statement": "withdraw (V8) also checks InsufficientFunds against available instead of balance, applying V3-R2\u0027s rule that held money cannot be spent; with no holds it behaves exactly as before.",
+      "unit": 7,
+      "task": "V3",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U7-D4",
+      "statement": "closePeriod and feeFor keep using balance and ignore holds; closeAccount is unchanged (balance-only check), so a fee can make available negative and an account with a hold can be closed.",
+      "unit": 7,
+      "task": "V3",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U7-D5",
+      "statement": "Store is unchanged: it has no hold operations, holds never change balances so its balance cache stays in step, and Store.debit/transfer go through Ledger and so honour holds already in the state.",
+      "unit": 7,
+      "task": "V3",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U8-D1",
+      "statement": "Shortfall: an order the payer cannot fully cover is not paid at all; each due order is one full-value Ledger.transfer, and a refused transfer is reported Skipped(id, error) with nothing moved and no carry-over.",
+      "unit": 8,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U8-D2",
+      "statement": "run validates every order in list order first, then moves the date via Ledger.setDate (DateInPast as setDate gives it), then pays due orders sorted by String.CompareOrdinal on OrderId, folding so each payment sees earlier ones.",
+      "unit": 8,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U8-D3",
+      "statement": "Due rule: DayOfMonth equals the day, or DayOfMonth is larger than the day and the date is the last day of its month (date.AddDays(1).Day = 1).",
+      "unit": 8,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U8-D4",
+      "statement": "AlreadyPaid is decided by the presence of the reference standing:\u003COrderId\u003E:\u003Cyyyy-MM-dd\u003E on any posting in the journal; nothing else is stored, so a skipped order is paid by a later same-date run once funded.",
+      "unit": 8,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U8-D5",
+      "statement": "Payments go through Ledger.transfer, so held money (V3) is not used and transfer refusals such as UnknownAccount or SameAccount become Skipped outcomes.",
+      "unit": 8,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    }
+  ],
+  "provisional": [],
+  "rejected": [],
+  "constraints": [
+    "VAC-RULES 1.0.0: docs/architecture/RULES.md"
+  ],
+  "lastUnit": {
+    "unit": 8,
+    "task": "V5",
+    "accepted": true,
+    "failingChecks": [],
+    "architectureViolations": []
+  }
+}

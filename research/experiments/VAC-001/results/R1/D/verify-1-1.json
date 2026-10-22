@@ -1,0 +1,93 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "R1",
+  "arm": "D",
+  "unit": 1,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "1676b2b7dee58574edd5381dd334d80282bfa830",
+  "verifiedAt": "2026-10-21T08:37:02.9156540Z",
+  "verifyMs": 42135,
+  "stagedTasks": [
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": false,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 0,
+    "failed": 0,
+    "byTask": {},
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "Did not implement sweep: engineering control 1 forbids implementation when Ordo reports any diagnostic; work item LEDGER-V7 recorded as blocked in Praxis.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "contracts/V7.json",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V7-EMPTY-NOOP",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "DEC-V7-ONE-PAIR",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "Contract admission failed: ordo ecir check --blueprint contracts/V7.json reported ORDO.CONTRACT.UNRESOLVED_CONFLICT for requirements/V7.md#LEDGER-V7-R1 -\u003E CONFLICT-V7-EMPTY-SWEEP. DEC-V7-EMPTY-NOOP (zero-balance sweep returns Ok, ledger unchanged) and DEC-V7-ONE-PAIR (sweep recording no postings is refused with Error (InvalidAmount 0m)) contradict for a zero-balance source."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

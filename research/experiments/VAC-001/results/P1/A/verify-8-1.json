@@ -1,0 +1,298 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "P1",
+  "arm": "A",
+  "unit": 8,
+  "attempt": 1,
+  "task": "V3",
+  "fault": "none",
+  "head": "bbfa274f67042f0f36c0107566c2fcdac2f656b1",
+  "verifiedAt": "2026-10-21T08:32:20.0494570Z",
+  "verifyMs": 69383,
+  "stagedTasks": [
+    "V7",
+    "V5",
+    "V1",
+    "V4",
+    "V8",
+    "V2",
+    "V6",
+    "V3"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 135,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 70,
+    "failed": 0,
+    "byTask": {
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V2": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V3": {
+        "cases": 11,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 8,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U8-D1",
+        "statement": "Holds are stored as a new LedgerState field Holds: Map\u003Cstring, Hold\u003E, keyed by hold id, with a new record Hold { HoldId; Account; Amount }. The map key makes \u0027at most one active hold per id\u0027 structural; releasing removes the entry, so released ids can be reused and no released-hold history is kept. Ledger.empty starts with Map.empty. DuplicateHold and UnknownHold were appended to LedgerError as specified.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V3.md#LEDGER-V3-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs#Hold",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs#LedgerState",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#empty",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D2",
+        "statement": "Adding a field to the public LedgerState record keeps every existing function signature; the only record literal construction is Ledger.empty (tests use copy-and-update), so no caller broke.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#empty",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Ledger.Tests/CloseAccountTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D3",
+        "statement": "\u0027Not open\u0027 for available and placeHold reuses Ledger.balance (Accounts membership), so closed and never-opened accounts give UnknownAccount, consistent with U7-D2. Hold ids are compared exactly (ordinal string equality via the Map key).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#available",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U7-D2",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D4",
+        "statement": "debit and transfer now check Ledger.available instead of Ledger.balance at the existing InsufficientFunds step; all other refusals and their order are unchanged. StandingOrders.run (via transfer) and Store.debit/Store.transfer (delegating to Ledger) therefore respect holds without change. Holds on a transfer\u0027s destination do not matter. closePeriod/feeFor are unchanged and use the balance.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V3.md#LEDGER-V3-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#debit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Store.fs#debit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D5",
+        "statement": "Ledger.withdraw is left unchanged: it still refuses InsufficientFunds against the balance, so a cash withdrawal can spend held money. V3-R2 names only debit and transfer, and LEDGER-V8-R1 explicitly says withdraw refuses when amount is more than the balance and \u0027otherwise\u0027 records the posting; making withdraw honour holds would contradict that earlier accepted requirement. Pinned by a test so a change is visible.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [
+          {
+            "ref": "requirements/V3.md#LEDGER-V3-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V8.md#LEDGER-V8-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#withdraw",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Ledger.Tests/HoldTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D6",
+        "statement": "available is balance minus active holds without clamping, so it can be negative (e.g. after a period fee, or after a withdrawal per U8-D5). The requirement defines available as exactly that difference.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V3.md#LEDGER-V3-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#available",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D7",
+        "statement": "No Store.placeHold/releaseHold/available were added: the requirement names only Domain.fs and Ledger.fs (same reasoning as U7-D6). Store.create works with any state, including one carrying holds.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [
+          {
+            "ref": "src/Ledger/Store.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U7-D6",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

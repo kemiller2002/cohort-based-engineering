@@ -1,0 +1,108 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "R1",
+  "arm": "A",
+  "unit": 1,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "84afac8a66b55e17df943a5920327927b6c245b7",
+  "verifiedAt": "2026-10-21T08:37:02.9189643Z",
+  "verifyMs": 42496,
+  "stagedTasks": [
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": false,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 0,
+    "failed": 0,
+    "byTask": {},
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "Do not implement sweep until Operations and Audit agree on zero-balance behaviour. Any total implementation of sweep has to pick one of the two decisions, and that would break the other team\u0027s recorded rule and the acceptance criterion \u0027each statement above holds\u0027.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "/home/user/vac-work/R1/A/DIRECTIVES.md",
+            "kind": "brief-provided",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D2",
+        "statement": "The rest of R1 is unambiguous and can be built once the conflict is settled. Refusal order: UnknownAccount source, UnknownAccount target, SameAccount source. A positive balance moves as one pair of postings with reference \u0027sweep\u0027, dated ledger.Today (Ledger.transfer source target balance \u0022sweep\u0022 already does this). Negative balances cannot occur because debit and transfer refuse overdrafts. Store.fs would also need a matching sweep so its balance cache stays in step with the journal.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#debit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Store.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "requirements/V7.md#LEDGER-V7-R1 records two same-level team decisions that contradict each other for a source balance of 0: DEC-V7-EMPTY-NOOP (Operations) requires Ok with the ledger unchanged, DEC-V7-ONE-PAIR (Audit) requires Error (InvalidAmount 0m). The acceptance criterion says each statement must hold, which no implementation can satisfy. Neither record is narrower or newer, so choosing one would silently overrule the other team; this needs an owner decision."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

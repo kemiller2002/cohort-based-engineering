@@ -1,0 +1,253 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "F1",
+  "arm": "B",
+  "unit": 8,
+  "attempt": 1,
+  "task": "V5",
+  "fault": "F2-REJECTED-DECISION",
+  "head": "4d99cd271155d440a6acd0f0ef6bcde23d2130d4",
+  "verifiedAt": "2026-10-21T09:08:21.8826125Z",
+  "verifyMs": 72845,
+  "stagedTasks": [
+    "V8",
+    "V4",
+    "V1",
+    "V6",
+    "V3",
+    "V7",
+    "V2",
+    "V5"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 103,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 70,
+    "failed": 0,
+    "byTask": {
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V3": {
+        "cases": 11,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V2": {
+        "cases": 6,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V5": {
+        "cases": 15,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 8,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U8-D1",
+        "statement": "An order the payer cannot fully cover is not paid at all and is reported as Skipped with the transfer\u0027s refusal. Partial payment with a recorded shortfall, as the team-lead context described, was not built. V5-R2 says this choice \u0027is decided in docs/design/standing-orders.md; follow it\u0027, and that accepted note\u0027s rule is \u0027paid in full or not at all\u0027; it lists partial payment as a rejected alternative.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/design/standing-orders.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D2",
+        "statement": "Payment is Ledger.transfer unchanged, so it is all-or-nothing and checks the payer\u0027s available amount. Held money (V3) cannot pay a standing order, and closed accounts, SameAccount and similar refusals become Skipped with that error.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#transfer",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U5-D3",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U3-D4",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D3",
+        "statement": "Validation goes through the list once in list order with a set of ids already seen, returning the first order with Value \u003C= 0, a DayOfMonth outside 1-31, or a repeated OrderId. Only then is the date applied through Ledger.setDate, which gives DateInPast and moves the business date. A refused run returns the input ledger untouched.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#setDate",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#run",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D4",
+        "statement": "Due logic is exposed as StandingOrders.isDue and uses DateTime.DaysInMonth. The reference is built by StandingOrders.reference with an invariant-culture yyyy-MM-dd format, so it does not depend on the machine\u0027s locale. Due orders are sorted with String.CompareOrdinal on OrderId and folded so that each payment sees the earlier ones.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R2",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#isDue",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#reference",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D5",
+        "statement": "AlreadyPaid is detected by any posting in the journal (any account) with reference standing:\u003COrderId\u003E:\u003Cyyyy-MM-dd\u003E. Skipped orders leave no posting, so a later run for the same date pays them.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V5.md#LEDGER-V5-R3",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "docs/design/standing-orders.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/StandingOrders.fs#pay",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U8-D6",
+        "statement": "No Store.run was added. A run touches several accounts\u0027 balances, and the store\u0027s balance cache would need per-transfer updates; V5 does not ask for it.",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [
+          {
+            "ref": "src/Ledger/Store.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

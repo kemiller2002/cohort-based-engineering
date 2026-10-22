@@ -1,0 +1,133 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "F1",
+  "arm": "A",
+  "unit": 6,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "65ab1812694a5ef95bcf7943bc0451b31d9d66bf",
+  "verifiedAt": "2026-10-21T09:01:57.8298471Z",
+  "verifyMs": 61609,
+  "stagedTasks": [
+    "V8",
+    "V4",
+    "V1",
+    "V6",
+    "V3",
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 49,
+    "failed": 0,
+    "byTask": {
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V3": {
+        "cases": 11,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "Stopped blocked rather than choosing between DEC-V7-EMPTY-NOOP and DEC-V7-ONE-PAIR. Both are recorded team decisions in the same requirement with equal standing. The directives say to escalate a same-level conflict when the outcome materially changes the authorized goal, and here either choice fails one team\u0027s stated requirement (Operations\u0027 nightly job would get errors, or Audit\u0027s journal count would include sweeps that recorded nothing).",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "/home/user/vac-work/F1/A/DIRECTIVES.md",
+            "kind": "brief-provided",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D2",
+        "statement": "Did not commit a partial sweep. Any implementation has to give the zero-balance case some behaviour, and committing one would put an unapproved decision into src/Ledger. src/Ledger and tests/Ledger.Tests are unchanged.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "LEDGER-V7-R1 contradicts itself for a source whose balance is 0. DEC-V7-EMPTY-NOOP (Operations) says sweep must return Ok with the ledger unchanged; DEC-V7-ONE-PAIR (Audit) says a sweep that would record no postings must be refused with Error (InvalidAmount 0m). One input cannot give both results, and the acceptance criterion \u0027each statement above holds\u0027 requires both. These are two teams\u0027 decisions at the same authority level, neither narrower nor newer, so picking one would silently overrule the other team. That needs a product/owner decision."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

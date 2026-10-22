@@ -1,0 +1,147 @@
+{
+  "schema": "vac.verified-state/1",
+  "updatedAfterUnit": 3,
+  "verifier": "VAC-001 host verifier (hidden oracle, build, tests, VAC-RULES 1.0.0)",
+  "head": "a5107cb1f56c38f0c248e5bfc51a637b7b013506",
+  "promotionRule": "a decision is verified only when its Layer 1 evidence is valid and its unit was independently accepted; invalid evidence is rejected; everything else stays provisional",
+  "requirements": [
+    {
+      "id": "LEDGER-V7-R1",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V5-R1",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V5-R2",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V5-R3",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V1-R1",
+      "unit": 3,
+      "status": "verified"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "Stop blocked without implementing sweep, because the Ordo contract admission check reported a diagnostic and the brief forbids implementing in that case.",
+      "unit": 1,
+      "task": "V7",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D2",
+      "statement": "Do not choose between DEC-V7-EMPTY-NOOP and DEC-V7-ONE-PAIR and record neither in docs/decisions/DECISIONS.md; the conflict is between two teams (Operations and Audit) and must be resolved by them or the requirement owner.",
+      "unit": 1,
+      "task": "V7",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D1",
+      "statement": "Orders the payer cannot fully cover are not paid at all: each order is paid by a single Ledger.transfer of its full Value, and any refusal is reported as Skipped (id, error) with nothing moved.",
+      "unit": 2,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D2",
+      "statement": "AlreadyPaid is derived from the journal: a due order is AlreadyPaid when any posting carries its reference standing:\u003COrderId\u003E:\u003Cyyyy-MM-dd\u003E; no paid-order state is stored in LedgerState.",
+      "unit": 2,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D3",
+      "statement": "After validation, run moves the business date with Ledger.setDate before paying, so payment postings are dated with the run date; the date in the reference is formatted with the invariant culture.",
+      "unit": 2,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D4",
+      "statement": "StandingOrders.run is a pure Tier 2 module compiled after Ledger.fs and before Store.fs; no Store operation was added because the requirement asks for none.",
+      "unit": 2,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D5",
+      "statement": "Due orders are sorted with String.CompareOrdinal on OrderId; ties cannot occur because duplicate ids refuse the run.",
+      "unit": 2,
+      "task": "V5",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D1",
+      "statement": "Closed accounts are remembered in a new LedgerState.ClosedAccounts set; closing moves the id from Accounts (open accounts) to ClosedAccounts, and openAccount refuses an id in either set with DuplicateAccount.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D2",
+      "statement": "Because Accounts keeps meaning open accounts, balance, credit, debit, transfer, closePeriod and StandingOrders.run treat a closed account as unknown with no change to their code.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D3",
+      "statement": "closeAccount reuses Ledger.balance for both checks, so UnknownAccount comes first and NonZeroBalance carries the current derived balance; any non-zero balance refuses, not only a positive one.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U3-D4",
+      "statement": "No Store.closeAccount was added because the requirement names only Ledger.closeAccount; Store.create already excludes closed accounts from its balance cache.",
+      "unit": 3,
+      "task": "V1",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    }
+  ],
+  "provisional": [],
+  "rejected": [],
+  "constraints": [
+    "VAC-RULES 1.0.0: docs/architecture/RULES.md"
+  ],
+  "lastUnit": {
+    "unit": 3,
+    "task": "V1",
+    "accepted": true,
+    "failingChecks": [],
+    "architectureViolations": []
+  }
+}

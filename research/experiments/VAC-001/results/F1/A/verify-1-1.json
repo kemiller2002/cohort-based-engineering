@@ -1,0 +1,170 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "F1",
+  "arm": "A",
+  "unit": 1,
+  "attempt": 1,
+  "task": "V8",
+  "fault": "none",
+  "head": "e3c620ac35cd8516ee6cab8b41d40d908927899d",
+  "verifiedAt": "2026-10-21T08:39:10.8049393Z",
+  "verifyMs": 79200,
+  "stagedTasks": [
+    "V8"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": true,
+    "compilerErrors": 0
+  },
+  "visibleTests": {
+    "passed": 23,
+    "failed": 0,
+    "exit": 0
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 12,
+    "failed": 0,
+    "byTask": {
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 1,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "completed",
+    "decisions": [
+      {
+        "id": "U1-D1",
+        "statement": "A posting counts as a withdrawal when it is on the account, has reference \u0022withdraw\u0022, is dated with the business date in question and has a negative amount. The negative-sign condition keeps a credit that happens to use the reference \u0022withdraw\u0022 out of the total. A debit made via Ledger.debit with reference \u0022withdraw\u0022 is indistinguishable from a withdrawal in the journal and would count; Posting carries no kind field and its shape was kept.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V8.md#LEDGER-V8-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Domain.fs#Posting",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#withdrawnOn",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D2",
+        "statement": "withdraw reuses the existing balance check (balance returns UnknownAccount for unopened accounts) and the same \u0027current \u003C amount\u0027 overdraft rule as debit and transfer, giving the required refusal order InvalidAmount, UnknownAccount, InsufficientFunds, DailyLimitExceeded.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "src/Ledger/Ledger.fs#debit",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Ledger.fs#balance",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "requirements/V8.md#LEDGER-V8-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D3",
+        "statement": "The limit is exposed as a public value Ledger.dailyWithdrawalLimit = 500m; the reference string is a private constant. The DailyLimitExceeded remaining amount is 500 minus already withdrawn that date (0 when the limit is used up).",
+        "basis": "assumption",
+        "layer1": "recorded-assumption",
+        "refs": [],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D4",
+        "statement": "No Store.withdraw was added; the requirement only names functions in src/Ledger/Ledger.fs. The Store balance cache is therefore unaffected and no withdrawal path exists through the store.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V8.md",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "src/Ledger/Store.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U1-D5",
+        "statement": "New tests live in a separate file tests/Ledger.Tests/WithdrawalTests.fs, picked up by the existing \u0027*.fs\u0027 compile glob; existing public signatures were left unchanged.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "tests/Ledger.Tests/Ledger.Tests.fsproj",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "tests/Ledger.Tests/WithdrawalTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "completed",
+    "blockedReason": ""
+  },
+  "verdict": {
+    "expectedCompletion": "verified",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": false
+  }
+}

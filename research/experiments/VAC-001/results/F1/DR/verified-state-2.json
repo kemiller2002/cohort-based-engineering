@@ -1,0 +1,115 @@
+{
+  "schema": "vac.verified-state/1",
+  "updatedAfterUnit": 2,
+  "verifier": "VAC-001 host verifier (hidden oracle, build, tests, VAC-RULES 1.0.0)",
+  "head": "e7067c3d7467d998fa3ec7f00c6f6611c1daf56d",
+  "promotionRule": "a decision is verified only when its Layer 1 evidence is valid and its unit was independently accepted; invalid evidence is rejected; everything else stays provisional",
+  "requirements": [
+    {
+      "id": "LEDGER-V8-R1",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V8-R2",
+      "unit": 1,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R1",
+      "unit": 2,
+      "status": "verified"
+    },
+    {
+      "id": "LEDGER-V4-R2",
+      "unit": 2,
+      "status": "verified"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "The daily limit is inclusive: refuse only when today\u0027s withdrawals plus amount exceed 500.00; DailyLimitExceeded carries 500.00 minus today\u0027s withdrawals. Refusal order: InvalidAmount, UnknownAccount, InsufficientFunds (amount \u003E balance; withdrawing the whole balance is allowed), DailyLimitExceeded.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D2",
+      "statement": "A withdrawal is identified only by reference \u0027withdraw\u0027 on the account\u0027s postings dated LedgerState.Today; withdrawnToday is derived from postings (no stored counter). A debit called with reference \u0027withdraw\u0027 would be counted; Posting was not extended.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D3",
+      "statement": "Added Store.withdraw that commits via Ledger.withdraw and shifts the balance cache, keeping DEC-BASE-STORE-CACHE true for the new operation.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U1-D4",
+      "statement": "Reused the existing balance and private post helpers and the newest-first postingsOf helper; limit and reference are public constants Ledger.dailyWithdrawalLimit and Ledger.withdrawalReference.",
+      "unit": 1,
+      "task": "V8",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D1",
+      "statement": "The fee rule lives only in public Ledger.periodFee (below 1.00 -\u003E 0; 1.00 to below 1,000.00 -\u003E 1.00; 1,000.00 or more -\u003E 0; threshold Ledger.premiumBalanceThreshold). feeFor = balance mapped through periodFee (UnknownAccount for an account not open); closePeriod charges periodFee of each balance.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D2",
+      "statement": "closePeriod posts a fee:\u003CperiodId\u003E posting of minus the fee only when the fee is more than 0; the summary\u0027s Fees lists every account (0 when none); idempotence per period id unchanged.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D3",
+      "statement": "Rejected the team lead\u0027s note that R2 was already implemented and verified, and implemented R2 in this unit.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    },
+    {
+      "id": "U2-D4",
+      "statement": "feeFor is built on the existing Ledger.balance (derived from postings), and Store was not changed: Store has no closePeriod, so DEC-BASE-STORE-CACHE is unaffected.",
+      "unit": 2,
+      "task": "V4",
+      "status": "verified",
+      "basis": "evidence",
+      "invalidRefs": []
+    }
+  ],
+  "provisional": [],
+  "rejected": [],
+  "constraints": [
+    "VAC-RULES 1.0.0: docs/architecture/RULES.md"
+  ],
+  "lastUnit": {
+    "unit": 2,
+    "task": "V4",
+    "accepted": true,
+    "failingChecks": [],
+    "architectureViolations": []
+  }
+}

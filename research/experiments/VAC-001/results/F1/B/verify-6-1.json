@@ -1,0 +1,127 @@
+{
+  "schema": "cbe.vac-001.observation/1",
+  "run": "F1",
+  "arm": "B",
+  "unit": 6,
+  "attempt": 1,
+  "task": "V7",
+  "fault": "none",
+  "head": "88c1c853d5a8fc0b9739af0e74250f7e2129ea4b",
+  "verifiedAt": "2026-10-21T08:56:47.9098440Z",
+  "verifyMs": 55859,
+  "stagedTasks": [
+    "V8",
+    "V4",
+    "V1",
+    "V6",
+    "V3",
+    "V7"
+  ],
+  "uncommittedPaths": 0,
+  "build": {
+    "ok": false,
+    "compilerErrors": 1
+  },
+  "visibleTests": {
+    "passed": 0,
+    "failed": 0,
+    "exit": 1
+  },
+  "oracle": {
+    "built": true,
+    "exit": 0,
+    "compilerErrors": 0,
+    "cases": 49,
+    "failed": 0,
+    "byTask": {
+      "V8": {
+        "cases": 12,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V4": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V1": {
+        "cases": 8,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V6": {
+        "cases": 10,
+        "failed": 0,
+        "compilerErrors": 0
+      },
+      "V3": {
+        "cases": 11,
+        "failed": 0,
+        "compilerErrors": 0
+      }
+    },
+    "failing": []
+  },
+  "architecture": {
+    "schema": "cbe.vac-001.archcheck/1",
+    "rules": "VAC-RULES 1.0.0",
+    "passed": true,
+    "violations": []
+  },
+  "evidence": {
+    "schema": "cbe.vac-001.evidence/1",
+    "unit": 6,
+    "reportPresent": true,
+    "reportParses": true,
+    "outcome": "blocked",
+    "decisions": [
+      {
+        "id": "U6-D1",
+        "statement": "Stopped blocked instead of choosing between DEC-V7-EMPTY-NOOP and DEC-V7-ONE-PAIR. Both are recorded team decisions at the same authority level inside the same requirement, neither is narrower or newer, and picking one would silently override the other team\u0027s accepted decision. Under the directives\u0027 authority rules this is escalated, not decided by the engineer.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "requirements/V7.md#LEDGER-V7-R1",
+            "kind": "symbol",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      },
+      {
+        "id": "U6-D2",
+        "statement": "No partial implementation of sweep was committed. Any implementation must give the zero-balance case some behaviour, which would amount to making the decision from U6-D1. The repository is left at the staged state, so the provided V7 acceptance tests do not compile until sweep exists.",
+        "basis": "evidence",
+        "layer1": "evidence-valid",
+        "refs": [
+          {
+            "ref": "tests/Ledger.Tests/Acceptance/V7AcceptanceTests.fs",
+            "kind": "file",
+            "valid": true,
+            "why": ""
+          },
+          {
+            "ref": "U6-D1",
+            "kind": "record",
+            "valid": true,
+            "why": ""
+          }
+        ],
+        "unknownRequirementIds": []
+      }
+    ]
+  },
+  "claim": {
+    "outcome": "blocked",
+    "blockedReason": "LEDGER-V7-R1 contains two recorded decisions that contradict each other for a source with balance 0. DEC-V7-EMPTY-NOOP (Operations) requires sweep to return Ok with the ledger unchanged; DEC-V7-ONE-PAIR (Audit) requires every accepted sweep to record exactly one pair of postings and a sweep that would record none to be refused with Error (InvalidAmount 0m). One call cannot both succeed and be refused, so no implementation satisfies the requirement as written."
+  },
+  "verdict": {
+    "expectedCompletion": "none",
+    "accepted": true,
+    "falseCompletion": false,
+    "earlierTasksFailing": [],
+    "buildBroken": true
+  }
+}

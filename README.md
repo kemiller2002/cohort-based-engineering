@@ -33,6 +33,11 @@ A requirement-at-a-time, fresh-agent workflow repeatedly incurs repository disco
 - Ordo pattern recognition H0: deterministic classification on four frozen cohorts was under one second per cohort including startup; Dokimos audits found zero findings. This is **not** a demonstrated end-to-end cost reduction.
 - The high- versus low-affinity A022 experiment was blocked by eligibility criteria; A023 was proposed as a successor.
 
+- VAC-001 (verified agent continuity; `research/verified-agent-continuity/`):
+  - **Design.** 96 chained units on the REL-001 Ledger fixture, scored by a hidden oracle.
+  - **Cost.** One continuous agent cost 40.9% less per accepted requirement than a fresh agent per change (CI −48.1% to −33.0%), at equal correctness. Adding Ordo or full-Echelon controls on top of continuity cost +14% to +31%. Rebuilding context from verified state with fresh agents cost +86%.
+  - **Reliability.** Correctness, drift and fault rejection were at ceiling in every arm, so no reliability benefit of verified state could be measured.
+
 These observations motivate CBE but do not prove that every cohort size or workload benefits. In particular, cost savings must not be confused with architectural correctness.
 
 ## Repository map
