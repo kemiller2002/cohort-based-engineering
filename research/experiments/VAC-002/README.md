@@ -8,9 +8,25 @@ lower cost?
 hypotheses are untested. VAC-002 builds a corpus designed to produce failures and runs six arms over a cumulative
 chain.
 
-**Status:** see [`RESULTS.md`](RESULTS.md). The harness, the pilot corpus (12 units) and the bounded pilot are in
-scope. The 25-, 50- and 100-change confirmatory runs need a spending ceiling that was not given (`BUDGET.md`), so
-they are designed and costed but not run.
+**Status: checkpoint, not complete.**
+
+| Done | Not run |
+|---|---|
+| The harness, the pilot corpus (12 units) and the bounded pilot P1 (6 arms × 12 units), scored by the sealed hidden oracle and reviewed blind in Layer 3 | The 25-, 50- and 100-change confirmatory runs |
+
+**Why the confirmatory runs were not done.** They need a spending ceiling that was not given (`BUDGET.md`, projected
+at about $4,000–4,500). The pilot also failed the discrimination check: all 72 units were accepted in every arm.
+
+**Pilot findings** (details and classifications in [`RESULTS.md`](RESULTS.md)):
+
+- **Reliability.** No reliability difference between arms could be observed.
+- **Cost.** Continuity was 32% cheaper than fresh agents. Full Echelon controls cost +13% over continuity, with no
+  error prevented. Adaptive enforcement saved nothing.
+
+**Next step.** A second pilot on a harder corpus (`RECOMMENDATIONS.md` R-EXP-4).
+
+**Seal.** The sealed oracle's key is published at `sealed/vac002-sealed.key`. The pilot is over, and its corpus will
+not be reused for trials.
 
 ## Documents
 
