@@ -16,9 +16,9 @@ A requirement-at-a-time, fresh-agent workflow repeatedly incurs repository disco
 
 1. **Plan globally, execute in cohorts, verify independently.** Analyze the full requirement and dependency graph before execution.
 2. **No requirement disappears.** Every source requirement retains a stable identifier and explicit disposition through construction, delegation, verification and delivery.
-3. **Decisions precede implementation.** Never invent unresolved business policy. Record decisions with ownership, authorization, rationale and affected requirements.
+3. **Decisions precede implementation.** Never invent unresolved business policy. Record decisions with ownership, authorization, rationale and affected requirements. An extension of a rule to behaviour no requirement names is recorded as an assumption or open question, never as settled.
 4. **Cohesion defines execution boundaries.** Group by domain invariants, shared interfaces, dependencies and decisions; separate unrelated work even if it fits a numerical batch limit.
-5. **Preserve useful context.** Prefer continuity within a cohort. Handoffs are bounded, typed and used when ownership, safety, context pressure or parallelism justify them.
+5. **Preserve useful context.** A cohort's agent continues across its successive work items by default and restarts only on events: context pressure, a change of repository or ownership, or a gate failure that repair does not fix. Handoffs are bounded, typed and used when ownership, safety, context pressure or parallelism justify them.
 6. **Deterministic where proven, agents where necessary.** Ordo recognizes supported construction contracts quickly; Praxis delegates unsupported work without repeated failed generation.
 7. **Quality is independent of authorship.** Dokimos checks contracts, behavior, architectural constraints and adversarial cases for both generated and agent-authored code.
 8. **Adaptive checkpoints.** Compile when shared contracts stabilize, after dependency groups, and when risk warrants it; full acceptance at cohort completion.
@@ -37,12 +37,13 @@ A requirement-at-a-time, fresh-agent workflow repeatedly incurs repository disco
   - **Design.** 96 chained units on the REL-001 Ledger fixture, scored by a hidden oracle.
   - **Cost.** One continuous agent cost 40.9% less per accepted requirement than a fresh agent per change (CI −48.1% to −33.0%), at equal correctness. Adding Ordo or full-Echelon controls on top of continuity cost +14% to +31%. Rebuilding context from verified state with fresh agents cost +86%.
   - **Reliability.** Correctness, drift and fault rejection were at ceiling in every arm, so no reliability benefit of verified state could be measured.
+  - **Next.** Preregistered, not yet run: [R-EXP-1](research/verified-agent-continuity/r-exp-1-protocol.md) (a fixture whose baseline fails) and [R-EXP-2](research/verified-agent-continuity/r-exp-2-protocol.md) (chains past compaction, K1, cross-family review).
 
 These observations motivate CBE but do not prove that every cohort size or workload benefits. In particular, cost savings must not be confused with architectural correctness.
 
 ## Repository map
 
-- [Operating model](docs/operating-model.md): lifecycle, human roles, agent roles and boundaries.
+- [Operating model](docs/operating-model.md): lifecycle, human roles, agent roles and boundaries, agent continuity and scope rules.
 - [Cohort planner](docs/cohort-planner.md): proposed typed inputs, constraints and scheduling.
 - [Experiment plan](research/experiment-plan.md): falsifiable hypotheses, benchmark design and measurements.
 - [Adoption roadmap](docs/roadmap.md): phased integration with Ordo, Praxis, Conditor, Signal and Dokimos.

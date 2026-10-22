@@ -39,5 +39,9 @@ Across all arms:
 | 9 | [`verified-continuity-design.md`](verified-continuity-design.md) | The prototype, its state model, the D vs DR comparison and the weaknesses found |
 | 10 | [`engineering-recommendations.md`](engineering-recommendations.md) | Answers to the 10 questions; recommendations with evidence status |
 | 11 | [`publication-readiness.md`](publication-readiness.md) | What can and cannot be claimed |
+| 12 | [`r-exp-1-protocol.md`](r-exp-1-protocol.md) | R-EXP-1 (VAC-003) preregistered design: a fixture whose baseline fails; H3, H5, H6. Not run |
+| 13 | [`r-exp-2-protocol.md`](r-exp-2-protocol.md) | R-EXP-2 (VAC-004) preregistered design: ≥ 24-unit K1 chains past compaction, cross-family Layer 3; H2. Not run |
+| 14 | [`metrics-schema-2.json`](metrics-schema-2.json) | `cbe.vac.metrics/2`: /1 unchanged plus optional R-EXP fields (`analysis/derive-metrics-schema.py`) |
+| 15 | [`analysis/r-exp-plan.json`](analysis/r-exp-plan.json) | Sample sizes and cost estimates for both protocols (`analysis/plan.py`) |
 
 The experiment code and data are in [`../experiments/VAC-001/`](../experiments/VAC-001/).

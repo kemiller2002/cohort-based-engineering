@@ -1,0 +1,165 @@
+{
+  "schema": "cbe.vac.r-exp-plan/1",
+  "label": "PLANNING ESTIMATE; no R-EXP-1 or R-EXP-2 trial has run",
+  "design": {
+    "alpha": 0.05,
+    "power": 0.8,
+    "rho": 0.05,
+    "rexp1": {
+      "chainLength": 16,
+      "unitsPerKindPerChain": 4,
+      "arms": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "DR"
+      ],
+      "primaryContrasts": 6,
+      "baselineRate": 0.2,
+      "minimumEffect": 0.15,
+      "qualificationChains": 2,
+      "maxQualificationRounds": 3,
+      "layer3Share": 0.625
+    },
+    "rexp2": {
+      "chainLength": 24,
+      "thirds": 3,
+      "arms": [
+        "A",
+        "B",
+        "D",
+        "BX"
+      ],
+      "primaryContrasts": 3,
+      "baselineRate": 0.05,
+      "minimumEffect": 0.1,
+      "pilotChainsPerArm": 1,
+      "layer3Share": 0.35
+    }
+  },
+  "evidence": {
+    "vac001K0LowerBound": {
+      "A": {
+        "units": 24,
+        "meanCostPerUnit": 0.3019,
+        "slopePerIndex": 0.0155
+      },
+      "B": {
+        "units": 24,
+        "meanCostPerUnit": 0.1811,
+        "slopePerIndex": 0.0086
+      },
+      "C": {
+        "units": 16,
+        "meanCostPerUnit": 0.2112,
+        "slopePerIndex": 0.0181
+      },
+      "D": {
+        "units": 24,
+        "meanCostPerUnit": 0.2197,
+        "slopePerIndex": 0.0084
+      },
+      "DR": {
+        "units": 8,
+        "meanCostPerUnit": 0.4212,
+        "slopePerIndex": 0.0108
+      }
+    },
+    "vac002K1CliEstimate": {
+      "A": {
+        "units": 12,
+        "meanCostPerUnit": 0.7585,
+        "slopePerPosition": 0.0356,
+        "compactions": 0
+      },
+      "B": {
+        "units": 12,
+        "meanCostPerUnit": 0.516,
+        "slopePerPosition": 0.0291,
+        "compactions": 2
+      },
+      "C": {
+        "units": 12,
+        "meanCostPerUnit": 0.5122,
+        "slopePerPosition": 0.0245,
+        "compactions": 2
+      },
+      "D": {
+        "units": 12,
+        "meanCostPerUnit": 0.5828,
+        "slopePerPosition": 0.0063,
+        "compactions": 2
+      },
+      "E": {
+        "units": 12,
+        "meanCostPerUnit": 0.6047,
+        "slopePerPosition": 0.0276,
+        "compactions": 2
+      },
+      "F": {
+        "units": 12,
+        "meanCostPerUnit": 0.6772,
+        "slopePerPosition": 0.0232,
+        "compactions": 0
+      }
+    },
+    "layer3SameFamilyVac002": {
+      "reviewed": 186,
+      "costUsd": 19.798,
+      "perDecision": 0.1064
+    },
+    "decisionsPerUnit": {
+      "VAC-001": 4.59,
+      "VAC-002": 4.74
+    },
+    "k1UnitCostUsed": {
+      "A": 0.7585,
+      "B": 0.516,
+      "C": 0.5122,
+      "D": 0.5828,
+      "DR": 1.1173,
+      "DRoverD": 1.9172
+    }
+  },
+  "rexp1": {
+    "alphaPerContrast": 0.00833,
+    "planningRates": {
+      "baseline": 0.2,
+      "treatment": 0.05
+    },
+    "targetUnitsPerKindPerArm": 112,
+    "chainsPerArm": 28,
+    "unitsTotal": 2240,
+    "modelCostUsd": 1562.0,
+    "layer3CostUsd": 706.0,
+    "qualificationRoundUsd": 20.0,
+    "qualificationMaxUsd": 61.0,
+    "sensitivity": {
+      "baseline0.20": 28,
+      "baseline0.30": 46,
+      "baseline0.40": 58
+    }
+  },
+  "rexp2": {
+    "alphaPerContrast": 0.01667,
+    "unitsPerThirdPerArm": 322,
+    "chainsPerArm": 41,
+    "unitsTotal": 3936,
+    "unitCostUsd": {
+      "A": 0.7585,
+      "B": 0.6906,
+      "D": 0.6206,
+      "BX": 0.8164
+    },
+    "pilotUsd": 69.0,
+    "modelCostUsd": 2840.0,
+    "layer3CostUsdPlaceholder": 695.0,
+    "reviewerCalibrationUsdPlaceholder": 43.0,
+    "sensitivity": {
+      "chainsIfBaseline0.05": 41,
+      "chainsIfBaseline0.10": 64,
+      "chainsIfBaseline0.20": 103
+    }
+  }
+}
