@@ -47,16 +47,31 @@ let at (n: JsonNode) (path: string list) = path |> List.fold (fun (acc: JsonNode
 let ratio (a: decimal) (b: decimal) = if b = 0m then None else Some(Math.Round(a / b, 6))
 
 // ---------- Loading ----------
+/// Amendment A1: the CLI reports total_cost_usd cumulatively over a session, so a turn's cost is its cumulative value
+/// minus that of the session's previous turn. `costIndex` maps (session, cumulative cost) to the per-turn delta.
+let turnCostDeltas (dir: string) =
+    Directory.GetFiles(dir, "turn-*.json") |> Array.toList |> List.choose tryParse
+    |> List.groupBy (fun t -> str t "sessionId" |> Option.defaultValue "")
+    |> List.collect (fun (_, ts) ->
+        ts |> List.sortBy (fun t -> str t "startedAt" |> Option.defaultValue "")
+        |> List.fold (fun (prev, acc) t ->
+            let c = num (at t [ "usage" ]) "costUsdCli"
+            let delta = c |> Option.map (fun c -> c - prev)
+            (defaultArg c prev), (str t "label" |> Option.defaultValue "", delta) :: acc) (0m, [])
+        |> snd)
+    |> Map.ofList
+
 type Unit =
     { Arm: string; Position: int; Task: string; Fault: string; Kind: string; Categories: int list
       RequirementIds: string list; ConflictRequirementIds: string list
       Score: JsonNode option; FirstScore: JsonNode option; Gates: JsonNode list; Policy: JsonNode option
-      Turns: JsonNode list; Attempts: int }
+      Turns: JsonNode list; TurnCosts: decimal option list; Attempts: int }
 
 let taskMeta (fixture: string) (task: string) = tryParse (Path.Combine(fixture, "tasks", task, "task.json")) |> Option.get
 
 let loadArm (fixture: string) (dir: string) : Unit list =
     let arm = Path.GetFileName dir
+    let costs = turnCostDeltas dir
     match tryParse (Path.Combine(dir, "setup.json")) with
     | None -> []
     | Some setup ->
@@ -68,6 +83,7 @@ let loadArm (fixture: string) (dir: string) : Unit list =
             let meta = taskMeta fixture task
             let attempts = items u "attempts" |> List.length
             let score k = tryParse (Path.Combine(dir, sprintf "score-%d-%d.json" n k))
+            let turns = Directory.GetFiles(dir, sprintf "turn-unit-%d*.json" n) |> Array.filter (fun f -> Regex.IsMatch(Path.GetFileName f, sprintf @"^turn-unit-%d(-repair-\d+)?\.json$" n)) |> Array.sort |> Array.toList |> List.choose tryParse
             { Arm = arm; Position = n; Task = task; Fault = str u "fault" |> Option.defaultValue "none"
               Kind = str meta "kind" |> Option.defaultValue ""
               Categories = items meta "categories" |> List.map (fun c -> c.GetValue<int>())
@@ -75,7 +91,8 @@ let loadArm (fixture: string) (dir: string) : Unit list =
               Score = score attempts; FirstScore = score 1
               Gates = [ 1..attempts ] |> List.choose (fun k -> tryParse (Path.Combine(dir, sprintf "gate-%d-%d.json" n k)))
               Policy = tryParse (Path.Combine(dir, sprintf "policy-%d.json" n))
-              Turns = Directory.GetFiles(dir, sprintf "turn-unit-%d*.json" n) |> Array.filter (fun f -> Regex.IsMatch(Path.GetFileName f, sprintf @"^turn-unit-%d(-repair-\d+)?\.json$" n)) |> Array.sort |> Array.toList |> List.choose tryParse
+              Turns = turns
+              TurnCosts = turns |> List.map (fun t -> costs |> Map.tryFind (str t "label" |> Option.defaultValue "") |> Option.flatten)
               Attempts = attempts })
         |> List.sortBy (fun u -> u.Position)
 
@@ -98,8 +115,7 @@ let archPass u = u.Score |> Option.map (fun s -> bool s["architecture"] "pass") 
 let detFindings u =
     u.Score |> Option.map (fun s -> items s["architecture"] "findings" |> List.filter (fun f -> str f "class" = Some "DET" && i64 f "severity" >= 2L)) |> Option.defaultValue []
 let failingTests u = u.Score |> Option.map (fun s -> items s["oracle"] "failing" |> List.map (fun f -> str f "task" |> Option.defaultValue "", str f "test" |> Option.defaultValue "")) |> Option.defaultValue []
-let turnCost (t: JsonNode) = num (at t [ "usage" ]) "costUsdCli"
-let unitCost u = u.Turns |> List.map turnCost |> fun cs -> if cs |> List.forall Option.isSome then Some(cs |> List.sumBy Option.get) else None
+let unitCost u = u.TurnCosts |> fun cs -> if not (List.isEmpty cs) && cs |> List.forall Option.isSome then Some(cs |> List.sumBy Option.get) else None
 let turnTokens (t: JsonNode) =
     let usage = at t [ "usage"; "usage" ]
     [ "input"; "output"; "cacheRead"; "cacheWrite" ] |> List.map (fun k -> k, i64 usage k)

@@ -188,4 +188,16 @@ observational.
 **Run discipline.** The pilot runs from a git worktree of the freeze commit (`harness/pilot.sh`), so no later edit
 can reach a running chain. The plaintext sealed store is removed from disk while agents run.
 
-*Amendments: none yet.*
+**Amendments**
+
+**A1 (2026-10-22 16:29 UTC, during P1, before any scoring). Cost measurement for continued sessions.**
+
+- **The problem.** For a resumed session, Claude Code's `total_cost_usd` and `modelUsage` report the session's
+  *cumulative* cost. The `usage` block is per turn. The frozen `budget.sh` summed `total_cost_usd` over every turn, so a
+  long-lived arm's earlier turns were counted again at each later unit. At 16:28 it reported $62.50 against a real
+  $22.02. Without the fix, the stopping rule would have fired at about a third of the preregistered spend.
+- **The change.** Cost is now taken per session as the last cumulative value, summed over sessions (`budget.sh`).
+  Per-turn cost is the difference from the previous turn of the same session (`analyze.fsx`). The stopping rule
+  itself ($95 / $120) is unchanged; only its measurement is corrected.
+- **Not affected.** No outcome data had been scored. Chains run from the frozen worktree, and `budget.sh` is not part
+  of them. The raw turn files are complete, so nothing is lost.
