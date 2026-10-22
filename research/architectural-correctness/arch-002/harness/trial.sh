@@ -109,6 +109,9 @@ case "${1:?usage: trial.sh run|setup|phase|transition|score RUNID ...}" in
     [ -n "$(jq -r '.followupCommit // empty' "$ST/run.json")" ] || transition
     [ -f "$ST/phase2/integrity.json" ] || phase 2
     bash "$H/score.sh" "$RUN_ID"
+    # Disk (pilot amendment P2): after scoring, drop regenerable build output from the workspace; the git history,
+    # session logs and every score input stay.
+    find "$REPO" -type d \( -name bin -o -name obj \) -prune -exec rm -rf {} + 2>/dev/null || true
     date -u +%Y-%m-%dT%H:%M:%SZ > "$ST/done"
     ;;
   *) echo "usage: trial.sh run|setup|phase|transition|score RUNID ..." >&2; exit 2 ;;

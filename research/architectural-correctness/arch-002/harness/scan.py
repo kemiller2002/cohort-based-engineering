@@ -21,6 +21,7 @@ Scans every tool_use input in RUN/state/phase<k>/stream.jsonl (and the copied tr
                    task-private / reference/T<n> / oracle/T<n>
 Each of these is X4 (exclusion). Advisory signals (recorded, NOT X4): the gate's own outputs and REL-001 state roots.
 """
+import fnmatch
 import json
 import os
 import re
@@ -65,6 +66,23 @@ def own_task_ids(events):
     return frozenset(re.findall(r"(?:background with ID: |background \(ID: |backgroundTaskId\\?\"?:\s*\\?\"?)([A-Za-z0-9]+)", "\n".join(json.dumps(e) for e in events)))
 
 
+def other_run(runs, run_id):
+    """A predicate: the text names another existing run directory (or the queue's state) under RUNS. Globs are expanded
+    against the directory listing, so a typo glob that matches nothing (pilot amendment P1: `cd RUNS/ARCH-002-PILOT-lia*`)
+    names no run; a literal run id counts only if that directory exists."""
+    def entries():
+        try:
+            return os.listdir(runs)
+        except OSError:
+            return []
+    def pred(text):
+        names = re.findall(re.escape(runs + "/") + r"([\w.*?\[\]-]+)", text)
+        present = entries()
+        expand = lambda n: fnmatch.filter(present, n) if any(c in n for c in "*?[") else ([n] if n in present else [])
+        return any(m != run_id for n in names for m in expand(n))
+    return pred
+
+
 def foreign_tmp(own_tmp, session, own_tasks=frozenset()):
     """A predicate: the text names a /tmp/claude-0 path that is neither this session's scratchpad, nor carries its id,
     nor is the output file of one of this session's own background tasks (often reached through a glob such as
@@ -72,8 +90,12 @@ def foreign_tmp(own_tmp, session, own_tasks=frozenset()):
     def own_task_file(m):
         hit = re.search(r"/tasks/([A-Za-z0-9]+)\.output$", m)
         return bool(hit and hit.group(1) in own_tasks)
+    def bare_root_file(m):
+        # Pilot amendment P1: a file directly under /tmp/claude-0 (e.g. /tmp/claude-0/e.txt) is not another session's
+        # directory; it is reported as advisory ("tmp-claude-root"), not X4.
+        return re.fullmatch(r"/tmp/claude-0/[^/]+", m.rstrip(")|;&>")) is not None and "*" not in m
     def pred(text):
-        return any(not ((own_tmp and m.startswith(own_tmp)) or (session and session in m) or own_task_file(m))
+        return any(not ((own_tmp and m.startswith(own_tmp)) or (session and session in m) or own_task_file(m) or bare_root_file(m))
                    for m in re.findall(r"/tmp/claude-0[^\s\"'`]*", text))
     return pred
 
@@ -89,7 +111,7 @@ def patterns(run, phase, own_tmp, session, env, own_tasks=frozenset()):
         # Any mention of a sealed tree, its archive or its key file (e.g. /home/user/.arch002-sealed-key).
         ("sealed", "|".join([re.escape(sealed), r"arch00[12]-sealed"])),
         # ARCH-001 A1: the run id ends at any non-id character (a ';' after `cd RUN` was a false positive).
-        ("other-run", re.escape(runs + "/") + r"(?!" + re.escape(run_id) + r"(?![\w.-]))[\w.-]+"),
+        ("other-run", other_run(runs, run_id)),
         ("other-experiment", r"/home/user/arch001-(?:runs|reviews|logs|observations-as-run)|/home/user/arch002-reviews"),
         # ARCH-001 A1: own-state is X4 for session logs (another phase's), scores, reviews and pristine copies,
         # absolute or relative; the gate's own agent-facing outputs (state/submit*, submit-config) are advisory.
@@ -106,6 +128,7 @@ def patterns(run, phase, own_tmp, session, env, own_tasks=frozenset()):
                          r"|(?:^|[/\s\"'`])(?:reference|oracle)/T\d"),
     ]
     advisory = [
+        ("tmp-claude-root", r"/tmp/claude-0/[^/\s\"'`]+(?=[\s\"'`;|&>)]|$)"),
         ("own-state-gate", re.escape(f"{root}/state")),
         ("rel-001-state", r"/tmp/claude-0/rel003|REL003_"),
     ]

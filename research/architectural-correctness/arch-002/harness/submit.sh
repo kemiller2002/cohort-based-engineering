@@ -89,6 +89,7 @@ VERDICT=$([ ${#REASONS[@]} -eq 0 ] && echo PASS || echo FAIL)
 jq -cn --argjson p "$PHASE" --argjson n "$N" --arg h "$HEAD" --arg t "$TREE" --argjson c "$CHECKS" --arg v "$VERDICT" \
   --arg at "$(utc)" --argjson ms "$(( $(date +%s%3N) - START ))" \
   '{schema:"arch002.submit/1", phase:$p, attempt:$n, gitHead:$h, treeHash:$t, checks:$c, verdict:$v, ms:$ms, at:$at}' >> "$LEDGER"
+rm -rf "$W/tree"   # Disk (pilot amendment P2): the evaluated clone is regenerable from HEAD; outputs above are kept.
 echo "submit: $VERDICT (attempt $N of $MAX, HEAD $HEAD)"
 for r in "${REASONS[@]}"; do echo "  - $r"; done
 if [ "$VERDICT" = PASS ]; then echo "Stop now and write your final message."
