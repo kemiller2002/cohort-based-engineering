@@ -202,7 +202,7 @@ can reach a running chain. The plaintext sealed store is removed from disk while
 - **Not affected.** No outcome data had been scored. Chains run from the frozen worktree, and `budget.sh` is not part
   of them. The raw turn files are complete, so nothing is lost.
 
-**A2 (2026-10-22 18:36 UTC, after scoring, before any valid Layer 3 label). Layer 3 bundle and rubric.**
+**A2 (2026-10-22 18:33 UTC, after scoring, before any valid Layer 3 label). Layer 3 bundle and rubric.**
 
 - **The problem.** The first bundle stripped `contracts/`, `DECISIONS.md` and the Praxis files from every snapshot,
   for blinding. That removed evidence the agents had cited. In its first batch of 25, reviewer R1 labelled 12 such
@@ -214,3 +214,14 @@ can reach a running chain. The plaintext sealed store is removed from disk while
   limitation VAC-001 recorded. Agent lifetime still cannot be inferred.
 - **Not affected.** The sample (seed 20261022, 186 items) is unchanged.
 
+
+**A3 (2026-10-22 18:38 UTC, after scoring, before any valid Layer 3 label). Layer 3 snapshot selection.**
+
+- **The problem.** `analyze.fsx`'s numeric reader handled only JSON values parsed from files. The unit numbers of
+  the sampled decisions are built in memory, so the reader returned nothing. Every item's snapshot key then
+  collapsed to one of a few keys per arm, and items were paired with an earlier unit's snapshot. For example, arm D
+  unit 8 (task L08) was given a tree containing only L01–L04. Reviewer labels from that bundle are void (bundle
+  `layer3-P1-void/v2-wrong-trees`, kept and not used).
+- **The change.** The reader now tries each numeric representation in turn. Check: for all 186 items, the latest
+  requirement in the item's tree is the item's own task.
+- **Not affected.** The sample (seed 20261022, 186 items), the rubric and the A2 tree content are unchanged.

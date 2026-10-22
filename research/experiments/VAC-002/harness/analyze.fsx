@@ -36,7 +36,14 @@ let items (n: JsonNode) (k: string) : JsonNode list =
 let num (n: JsonNode) (k: string) =
     match n with
     | null -> None
-    | _ -> match n[k] with :? JsonValue as v -> (try Some(v.GetValue<decimal>()) with _ -> None) | _ -> None
+    | _ ->
+        match n[k] with
+        | :? JsonValue as v ->
+            // values parsed from files are JsonElement-backed (GetValue<decimal> works); values built in memory are
+            // typed (int64, decimal, float), so each representation is tried in turn
+            [ (fun () -> v.GetValue<decimal>()); (fun () -> decimal (v.GetValue<int64>())); (fun () -> decimal (v.GetValue<int>())); (fun () -> decimal (v.GetValue<float>())) ]
+            |> List.tryPick (fun f -> try Some(f ()) with _ -> None)
+        | _ -> None
 let i64 n k = num n k |> Option.map int64 |> Option.defaultValue 0L
 let bool (n: JsonNode) (k: string) =
     match n with
