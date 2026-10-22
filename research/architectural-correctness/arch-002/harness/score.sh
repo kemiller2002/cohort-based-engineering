@@ -28,6 +28,9 @@ export DOTNET_ROOT="$DOTNET_ROOT_DIR" NUGET_PACKAGES="$NUGET_CACHE" DOTNET_CLI_T
 export PATH="$DOTNET_ROOT_DIR:$PATH"
 ORACLE_DIR="$SEALED/oracle/$TASK"; MANIFEST="$ORACLE_DIR/oracle.json"
 HOST_PROJECT=$(fixture_field .oracleHostProject src/Lending.Host/Lending.Host.fsproj)
+# A fixture may name its own oracle-template placeholder for the exported tree (fixture.json .oraclePlaceholder,
+# e.g. SUMMA_REPO); it is substituted like __SRC_ROOT__ in Oracle.fsproj and in an optional sealed NuGet.config.
+ORACLE_PLACEHOLDER=$(fixture_field .oraclePlaceholder __SRC_ROOT__)
 
 submitted() {  # PHASE first|last -> gitHead
   [ -f "$LEDGER" ] || return 0
@@ -50,7 +53,7 @@ oracle() {  # LABEL COMMIT KIND
     [ -n "$f" ] || continue
     if [ -f "$ORACLE_DIR/$f" ]; then cp "$ORACLE_DIR/$f" "$d/oracle/$(basename "$f")"; comp+="    <Compile Include=\"$(basename "$f")\" />"$'\n'; fi
   done < <(oracle_files "$kind")
-  if [ -f "$SEALED/oracle/Oracle.fsproj" ] && grep -qE 'LENDING_HOST_PROJECT_PATH|__SRC_ROOT__' "$SEALED/oracle/Oracle.fsproj"; then
+  if [ -f "$SEALED/oracle/Oracle.fsproj" ] && grep -qE "LENDING_HOST_PROJECT_PATH|__SRC_ROOT__|$ORACLE_PLACEHOLDER" "$SEALED/oracle/Oracle.fsproj"; then
     # The fixture's sealed template: shared helpers (Compile items other than OracleTests.fs, e.g. OracleKit.fs) are
     # copied from the sealed oracle root; the task's oracle files are concatenated into OracleTests.fs in manifest
     # order. Placeholders: LENDING_HOST_PROJECT_PATH (ARCH-001 form) = <tree>/<fixture.json .oracleHostProject>;
@@ -60,7 +63,8 @@ oracle() {  # LABEL COMMIT KIND
       [ "$f" = OracleTests.fs ] || cp "$SEALED/oracle/$f" "$d/oracle/$f"
     done
     ( while read -r f; do [ -n "$f" ] && [ -f "$ORACLE_DIR/$f" ] && cat "$ORACLE_DIR/$f" && echo; done < <(oracle_files "$kind") ) > "$d/oracle/OracleTests.fs"
-    sed -e "s#LENDING_HOST_PROJECT_PATH#$d/src/$HOST_PROJECT#" -e "s#__SRC_ROOT__#$d/src#g" "$SEALED/oracle/Oracle.fsproj" > "$d/oracle/Oracle.fsproj"
+    sed -e "s#LENDING_HOST_PROJECT_PATH#$d/src/$HOST_PROJECT#" -e "s#__SRC_ROOT__#$d/src#g" -e "s#$ORACLE_PLACEHOLDER#$d/src#g" "$SEALED/oracle/Oracle.fsproj" > "$d/oracle/Oracle.fsproj"
+    [ -f "$SEALED/oracle/NuGet.config" ] && sed -e "s#__SRC_ROOT__#$d/src#g" -e "s#$ORACLE_PLACEHOLDER#$d/src#g" "$SEALED/oracle/NuGet.config" > "$d/oracle/NuGet.config"
     echo sealed-template > "$d/template"
   else
     while read -r p; do refs+="    <ProjectReference Include=\"$d/src/$p\" />"$'\n'; done < <(cd "$d/src" && find src -name '*.fsproj' | LC_ALL=C sort)
