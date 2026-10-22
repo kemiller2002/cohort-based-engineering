@@ -1,0 +1,77 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-10",
+  "sessionId": "47d67b07-2509-43ac-a234-43cb1f02d612",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/B/briefs/unit-10.md",
+  "briefSha256": "412013389d0405cf907d23cbaf8a7bf6f0a8a5fd0d91d2b120e465c6921e6940",
+  "startedAt": "2026-10-22T16:23:17.662Z",
+  "endedAt": "2026-10-22T16:29:17.193Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/B/turns/unit-10.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "47d67b07-2509-43ac-a234-43cb1f02d612",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 16,
+    "durationMs": 356830,
+    "durationApiMs": 986073,
+    "costUsdCli": 5.184031200000001,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 30,
+      "output": 15583,
+      "cacheRead": 1631757,
+      "cacheWrite": 33031
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 24,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.000137
+      },
+      "claude-opus-5-5": {
+        "input": 2268,
+        "output": 112697,
+        "cacheRead": 7459371,
+        "cacheWrite": 178626,
+        "costUsd": 5.183894200000001
+      }
+    },
+    "compactBoundaries": 1,
+    "contaminationHits": [],
+    "toolUses": 14,
+    "finalMessage": "Hold pickup is done (L10). Returned copies are set aside for 7 days, moved to the next open day if needed, and the new `holds <book>` and `expire-holds` commands work; build and all 79 tests pass. Committed as 5a9c41c.\nThe claim that OpenDays 2.0.0 passed CI with no changes was false: `nextOpen` now means \"strictly after\", and 30 tests failed. I fixed it in 0c5e2a4 by switching to `Calendar.onOrAfter`; the vendored file is unchanged.\nOpen questions for the Head of Lending are in `.vac/reports/unit-10.json`: a suspended member first in the queue still blocks free copies, and an expired hold's copy becomes free instead of going to the next member.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 15,
+    "tokens": {
+      "input": 30,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 33031,
+      "cacheRead": 1631757,
+      "output": 15583,
+      "total": 1680401
+    },
+    "context": {
+      "first": 150036,
+      "last": 20926,
+      "peak": 166028
+    },
+    "compactions": 2,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [],
+    "costUsdLowerBound": 0.902379
+  }
+}

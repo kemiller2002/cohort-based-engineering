@@ -1,0 +1,77 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-1",
+  "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+  "kind": "new",
+  "brief": "/home/user/vac-work/P1/C/briefs/unit-1.md",
+  "briefSha256": "2393298fbcb63920eefd0bd8a958aa19d63a561f3eaa76143b40e1bdaf496137",
+  "startedAt": "2026-10-22T15:48:00.260Z",
+  "endedAt": "2026-10-22T15:52:37.228Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/C/turns/unit-1.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 14,
+    "durationMs": 275574,
+    "durationApiMs": 97974,
+    "costUsdCli": 0.6606600999999999,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 26,
+      "output": 11413,
+      "cacheRead": 362688,
+      "cacheWrite": 44953
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 19,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.00013450000000000002
+      },
+      "claude-opus-5-5": {
+        "input": 26,
+        "output": 11413,
+        "cacheRead": 362688,
+        "cacheWrite": 44953,
+        "costUsd": 0.6605255999999999
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 13,
+    "finalMessage": "I added the `suspend`, `reinstate` and `member` commands, and suspended members are now blocked from borrowing, placing holds and renewing. All 20 tests and `archcheck` pass, Ordo reported no diagnostics, and the work is committed with five `proposed` decisions in `docs/decisions/DECISIONS.md`.\nThere is no `renew` command, so the renewal block is enforced only in `Loans.renew` (tested directly). Whether to add the command is recorded as an open question in `.vac/reports/unit-1.json`.\nSuspensions are saved in an optional `suspensions` field in the JSON store, so stores written by earlier versions still load, with every member active.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 13,
+    "tokens": {
+      "input": 26,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 44953,
+      "cacheRead": 362688,
+      "output": 11413,
+      "total": 419080
+    },
+    "context": {
+      "first": 5452,
+      "last": 49117,
+      "peak": 49117
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [],
+    "costUsdLowerBound": 0.660526
+  }
+}

@@ -1,0 +1,301 @@
+{
+  "schema": "vac.verified-state/2",
+  "updatedAfterUnit": 5,
+  "verifier": "VAC-002 host gate (build, repository tests, archcheck, Ordo contract, report evidence); the hidden evaluation oracle is never used",
+  "head": "f81261e7ae879b3c51c16e8e538c348e96a34273",
+  "promotionRule": "a requirement is verified only when the gate passed and a repository acceptance test named with its id passed; a decision is verified only when its evidence exists and every requirement it serves is so verified; invalid evidence is rejected; everything else is provisional",
+  "requirements": [
+    {
+      "id": "LEND-L01-R1",
+      "unit": 1,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L01-R2",
+      "unit": 1,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L01-R3",
+      "unit": 1,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L02-R1",
+      "unit": 2,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L02-R2",
+      "unit": 2,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L03-R1",
+      "unit": 3,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L03-R2",
+      "unit": 3,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L04-R1",
+      "unit": 4,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L04-R2",
+      "unit": 4,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L04-R3",
+      "unit": 4,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L05-R1",
+      "unit": 5,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L05-R2",
+      "unit": 5,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    },
+    {
+      "id": "LEND-L05-R3",
+      "unit": 5,
+      "status": "verified",
+      "coveredBy": "visible acceptance test"
+    }
+  ],
+  "verified": [
+    {
+      "id": "U1-D1",
+      "statement": "Suspensions are held in Library.Suspensions (Map\u003CMemberId, SuspensionReason\u003E) rather than on Member; standing is derived by Library.standingOf as the closed type Standing = Active | Suspended of SuspensionReason; SuspensionReason has a private constructor refusing blank text.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R1",
+        "LEND-L01-R3"
+      ]
+    },
+    {
+      "id": "U1-D2",
+      "statement": "The JSON store gains an optional \u0027suspensions\u0027 array; stores without it load with all members active; format tag stays lending/1 because the change is additive.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R1"
+      ]
+    },
+    {
+      "id": "U1-D3",
+      "statement": "The suspension check runs immediately after the member lookup in borrow and hold (before copy/book lookup and DEC-002/DEC-005 rules); in renew, where the member is known only from the loan, it runs right after the loan is found and before the DEC-004 conditions; return is unchanged.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R2"
+      ]
+    },
+    {
+      "id": "U1-D4",
+      "statement": "No renew CLI command or use case was added (none exists); the renewal refusal is enforced in Tier 2 Loans.renew and tested there.",
+      "unit": 1,
+      "task": "L01",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L01-R2"
+      ]
+    },
+    {
+      "id": "U2-D1",
+      "statement": "Tier 2 Loans.overdue computes days overdue with Fines.daysLate (the function returnCopy uses), keeps loans with days \u003E 0 (so a loan due today is not overdue) and sorts by days descending then copy id (ordinal).",
+      "unit": 2,
+      "task": "L02",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L02-R1",
+        "LEND-L02-R2"
+      ]
+    },
+    {
+      "id": "U2-D2",
+      "statement": "Tier 3 Views.overdue projects the count and the \u00271 day\u0027/\u0027N days\u0027 wording so the CLI does no arithmetic or comparison on lending values; \u0027overdue\u0027 with extra words prints its usage line.",
+      "unit": 2,
+      "task": "L02",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L02-R1"
+      ]
+    },
+    {
+      "id": "U3-D1",
+      "statement": "renew \u003Ccopy\u003E calls the existing Tier 2 Loans.renew unchanged: unknown copy, not on loan, suspended member (U1-D3), then DEC-004\u0027s conditions in order; a loan due today can be renewed; the \u0027of 2\u0027 is Policy.renewLimit projected by Views.ofRenew.",
+      "unit": 3,
+      "task": "L03",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L03-R1"
+      ]
+    },
+    {
+      "id": "U3-D2",
+      "statement": "LoanView gains Renewed: int option (None when never renewed); the CLI appends \u0027 (renewed N)\u0027 only for renewed loans; loan order is unchanged.",
+      "unit": 3,
+      "task": "L03",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L03-R2"
+      ]
+    },
+    {
+      "id": "U4-D1",
+      "statement": "LEND-L04-R3 is not implemented because Ordo reports ORDO.CONTRACT.UNRESOLVED_CONFLICT (CONFLICT-L04-STAFF-BORROWING); staff are treated like every other member (including the LEND-L04-R2 refusal) until the owners resolve it.",
+      "unit": 4,
+      "task": "L04",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L04-R3"
+      ]
+    },
+    {
+      "id": "U4-D2",
+      "statement": "What a member owes is the sum of all assessed fines via the existing Fines.outstanding (no exemption, no reduction; no payments or waivers exist yet).",
+      "unit": 4,
+      "task": "L04",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L04-R1",
+        "LEND-L04-R2"
+      ]
+    },
+    {
+      "id": "U4-D3",
+      "statement": "Fines.ensureMayBorrow runs in Loans.borrow right after the suspension check and before the copy lookup and DEC-002/DEC-005 rules; threshold Policy.maxOwedToBorrow = 5.00, owing exactly 5.00 is allowed; holds and returns are unaffected.",
+      "unit": 4,
+      "task": "L04",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L04-R2"
+      ]
+    },
+    {
+      "id": "U5-D1",
+      "statement": "Fine gains Paid: decimal (0..Amount); Amount never changes; Fines.outstanding (owes and the LEND-L04-R2 borrow check) sums Amount - Paid.",
+      "unit": 5,
+      "task": "L05",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L05-R2"
+      ]
+    },
+    {
+      "id": "U5-D2",
+      "statement": "Library.Fines is already oldest first (Loans.returnCopy appends), so allocation and the fines listing use list order; the team-lead handoff saying newest first is false.",
+      "unit": 5,
+      "task": "L05",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L05-R2",
+        "LEND-L05-R3"
+      ]
+    },
+    {
+      "id": "U5-D3",
+      "statement": "Payments are also kept as a ledger (Library.Payments: member, amount, day); JSON adds optional \u0027payments\u0027 and per-fine \u0027paid\u0027 (missing = 0) with format tag unchanged.",
+      "unit": 5,
+      "task": "L05",
+      "status": "verified",
+      "basis": "evidence",
+      "requirementIds": [
+        "LEND-L05-R1"
+      ]
+    }
+  ],
+  "provisional": [
+    {
+      "id": "U1-D5",
+      "statement": "Unknown member is reported before already/not-suspended; a blank quoted reason prints \u0027error: a suspension needs a reason\u0027; a missing reason prints the usage line.",
+      "unit": 1,
+      "task": "L01",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L01-R1"
+      ]
+    },
+    {
+      "id": "U1-D6",
+      "statement": "Suspending a member leaves their existing loans and holds untouched.",
+      "unit": 1,
+      "task": "L01",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L01-R2"
+      ]
+    },
+    {
+      "id": "U2-D3",
+      "statement": "overdue is read-only and lists every overdue loan regardless of the member\u0027s standing (suspended members included).",
+      "unit": 2,
+      "task": "L02",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L02-R1"
+      ]
+    },
+    {
+      "id": "U5-D4",
+      "statement": "Amount syntax is digits with optional \u0027.\u0027 and 1-2 digits, \u003E 0 (PaymentAmount.parse, private constructor); \u00271.\u0027, \u0027.5\u0027, signs, exponents, commas are invalid; checks run unknown member, invalid amount, then more than owed (\u0027owes only 0.00\u0027 when nothing is owed).",
+      "unit": 5,
+      "task": "L05",
+      "status": "provisional",
+      "basis": "assumption",
+      "requirementIds": [
+        "LEND-L05-R1"
+      ]
+    }
+  ],
+  "rejected": [],
+  "externalChanges": [],
+  "lastUnit": {
+    "unit": 5,
+    "task": "L05",
+    "gatePassed": true,
+    "failingChecks": []
+  }
+}
