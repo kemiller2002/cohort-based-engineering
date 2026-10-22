@@ -1,0 +1,77 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-9",
+  "sessionId": "3ad692d3-18cc-41f3-b34a-8062c059c65c",
+  "kind": "new",
+  "brief": "/home/user/vac-work/P1/F/briefs/unit-9.md",
+  "briefSha256": "9620af6533f45420bee32f40532cace25489d0ae7e4f77474e6197ebbb1ce82f",
+  "startedAt": "2026-10-22T16:45:14.656Z",
+  "endedAt": "2026-10-22T16:50:05.474Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/F/turns/unit-9.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "3ad692d3-18cc-41f3-b34a-8062c059c65c",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 25,
+    "durationMs": 289229,
+    "durationApiMs": 136559,
+    "costUsdCli": 0.9949292000000001,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 46,
+      "output": 14913,
+      "cacheRead": 913956,
+      "cacheWrite": 64195
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 18,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.000134
+      },
+      "claude-opus-5-5": {
+        "input": 46,
+        "output": 14913,
+        "cacheRead": 913956,
+        "cacheWrite": 64195,
+        "costUsd": 0.9947952000000001
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 24,
+    "finalMessage": "I implemented both LEND-L09 requirements: due dates now skip days the library is closed when borrowing and renewing, and there's a new `open <date>` command. All 106 tests pass, archcheck passes with no findings, and the work, the report and the Praxis state are committed and pushed.\nTwo unit-4 tests in `tests/Lending.Tests/Acceptance/L04OwesTests.fs` expected due dates on Sundays, which the loan-period rule (DEC-001 revision 2) no longer allows, so I changed their expected values; this is recorded as decision U9-D2.\nLoans saved before this change keep their old due dates, and the vendored calendar only knows holidays up to 2027-01-01, so later holidays count as open days.\n\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 23,
+    "tokens": {
+      "input": 46,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 64195,
+      "cacheRead": 913956,
+      "output": 14913,
+      "total": 993110
+    },
+    "context": {
+      "first": 5681,
+      "last": 68359,
+      "peak": 68359
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [],
+    "costUsdLowerBound": 0.994795
+  }
+}

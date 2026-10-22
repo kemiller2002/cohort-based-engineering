@@ -1,0 +1,81 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-10",
+  "sessionId": "8033cc2a-5deb-4cef-9bc6-a779e7c2fe4c",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/E/briefs/unit-10.md",
+  "briefSha256": "f16526f7b0e5fad1023552fd06b7c9260fb7950224b59db2405484d0364094bf",
+  "startedAt": "2026-10-22T16:51:03.387Z",
+  "endedAt": "2026-10-22T16:57:07.622Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/E/turns/unit-10.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "8033cc2a-5deb-4cef-9bc6-a779e7c2fe4c",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 28,
+    "durationMs": 363021,
+    "durationApiMs": 1126431,
+    "costUsdCli": 6.1207136,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 54,
+      "output": 25756,
+      "cacheRead": 1226054,
+      "cacheWrite": 56598
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 18,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.000134
+      },
+      "claude-opus-5-5": {
+        "input": 2328,
+        "output": 131560,
+        "cacheRead": 8194218,
+        "cacheWrite": 230153,
+        "costUsd": 6.1205796
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 27,
+    "finalMessage": "LEND-L10 is done: returned copies are now set aside for the next hold until a 7-day pickup deadline, and there are new `holds <book>` and `expire-holds` commands. All 85 tests pass and archcheck passes.\nThe team lead's claim about the OpenDays 2.0.0 update was wrong. In 2.0.0, `nextOpen` always skips the given day, and on the merged update 33 of the 74 existing tests failed because due dates came out later than they should. I fixed this by having `Opening.fs` use `onOrAfter` and left the vendored file untouched; the claim is recorded under rejected assumptions.\nThe decisions (U10-D1–D8) are recorded as proposed in `docs/decisions/DECISIONS.md`, and the report is in `.vac/reports/unit-10.json`; both are committed.\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 27,
+    "tokens": {
+      "input": 54,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 56598,
+      "cacheRead": 1226054,
+      "output": 25756,
+      "total": 1308462
+    },
+    "context": {
+      "first": 16254,
+      "last": 72539,
+      "peak": 72539
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [
+      "{\"command\":\"cd /home/user/vac-work/P1/E/repo; source ../env.sh; grep -n \\u0022Compile\\u0022 tests/Lending.Tests/*.fsproj | tail -8; cp tests/Lending.Tests/Lending.Tests.fsproj /tmp/claude-0/-home-user-vac-work-P1-E-repo/8033cc2a-5deb-4cef-9bc6-a779e7c2fe4c/scratchpad/tests.fsproj.bak 2\\u003E/dev/nul",
+      "{\"command\":\"cd /home/user/vac-work/P1/E/repo; source ../env.sh; S=/tmp/claude-0/-home-user-vac-work-P1-E-repo/8033cc2a-5deb-4cef-9bc6-a779e7c2fe4c/scratchpad; mv tests/Lending.Tests/Acceptance/L10AcceptanceTests.fs $S/; dotnet test Lending.slnx 2\\u003E\\u00261 | grep -E \\u0022Failed |error|Passed!|Fa",
+      "{\"command\":\"cd /home/user/vac-work/P1/E/repo; source ../env.sh; S=/tmp/claude-0/-home-user-vac-work-P1-E-repo/8033cc2a-5deb-4cef-9bc6-a779e7c2fe4c/scratchpad; git stash -u -q \\u0026\\u0026 mv tests/Lending.Tests/Acceptance/L10AcceptanceTests.fs $S/ \\u0026\\u0026 dotnet test Lending.slnx 2\\u003E\\u00261"
+    ],
+    "costUsdLowerBound": 1.213331
+  }
+}
