@@ -1,0 +1,77 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-12",
+  "sessionId": "3ad692d3-18cc-41f3-b34a-8062c059c65c",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/F/briefs/unit-12.md",
+  "briefSha256": "2eb103d6c7774390ae8fc607053535fd31f5c3b40b7a12e23f243a578dfed3a7",
+  "startedAt": "2026-10-22T17:03:42.380Z",
+  "endedAt": "2026-10-22T17:07:52.984Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/F/turns/unit-12.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "3ad692d3-18cc-41f3-b34a-8062c059c65c",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 16,
+    "durationMs": 248993,
+    "durationApiMs": 512707,
+    "costUsdCli": 3.441644199999998,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 32,
+      "output": 12266,
+      "cacheRead": 2098102,
+      "cacheWrite": 22510
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 18,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.000134
+      },
+      "claude-opus-5-5": {
+        "input": 136,
+        "output": 58285,
+        "cacheRead": 5791611,
+        "cacheWrite": 139618,
+        "costUsd": 3.441510199999998
+      }
+    },
+    "compactBoundaries": 0,
+    "contaminationHits": [],
+    "toolUses": 15,
+    "finalMessage": "Loan periods now depend on the member type (standard 21 days, student 14, staff 42) for both new loans and renewals, and there's a new `periods` command. All 133 tests pass, archcheck passes, and everything is committed and pushed.\nEight existing tests assumed a 21-day loan for the student or staff member, so I updated only the values the new periods change. In the overdue-ordering test I changed who borrows instead, so it still checks the same ordering (decision U12-D2).\nLoans saved before this change keep their due dates, but when one is renewed it gets the borrower's new period.\n\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 16,
+    "tokens": {
+      "input": 32,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 22510,
+      "cacheRead": 2098102,
+      "output": 12266,
+      "total": 2132910
+    },
+    "context": {
+      "first": 121545,
+      "last": 143782,
+      "peak": 143782
+    },
+    "compactions": 0,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [],
+    "costUsdLowerBound": 0.845148
+  }
+}
