@@ -1,0 +1,77 @@
+{
+  "schema": "cbe.vac-002.turn/1",
+  "label": "unit-10",
+  "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+  "kind": "resume",
+  "brief": "/home/user/vac-work/P1/C/briefs/unit-10.md",
+  "briefSha256": "4261a9ca0b8bec5d3d09740418a537df27c297953ebf0ac0ffab5c50fd21557a",
+  "startedAt": "2026-10-22T16:28:54.873Z",
+  "endedAt": "2026-10-22T16:37:04.335Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002.turn-usage/1",
+    "stream": "/home/user/.vac2-state/P1/C/turns/unit-10.stream.jsonl",
+    "resultEvents": 1,
+    "sessionId": "5931e102-7736-4cac-a04d-3f5597b15dbb",
+    "isError": false,
+    "terminalReason": "completed",
+    "numTurns": 22,
+    "durationMs": 488118,
+    "durationApiMs": 957846,
+    "costUsdCli": 5.321687700000002,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd); not provider-billed",
+    "usage": {
+      "input": 42,
+      "output": 18132,
+      "cacheRead": 1584163,
+      "cacheWrite": 43546
+    },
+    "models": {
+      "claude-haiku-5-5": {
+        "input": 1250,
+        "output": 19,
+        "cacheRead": 0,
+        "cacheWrite": 0,
+        "costUsd": 0.00013450000000000002
+      },
+      "claude-opus-5-5": {
+        "input": 2456,
+        "output": 113759,
+        "cacheRead": 7497746,
+        "cacheWrite": 192125,
+        "costUsd": 5.321553200000002
+      }
+    },
+    "compactBoundaries": 1,
+    "contaminationHits": [],
+    "toolUses": 20,
+    "finalMessage": "I implemented LEND-L10 hold pickup (returns now set copies aside, plus `holds <book>` and `expire-holds`); build, all 91 tests and archcheck pass, committed as 2bb6ab7.\nThe note that OpenDays 2.0.0 passed every test was false: 31 of the 78 existing tests failed until I switched due dates to `Calendar.onOrAfter` (commit 92acf78).\nStill open: whether a suspended member first in the waiting queue should block a free copy (built as yes), and whether expiry should set the freed copy aside for the next hold (built as no).\nOUTCOME: completed"
+  },
+  "requests": {
+    "requests": 21,
+    "tokens": {
+      "input": 42,
+      "cacheWrite5m": 0,
+      "cacheWrite1h": 43546,
+      "cacheRead": 1584163,
+      "output": 18132,
+      "total": 1645883
+    },
+    "context": {
+      "first": 153102,
+      "last": 34719,
+      "peak": 165734
+    },
+    "compactions": 2,
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "efforts": [
+      "medium"
+    ],
+    "contaminationHits": [],
+    "outsideWorkspace": [],
+    "costUsdLowerBound": 1.028009
+  }
+}
