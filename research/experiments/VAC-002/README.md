@@ -19,7 +19,9 @@ at about $4,000–4,500). The pilot also failed the discrimination check: all 72
 
 **Pilot findings** (details and classifications in [`RESULTS.md`](RESULTS.md)):
 
-- **Reliability.** No reliability difference between arms could be observed.
+- **Reliability.** The frozen instruments (hidden oracle, gates) recorded 0 failures in every arm. The blinded
+  Layer 3 review found one consequential error that the oracle missed: arm B, with no controls, silently settled a
+  requirement conflict at L04. One event, so no reliability difference between arms can be established.
 - **Cost.** Continuity was 32% cheaper than fresh agents. Full Echelon controls cost +13% over continuity, with no
   error prevented. Adaptive enforcement saved nothing.
 

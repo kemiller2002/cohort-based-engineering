@@ -20,12 +20,14 @@ test.
 
 ## 1. Headline
 
-**Every arm reached the ceiling again.**
+**Every arm reached the ceiling of the frozen instruments again. Layer 3 found one error they missed.**
 
 - **Units.** All 72 units were accepted at first pass by the hidden oracle, and none needed a repair.
 - **Oracle cases.** 63 cumulative cases per arm at unit 12, all passing.
 - **Errors.** 0 false completions, 0 regressions, 0 architecture violations.
-- **Conflicts.** Every conflict was surfaced: 12/12 conflict units.
+- **Conflicts.** Every conflict was surfaced by the automated check: 12/12 conflict units.
+- **Layer 3 found one error.** Arm B settled part of L04's conflict silently: it exempted staff from the R2 money
+  limit. The oracle had no case for it. A post-hoc probe confirms it (amendment A4; `RESULTS.md` §3).
 - **Premises.** Every injected premise was rejected and D1 was detected: 24/24 exposures.
 
 By the preregistered discrimination check (`PROTOCOL.md` §7), **the corpus does not discriminate between arms**.
@@ -44,8 +46,8 @@ about 0.
 | | A fresh | B long-lived | C + Ordo | D full | E adaptive | F restarted |
 |---|---|---|---|---|---|---|
 | Units accepted / first pass | 12/12 · 12/12 | 12/12 · 12/12 | 12/12 · 12/12 | 12/12 · 12/12 | 12/12 · 12/12 | 12/12 · 12/12 |
-| Consequential errors | 0 | 0 | 0 | 0 | 0 | 0 |
-| Conflicts surfaced (L04, L08) | 2/2 | 2/2 | 2/2 | 2/2 | 2/2 | 2/2 |
+| Consequential errors: automated / adjudicated (A4) | 0 / 0 | 0 / **1** | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 |
+| Conflicts surfaced (L04, L08): automated / adjudicated | 2/2 · 2/2 | 2/2 · **1/2** | 2/2 · 2/2 | 2/2 · 2/2 | 2/2 · 2/2 | 2/2 · 2/2 |
 | Premises rejected / D1 detected | 3/3 · yes | 3/3 · yes | 3/3 · yes | 3/3 · yes | 3/3 · yes | 3/3 · yes |
 | Agent cost (cli-estimate, A1) | $9.10 | $6.19 | $6.15 | $6.99 | $7.26 | $8.13 |
 | Cost per unit | $0.758 | $0.516 | $0.512 | $0.583 | $0.605 | $0.677 |
@@ -146,23 +148,42 @@ which had no checker. The only things to report are:
    every arm's L09 used `Calendar.nextOpen`. Every agent saw the failures, read the changelog and switched to
    `onOrAfter`. The silent path (an agent relying on remembered 1.x semantics for the new L10 deadline) never
    occurred.
-3. **Conflict handling did not need Ordo.** A and B, with no contract, surfaced both conflicts as reliably as C–F,
-   where Ordo refused the contract. This repeats ARCH-001 T5 and VAC-001 V7.
+3. **Conflict handling mostly did not need Ordo.**
+   - A and B, with no contract, surfaced both conflicts by the automated check, as C–F did where Ordo refused the
+     contract. This repeats ARCH-001 T5 and VAC-001 V7.
+   - **Layer 3 qualifies it.** B surfaced L04's conflicts with DEC-005 and L01-R2, but silently decided R2 vs R3 for
+     staff.
+   - Every arm whose refused Ordo contract named R2 (C–F) kept the money limit for staff, and so did A.
 4. **Compaction did not hurt.** The long-lived arms each compacted once, at 149–156k prompt tokens (units 8–10). Every
    unit after a compaction was accepted, and none regressed an earlier task.
 
 ## 6. Layer 3: unsupported decisions
 
-See `results/P1/layer3/` and `RESULTS.md` §3 for the adjudicated labels and reviewer agreement.
+**Source:** `results/P1/layer3/`. Full account: `RESULTS.md` §3.
+
+**Sample and agreement.** 186 decisions, two blinded reviewers and a third on the one disagreement. Agreement was
+99.5% (κ = 0.985).
+
+**Labels:**
+
+| Label | Decisions |
+|---|---|
+| `supported` | 142 |
+| `recorded-assumption` | 43 |
+| `silent-conflict-resolution` | 1 (arm B, L04) |
+
+**Hallucination class** (fabricated premise, stale decision, unverified completion claim): 0 in every arm.
+
+**Reviewer cost:** $19.80.
 
 ## 7. What the pilot establishes
 
 | Purpose (`PROTOCOL.md` §6) | Outcome |
 |---|---|
-| Feasibility | **Yes.** Six concurrent K1 chains with gates, verified state, a policy, post-hoc sealed scoring and Layer 3 all ran end to end. Two measurement defects were found and fixed by amendment (A1 cost, A2 Layer 3 bundle). One instrument defect (verified-state promotion by text match) is recorded |
-| Discrimination | **No.** All arms are at ceiling (§1). By §7, the confirmatory corpus must be amended for difficulty before any confirmatory run |
+| Feasibility | **Yes.** Six concurrent K1 chains with gates, verified state, a policy, post-hoc sealed scoring and Layer 3 all ran end to end. Measurement defects were found and fixed by amendment: A1 (cost), and A2 and A3 (the Layer 3 bundle). A4 records an oracle coverage gap that Layer 3 exposed. One instrument defect (verified-state promotion by text match) is recorded |
+| Discrimination | **No.** All arms are at ceiling of the frozen instruments (§1). The one adjudicated error is far below the ≥ 10% failure rate §7 requires. By §7, the confirmatory corpus must be amended for difficulty before any confirmatory run |
 | Variance | Failure variance is 0, so the failure ICC cannot be estimated. Cost per unit by arm: SD across positions $0.23–0.32 |
-| Cost | Measured: $43.82 agent cost for 72 units ($0.61 per unit average), plus Layer 3. Projection in §8 |
+| Cost | Measured: $43.82 agent cost for 72 units ($0.61 per unit average), plus $19.80 for Layer 3, so $63.62 in all. Projection in §8 |
 
 ## 8. Projected confirmatory budget (`PREREGISTRATION.md` §3; copied to `BUDGET.md` §5)
 

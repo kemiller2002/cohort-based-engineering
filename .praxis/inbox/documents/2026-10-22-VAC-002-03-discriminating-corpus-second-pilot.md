@@ -8,10 +8,12 @@ to R-EXP-7). It continues VAC-CBE-001-R3 and R4.
 
 ## Finding
 
-The VAC-002 pilot was designed to produce failures. In 72 units over six arms it produced none:
+The VAC-002 pilot was designed to produce failures. In 72 units over six arms, the frozen instruments recorded
+none:
 
 - 0 unit failures;
-- 0 consequential errors;
+- 0 consequential errors by the oracle and gates. The blinded Layer 3 review found 1, which the oracle missed:
+  arm B silently exempted staff from the L04 money limit;
 - 0 architecture violations;
 - 0 of 18 premises accepted;
 - the dependency change was detected in every arm.
@@ -35,6 +37,9 @@ spend.
     known effects;
   - use Layer 3 reviewers from a different model family.
 - **VAC-002-03-R4.** Record an explicit spending ceiling for the confirmatory run before it starts.
+- **VAC-002-03-R5.** Test every side of every conflict in conflict-unit oracles. Run blinded decision review of
+  conflict-unit decisions as a candidate Dokimos control (R-DOK-3), measured as a separate arm or factor. In P1 it
+  caught the only consequential error at about $0.11 per reviewed decision.
 
 ## Acceptance evidence
 

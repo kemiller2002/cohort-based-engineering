@@ -65,7 +65,8 @@ Reported in `PILOT-RESULTS.md` §8 and copied here.
 | Item | Cost |
 |---|---|
 | Agent model cost, 72 units (cli-estimate, A1) | $43.82 |
-| Layer 3 reviewers | see `results/P1/layer3/summary.json` |
+| Layer 3 reviewers (R1, R2, R3) | $19.80 |
+| **Total** | **$63.62** |
 
 The pilot stayed under the $95 stop and the $120 ceiling.
 

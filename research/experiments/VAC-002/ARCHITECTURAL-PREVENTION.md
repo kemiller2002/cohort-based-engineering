@@ -62,7 +62,9 @@ same conflicts without Ordo (§3).
    +4%). In-loop `archcheck` costs host time (20–30 s per run, about 2.5 runs per unit), not model tokens.
 4. **Ordo's measured contribution is decision-conflict refusal, not architecture.**
    - Its refusals named exactly the conflicting requirement, and C–F agents recorded them.
-   - A and B reached the same outcome by reading the requirement against the decision records.
+   - A and B reached the same outcome by reading the requirement against the decision records. Layer 3 then found
+     that B settled the R2-vs-R3 part of L04 silently (`RESULTS.md` §3), while every Ordo arm kept the R2 limit.
+     That is one event, not an architectural one.
    - Because the experimenters authored the contracts' conflict nodes (`TASK-CORPUS.md` §2), this is an upper bound on
      Ordo's help, and it still did not change the outcome.
 

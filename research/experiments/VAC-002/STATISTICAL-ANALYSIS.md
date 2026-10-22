@@ -27,7 +27,9 @@ F#, with no dependency beyond the .NET SDK.
 
 1. **Per-arm outcomes** (`analysis.json`): UF, CE and its components, regressions, false completions, AVR, the fault
    exposures, CCR, tokens, tool uses, wall time, gate runs, compactions and contamination.
-   - All reliability counts are 0 (`RESULTS.md` §1).
+   - Every automated reliability count is 0 (`RESULTS.md` §1).
+   - The one adjudicated error (B, Layer 3 plus the A4 probe) is reported beside the frozen counts and never
+     merged into `analysis.json`. A one-event difference is not tested.
    - **Interval for a zero count.** The exact one-sided 95% upper bound for 0 events in n units is 1 − 0.05^(1/n):
      22.1% for one arm (n = 12) and 4.1% pooled (n = 72).
 2. **Exploratory cost contrasts** (`contrasts.json`).
