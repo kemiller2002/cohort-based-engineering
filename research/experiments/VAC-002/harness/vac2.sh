@@ -230,7 +230,9 @@ post_signals() {  # UNIT -> json
   local files; files=$(git -C "$REPO" diff --name-only "$from" HEAD -- src | wc -l)
   local lines; lines=$(git -C "$REPO" diff --numstat "$from" HEAD -- src | awk '{s+=$1+$2} END {print s+0}')
   local tiers; tiers=$(git -C "$REPO" diff --name-only "$from" HEAD -- src | cut -d/ -f2 | sort -u | wc -l)
-  local surface=false; git -C "$REPO" diff --name-only "$from" HEAD | grep -qE '\.fsproj$|global\.json$|Directory\.Build\.props$|/Vendor/' && surface=true
+  local surface=false
+  git -C "$REPO" diff --name-only "$from" HEAD | grep -qE 'global\.json$|Directory\.Build\.props$|/Vendor/' && surface=true
+  git -C "$REPO" diff "$from" HEAD -- '*.fsproj' | grep -qE '^[+-].*(PackageReference|ProjectReference|TargetFramework)' && surface=true
   local decedit=false; git -C "$REPO" diff --name-only "$from" HEAD -- docs/decisions | grep -qv 'DECISIONS.md' && decedit=true
   local rep="$REPO/.vac/reports/unit-$u.json"
   local assumptions=false blocked=false

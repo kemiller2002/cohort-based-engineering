@@ -76,14 +76,15 @@
       "when": "post",
       "test": "the unit's diff touches production files in N tiers (projects)",
       "thresholds": {
-        "medium": 3,
-        "high": 4
-      }
+        "medium": 4,
+        "high": 99
+      },
+      "calibration": "every L01-L12 reference diff touches 3-4 tiers, so >=3 would fire on nearly every unit; medium at 4 (all tiers), never high on this signal alone"
     },
     {
       "id": "S7-BUILD-SURFACE",
       "when": "post",
-      "test": "the agent changed a .fsproj, global.json, Directory.Build.props or a vendored file",
+      "test": "the agent changed a dependency or build contract: a PackageReference, ProjectReference or TargetFramework line in a .fsproj, global.json, Directory.Build.props, or a vendored file (adding a Compile entry is not a build-surface change)",
       "tier": "high"
     },
     {
@@ -122,5 +123,6 @@
     }
   ],
   "combination": "the tier is the highest tier any signal selects; with no signal the tier is low",
-  "tiersNote": "Arm E never writes verified state: it tests adaptive verification, not verified memory (that is Arm D/F's treatment)."
+  "tiersNote": "Arm E never writes verified state: it tests adaptive verification, not verified memory (that is Arm D/F's treatment).",
+  "calibrationNote": "Calibrated before the freeze on the reference solutions' diffs only (base rates of each signal over L01-L12, harness smoke SMOKE3); no oracle outcome, pilot outcome or fault information was used."
 }
