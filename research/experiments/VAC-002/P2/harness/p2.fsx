@@ -286,7 +286,7 @@ let streamUsage (streamFile: string) (workspace: string) =
             | null -> []
             | m -> match m.["content"] with :? JsonArray as a -> a |> Seq.filter (fun c -> str c "type" = Some "tool_use") |> Seq.toList | _ -> [])
         |> List.map (fun c -> match c.["input"] with null -> "" | i -> i.ToJsonString())
-    let forbidden = [ ".p2-sealed"; ".p2-state"; ".p2-key"; ".vac2-sealed"; "cohort-based-engineering"; "OracleTests"; "meta.json"; "PREFREEZE"; "github.com" ]
+    let forbidden = [ ".p2-sealed"; ".p2-state"; ".p2-key"; ".vac2-sealed"; "cohort-based-engineering"; "OracleTests"; "meta.json"; "PREFREEZE"; "github.com"; "/root/.claude"; "/tmp/claude-0"; "/root/.p2"; "p2-sealed" ]
     let otherWorkspace (s: string) =
         Regex.Matches(s, @"/home/user/p2-work/[\w.-]+/[\w.-]+") |> Seq.exists (fun m -> not (workspace.StartsWith m.Value))
     let hits = toolInputs |> List.filter (fun s -> forbidden |> List.exists s.Contains || otherWorkspace s)

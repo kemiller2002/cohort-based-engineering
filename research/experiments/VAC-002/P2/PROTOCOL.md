@@ -110,4 +110,9 @@ Made 2026-10-22, before any model-backed agent turn of P2. It consists of the co
 
 ## 9. Amendments
 
-*None yet.*
+**A1 (2026-10-22, after the freeze, before any model turn).** The contamination scan now also flags `/root/.claude`,
+`/tmp/claude-0`, `/root/.p2*` and `p2-sealed`. The orchestrating session's own transcripts and tool caches live under
+`/root/.claude` and `/tmp/claude-0`, and they contain the corpus answers. Agent turns run with their own `HOME` and
+`CLAUDE_CONFIG_DIR`, but as the same uid they could read those paths. The caches under `/tmp/claude-0` that held
+scenario material were deleted. The transcripts cannot be deleted while this session runs, so they are guarded by
+detection only. The change adds detection and changes no instrument's verdict.
