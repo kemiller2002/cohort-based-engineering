@@ -105,3 +105,16 @@ per run in `run.json .tools`).
 | `fixtures/lending-brownfield/{make-contracts.py,check.sh,policy.json}` | ARCH-001 `fixtures/make-contracts.py`, `fixtures/check.sh`, `verifier/policy/lending.policy.json` | adapted to F1 and baseline-delta scoring |
 
 Self-check: `fixtures/lending-brownfield/check-output.txt`, RESULT: PASS (109 checks).
+
+## Fixture F2 `summa` (Worker S, coordinator-recorded)
+
+| Item | Value |
+|---|---|
+| Snapshot | Summa at `8b0e93ea`: 395 files, produced by `fixtures/summa/make-snapshot.sh` (reproducible; check S6). Dropped paths are listed in `fixtures/summa/PROVENANCE.md` |
+| Copies from ARCH-001 | Listed with sha256 in `fixtures/summa/PROVENANCE.md` (doctrine byte for byte, `make-contracts.py`, `check.sh`, policy schema) |
+| Baseline (policy only) | 347 DET findings: ARC-SYM-01 ×190, ARC-BND-01 ×157. Also 93 HEU. Sealed in `summa/baseline/` |
+| Self-check | `fixtures/summa/check-output.txt`, RESULT: PASS (53 checks) |
+
+## Scope decision: F3 `signal` deferred
+
+Signal builds at `e19101f` (620/627 tests pass; the 7 failures need `node_modules`). It is deferred for scope: 9 tasks × 2 models over F1 and F2 already, and its trap pattern (System.Text.Json in Engine) duplicates F2's.
