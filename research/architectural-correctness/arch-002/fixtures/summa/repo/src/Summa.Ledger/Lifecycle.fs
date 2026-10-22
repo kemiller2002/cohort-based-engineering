@@ -1,0 +1,588 @@
+/// After issue: delivery, follow-up, the invoice's independent state
+/// dimensions, the actions they allow, and the documents related to it
+/// (INV-STATE, INV-DEL, INV-COR-005).
+///
+/// Issuing is a financial operation and delivering is a communication
+/// operation. A failed delivery never touches the invoice or the ledger, and
+/// a resend is a new attempt against the same invoice (INV-DEL-001,
+/// INV-DEL-006). Disputes and collection are operational state beside the
+/// financial state, never in it (INV-STATE-006, INV-STATE-007).
+module Summa.Ledger.Lifecycle
+
+open System
+open Summa.Ledger.Money
+open Summa.Ledger.Ledger
+open Summa.Ledger.Sources
+open Summa.Ledger.Invoicing
+open Summa.Ledger.Payments
+
+// ---- Delivery ----------------------------------------------------------------------------
+
+type DeliveryProblem =
+    | UnknownInvoiceToDeliver of string
+    | VoidedInvoice of string
+    /// The policy needs the PDF and it is not generated yet (INV-DOC-015).
+    | PdfNotReady of ArtifactStatus option
+    | NoRecipients
+    | InvalidRecipient of string
+    | UnknownAttempt of string
+    | AttemptIdReused of string
+    | OutcomeNotAllowed of from: DeliveryOutcome * ``to``: DeliveryOutcome
+    /// The actor does not hold the delivery capability (INV-DEL-005).
+    | NotAuthorizedToDeliver of actor: string
+    /// There is no failed or bounced delivery to resolve.
+    | NoDeliveryProblem of invoiceId: string
+
+/// Whether an actor may deliver invoices: send, resend, record a manual
+/// send and resolve a delivery problem. The caller builds it from the
+/// organization's roster (the `DeliverInvoice` capability); every delivery
+/// action an actor takes checks it against `Context.Who`. Provider outcomes
+/// are reports, not actions, and are recorded by `recordOutcome`.
+[<NoEquality; NoComparison>]
+type DeliveryAuthority = DeliveryAuthority of mayDeliver: (string -> bool)
+
+let private authorizing (DeliveryAuthority mayDeliver) (context: Context) (action: unit -> Result<Receivables, DeliveryProblem list>) =
+    if mayDeliver context.Who then action () else Error [ NotAuthorizedToDeliver context.Who ]
+
+type DeliveryRequest =
+    { AttemptId: string
+      InvoiceId: string
+      Recipients: Recipients
+      Channel: DeliveryChannel
+      Policy: DeliveryPolicy
+      MessageTemplate: string
+      RetryOf: string option }
+
+let private validAddress (address: string) =
+    let at = address.IndexOf '@'
+    at > 0 && at < address.Length - 1 && not (address.Contains ' ')
+
+let private needsPdf =
+    function
+    | AttachPdf
+    | AttachAndLink -> true
+    | LinkOnly -> false
+
+let private save (context: Context) what subject change (attempt: DeliveryAttempt) (r: Receivables) =
+    { r with
+        Books =
+            { r.Books with
+                Deliveries = r.Books.Deliveries.Add(attempt.Id, attempt)
+                Ledger = auditChange context what subject change r.Books.Ledger } }
+
+/// The audit event for an attempt reaching an outcome: one per outcome.
+let outcomeEvent =
+    function
+    | Queued -> "invoice-delivery-queued"
+    | SentToProvider -> "invoice-delivery-sent-to-provider"
+    | ProviderAccepted -> "invoice-delivery-accepted-by-provider"
+    | Delivered -> "invoice-delivery-delivered"
+    | DeliveryFailed _ -> "invoice-delivery-failed"
+    | Bounced _ -> "invoice-delivery-bounced"
+    | ManuallySent -> "invoice-delivered-manually"
+
+let private outcomeName (outcome: DeliveryOutcome) =
+    match outcome with
+    | DeliveryFailed _ -> "DeliveryFailed"
+    | Bounced _ -> "Bounced"
+    | other -> $"%A{other}"
+
+/// Queues a delivery of an issued invoice. Retrying the same attempt id
+/// changes nothing (INV-DEL-009).
+let send (context: Context) (authority: DeliveryAuthority) (request: DeliveryRequest) (r: Receivables) =
+    authorizing authority context <| fun () ->
+    match r.Books.Deliveries.TryFind request.AttemptId, r.Books.Invoices.TryFind request.InvoiceId with
+    | Some existing, _ when existing.InvoiceId = request.InvoiceId && existing.Recipients = request.Recipients -> Ok r
+    | Some _, _ -> Error [ AttemptIdReused request.AttemptId ]
+    | None, None -> Error [ UnknownInvoiceToDeliver request.InvoiceId ]
+    | None, Some invoice ->
+        let pdf = r.Books.Artifacts.TryFind $"{invoice.InvoiceId}-pdf" |> Option.map _.Status
+        let everyone = request.Recipients.To @ request.Recipients.Cc
+
+        let problems =
+            [ if r.Voids.ContainsKey invoice.InvoiceId then VoidedInvoice invoice.InvoiceId
+              if request.Recipients.To.IsEmpty then NoRecipients
+              for address in everyone @ Option.toList request.Recipients.ReplyTo do
+                  if not (validAddress address) then InvalidRecipient address
+              if needsPdf request.Policy && pdf <> Some Generated then PdfNotReady pdf ]
+
+        if not problems.IsEmpty then
+            Error problems
+        else
+            Ok(
+                save
+                    context
+                    (outcomeEvent Queued)
+                    invoice.InvoiceId
+                    None
+                    { Id = request.AttemptId
+                      InvoiceId = invoice.InvoiceId
+                      At = context.When
+                      Actor = context.Who
+                      Recipients = request.Recipients
+                      Channel = request.Channel
+                      Policy = request.Policy
+                      MessageTemplate = request.MessageTemplate
+                      Outcome = Queued
+                      ProviderReference = None
+                      RetryOf = request.RetryOf }
+                    r
+            )
+
+/// Sends again to the same recipients as a new attempt naming the old one.
+let resend (context: Context) (authority: DeliveryAuthority) (attemptId: string) (fromAttempt: string) (r: Receivables) =
+    authorizing authority context <| fun () ->
+    match r.Books.Deliveries.TryFind fromAttempt with
+    | None -> Error [ UnknownAttempt fromAttempt ]
+    | Some earlier ->
+        send
+            context
+            authority
+            { AttemptId = attemptId
+              InvoiceId = earlier.InvoiceId
+              Recipients = earlier.Recipients
+              Channel = earlier.Channel
+              Policy = earlier.Policy
+              MessageTemplate = earlier.MessageTemplate
+              RetryOf = Some fromAttempt }
+            r
+
+let private rank =
+    function
+    | Queued -> 0
+    | SentToProvider -> 1
+    | ProviderAccepted -> 2
+    | Delivered -> 3
+    | DeliveryFailed _
+    | Bounced _
+    | ManuallySent -> 4
+
+/// Records what the provider reported. Outcomes only move forward, and
+/// Delivered is recorded only when the provider confirms delivery
+/// (INV-DEL-010).
+let recordOutcome (context: Context) (attemptId: string) (outcome: DeliveryOutcome) (providerReference: string option) (r: Receivables) =
+    match r.Books.Deliveries.TryFind attemptId with
+    | None -> Error [ UnknownAttempt attemptId ]
+    | Some attempt when attempt.Outcome = outcome -> Ok r
+    | Some attempt when outcome = ManuallySent || rank outcome <= rank attempt.Outcome || rank attempt.Outcome = 4 ->
+        Error [ OutcomeNotAllowed(attempt.Outcome, outcome) ]
+    | Some attempt ->
+        Ok(
+            save
+                context
+                (outcomeEvent outcome)
+                attempt.InvoiceId
+                (applied None [ $"outcome: {outcomeName attempt.Outcome} -> {outcomeName outcome}" ])
+                { attempt with
+                    Outcome = outcome
+                    ProviderReference = providerReference |> Option.orElse attempt.ProviderReference }
+                r
+        )
+
+/// Records a delivery made outside Summa, as such (INV-DEL-005).
+let recordManual (context: Context) (authority: DeliveryAuthority) (attemptId: string) (invoiceId: string) (recipients: Recipients) (how: string) (r: Receivables) =
+    authorizing authority context <| fun () ->
+    match r.Books.Deliveries.TryFind attemptId, r.Books.Invoices.TryFind invoiceId with
+    | Some existing, _ when existing.Outcome = ManuallySent && existing.InvoiceId = invoiceId -> Ok r
+    | Some _, _ -> Error [ AttemptIdReused attemptId ]
+    | None, None -> Error [ UnknownInvoiceToDeliver invoiceId ]
+    | None, Some _ when recipients.To.IsEmpty -> Error [ NoRecipients ]
+    | None, Some _ ->
+        Ok(
+            save
+                context
+                (outcomeEvent ManuallySent)
+                invoiceId
+                None
+                { Id = attemptId
+                  InvoiceId = invoiceId
+                  At = context.When
+                  Actor = context.Who
+                  Recipients = recipients
+                  Channel = Manual how
+                  Policy = AttachPdf
+                  MessageTemplate = "manual"
+                  Outcome = ManuallySent
+                  ProviderReference = None
+                  RetryOf = None }
+                r
+        )
+
+/// The attempts for an invoice, oldest first.
+let attempts (r: Receivables) (invoiceId: string) =
+    r.Books.Deliveries |> Map.toList |> List.map snd |> List.filter (fun d -> d.InvoiceId = invoiceId) |> List.sortBy (fun d -> d.At, d.Id)
+
+/// Everything an invoice is found by (INV-OPS-001): its number and id, the
+/// customer, the amount, its dates, projects and engagement, the
+/// customer's references, the ids of its sources and who it was sent to.
+let searchTexts (r: Receivables) (invoice: IssuedInvoice) =
+    let iso (d: DateOnly) = d.ToString("yyyy-MM-dd", Globalization.CultureInfo.InvariantCulture)
+    let plain (m: Money) = (decimal m.Minor / 100m).ToString("0.00", Globalization.CultureInfo.InvariantCulture)
+
+    [ invoice.Number
+      invoice.InvoiceId
+      invoice.CustomerId
+      invoice.Customer.Name
+      invoice.Customer.BillingName
+      Documents.amountText invoice.Total
+      plain invoice.Total
+      iso invoice.IssueDate
+      iso invoice.DueDate
+      yield! invoice.Lines |> List.choose _.Project
+      yield! Option.toList invoice.EngagementId
+      yield! Option.toList invoice.Details.PurchaseOrder
+      yield! Option.toList invoice.Details.ClientReference
+      yield! invoice.Details.References |> List.map snd
+      for line in invoice.Lines do
+          match line.Source with
+          | ManualLine -> ()
+          | TimeSource references ->
+              for t in references do
+                  t.PublicationId
+                  t.ActivityId
+          | FixedFeeSource engagement -> engagement
+          | MilestoneSource(engagement, milestone) ->
+              engagement
+              milestone
+          | ExpenseSource expense -> expense
+      for attempt in attempts r invoice.InvoiceId do
+          yield! attempt.Recipients.To
+          yield! attempt.Recipients.Cc ]
+
+/// An invoice's activity, oldest first (INV-OPS-004): every audit event of
+/// the invoice and its draft, its review, delivery and follow-up, and of
+/// what settled it (allocations and their payments, credits applied,
+/// write-offs, credit memos against it), with who did it and when.
+let timeline (r: Receivables) (invoice: IssuedInvoice) =
+    let id = invoice.InvoiceId
+    let allocations = r.Allocations |> List.filter (fun a -> a.InvoiceId = id)
+
+    let subjects =
+        set
+            [ id
+              yield! r.Books.IssuedFrom |> Map.toList |> List.filter (snd >> (=) id) |> List.map fst
+              for a in allocations do
+                  a.Id
+                  a.PaymentId
+              yield! r.Applications |> List.filter (fun a -> a.InvoiceId = id) |> List.map _.Id
+              yield! r.WriteOffs |> Map.toList |> List.filter (fun (_, w) -> w.InvoiceId = id) |> List.map fst
+              yield! r.CreditMemos |> Map.toList |> List.filter (fun (_, m) -> m.InvoiceId = Some id) |> List.map fst ]
+
+    r.Books.Ledger.Audit |> List.filter (fun a -> subjects.Contains a.Subject) |> List.sortBy _.When
+
+/// The delivery dimension of an invoice (INV-STATE-005), from its latest attempt.
+type DeliveryState =
+    /// The PDF the delivery needs is not generated yet.
+    | NotPrepared
+    | ReadyToSend
+    | Pending
+    | Sent
+    | DeliveredByProvider
+    | Failed
+    | BouncedBack
+    | SentManually
+
+let deliveryState (r: Receivables) (invoiceId: string) =
+    match attempts r invoiceId |> List.tryLast with
+    | None ->
+        match r.Books.Artifacts.TryFind $"{invoiceId}-pdf" with
+        | Some { Status = Generated } -> ReadyToSend
+        | _ -> NotPrepared
+    | Some latest ->
+        match latest.Outcome with
+        | Queued -> Pending
+        | SentToProvider
+        | ProviderAccepted -> Sent
+        | Delivered -> DeliveredByProvider
+        | DeliveryFailed _ -> Failed
+        | Bounced _ -> BouncedBack
+        | ManuallySent -> SentManually
+
+/// The failed or bounced attempt an invoice still owes a person: the latest
+/// one, unless a later attempt was delivered or sent by hand, or a person
+/// resolved it. Queuing or handing a new attempt to the provider is not a
+/// delivery, so the obligation stays until one succeeds (INV-DEL-008).
+let deliveryProblem (r: Receivables) (invoiceId: string) =
+    let all = attempts r invoiceId
+    let failed (a: DeliveryAttempt) = match a.Outcome with DeliveryFailed _ | Bounced _ -> true | _ -> false
+    let succeeded (a: DeliveryAttempt) = match a.Outcome with Delivered | ManuallySent -> true | _ -> false
+
+    match all |> List.tryFindIndexBack failed with
+    | None -> None
+    | Some at ->
+        let problem = all[at]
+        let resolved =
+            r.Books.FollowUps.TryFind invoiceId
+            |> Option.bind _.DeliveryResolved
+            |> Option.exists (fun resolution -> resolution.AttemptId = problem.Id)
+
+        if resolved || all |> List.skip (at + 1) |> List.exists succeeded then None else Some problem
+
+/// What needs a person's attention (INV-DEL-008, INV-DOC-015): a failed or
+/// bounced delivery not since delivered or resolved, or a PDF that failed.
+let attention (r: Receivables) =
+    [ for KeyValue(id, _) in r.Books.Invoices do
+          match deliveryProblem r id |> Option.map _.Outcome with
+          | Some(DeliveryFailed _) -> id, "the last delivery failed"
+          | Some(Bounced _) -> id, "the last delivery bounced"
+          | _ -> ()
+
+          match r.Books.Artifacts.TryFind $"{id}-pdf" with
+          | Some { Status = ArtifactStatus.Failed why } -> id, $"the PDF failed: {why}"
+          | _ -> () ]
+
+// ---- Follow-up: disputes and collection ------------------------------------------------
+
+let followUp (r: Receivables) (invoiceId: string) =
+    r.Books.FollowUps.TryFind invoiceId
+    |> Option.defaultValue
+        { InvoiceId = invoiceId
+          Dispute = NotDisputed
+          Collection = NoFollowUp
+          DeliveryResolved = None
+          Promise = None }
+
+let private setFollowUp (context: Context) what (f: FollowUp) (r: Receivables) =
+    if not (r.Books.Invoices.ContainsKey f.InvoiceId) then
+        Error [ UnknownInvoiceToDeliver f.InvoiceId ]
+    else
+        Ok
+            { r with
+                Books =
+                    { r.Books with
+                        FollowUps = r.Books.FollowUps.Add(f.InvoiceId, f)
+                        Ledger = audit context what f.InvoiceId r.Books.Ledger } }
+
+/// Marks an invoice disputed. The invoice, its balance and the ledger are
+/// unchanged (INV-STATE-006).
+let dispute (context: Context) (invoiceId: string) (reason: string) (on: DateOnly) (r: Receivables) =
+    setFollowUp context "invoice-disputed" { followUp r invoiceId with Dispute = Disputed(reason, on) } r
+
+let resolveDispute (context: Context) (invoiceId: string) (resolution: string) (on: DateOnly) (r: Receivables) =
+    setFollowUp context "invoice-dispute-resolved" { followUp r invoiceId with Dispute = DisputeResolved(resolution, on) } r
+
+let setCollection (context: Context) (invoiceId: string) (stage: CollectionStage) (r: Receivables) =
+    setFollowUp context "invoice-collection-changed" { followUp r invoiceId with Collection = stage } r
+
+// ---- Payment promises (SUM4-016) ----------------------------------------------------------
+
+/// Why a payment promise cannot be recorded.
+type PromiseProblem =
+    | UnknownInvoiceToPromise of string
+    /// Nothing is owed on it, or it is voided.
+    | NothingOwed of invoiceId: string
+    | PromiseNotPositive
+    | PromiseCurrency of expected: string
+    | PromiseMoreThanOwed of owed: Money
+    /// The date is before the day the promise is recorded.
+    | PromiseInThePast of DateOnly
+
+/// Where a promise stands, worked out from the books (SUM4-016).
+type PromiseStatus =
+    /// Its date has not passed and it is not yet kept.
+    | PromiseDue
+    /// What the invoice owes fell by at least the promised amount since it was made.
+    | PromiseKept
+    /// Its date passed and what the invoice owes did not fall by the promised amount.
+    | PromiseMissed
+
+/// Records the customer's promise to pay `amount` of the invoice by `by`;
+/// it replaces any earlier promise, which stays in the audit trail. The
+/// invoice and the books are unchanged.
+let recordPromise (context: Context) (invoiceId: string) (amount: Money) (by: DateOnly) (note: string) (on: DateOnly) (r: Receivables) =
+    match r.Books.Invoices.TryFind invoiceId with
+    | None -> Error [ UnknownInvoiceToPromise invoiceId ]
+    | Some invoice ->
+        let owed = outstanding r invoice
+
+        let problems =
+            if status r invoice = Voided || owed.Minor <= 0L then
+                [ NothingOwed invoiceId ]
+            else
+                [ if amount.Currency <> owed.Currency then PromiseCurrency owed.Currency
+                  if amount.Minor <= 0L then PromiseNotPositive
+                  elif amount.Currency = owed.Currency && amount.Minor > owed.Minor then PromiseMoreThanOwed owed
+                  if by < on then PromiseInThePast by ]
+
+        match problems with
+        | [] ->
+            let promise =
+                { Amount = amount
+                  By = by
+                  MadeOn = on
+                  OutstandingWhenMade = owed
+                  Note = note.Trim() }
+
+            Ok
+                { r with
+                    Books =
+                        { r.Books with
+                            FollowUps = r.Books.FollowUps.Add(invoiceId, { followUp r invoiceId with Promise = Some promise })
+                            Ledger = audit context "payment-promise-recorded" invoiceId r.Books.Ledger } }
+        | problems -> Error problems
+
+/// Withdraws the invoice's promise, for example when the customer retracts
+/// it. Nothing else changes; the promise stays in the audit trail.
+let withdrawPromise (context: Context) (invoiceId: string) (r: Receivables) =
+    match (followUp r invoiceId).Promise with
+    | None -> Ok r
+    | Some _ ->
+        Ok
+            { r with
+                Books =
+                    { r.Books with
+                        FollowUps = r.Books.FollowUps.Add(invoiceId, { followUp r invoiceId with Promise = None })
+                        Ledger = audit context "payment-promise-withdrawn" invoiceId r.Books.Ledger } }
+
+/// Where the invoice's promise stands today, if it has one: kept once what
+/// it owes fell by the promised amount since the promise was made (by a
+/// payment, a credit or a write-off alike), missed once its date passed
+/// without that.
+let promiseStatus (r: Receivables) (today: DateOnly) (invoiceId: string) =
+    match (followUp r invoiceId).Promise, r.Books.Invoices.TryFind invoiceId with
+    | Some p, Some invoice ->
+        let owed = outstanding r invoice
+
+        if owed.Minor <= p.OutstandingWhenMade.Minor - p.Amount.Minor then Some(p, PromiseKept)
+        elif today > p.By then Some(p, PromiseMissed)
+        else Some(p, PromiseDue)
+    | _ -> None
+
+/// A person resolves a failed or bounced delivery without a new one, for
+/// example when the customer collected the invoice. The attempts and the
+/// invoice are unchanged; a later failure is a new problem (INV-DEL-008).
+let resolveDeliveryProblem (context: Context) (authority: DeliveryAuthority) (invoiceId: string) (note: string) (r: Receivables) =
+    authorizing authority context <| fun () ->
+    match deliveryProblem r invoiceId with
+    | None -> Error [ NoDeliveryProblem invoiceId ]
+    | Some problem ->
+        let resolution: DeliveryResolution = { AttemptId = problem.Id; Note = note; By = context.Who; At = context.When }
+        setFollowUp context "invoice-delivery-problem-resolved" { followUp r invoiceId with DeliveryResolved = Some resolution } r
+
+// ---- State dimensions and actions ------------------------------------------------------------
+
+/// Preparation and issuance (INV-STATE-002).
+type Preparation =
+    | ProposalStage
+    | DraftStage
+    | ReviewStage
+    | IssuedStage
+    | VoidedStage
+
+/// The independent dimensions of an issued invoice (INV-STATE-001).
+type InvoiceView =
+    { Preparation: Preparation
+      Settlement: InvoiceStatus
+      Timing: Timing
+      Delivery: DeliveryState
+      Dispute: DisputeState
+      Collection: CollectionStage }
+
+let view (today: DateOnly) (r: Receivables) (invoice: IssuedInvoice) =
+    let f = followUp r invoice.InvoiceId
+
+    { Preparation = if r.Voids.ContainsKey invoice.InvoiceId then VoidedStage else IssuedStage
+      Settlement = status r invoice
+      Timing = timing today invoice.DueDate (outstanding r invoice)
+      Delivery = deliveryState r invoice.InvoiceId
+      Dispute = f.Dispute
+      Collection = f.Collection }
+
+/// Where a draft or proposal stands.
+let draftPreparation (draft: DraftInvoice) =
+    match draft.Review with
+    | Editing -> DraftStage
+    | SubmittedForReview _ -> ReviewStage
+
+/// What may be done with an issued invoice now (INV-STATE-008), derived
+/// from the same rules the commands enforce.
+type InvoiceAction =
+    | Deliver
+    | RecordPaymentFor
+    | ApplyCredit
+    | CreateCreditMemo
+    | OpenDispute
+    | ResolveOpenDispute
+    | VoidIt
+    | WriteOffBalance
+    | RefundCredit
+
+let actions (r: Receivables) (invoice: IssuedInvoice) =
+    let voided = r.Voids.ContainsKey invoice.InvoiceId
+    let owed = (outstanding r invoice).Minor > 0L
+    let settled = add (amountPaid r invoice) (writtenOff r invoice)
+    let f = followUp r invoice.InvoiceId
+
+    let refundable =
+        r.CreditMemos
+        |> Map.exists (fun id m ->
+            m.InvoiceId = Some invoice.InvoiceId
+            && Credits.remaining r (FromCreditMemo id) |> Option.exists (fun left -> left.Minor > 0L))
+
+    [ if not voided then Deliver
+      if owed then
+          RecordPaymentFor
+          ApplyCredit
+          WriteOffBalance
+      if not voided then CreateCreditMemo
+      match f.Dispute with
+      | Disputed _ -> ResolveOpenDispute
+      | _ when not voided -> OpenDispute
+      | _ -> ()
+      if not voided && settled.Minor = 0L then VoidIt
+      if refundable then RefundCredit ]
+
+/// What may be done with a draft now.
+type DraftAction =
+    | EditDraft
+    | DeleteDraft
+    | SubmitForReview
+    | ReturnToDraft
+    | Issue
+
+let draftActions (draft: DraftInvoice) =
+    match draft.Review with
+    | Editing -> [ EditDraft; DeleteDraft; SubmitForReview ]
+    | SubmittedForReview _ -> [ EditDraft; ReturnToDraft; Issue ]
+
+// ---- Related documents (INV-COR-005) -------------------------------------------------------
+
+type Relation =
+    | CreditedBy of creditMemoId: string
+    | Corrects of invoiceId: string
+    | CorrectedBy of invoiceId: string
+    | ReissueOf of invoiceId: string
+    | ReissuedAs of invoiceId: string
+    /// The void, by the entry that reversed the invoice.
+    | VoidedBy of journalEntryId: string
+    | PaidBy of paymentId: string
+    | RefundOf of refundId: string
+
+/// Every document related to an invoice, in a stable order.
+let related (r: Receivables) (invoiceId: string) =
+    match r.Books.Invoices.TryFind invoiceId with
+    | None -> []
+    | Some invoice ->
+        let voided id = r.Voids.ContainsKey id
+
+        let memos =
+            r.CreditMemos |> Map.toList |> List.filter (fun (_, m) -> m.InvoiceId = Some invoiceId) |> List.map fst
+
+        [ for m in memos do
+              yield CreditedBy m
+          match invoice.Corrects with
+          | Some original when voided original -> yield ReissueOf original
+          | Some original -> yield Corrects original
+          | None -> ()
+          for KeyValue(id, other) in r.Books.Invoices do
+              if other.Corrects = Some invoiceId then
+                  yield (if voided invoiceId then ReissuedAs id else CorrectedBy id)
+          match r.Voids.TryFind invoiceId with
+          | Some v -> yield VoidedBy v.JournalEntryId
+          | None -> ()
+          for payment in liveAllocations r |> List.filter (fun a -> a.InvoiceId = invoiceId) |> List.map _.PaymentId |> List.distinct do
+              yield PaidBy payment
+          for KeyValue(id, refund) in r.Refunds do
+              match refund.Source with
+              | FromCreditMemo m when List.contains m memos -> yield RefundOf id
+              | _ -> () ]

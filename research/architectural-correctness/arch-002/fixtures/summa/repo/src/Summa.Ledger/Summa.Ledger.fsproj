@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Summa's financial domain: fixed-decimal money, the double-entry
+       ledger, accounting periods, invoices, receivables, payments and the
+       core reports. Pure F#: no clock, storage, network or browser access
+       (dates, ids and the performer arrive as arguments), and no package
+       dependencies beyond FSharp.Core. It references Summa.Contracts, the
+       dependency-free Chrona billing contract Summa owns, to read Chrona's
+       publications and derive its feedback, and Summa.Access, the
+       dependency-free capability model, so the external command contract
+       checks each command's capability itself (SUM2-031). -->
+
+  <ItemGroup>
+    <Compile Include="Money.fs" />
+    <Compile Include="Ledger.fs" />
+    <Compile Include="Sources.fs" />
+    <Compile Include="Invoicing.fs" />
+    <Compile Include="Documents.fs" />
+    <Compile Include="Explanations.fs" />
+    <Compile Include="Payments.fs" />
+    <Compile Include="Matching.fs" />
+    <Compile Include="Attention.fs" />
+    <Compile Include="Credits.fs" />
+    <Compile Include="CreditMemoDocuments.fs" />
+    <Compile Include="Corrections.fs" />
+    <Compile Include="Billing.fs" />
+    <Compile Include="Recurring.fs" />
+    <Compile Include="AgentRequests.fs" />
+    <Compile Include="Issuance.fs" />
+    <Compile Include="Lifecycle.fs" />
+    <Compile Include="Search.fs" />
+    <Compile Include="PostedFor.fs" />
+    <Compile Include="ChronaImport.fs" />
+    <Compile Include="Reports.fs" />
+    <Compile Include="Management.fs" />
+    <Compile Include="Periods.fs" />
+    <Compile Include="InvoiceCommands.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Summa.Contracts/Summa.Contracts.fsproj" />
+    <ProjectReference Include="../Summa.Access/Summa.Access.fsproj" />
+  </ItemGroup>
+</Project>

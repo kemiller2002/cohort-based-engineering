@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 4,
+  "project": "summa",
+  "manifestSha256": "8047d4bd1e671c4d67d91ae99a80aeae8996981fa87b9be4840e57f6de472bf5",
+  "manifest": {
+    "schemaVersion": 1,
+    "name": "summa",
+    "registryAuthority": {
+      "kind": "resolved-release-set",
+      "path": ".conditor/authority/resolved-release-set.json",
+      "sha256": "68718d8a1bb9a7a0cca90dfe3aaae27227f6af7455f33eeb209b254dc0b2bb81"
+    },
+    "components": [
+      {
+        "id": "ordo",
+        "version": "1.8.2",
+        "required": true
+      },
+      {
+        "id": "praxis",
+        "version": "3.12.0",
+        "required": true
+      },
+      {
+        "id": "visual-engineering",
+        "version": "1.0.1",
+        "required": true
+      },
+      {
+        "id": "arca",
+        "version": "0.5.0",
+        "required": true
+      },
+      {
+        "id": "fides",
+        "version": "0.2.0",
+        "required": true
+      },
+      {
+        "id": "limen-fsharp",
+        "version": "0.9.0",
+        "required": true
+      },
+      {
+        "id": "forma",
+        "version": "0.9.0",
+        "required": true
+      },
+      {
+        "id": "folio",
+        "version": "0.4.0",
+        "required": true
+      }
+    ],
+    "requirements": [],
+    "execution": {
+      "enabled": false
+    }
+  },
+  "components": [
+    {
+      "id": "ordo",
+      "version": "1.8.2",
+      "distribution": "host-tool",
+      "package": "ordo",
+      "descriptorSha256": "cf3f63f7dff131aac358584c24e136b2eee408ed8fd8293146b994f22521b2cb",
+      "authority": "embedded-component-descriptor",
+      "sourceReference": "host:ordo@1.8.2"
+    },
+    {
+      "id": "praxis",
+      "version": "3.12.0",
+      "distribution": "host-tool",
+      "package": "praxis",
+      "descriptorSha256": "04d969c79e03ca25037d582b67a0b7152577462468e068ec1af5f1d3b4a31170",
+      "authority": "embedded-component-descriptor",
+      "sourceReference": "host:praxis@3.12.0"
+    },
+    {
+      "id": "visual-engineering",
+      "version": "1.0.1",
+      "distribution": "lifecycle-npm",
+      "package": "@echelon-foundry/visual-engineering",
+      "descriptorSha256": "c352c4457b3a0bf08894c6b667eaee83ec4e8f7c993537eddb6d4f175a3cffad",
+      "authority": "embedded-component-descriptor",
+      "sourceReference": "@echelon-foundry/visual-engineering@1.0.1"
+    },
+    {
+      "id": "arca",
+      "version": "0.5.0",
+      "distribution": "nuget",
+      "package": "EchelonFoundry.Arca.Core,EchelonFoundry.Arca.GitHub,EchelonFoundry.Arca.Limen",
+      "authority": "registry-resolved-set",
+      "sourceReference": "nuget-feed:kemiller2002/arca@v0.5.0#sha256:1cab5320290e6084f873e942465fe2289c8bc952b8ec7ce3a445ad24b8ac2e84"
+    },
+    {
+      "id": "fides",
+      "version": "0.2.0",
+      "distribution": "nuget",
+      "package": "EchelonFoundry.Fides,EchelonFoundry.Fides.Arca,EchelonFoundry.Fides.Client,EchelonFoundry.Fides.Hosting",
+      "authority": "registry-resolved-set",
+      "sourceReference": "nuget-feed:kemiller2002/fides@v0.2.0#sha256:0ef2204d8ec298e6d930ce11d66629794486a5e31367959d7f9dbd39468b6a2a"
+    },
+    {
+      "id": "limen-fsharp",
+      "version": "0.9.0",
+      "distribution": "nuget",
+      "package": "EchelonFoundry.Limen.Contract,EchelonFoundry.Limen.Guest,EchelonFoundry.Limen.Routing,EchelonFoundry.Limen.Store",
+      "authority": "registry-resolved-set",
+      "sourceReference": "nuget-feed:kemiller2002/limen@v0.9.0#sha256:d8aec120fdaff6bb2a9dcd6e4d79b8a92d69f8cc0227de1c6b7166c6c3b8ce3a"
+    },
+    {
+      "id": "forma",
+      "version": "0.9.0",
+      "distribution": "npm",
+      "package": "@echelon-foundry/design-system",
+      "descriptorSha256": "2fda898c501998908c57dc0258bb887cd81d7332fb26350672d6815f31de43f5",
+      "authority": "embedded-component-descriptor",
+      "sourceReference": "npm:@echelon-foundry/design-system@0.9.0"
+    },
+    {
+      "id": "folio",
+      "version": "0.4.0",
+      "distribution": "npm",
+      "package": "@echelon-foundry/print-components",
+      "descriptorSha256": "51240f698d19e0cd11d527ca9dfb22f3495c383fa6fe2a851bd3c4b224da4f8a",
+      "authority": "embedded-component-descriptor",
+      "sourceReference": "npm:@echelon-foundry/print-components@0.4.0"
+    }
+  ],
+  "requirements": [],
+  "reviewSignals": [
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "conformance-concern",
+      "path": "src/Summa.Web.Engine/Accounting.fs",
+      "lineCount": 5329
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "justification-required",
+      "path": "src/Summa.Storage/FinancialRecords.fs",
+      "lineCount": 2802
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "strong-review",
+      "path": "tools/ros_cli.mjs",
+      "lineCount": 1563
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "strong-review",
+      "path": "tools/ros_telemetry.mjs",
+      "lineCount": 1516
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "strong-review",
+      "path": "src/Summa.Ledger/Invoicing.fs",
+      "lineCount": 1167
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "strong-review",
+      "path": "src/Summa.Web.Application/AccountingWire.fs",
+      "lineCount": 1060
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Ledger/Billing.fs",
+      "lineCount": 856
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Web.Application/Store.fs",
+      "lineCount": 741
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "tests/Summa.Web.Tests/StoreTests.fs",
+      "lineCount": 651
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Ledger/Lifecycle.fs",
+      "lineCount": 588
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Storage/Commands.fs",
+      "lineCount": 565
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Ledger/InvoiceCommands.fs",
+      "lineCount": 562
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "tests/Summa.Storage.Tests/CommandTests.fs",
+      "lineCount": 527
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Web.Engine/Routes.fs",
+      "lineCount": 526
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Storage/Organization.fs",
+      "lineCount": 522
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "tests/Summa.Web.Tests/AccountingTests.fs",
+      "lineCount": 509
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Ledger/Payments.fs",
+      "lineCount": 507
+    },
+    {
+      "component": "ordo",
+      "code": "SDE-STRUCT-001",
+      "band": "review",
+      "path": "src/Summa.Ledger/Documents.fs",
+      "lineCount": 500
+    }
+  ]
+}

@@ -1,0 +1,651 @@
+/// Books on GitHub through the application (WI-0037): the engine, the wire,
+/// the store port and Arca, with Arca's in-memory provider standing in for
+/// GitHub and a signed-in person standing in for Fides. Setting the books
+/// up, working in them, someone else's change in between, capabilities,
+/// and the older manifest's migration.
+module Summa.Web.Tests.StoreTests
+
+open System
+open System.Text.Json.Nodes
+open Xunit
+open Arca
+open Summa.Web.Engine.Accounting
+open Summa.Web.Application
+
+module Wire = Summa.Web.Application.AccountingWire
+
+let private configuration =
+    """{"environment":"test","environmentName":"test","location":{"owner":"acme","repository":"summa-data","branch":"main","basePath":"deployments/test"},"identity":{"exchange":"https://fides.test","application":"summa-test","provider":"github","clientId":"Iv23liTEST","redirectUri":"https://summa.example/app/"},"organizations":[{"id":"org_acme","displayName":"Acme Consulting","slug":"acme","defaultCurrency":"USD","timeZone":"America/New_York","administrators":["583231"]}]}"""
+
+let private start = DateTimeOffset(2026, 10, 8, 14, 10, 0, TimeSpan.Zero)
+let private aegis = Boundary.configure [ (Aegis.Sinks.Collector()).Sink() ]
+
+let private snapshot: CapabilitySnapshot =
+    { Identity =
+        { Provider = "github"
+          Subject = "583231"
+          Login = Some "octocat"
+          Kind = IdentityKind.User }
+      RepositoryId = "R_1"
+      Repository = RepositoryRef.create "acme" "summa-data" |> Result.defaultWith (fun e -> failwith $"%A{e}")
+      Visibility = RepositoryVisibility.Private
+      CanRead = true
+      CanWrite = true
+      Archived = false
+      Branch = BranchAccess.Writable }
+
+/// An identity port that has already signed `subject` in.
+let private signedIn (bridge: Bridge.Bridge) (subject: string) (login: string) : Identity.IdentityPort =
+    { Identity.none with
+        Begin = fun _ _ -> bridge.Start(async { return [ IdentityChanged(IdentitySignedIn("github", subject, login)) ] }) }
+
+let private keys = ref 0
+
+/// The in-memory provider, its answers made synchronous. In the browser
+/// everything runs on one thread; here Arca's in-memory commit may finish on
+/// another, after the page has replied.
+let private synchronous (provider: StorageProvider) : StorageProvider =
+    let now (work: Async<'a>) = async.Return(Async.RunSynchronously work)
+
+    { provider with
+        Read = fun ns path -> now (provider.Read ns path)
+        List = fun ns path -> now (provider.List ns path)
+        Commit = fun operation -> now (provider.Commit operation)
+        ChangeToken = fun ns -> now (provider.ChangeToken ns)
+        NamespaceState = fun ns -> now (provider.NamespaceState ns)
+        History = fun ns path -> now (provider.History ns path)
+        Reconcile = fun ns pending -> now (provider.Reconcile ns pending) }
+
+/// GitHub as the pages see it: the repository, and whether it can be reached.
+type private Network(repository: InMemoryStore) =
+    member val Online = true with get, set
+    member this.Provider: StorageProvider =
+        let provider = synchronous repository.Provider
+        let offline () = StorageFailure.ProviderFailed("github", true, "offline")
+        let guard (work: Async<Result<'a, StorageFailure>>) = if this.Online then work else async.Return(Error(offline ()))
+
+        { provider with
+            Read = fun ns path -> guard (provider.Read ns path)
+            List = fun ns path -> guard (provider.List ns path)
+            Commit = fun operation -> guard (provider.Commit operation)
+            ChangeToken = fun ns -> guard (provider.ChangeToken ns)
+            NamespaceState = fun ns -> guard (provider.NamespaceState ns) }
+
+/// One browser: its localStorage, and which tab holds which Web Lock.
+type private Browser() =
+    member val Storage = Collections.Generic.Dictionary<string, string>()
+    member val Locks = Collections.Generic.HashSet<string>()
+
+let private networks = Collections.Generic.Dictionary<InMemoryStore, Network>(HashIdentity.Reference)
+
+let private networkOf (repository: InMemoryStore) =
+    match networks.TryGetValue repository with
+    | true, found -> found
+    | _ ->
+        let created = Network repository
+        networks[repository] <- created
+        created
+
+/// Pins a test hands the store, standing in for GitHub's (None: unpinned).
+let mutable private pinning: (ChangeToken -> PinnedReads option) option = None
+
+/// One page, signed in as `subject`, over the shared in-memory repository.
+let private page (repository: InMemoryStore) (subject: string) (login: string) : Wire.Env =
+    let bridge = Bridge.Bridge()
+
+    let backend: Store.Backend =
+        { Provider = fun _ -> (networkOf repository).Provider
+          Pins = fun _ token -> pinning |> Option.bind (fun pins -> pins token)
+          Resolve = fun _ -> async.Return(Ok snapshot) }
+
+    { Now = fun () -> start
+      LocalActor = "local-person"
+      Bridge = bridge
+      Identity = signedIn bridge subject login
+      Store =
+        Store.arca bridge backend (fun () -> start) (fun () ->
+            keys.Value <- keys.Value + 1
+            $"test-key-{keys.Value:D6}") }
+
+let private text (node: JsonNode | null) =
+    match node with
+    | null -> failwith "missing"
+    | n -> n.GetValue<string>()
+
+/// The browser the pages of a test share, when they keep unsent changes.
+let mutable private browser: Browser option = None
+
+/// Sends a message and answers the configuration request (and, in a test
+/// with a browser, its storage and locks), until nothing is left to answer.
+/// The store and the identity answer through the bridge.
+let private pump (env: Wire.Env) (session: Wire.Session) (message: string) =
+    let rec loop (session: Wire.Session) (queue: string list) (last: string) =
+        match queue with
+        | [] -> session, last
+        | message :: rest ->
+            let session, reply = Wire.handle aegis env session message
+            let parsed = JsonNode.Parse reply |> Option.ofObj |> Option.get
+
+            let effects =
+                match parsed["effects"] with
+                | null -> []
+                | effects -> effects.AsArray() |> Seq.choose Option.ofObj |> List.ofSeq
+
+            let answers =
+                effects
+                |> List.choose (fun effect ->
+                    match text effect["kind"] with
+                    | "Http" when text effect["method"] = "GET" ->
+                        let id = text effect["correlationId"]
+                        let body = Text.Json.JsonSerializer.Serialize configuration
+                        Some $"""{{"kind":"EffectResult","result":{{"kind":"HttpResult","correlationId":"{id}","outcome":{{"kind":"Success","status":200,"body":{body}}}}}}}"""
+                    | "Storage" when browser.IsSome ->
+                        let id = text effect["correlationId"]
+                        let key = text effect["key"]
+                        let storage = browser.Value.Storage
+                        let json (v: string) = Text.Json.JsonSerializer.Serialize v
+
+                        let value =
+                            match text effect["operation"] with
+                            | "get" -> (match storage.TryGetValue key with | true, v -> $",\"value\":{json v}" | _ -> "")
+                            | "set" ->
+                                storage[key] <- text effect["value"]
+                                ""
+                            | _ ->
+                                storage.Remove key |> ignore
+                                ""
+
+                        Some $"""{{"kind":"EffectResult","result":{{"kind":"StorageResult","correlationId":"{id}","outcome":{{"kind":"Success"{value}}}}}}}"""
+                    | "Capability" when browser.IsSome && text effect["capability"] = "limen.coordination" ->
+                        let id = text effect["correlationId"]
+                        let name = match effect["request"] with null -> "" | r -> text r.["name"]
+                        let kind = if browser.Value.Locks.Add name then "Acquired\",\"lock\":\"lock-1" else "Busy"
+                        Some $"""{{"kind":"EffectResult","result":{{"kind":"CapabilityResult","correlationId":"{id}","capability":"limen.coordination","version":1,"outcome":{{"kind":"Completed","result":{{"kind":"{kind}"}}}}}}}}"""
+                    | _ -> None)
+
+            loop session (rest @ answers) reply
+
+    loop session [ message ] ""
+
+let private initialize (hash: string) =
+    let packs =
+        if browser.IsSome then
+            $"""{{"id":"limen.coordination","version":1,"fingerprint":"{Wire.coordination.Fingerprint}"}}"""
+        else
+            ""
+
+    $"""{{"kind":"Initialize","location":{{"origin":"https://summa.example","path":"/app/","query":"","hash":"{hash}"}},"handshake":{{"protocol":{{"major":1,"minor":4}},"contract":{{"unit":"limen.core","version":1,"fingerprint":"{Limen.core.Fingerprint}"}},"capabilities":[{packs}]}}}}"""
+
+let private event (name: string) (value: string) =
+    $"""{{"kind":"Event","event":{{"kind":"Event","name":"{name}","value":{Text.Json.JsonSerializer.Serialize value}}}}}"""
+
+let private flag (key: string) (reply: string) =
+    match (JsonNode.Parse reply |> Option.ofObj |> Option.get)["view"] with
+    | null -> failwith "no view"
+    | view ->
+        match view[key] with
+        | null -> failwith key
+        | v -> v.GetValue<bool>()
+
+let private openAs (repository: InMemoryStore) (subject: string) (login: string) =
+    let env = page repository subject login
+    let session, reply = pump env Wire.initial (initialize "#/customers")
+    env, session, reply
+
+let private send (env: Wire.Env) (session: Wire.Session) (events: (string * string) list) =
+    events |> List.fold (fun (session, _) (name, value) -> pump env session (event name value)) (session, "")
+
+let private addCustomer (env: Wire.Env) (session: Wire.Session) (name: string) =
+    send env session [ "customerNameChanged", name; "customerAddressChanged", "1 Main Street"; "customerAdded", "" ]
+
+/// The customers stored on the repository, as anyone opening it would see.
+let private storedCustomers (repository: InMemoryStore) =
+    let config = Summa.Storage.Deployment.parse configuration |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let binding = Summa.Storage.Storage.binding config |> Result.defaultWith (fun e -> failwith $"%A{e}")
+
+    match Summa.Storage.Workspace.openBooks repository.Provider config binding config.Organizations.Head "github:583231" |> Async.RunSynchronously with
+    | Ok(Summa.Storage.Workspace.Opened opened) -> opened.Books.Books.Customers |> Map.toList |> List.map (fun (id, c) -> id, c.Name)
+    | other -> failwith $"%A{other}"
+
+[<Fact>]
+let ``a listed administrator sets the books up on GitHub and works in them; each change is one commit`` () =
+    let repository = InMemoryStore()
+    let env, session, reply = openAs repository "583231" "octocat"
+    Assert.True(flag "booksNotSetUp" reply)
+    Assert.True(flag "mayFound" reply)
+
+    let session, reply = send env session [ "foundRequested", "" ]
+    Assert.True(flag "isReady" reply)
+    // The link asked for is where the page is, and what it shows.
+    Assert.Equal(Some "/customers", session.Model.Router.Current)
+    Assert.True(flag "onCustomers" reply)
+
+    let session, reply = addCustomer env session "Acme"
+    Assert.False(flag "hasError" reply)
+    Assert.Equal(0, session.Model.Unsaved)
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Acme" ], storedCustomers repository)
+
+[<Fact>]
+let ``someone else's change in between is kept: the command is decided again on the books as they stand`` () =
+    let repository = InMemoryStore()
+    let first, firstSession, _ = openAs repository "583231" "octocat"
+    let firstSession, _ = send first firstSession [ "foundRequested", "" ]
+
+    // A second page opens the same books before the first adds anything.
+    let second, secondSession, reply = openAs repository "583231" "octocat"
+    Assert.True(flag "isReady" reply)
+
+    addCustomer first firstSession "Acme" |> ignore
+    let secondSession, reply = addCustomer second secondSession "Globex"
+    Assert.False(flag "hasError" reply)
+
+    // Both are kept, each under its own id: the second was numbered again.
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Acme"; "CUST-0002", "Globex" ], storedCustomers repository)
+    Assert.Equal(2, secondSession.Model.Books.Value.Books.Customers.Count)
+
+[<Fact>]
+let ``someone signed in but not a member sees nothing, and an unlisted person cannot set the books up`` () =
+    let repository = InMemoryStore()
+    let _, _, reply = openAs repository "999" "stranger"
+    Assert.True(flag "booksNotSetUp" reply)
+    Assert.False(flag "mayFound" reply)
+
+    let env, session, _ = openAs repository "583231" "octocat"
+    send env session [ "foundRequested", "" ] |> ignore
+    let _, _, reply = openAs repository "999" "stranger"
+    Assert.True(flag "notAMember" reply)
+    Assert.False(flag "isReady" reply)
+
+[<Fact>]
+let ``a change needs the capability: without it nothing is committed`` () =
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+    let model = { session.Model with Capabilities = set [ Summa.Access.Access.ViewFinancials ] }
+    let session, reply = addCustomer env { session with Model = model } "Acme"
+    Assert.True(flag "hasError" reply)
+    Assert.Contains("does not include", session.Model.Error.Value)
+    Assert.Empty(storedCustomers repository)
+
+
+let private waiting (session: Wire.Session) = session.Model.Unsent.Waiting
+
+[<Fact>]
+let ``a change made while GitHub cannot be reached is kept, shown, and sent when it can`` () =
+    browser <- None
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+
+    (networkOf repository).Online <- false
+    let session, reply = addCustomer env session "Acme"
+    // Shown at once, kept to send, and not on GitHub.
+    Assert.Equal(1, session.Model.Books.Value.Books.Customers.Count)
+    Assert.Equal(1, waiting session)
+    Assert.True(flag "hasUnsent" reply)
+    Assert.Equal(0, session.Model.Unsaved)
+
+    // GitHub's integration state says so (SUM3-032): pending, with the books unchanged on GitHub.
+    let github () = integrationStates true session.Model.Unsent session.Model.Books.Value |> List.head
+    Assert.Equal(("GitHub", Summa.Storage.Integrations.Pending), (let n, s, _, _ = github () in n, s))
+
+    // Still unreachable: sending again keeps it.
+    let session, _ = send env session [ "sendUnsentRequested", "" ]
+    Assert.Equal(1, waiting session)
+
+    (networkOf repository).Online <- true
+    let session, reply = send env session [ "sendUnsentRequested", "" ]
+    Assert.Equal(0, waiting session)
+    Assert.False(flag "hasUnsent" reply)
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Acme" ], storedCustomers repository)
+    let _, state, _, _ = integrationStates true session.Model.Unsent session.Model.Books.Value |> List.head
+    Assert.Equal(Summa.Storage.Integrations.Succeeded, state)
+
+[<Fact>]
+let ``unsent changes outlive the page in this browser, held by one tab at a time`` () =
+    browser <- Some(Browser())
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+
+    (networkOf repository).Online <- false
+    let session, _ = addCustomer env session "Acme"
+    Assert.Equal(1, waiting session)
+    Assert.Contains(browser.Value.Storage.Keys, fun key -> key.StartsWith "arca.queue.")
+    // Kept under the account GitHub resolved, so sign-out matches it by a stable id (Arca 0.4.0).
+    Assert.Contains(browser.Value.Storage.Values, fun text -> text.Contains "subject:github:583231")
+
+    // Another tab of the same browser does not take them: one lock, one holder.
+    openAs repository "583231" "octocat" |> ignore
+    Assert.Equal(1, browser.Value.Locks.Count)
+
+    // The page closes (its lock goes with it) and GitHub can be reached again;
+    // a new page sends what the old one kept before showing the books.
+    browser.Value.Locks.Clear()
+    (networkOf repository).Online <- true
+    let _, reopened, _ = openAs repository "583231" "octocat"
+    Assert.Equal(0, waiting reopened)
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Acme" ], storedCustomers repository)
+    Assert.Equal(1, reopened.Model.Books.Value.Books.Customers.Count)
+    browser <- None
+
+[<Fact>]
+let ``a kept change GitHub moved under, from an earlier page, waits for the person, who may give it up`` () =
+    browser <- Some(Browser())
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+
+    (networkOf repository).Online <- false
+    addCustomer env session "Acme" |> ignore
+
+    // Meanwhile someone else adds a customer on GitHub.
+    browser.Value.Locks.Clear()
+    (networkOf repository).Online <- true
+    let savedBrowser = browser
+    browser <- None
+    let elsewhere, elsewhereSession, _ = openAs repository "583231" "octocat"
+    addCustomer elsewhere elsewhereSession "Globex" |> ignore
+    browser <- savedBrowser
+
+    // A new page in the first browser cannot decide the old change again: it waits.
+    let env, reopened, reply = openAs repository "583231" "octocat"
+    Assert.Equal(1, waiting reopened)
+    Assert.True(flag "hasBlockedChange" reply)
+    Assert.True(reopened.Model.Unsent.Blocked.IsSome)
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Globex" ], storedCustomers repository)
+
+    let after, reply = send env reopened [ "abandonUnsentRequested", "" ]
+    Assert.Equal(0, waiting after)
+    Assert.False(flag "hasUnsent" reply)
+    browser <- None
+
+[<Fact>]
+let ``checking the books shows a record edited outside Summa, and changes nothing`` () =
+    browser <- None
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+    let session, _ = addCustomer env session "Acme"
+
+    let session, _ = send env session [ "checkRequested", "" ]
+    Assert.Equal(Checked [], session.Model.Check)
+
+    // Someone rewrites the customer's file on GitHub, by hand.
+    let config = Summa.Storage.Deployment.parse configuration |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let binding = Summa.Storage.Storage.binding config |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let ns = Summa.Storage.Storage.organizationNamespace config binding "org_acme" |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let path = RelativePath.parse "records/summa.customer/CUST-0001.json" |> Result.defaultWith (fun e -> failwith $"%A{e}")
+
+    let content =
+        match repository.Provider.Read ns path |> Async.RunSynchronously with
+        | Ok(ReadOutcome.Found found) -> found.Content
+        | other -> failwith $"%A{other}"
+
+    repository.WriteExternally(ns.Location, RelativePath.render ns.Root + "/records/summa.customer/CUST-0001.json", Some content)
+    let session, reply = send env session [ "checkRequested", "" ]
+
+    match session.Model.Check with
+    | Checked [ finding ] -> Assert.Contains("CUST-0001", finding)
+    | other -> failwith $"%A{other}"
+
+    Assert.True(flag "booksChecked" reply)
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Acme" ], storedCustomers repository)
+
+// ---- Unsent changes keep their account (WI-0046) ---------------------------------------------
+
+let private keptQueue () =
+    let key = browser.Value.Storage.Keys |> Seq.find (fun k -> k.StartsWith "arca.queue.")
+    key, OfflineQueue.decode browser.Value.Storage[key] |> Result.defaultWith (fun e -> failwith $"%A{e}")
+
+/// A change kept while GitHub could not be reached, then made to look as if
+/// an earlier Summa (or Arca 0.4.0's revise) kept it without its account,
+/// recording `actor` as the one who made it.
+let private keptWithoutAccount (actor: string) =
+    browser <- Some(Browser())
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+    (networkOf repository).Online <- false
+    addCustomer env session "Acme" |> ignore
+    let key, queue = keptQueue ()
+    let legacy = { queue with Entries = queue.Entries |> List.map (fun e -> { e with Operation = { e.Operation with AccountId = None; ActorId = actor } }) }
+    browser.Value.Storage[key] <- OfflineQueue.encode legacy |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    browser.Value.Locks.Clear()
+    (networkOf repository).Online <- true
+    repository
+
+[<Fact>]
+let ``a change another sign-in kept without its account is held, never sent as whoever signs in, until the person sends it`` () =
+    let repository = keptWithoutAccount "github:999"
+    let env, session, reply = openAs repository "583231" "octocat"
+    Assert.True(flag "hasForeignUnsent" reply)
+    Assert.Equal(1, waiting session)
+    Assert.Empty(storedCustomers repository)
+    // Stamped only from the actor it recorded, never with this sign-in's account.
+    Assert.True((snd (keptQueue ())).Entries |> List.forall (fun e -> e.Operation.AccountId = Some "actor:github:999"))
+
+    let session, reply = send env session [ "foreignUnsentSendRequested", "" ]
+    Assert.False(flag "hasForeignUnsent" reply)
+    Assert.Equal(0, waiting session)
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Acme" ], storedCustomers repository)
+    browser <- None
+
+[<Fact>]
+let ``the person may discard a change another sign-in kept, and it is given up, not sent`` () =
+    let repository = keptWithoutAccount "github:999"
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, reply = send env session [ "foreignUnsentDiscardRequested", "" ]
+    Assert.False(flag "hasForeignUnsent" reply)
+    Assert.Equal(0, waiting session)
+    Assert.Empty(storedCustomers repository)
+    browser <- None
+
+[<Fact>]
+let ``revising a kept change keeps the account it recorded, and gives none to one that recorded none`` () =
+    browser <- Some(Browser())
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+    (networkOf repository).Online <- false
+    addCustomer env session "Acme" |> ignore
+    let _, queue = keptQueue ()
+    let refused = { queue with Entries = queue.Entries |> List.map (fun e -> { e with State = EntryState.Refused "test" }) }
+    let entry = refused.Entries.Head
+    Assert.Equal(Some "subject:github:583231", entry.Operation.AccountId)
+    let config = Summa.Storage.Deployment.parse configuration |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let binding = Summa.Storage.Storage.binding config |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let ns = Summa.Storage.Storage.organizationNamespace config binding "org_acme" |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let operation = OfflineQueue.operationOf ns entry.Operation |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let revised = OfflineQueue.revise entry.Sequence operation refused |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    Assert.Equal(Some "subject:github:583231", revised.Entries.Head.Operation.AccountId)
+    let unattributed = { refused with Entries = refused.Entries |> List.map (fun e -> { e with Operation = { e.Operation with AccountId = None } }) }
+    let stillNone = OfflineQueue.revise entry.Sequence operation unattributed |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    Assert.Equal(None, stillNone.Entries.Head.Operation.AccountId)
+    browser <- None
+
+[<Fact>]
+let ``a change kept without its account, but recording this person as its actor, is theirs and is sent`` () =
+    let repository = keptWithoutAccount "github:583231"
+    let _, session, reply = openAs repository "583231" "octocat"
+    Assert.False(flag "hasForeignUnsent" reply)
+    Assert.Equal(0, waiting session)
+    Assert.Equal<(string * string) list>([ "CUST-0001", "Acme" ], storedCustomers repository)
+    browser <- None
+
+let private keyed (name: string) (key: string) (value: string) =
+    $"""{{"kind":"Event","event":{{"kind":"Event","name":"{name}","key":"{key}","value":{Text.Json.JsonSerializer.Serialize value}}}}}"""
+
+let private locate (hash: string) =
+    $"""{{"kind":"LocationChanged","location":{{"origin":"https://summa.example","path":"/app/","query":"","hash":"{hash}"}}}}"""
+
+/// The books stored on the repository, as anyone opening it would see them.
+let private storedBooks (repository: InMemoryStore) =
+    let config = Summa.Storage.Deployment.parse configuration |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let binding = Summa.Storage.Storage.binding config |> Result.defaultWith (fun e -> failwith $"%A{e}")
+
+    match Summa.Storage.Workspace.openBooks repository.Provider config binding config.Organizations.Head "github:583231" |> Async.RunSynchronously with
+    | Ok(Summa.Storage.Workspace.Opened opened) -> opened.Books.Books
+    | other -> failwith $"%A{other}"
+
+/// The paths of the organization's stored files, relative to its folder.
+let private storedPaths (repository: InMemoryStore) =
+    let config = Summa.Storage.Deployment.parse configuration |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let binding = Summa.Storage.Storage.binding config |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    let ns = Summa.Storage.Storage.organizationNamespace config binding "org_acme" |> Result.defaultWith (fun e -> failwith $"%A{e}")
+
+    Summa.Storage.Commands.readAll repository.Provider ns
+    |> Async.RunSynchronously
+    |> Result.defaultWith (fun e -> failwith $"%A{e}")
+    |> List.map (fun o -> RelativePath.render o.Path)
+
+[<Fact>]
+let ``SUM3-024: a financial export is a sensitive file: a role without ExportData is neither offered nor given one`` () =
+    let repository = InMemoryStore()
+    let env, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send env session [ "foundRequested", "" ]
+    let session, _ = pump env session (locate "#/cpa")
+    let viewer = { session.Model with Capabilities = set [ Summa.Access.Access.ViewFinancials ]; Packs = { Files = true; Store = false } }
+    let session, reply = pump env { session with Model = viewer } (event "cpaTrialBalanceExported" "")
+    Assert.True(flag "hasError" reply)
+    Assert.Contains("does not include exporting financial data", session.Model.Error.Value)
+    Assert.False(flag "canExport" reply)
+    // With ExportData the same request is offered and made.
+    let exporter = { viewer with Capabilities = viewer.Capabilities.Add Summa.Access.Access.ExportData; Error = None }
+    let session, reply = pump env { session with Model = exporter } (event "cpaTrialBalanceExported" "")
+    Assert.False(flag "hasError" reply)
+    Assert.True(flag "canExport" reply)
+    Assert.True(reply.Contains "\"operation\":\"download\"")
+
+[<Fact>]
+let ``books founded on GitHub can be invoiced at once: the founder submits and issues an invoice through the page`` () =
+    let repository = InMemoryStore()
+    let page, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send page session [ "foundRequested", "" ]
+
+    // Founding wrote the organization's starting chart: the accounts its manifest names exist.
+    let founded = storedBooks repository
+    for code in [ "1000"; "1100"; "2100"; "2200"; "4000"; "6500" ] do
+        Assert.True(founded.Ledger.Accounts.ContainsKey code, $"account {code}")
+
+    let session, _ = addCustomer page session "Acme"
+    let session, _ = pump page session (locate "#/settings")
+
+    let session, _ =
+        send page session
+            [ "companyLegalNameChanged", "Echelon Foundry LLC"
+              "companyAddressChanged", "1 Foundry Way"
+              "companyEmailChanged", "billing@echelon.example"
+              "companyPaymentChanged", "ACH to account ending 6789"
+              "companySaved", "" ]
+
+    let session, _ = pump page session (locate "#/invoices/new")
+    let session, _ = pump page session (event "draftCustomerChanged" "CUST-0001")
+    let line = session.Model.Draft.Lines.Head.Key
+
+    let session, reply =
+        [ keyed "lineDescriptionChanged" line "Assessment"; keyed "lineHoursChanged" line "10"; keyed "lineRateChanged" line "100.00"; event "draftSubmitted" "" ]
+        |> List.fold (fun (s, _) m -> pump page s m) (session, "")
+
+    Assert.False(flag "hasError" reply)
+    Assert.Empty(session.Model.Blockers)
+    Assert.Equal(Summa.Ledger.Invoicing.SubmittedForReview 1, (storedBooks repository).Drafts["D-0001"].Review)
+
+    let session, reply = send page session [ "draftIssued", "" ]
+    Assert.False(flag "hasError" reply)
+    Assert.Equal(0, session.Model.Unsaved)
+    let books = storedBooks repository
+    let invoice = books.Invoices |> Map.toList |> List.exactlyOne |> snd
+    Assert.Equal(1000_00L, invoice.Total.Minor)
+    // The receivable and the revenue were posted to the organization's own accounts.
+    Assert.Contains(books.Ledger.Entries.Values, fun e -> e.Lines |> List.exists (fun l -> l.AccountId = "4000"))
+
+[<Fact>]
+let ``INV-FAIL-002: a refused change says why, what is unchanged, whether to try again, and what to do`` () =
+    let text = Summa.Web.Application.Store.describeFailure (Summa.Storage.Commands.StorageFailed(StorageFailure.Conflicted []))
+    Assert.Equal(
+        "Someone else changed the same records first. The books show their change. Nothing was saved; the books are as they were. Trying again is safe. Try again: it is decided on the books as they then stand.",
+        text
+    )
+
+[<Fact>]
+let ``INV-INTL-001: on GitHub, the organization's legal fields are one record, committed as recorded and kept when the last field is removed`` () =
+    browser <- None
+    let repository = InMemoryStore()
+    let page, session, _ = openAs repository "583231" "octocat"
+    let session, _ = send page session [ "foundRequested", "" ]
+    let session, _ = pump page session (locate "#/settings")
+
+    let session, reply =
+        send page session [ "legalKindChosen", "vat-id"; "legalJurisdictionChanged", "GB"; "legalValueChanged", "GB123456789"; "organizationLegalFieldAdded", "" ]
+
+    Assert.False(flag "hasError" reply)
+    Assert.Equal(0, session.Model.Unsaved)
+    let vat: Summa.Ledger.Invoicing.LegalField = { Kind = Summa.Ledger.Invoicing.VatId; Jurisdiction = "GB"; Value = "GB123456789" }
+    Assert.Equal(Some [ vat ], (storedBooks repository).LegalFields)
+    Assert.Contains("records/summa.legal-fields/organization.json", storedPaths repository)
+
+    let session, reply = pump page session (keyed "organizationLegalFieldRemoved" "vat-id:GB" "")
+    Assert.False(flag "hasError" reply)
+    Assert.Equal(0, session.Model.Unsaved)
+    Assert.Equal(Some [], (storedBooks repository).LegalFields)
+    // The record lists none now; it is not deleted (SUM3-034).
+    Assert.Contains("records/summa.legal-fields/organization.json", storedPaths repository)
+
+[<Fact>]
+let ``after a change is committed, the next read pins to the new commit and never reads through the earlier pin`` () =
+    let repository = InMemoryStore()
+    let provider = (networkOf repository).Provider
+    let events = Collections.Generic.List<string * ChangeToken>()
+
+    // Each pin records when it is taken and every read made through it.
+    let pins (token: ChangeToken) : PinnedReads option =
+        events.Add(("pin", token))
+
+        Some
+            { At = token
+              NamespaceState = provider.NamespaceState
+              Read = fun ns path -> (events.Add(("read", token)); provider.Read ns path)
+              List = fun ns path -> (events.Add(("read", token)); provider.List ns path) }
+
+    pinning <- Some pins
+
+    try
+        let first, firstSession, _ = openAs repository "583231" "octocat"
+        let firstSession, _ = send first firstSession [ "foundRequested", "" ]
+        let second, secondSession, _ = openAs repository "583231" "octocat"
+        let opened = events |> Seq.filter (fun (kind, _) -> kind = "pin") |> Seq.map snd |> Seq.last
+
+        // The first page commits a change: the repository moves to a new commit.
+        addCustomer first firstSession "Acme" |> ignore
+        let config = Summa.Storage.Deployment.parse configuration |> Result.defaultWith (fun e -> failwith $"%A{e}")
+        let binding = Summa.Storage.Storage.binding config |> Result.defaultWith (fun e -> failwith $"%A{e}")
+        let orgNs = Summa.Storage.Storage.organizationNamespace config binding "org_acme" |> Result.defaultWith (fun e -> failwith $"%A{e}")
+        let moved = (provider.NamespaceState orgNs |> Async.RunSynchronously |> Result.defaultWith (fun e -> failwith $"%A{e}")).RepositoryToken
+        Assert.NotEqual(opened, moved)
+
+        // The second page's next command reads the books as they stand: pinned at the new commit only.
+        let before = events.Count
+        let _, reply = addCustomer second secondSession "Globex"
+        Assert.False(flag "hasError" reply)
+        let during = events |> Seq.skip before |> List.ofSeq
+        Assert.Contains(("pin", moved), during)
+        Assert.DoesNotContain(("pin", opened), during)
+        Assert.NotEmpty(during |> List.filter (fun (kind, _) -> kind = "read"))
+        Assert.All(during |> List.filter (fun (kind, _) -> kind = "read"), fun (_, token) -> Assert.NotEqual(opened, token))
+
+        // Every read anywhere went through the pin taken last before it.
+        events
+        |> Seq.fold
+            (fun latest (kind, token) ->
+                match kind with
+                | "pin" -> Some token
+                | _ ->
+                    Assert.Equal(latest, Some token)
+                    latest)
+            None
+        |> ignore
+
+        Assert.Equal<(string * string) list>([ "CUST-0001", "Acme"; "CUST-0002", "Globex" ], storedCustomers repository)
+    finally
+        pinning <- None

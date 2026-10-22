@@ -1,0 +1,509 @@
+/// The accounting application's engine and its Limen wiring (WI-0030):
+/// starting and restoring the books, the invoicing flow through domain
+/// commands, refusing untrustworthy books, and the protocol mechanics.
+module Summa.Web.Tests.AccountingTests
+
+open System
+open System.Text.Json.Nodes
+open Xunit
+open Summa.Web.Engine.Common
+open Summa.Web.Engine.Accounting
+module Wire = Summa.Web.Application.AccountingWire
+
+let private ctx = { Now = DateTimeOffset(2026, 10, 7, 9, 0, 0, TimeSpan.Zero); Actor = "local-person" }
+
+let private run (msgs: Msg list) (model: Model) =
+    msgs |> List.fold (fun (m, effects) msg -> let next, more = update ctx msg m in next, effects @ more) (model, [])
+
+let private localConfig = """{"environment":"local","environmentName":"local development"}"""
+
+/// The page's address with a fragment, as the kernel reports it.
+let address (hash: string) : Limen.Routing.PageLocation =
+    { Origin = "https://summa.example"
+      Path = "/app/"
+      Query = ""
+      Hash = hash }
+
+let private home = address ""
+
+let private configured () = run [ Started home; ConfigurationRead(Ok localConfig) ] initial |> fst
+
+let private started () = run [ Started home; ConfigurationRead(Ok localConfig); Loaded None ] initial |> fst
+
+let private value (name: string) (model: Model) =
+    match view model |> List.tryFind (fun (n, _) -> n = name) with
+    | Some(_, Value(Text t)) -> t
+    | Some(_, Value(Flag f)) -> string f
+    | Some(_, Value(Number n)) -> string n
+    | _ -> failwith $"no scalar view value {name}"
+
+let private items (name: string) (model: Model) =
+    match view model |> List.tryFind (fun (n, _) -> n = name) with
+    | Some(_, Items rows) -> rows
+    | _ -> failwith $"no list view value {name}"
+
+let private customer (model: Model) =
+    run
+        [ LocationChanged(address "#/customers")
+          CustomerNameChanged "ABC Corp"
+          CustomerAddressChanged "1 Main Street"
+          CustomerEmailChanged "ap@abc.example"
+          CustomerTermsChanged "30"
+          CustomerAdded ]
+        model
+    |> fst
+
+let private drafted (model: Model) =
+    let withDraft = run [ LocationChanged(address "#/invoices/new"); DraftCustomerChanged "CUST-0001" ] model |> fst
+    let key = withDraft.Draft.Lines.Head.Key
+    run [ LineDescriptionChanged(key, "Assessment"); LineHoursChanged(key, "34.5"); LineRateChanged(key, "175.00") ] withDraft |> fst
+
+[<Fact>]
+let ``starting reads the deployment, then asks the browser for its books; an empty browser starts new ones`` () =
+    let configuring, first = update ctx (Started home) initial
+    Assert.Equal<AppEffect list>([ LoadConfiguration; ReadEditor ], first)
+    Assert.Equal("True", value "isConfiguring" configuring)
+    let loading, effects = update ctx (ConfigurationRead(Ok localConfig)) configuring
+    Assert.Equal<AppEffect list>([ LoadBooks ], effects)
+    Assert.Equal("True", value "isLoading" loading)
+    Assert.Equal("SUMMA · LOCAL · local development · books are kept only in this browser", value "environmentBanner" loading)
+    let fresh, saved = update ctx (Loaded None) loading
+    Assert.Equal("True", value "isReady" fresh)
+
+    match saved with
+    | [ SaveBooks snapshot ] ->
+        // What was saved restores to the same books.
+        let restored, _ = update ctx (Loaded(Some snapshot)) loading
+        Assert.Equal("True", value "isReady" restored)
+        Assert.Equal(fresh.Books.Value.Books.Ledger.Accounts.Count, restored.Books.Value.Books.Ledger.Accounts.Count)
+    | other -> failwith $"%A{other}"
+
+[<Fact>]
+let ``the invoicing flow runs through Summa's domain commands`` () =
+    let model = started () |> customer |> drafted
+    Assert.Equal("6,037.50 USD", value "draftTotal" model)
+    Assert.Equal("True", value "cannotIssue" model)
+    let reviewed, effects = run [ DraftSubmitted ] model
+    // Saved, the new invoice is its draft: the address is replaced, not pushed.
+    Assert.Equal<AppEffect list>(
+        [ SaveBooks(match effects with SaveBooks s :: _ -> s | _ -> "")
+          Navigate(Limen.Routing.NavigationEffect.Replace "/drafts/D-0001")
+          // Saved: the editor's kept form is forgotten (WI-0044).
+          KeepEditor None ],
+        effects
+    )
+    Assert.Equal("False", value "cannotIssue" reviewed)
+    let issued, issuing = run [ DraftIssued ] reviewed
+    Assert.Equal(Summa.Web.Engine.Routes.Invoice("INV-0001", Summa.Web.Engine.Routes.Document), issued.Place)
+    Assert.Contains(Navigate(Limen.Routing.NavigationEffect.Push "/invoices/INV-0001"), issuing)
+    Assert.Equal("6,037.50 USD", value "docTotal" issued)
+    Assert.Equal("Unpaid", value "detailStatus" issued)
+    let paid = run [ InvoiceTabChosen "payments"; PaymentAmountChanged "6037.50"; PaymentRecorded ] issued |> fst
+    Assert.Equal("Paid", value "detailStatus" paid)
+    Assert.Equal("False", value "canRecordPayment" paid)
+    Assert.Equal("0.00 USD", value "totalOutstanding" paid)
+
+[<Fact>]
+let ``a draft that is not ready lists its blockers and is kept as a draft`` () =
+    let model = started () |> customer
+    let noAddress = run [ LocationChanged(address "#/settings"); CompanyAddressChanged ""; CompanySaved ] model |> fst
+    let blocked = run [ DraftSubmitted ] (drafted noAddress) |> fst
+    Assert.Equal("True", value "hasBlockers" blocked)
+    Assert.Equal("1", value "draftCount" blocked)
+    Assert.Equal("True", value "cannotIssue" blocked)
+    Assert.Single(items "blockers" blocked) |> ignore
+
+[<Fact>]
+let ``bad input is refused with a message, never a guess`` () =
+    let model = started () |> customer
+    let noRate = run [ LocationChanged(address "#/invoices/new"); DraftCustomerChanged "CUST-0001" ] model |> fst
+    let key = noRate.Draft.Lines.Head.Key
+    let refused = run [ LineDescriptionChanged(key, "Work"); LineRateChanged(key, "abc"); DraftSubmitted ] noRate |> fst
+    Assert.Equal("'Work' needs a description, a quantity and a rate such as 150.00", value "error" refused)
+    let noName = run [ LocationChanged(address "#/customers"); CustomerAdded ] model |> fst
+    Assert.Equal("A customer needs a name.", value "error" noName)
+
+[<Fact>]
+let ``books that fail their checks are refused, and only then can they be replaced`` () =
+    let model = started () |> customer |> drafted |> run [ DraftSubmitted; DraftIssued ] |> fst
+
+    let snapshot =
+        match Summa.Storage.LocalSnapshot.encode model.Manifest.Value model.Books.Value with
+        | Ok text -> text
+        | Error e -> failwith $"%A{e}"
+
+    let tampered = snapshot.Replace("\\u0022minor\\u0022:603750", "\\u0022minor\\u0022:603751")
+    Assert.NotEqual<string>(snapshot, tampered)
+    let refused = update ctx (Loaded(Some tampered)) (configured ()) |> fst
+    Assert.Equal("True", value "isUntrustworthy" refused)
+    Assert.NotEmpty(items "storageProblems" refused)
+    Assert.Equal("False", value "isReady" refused)
+    // Resetting is offered only for untrustworthy books.
+    Assert.Equal("True", value "isReady" (update ctx ResetConfirmed refused |> fst))
+    Assert.Equal(model.Books.Value.Books.Invoices.Count, (update ctx ResetConfirmed model |> fst).Books.Value.Books.Invoices.Count)
+    Assert.Equal("True", value "isUntrustworthy" (update ctx (Loaded(Some "not json")) (configured ()) |> fst))
+
+[<Fact>]
+let ``books saved before the manifest named its credit, deposit and bad-debt accounts are migrated and saved once`` () =
+    let model = started () |> customer
+
+    let snapshot =
+        match Summa.Storage.LocalSnapshot.encode model.Manifest.Value model.Books.Value with
+        | Ok text -> text
+        | Error e -> failwith $"%A{e}"
+
+    // The manifest as schema 1 wrote it.
+    let v1 =
+        let added = set [ "customerCreditsAccount"; "customerDepositsAccount"; "badDebtAccount" ]
+
+        let body =
+            match Summa.Storage.Organization.body model.Manifest.Value with
+            | Arca.Json.Object members ->
+                Arca.Json.Object(
+                    members
+                    |> List.map (function
+                        | "accounting", Arca.Json.Object a -> "accounting", Arca.Json.Object(a |> List.filter (fst >> added.Contains >> not))
+                        | other -> other)
+                )
+            | other -> other
+
+        match Summa.Storage.Organization.toRecord model.Manifest.Value with
+        | Ok record ->
+            match Arca.Record.encode Arca.Record.DefaultMaxBytes { record with SchemaVersion = 1; Body = body } with
+            | Ok text -> text
+            | Error e -> failwith $"%A{e}"
+        | Error e -> failwith $"%A{e}"
+
+    let older =
+        match JsonNode.Parse snapshot with
+        | null -> failwith "not JSON"
+        | node ->
+            let o = node.AsObject()
+            o["manifest"] <- JsonValue.Create v1
+            o.ToJsonString()
+
+    let migrated, effects = update ctx (Loaded(Some older)) (configured ())
+    Assert.Equal("True", value "isReady" migrated)
+    Assert.Equal("These books were updated to name their credit, deposit and bad-debt accounts.", value "notice" migrated)
+    Assert.Equal("6500", migrated.Manifest.Value.Accounting.BadDebtAccount)
+
+    match effects with
+    | [ SaveBooks saved ] ->
+        let reopened, again = update ctx (Loaded(Some saved)) (configured ())
+        Assert.Equal("True", value "isReady" reopened)
+        Assert.Empty again
+    | other -> failwith $"%A{other}"
+
+// ---- The wire ---------------------------------------------------------------------------
+
+let private aegis = Summa.Web.Application.Boundary.configure [ (Aegis.Sinks.Collector()).Sink() ]
+
+let private handshake (withPrint: bool) =
+    let print = if withPrint then """{"id":"summa.print","version":1,"fingerprint":"summa.print/1: print"}""" else ""
+
+    """{"kind":"Initialize","location":{"origin":"https://summa.example","path":"/app/","query":"","hash":""},"handshake":{"protocol":{"major":1,"minor":4},"contract":{"unit":"limen.core","version":1,"fingerprint":"sha256:2d5e16b7111fc78a319706b9927e4523cfcc519b7a2c9352ca8283ba32d6b71c"},"capabilities":["""
+    + print
+    + "]}}"
+
+let private send (session: Wire.Session) (message: string) =
+    let next, reply = Wire.handle aegis (Summa.Web.Tests.Support.wireEnv ctx.Now) session message
+    next, JsonNode.Parse(reply) |> Option.ofObj |> Option.get
+
+/// The node at a path of object keys and array indices.
+let private at (path: obj list) (node: JsonNode) =
+    path
+    |> List.fold
+        (fun (n: JsonNode) step ->
+            let next =
+                match step with
+                | :? int as i -> n.AsArray()[i]
+                | :? string as k -> n.AsObject()[k]
+                | _ -> null
+
+            next |> Option.ofObj |> Option.defaultWith (fun () -> failwith $"nothing at {path}"))
+        node
+
+let private str path node = (at path node).GetValue<string>()
+let private bool' path node = (at path node).GetValue<bool>()
+
+[<Fact>]
+let ``the wire accepts Limen Core, selects the print pack when offered, and asks Storage for the books`` () =
+    let session, reply = send Wire.initial (handshake true)
+    Assert.Equal("Accepted", str [ "handshake"; "kind" ] reply)
+    Assert.Equal("summa.print", str [ "handshake"; "capabilities"; 0; "id" ] reply)
+    Assert.Equal("Http", str [ "effects"; 0; "kind" ] reply)
+    Assert.Equal(ConfigurationUrl, str [ "effects"; 0; "url" ] reply)
+    let configured =
+        """{"kind":"EffectResult","result":{"kind":"HttpResult","correlationId":"""
+        + "\"" + str [ "effects"; 0; "correlationId" ] reply + "\""
+        + ""","outcome":{"kind":"Success","status":200,"body":{"environment":"local","environmentName":"test"}}}}"""
+
+    let session, reply = send session configured
+    Assert.Equal("Storage", str [ "effects"; 0; "kind" ] reply)
+    Assert.Equal("get", str [ "effects"; 0; "operation" ] reply)
+    Assert.Equal(StorageKey, str [ "effects"; 0; "key" ] reply)
+    let correlation = str [ "effects"; 0; "correlationId" ] reply
+    // Nothing stored yet: new books, saved with a Storage set.
+    let result =
+        """{"kind":"EffectResult","result":{"kind":"StorageResult","correlationId":"""
+        + "\"" + correlation + "\""
+        + ""","outcome":{"kind":"Success","value":null}}}"""
+
+    let _, started = send session result
+    Assert.True(bool' [ "view"; "isReady" ] started)
+    Assert.True(bool' [ "view"; "canPrint" ] started)
+    Assert.Equal("set", str [ "effects"; 0; "operation" ] started)
+    let _, noPrint = send Wire.initial (handshake false)
+    Assert.Equal(0, (at [ "handshake"; "capabilities" ] noPrint).AsArray().Count)
+
+[<Fact>]
+let ``an event the page and engine disagree on is a defect, not an operational fault`` () =
+    let session, _ = send Wire.initial (handshake false)
+    Assert.Throws<InvalidOperationException>(fun () -> send session """{"kind":"Event","event":{"name":"noSuchEvent"}}""" |> ignore) |> ignore
+
+[<Fact>]
+let ``a malformed kernel message is an operational fault, and the model is kept`` () =
+    let session, _ = send Wire.initial (handshake false)
+    let faulted, reply = send session """{"kind":"Mystery"}"""
+    Assert.True(bool' [ "view"; "hasOperationalFault" ] reply)
+    Assert.Equal(session.Model.Storage, faulted.Model.Storage)
+
+[<Fact>]
+let ``a configuration that cannot be used stops the page with the reason`` () =
+    let configuring = update ctx (Started home) initial |> fst
+    let unreadable = update ctx (ConfigurationRead(Error "HTTP 404")) configuring |> fst
+    Assert.Equal("True", value "isMisconfigured" unreadable)
+    Assert.Equal("False", value "isReady" unreadable)
+    Assert.Equal("The deployment's configuration could not be read (HTTP 404).", value "misconfiguration" unreadable)
+    let invalid, effects = update ctx (ConfigurationRead(Ok """{"environment":"moon","environmentName":"x"}""")) configuring
+    Assert.Empty(effects)
+    Assert.Equal("True", value "isMisconfigured" invalid)
+    let production = update ctx (ConfigurationRead(Ok """{"environment":"production","environmentName":"production"}""")) configuring |> fst
+    // Production shows no banner.
+    Assert.Equal("False", value "hasBanner" production)
+
+[<Fact>]
+let ``an invoice's history says when an agent acted, with its identity and run, apart from people`` () =
+    let model = started () |> customer |> drafted |> run [ DraftSubmitted; DraftIssued ] |> fst
+    // The application's own changes are a person's.
+    let own = model.Books.Value.Books.Ledger.Audit |> List.last
+    Assert.Equal(Some "human", own.Provenance |> Option.map _.ActorKind)
+
+    let byAgent: Summa.Ledger.Ledger.AuditRecord =
+        { own with
+            Who = "summa-agent"
+            What = "invoice-sent"
+            Provenance =
+                Some
+                    { ActorKind = "agent"
+                      Agent = Some { Provider = "anthropic"; Model = "claude"; Runtime = "claude-code" }
+                      ExecutionId = Some "EXE-summa.7"
+                      SourceSystem = None
+                      SourceId = None
+                      Reason = Some "customer asked for a copy" } }
+
+    let books = model.Books.Value
+    let withAgent = { model with Books = Some { books with Books = { books.Books with Ledger = { books.Books.Ledger with Audit = books.Books.Ledger.Audit @ [ byAgent ] } } } }
+    let history = run [ LocationChanged(address "#/invoices/INV-0001?tab=history") ] withAgent |> fst |> items "history"
+    let last = history |> List.last |> Map.ofList
+    Assert.Equal(Text "Agent summa-agent (anthropic claude), run EXE-summa.7", last["who"])
+    Assert.Equal(Text "invoice sent: customer asked for a copy", last["what"])
+
+[<Fact>]
+let ``an invoice's history says which version changed and what changed in it`` () =
+    let saved = started () |> customer |> drafted |> run [ DraftSubmitted ] |> fst
+    let model = run [ DraftPurchaseOrderChanged "PO-77"; DraftSubmitted; DraftIssued ] saved |> fst
+    let history = run [ LocationChanged(address "#/invoices/INV-0001?tab=history") ] model |> fst |> items "history" |> List.map Map.ofList
+    let changed = history |> List.map (fun row -> row["changed"])
+    Assert.Contains(Text "version 1", changed)
+    Assert.Contains(Text "version 2; purchase order: none -> PO-77", changed)
+
+[<Fact>]
+let ``INV-CON-001: an issue is committed as the draft version on screen`` () =
+    let reviewed = started () |> customer |> drafted |> run [ DraftSubmitted ] |> fst
+    let version = reviewed.Books.Value.Books.Drafts["D-0001"].Version
+    Assert.Equal(DraftIssuedAt version, pinned reviewed DraftIssued)
+    // Nothing else is rewritten.
+    Assert.Equal(DraftSubmitted, pinned reviewed DraftSubmitted)
+
+[<Fact>]
+let ``INV-CON-002: issuing a draft someone changed since it was reviewed here is refused as stale, and nothing is issued`` () =
+    let reviewed = started () |> customer |> drafted |> run [ DraftSubmitted ] |> fst
+    let seen = reviewed.Books.Value
+    let draft = seen.Books.Drafts["D-0001"]
+    let someone: Summa.Ledger.Ledger.Context = { Who = "someone-else"; When = ctx.Now; Source = "summa"; CorrelationId = None; Provenance = None }
+
+    // Someone else changes the draft and submits it again, on the books as they stand.
+    let changed =
+        Summa.Ledger.Invoicing.saveDraft someone { draft with Details = { draft.Details with PurchaseOrder = Some "PO-9" } } seen.Books
+        |> Result.defaultWith (fun e -> failwith $"%A{e}")
+
+    let manifest = reviewed.Manifest.Value
+    let request = Summa.Storage.Organization.issueRequest manifest changed.Ledger "D-0001" 2 (DateOnly.FromDateTime ctx.Now.UtcDateTime) "x" "y" "z"
+
+    let stored =
+        Summa.Ledger.Issuance.submitForReview someone request { seen with Books = changed }
+        |> Result.defaultWith (fun e -> failwith $"%A{e}")
+
+    Assert.Equal(2, stored.Books.Drafts["D-0001"].Version)
+    // The command this page committed names version 1: decided again on the books as they stand, it is refused.
+    match replay ctx (pinned reviewed DraftIssued) reviewed stored with
+    | Error _ -> ()
+    | Ok books -> failwith $"issued %A{books.Books.Invoices |> Map.keys |> List.ofSeq}"
+
+    let refused, _ = update ctx (DraftIssuedAt 1) { reviewed with Books = Some stored }
+    Assert.Contains(refused.Blockers, fun b -> b.Code = "stale-version")
+    Assert.Empty(refused.Books.Value.Books.Invoices)
+    // The version on screen once the page has the change issues.
+    Assert.True(Result.isOk (replay ctx (DraftIssuedAt 2) reviewed stored))
+
+[<Fact>]
+let ``an invoice shows what settled it, and its journal entry is explained in plain words`` () =
+    let issued = started () |> customer |> drafted |> run [ DraftSubmitted; DraftIssued ] |> fst
+    let paid = run [ InvoiceTabChosen "payments"; PaymentAmountChanged "1000.00"; PaymentRecorded ] issued |> fst
+
+    match items "detailPayments" paid with
+    | [ row ] ->
+        let field name = row |> List.pick (fun (n, v) -> if n = name then Some v else None)
+        Assert.Equal(Text "-1,000.00 USD", field "amount")
+        Assert.Equal(Text "5,037.50 USD", field "balance")
+    | other -> failwith $"%A{other}"
+
+    let entryId = paid.Books.Value.Books.Invoices["INV-0001"].JournalEntryId
+    let entry = run [ LocationChanged(address $"#/ledger/entries/{entryId}") ] paid |> fst
+
+    match items "entryExplanation" entry with
+    | first :: _ as sentences ->
+        Assert.Equal(Text "Invoice INV-2026-0001 was issued to ABC Corp for 6,037.50 USD.", first |> List.pick (fun (n, v) -> if n = "text" then Some v else None))
+        Assert.True(sentences.Length >= 3)
+    | [] -> failwith "no explanation"
+
+[<Fact>]
+let ``INV-OPS-001: the invoice list finds an invoice by its PO, amount, date and customer, and nothing else`` () =
+    let issued = started () |> customer |> drafted |> run [ DraftPurchaseOrderChanged "PO-8812"; DraftSubmitted; DraftIssued ] |> fst
+    let list = run [ LocationChanged(address "#/invoices") ] issued |> fst
+    let numbers search = run [ InvoiceSearchChanged search ] list |> fst |> items "invoices" |> List.map (List.find (fst >> (=) "number") >> snd)
+
+    for search in [ "PO-8812"; "6037.50"; "6,037.50"; "2026-10-07"; "abc corp"; "INV-2026-0001"; "CUST-0001" ] do
+        Assert.Equal<Scalar list>([ Text "INV-2026-0001" ], numbers search)
+
+    Assert.Empty(numbers "PO-9999")
+
+[<Fact>]
+let ``INV-OPS-005: an invoice drills down to its journal entry and lines, its sources, and what settled it`` () =
+    let issued = started () |> customer |> drafted |> run [ DraftSubmitted; DraftIssued ] |> fst
+    let paid = run [ InvoiceTabChosen "payments"; PaymentAmountChanged "1000.00"; PaymentRecorded ] issued |> fst
+    let invoice = paid.Books.Value.Books.Invoices["INV-0001"]
+
+    // Invoice -> journal entry -> journal lines.
+    let entryHref = value "detailEntryHref" paid
+    Assert.Equal($"#/ledger/entries/{invoice.JournalEntryId}", entryHref)
+    let entry = run [ LocationChanged(address entryHref) ] paid |> fst
+    let lines = items "entryLines" entry
+    Assert.Equal(invoice.Lines.Length + 1, lines.Length)
+    Assert.True(lines |> List.forall (fun l -> l |> List.exists (fun (n, v) -> n = "href" && v <> Text "")))
+
+    // Invoice -> source lines -> where each came from.
+    let history = run [ LocationChanged(address "#/invoices/INV-0001?tab=history") ] paid |> fst
+
+    match items "detailSources" history |> List.map Map.ofList with
+    | [ source ] ->
+        Assert.Equal(Text "Assessment", source["description"])
+        Assert.Equal(Text "Typed by hand", source["source"])
+        Assert.NotEqual(Text "", source["line"])
+    | other -> failwith $"%A{other}"
+
+    // Invoice -> payments -> the payment and its allocation.
+    let settlement = run [ LocationChanged(address "#/invoices/INV-0001?tab=payments") ] paid |> fst
+
+    match items "detailPayments" settlement |> List.map Map.ofList with
+    | [ row ] ->
+        let paymentId = paid.Books.Value.Payments |> Map.keys |> Seq.exactlyOne
+        Assert.Equal(Text $"#/payments/{paymentId}", row["href"])
+
+        match row["href"] with
+        | Text href -> Assert.Equal("True", value "onPayment" (run [ LocationChanged(address href) ] settlement |> fst))
+        | other -> failwith $"%A{other}"
+    | other -> failwith $"%A{other}"
+
+[<Fact>]
+let ``INV-INTL-001: legal fields are recorded in Settings and on the customer, and the invoice shows them as recorded`` () =
+    let books = started () |> customer
+    let settings = run [ LocationChanged(address "#/settings") ] books |> fst
+    // A jurisdiction that is not a code is refused, with what to type.
+    let refused = run [ LegalKindChosen "vat-id"; LegalJurisdictionChanged "England"; LegalValueChanged "GB123456789"; OrganizationLegalFieldAdded ] settings |> fst
+    Assert.StartsWith("'ENGLAND' is not a jurisdiction", value "error" refused)
+    Assert.Empty(items "legalFields" refused)
+
+    let recorded =
+        run
+            [ LegalKindChosen "vat-id"; LegalJurisdictionChanged "gb"; LegalValueChanged " GB123456789 "; OrganizationLegalFieldAdded
+              LegalKindChosen "statutory-wording"; LegalJurisdictionChanged "GB"; LegalValueChanged "Registered in England and Wales."; OrganizationLegalFieldAdded ]
+            settings
+        |> fst
+
+    let texts name field model = items name model |> List.map (List.find (fst >> (=) field) >> snd >> (function Text t -> t | other -> $"%A{other}"))
+    Assert.Equal<string list>([ "vat-id:GB"; "statutory-wording:GB" ], texts "legalFields" "key" recorded)
+    // The customer's own, on the customer's page; a statutory wording is the organization's only.
+    let customerPage = run [ LocationChanged(address "#/customers/CUST-0001") ] recorded |> fst
+    Assert.Equal<string list>([ "tax-registration-number"; "vat-id"; "business-registration-number"; "customer-tax-id" ], texts "customerLegalKinds" "value" customerPage)
+    let withCustomer = run [ LegalKindChosen "customer-tax-id"; LegalJurisdictionChanged "US-NY"; LegalValueChanged "NY-998877"; CustomerLegalFieldAdded ] customerPage |> fst
+    Assert.Equal(1, (items "custLegalFields" withCustomer).Length)
+    // Issued, the document shows each, and the statutory wording in its own section.
+    let issued = withCustomer |> drafted |> run [ DraftSubmitted; DraftIssued ] |> fst
+    let line name = items name issued |> List.map (List.find (fst >> (=) "line") >> snd)
+    Assert.Equal<Scalar list>([ Text "VAT ID (GB): GB123456789" ], line "docIssuerLegal")
+    Assert.Equal<Scalar list>([ Text "Customer tax ID (US-NY): NY-998877" ], line "docCustomerLegal")
+    Assert.Equal<Scalar list>([ Text "Registered in England and Wales." ], line "docStatutory")
+    Assert.Equal("True", value "docHasStatutory" issued)
+    // Removing a field changes later invoices only.
+    let removed = run [ LocationChanged(address "#/settings"); OrganizationLegalFieldRemoved "vat-id:GB" ] issued |> fst
+    Assert.Equal(1, (items "legalFields" removed).Length)
+    let issuedWith: Summa.Ledger.Invoicing.LegalField list =
+        [ { Kind = Summa.Ledger.Invoicing.VatId; Jurisdiction = "GB"; Value = "GB123456789" }
+          { Kind = Summa.Ledger.Invoicing.StatutoryWording; Jurisdiction = "GB"; Value = "Registered in England and Wales." } ]
+
+    Assert.Equal<Summa.Ledger.Invoicing.LegalField list>(issuedWith, removed.Books.Value.Books.Invoices["INV-0001"].Issuer.LegalFields)
+
+/// One canonical Chrona message from the contract's golden vectors.
+let private chronaVector (name: string) =
+    Summa.Contracts.GoldenVectors.valid |> List.find (fun v -> v.Name = name) |> _.Text
+
+[<Fact>]
+let ``SUM3-025: a pasted Chrona batch is parsed, validated and previewed with its summary, and applied only when accepted`` () =
+    let books = started () |> customer
+    let page = run [ LocationChanged(address "#/proposals") ] books |> fst
+    let timer = chronaVector "billable-time-published-timer-approved"
+    let unknown = chronaVector "billable-time-published-duration-unknown-origin"
+    let batch = String.concat "\n" [ timer; unknown; timer; "{not json"; "" ]
+    let previewed = run [ ImportTextChanged batch; ImportPreviewed ] page |> fst
+    let ids name = items name previewed |> List.map (List.find (fst >> (=) "id") >> snd)
+    // Accepted, rejected (by line), duplicates and warnings, before anything is applied.
+    Assert.Equal(2, (ids "importAccepted").Length)
+    Assert.Equal<Scalar list>([ Text "line 4" ], ids "importRejected")
+    Assert.Equal(1, (ids "importDuplicates").Length)
+    Assert.Contains(Text "Chrona does not know where this time came from", items "importWarnings" previewed |> List.map (List.find (fst >> (=) "reason") >> snd))
+    Assert.Equal("2 accepted, 1 rejected, 1 duplicates, 1 warnings.", value "importSummary" previewed)
+    Assert.True(previewed.Books.Value.Books.Time.IsEmpty)
+    // Accepting applies exactly what was previewed.
+    let accepted = run [ ImportAccepted ] previewed |> fst
+    Assert.Equal("2 publications imported.", value "notice" accepted)
+    Assert.Equal(2, accepted.Books.Value.Books.Time.Count)
+    Assert.Equal("False", value "hasImportPreview" accepted)
+    // Accepting again, or accepting what was never previewed, applies nothing more.
+    let again = run [ ImportTextChanged timer; ImportAccepted ] accepted |> fst
+    Assert.Equal("Preview the batch before accepting it.", value "error" again)
+    let duplicate = run [ ImportPreviewed; ImportAccepted ] again |> fst
+    Assert.Equal("Nothing in the batch changes the books.", value "error" duplicate)
+    Assert.Equal(2, duplicate.Books.Value.Books.Time.Count)
+
+[<Fact>]
+let ``SUM3-025: a preview made before the books changed is not applied; it must be previewed again`` () =
+    let books = started () |> customer
+    let timer = chronaVector "billable-time-published-timer-approved"
+    let previewed = run [ LocationChanged(address "#/proposals"); ImportTextChanged timer; ImportPreviewed ] books |> fst
+    // The same time arrives another way before this preview is accepted.
+    let imported = Summa.Ledger.ChronaImport.preview { Who = "other"; When = ctx.Now; Source = "test"; CorrelationId = None; Provenance = None } [ (Summa.Contracts.ChronaBilling.V1.Codec.decodePublication timer |> Result.defaultWith (fun e -> failwith $"%A{e}")) ] previewed.Books.Value |> snd
+    let stale = run [ ImportAccepted ] { previewed with Books = Some imported } |> fst
+    Assert.Equal("The books changed since the preview. Preview the batch again before accepting it.", value "error" stale)
+    Assert.True((stale.Books.Value = imported))
