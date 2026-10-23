@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "23c59b60-049a-462e-a773-cabe59a0aa19",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S09-E/briefs/plan.md",
+  "briefSha256": "553d49b60431d448959fcadbf372c656d720ed149c0b1aff3ef5be45d7039179",
+  "startedAt": "2026-10-22T22:22:53.810Z",
+  "endedAt": "2026-10-22T22:23:39.045Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "23c59b60-049a-462e-a773-cabe59a0aa19",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 44240,
+    "costUsdCli": 0.2286071,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 4770,
+      "cacheRead": 41115,
+      "cacheWrite": 15601
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "The plan is in `.decisions/decisions.json` and committed (75d0c0c). As step 1 requires, I haven't changed any code or tests yet. All seven decisions are `proposed`:\n\n- **DEC-W-1 (business rule, R1):** `prescribe` takes an optional `urgent` after the dose. With it, the output ends in ` (urgent)`; without it, output is unchanged.\n- **DEC-W-2 (implementation, R1):** Any other word after the dose is refused with `error: invalid priority <word>`, and nothing changes.\n- **DEC-W-3 (implementation, R1):** Prescriptions get a new `Urgent: bool` field. `help` and the usage text will show `prescribe ... <dose-mg> [urgent]`. The `Session.create` and `run` entry points stay compatible.\n- **DEC-W-4 (business rule, R2):** `queue` lists urgent prescriptions first, then the others, each group in the order written. Urgent entries show as `(urgent, unchecked)` or `(urgent, checked)`. The ordering rule goes in `Rules`, linked to CLIN-21-R2.\n- **DEC-W-5 (conflict resolution, R3):** Urgent prescriptions still need a pharmacist check before they can be dispensed.\n  - The Urgent Care note asks for urgent prescriptions to skip the check. Under the README, a note is not a source of business rules.\n  - Skipping the check would also clash with the accepted DEC-C03, which Pharmacy owns.\n  - So DEC-C03 keeps applying to urgent prescriptions, and the conflict is recorded for Urgent Care and Pharmacy to settle.\n- **DEC-W-6 (interpretation, R3):** \"Without delay\" gives no testable rule beyond R1 and R2, so I won't invent extra behaviour for it. The open question goes to the owners.\n- **DEC-W-7 (implementation):** I'll add acceptance tests for the criteria the provided tests don't cover:\n  - urgent prescriptions still need the check;\n  - an invalid priority is refused;\n  - the `(urgent, checked)` marking;\n  - order within each group;\n  - the updated `help` line.\n\nPLAN: ready"
+  }
+}

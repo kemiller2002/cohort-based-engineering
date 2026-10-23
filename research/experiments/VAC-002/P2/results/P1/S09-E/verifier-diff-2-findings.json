@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-4",
+      "issue": "The queue text for a checked urgent prescription, `<id> (urgent, checked)`, is not given by any source. CLIN-21-R2 says urgent prescriptions are marked and shows only the unchecked form `rx2 (urgent, unchecked)`. Building the checked form from R2's pattern and the existing `(checked)` text is a reasonable reading, and the implementer flagged it as inferred and asked Urgent Care to confirm (Q4). Since it only marks an entry and changes no rule, it is advisory.",
+      "authorizedAlternative": "R2 authorizes marking urgent prescriptions and gives `(urgent, unchecked)`. The exact text for the checked form should be confirmed by Urgent Care, the owner of CLIN-21, as already asked in docs/notes/2026-10-22-clin-21-open-questions.md Q4."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-6",
+      "issue": ".work/report.json gives the outcome as `completed`, but in the same report CLIN-21-R3 is `not-implemented`, and the acceptance criteria require each statement in CLIN-21 to hold. Not building R3 is correct: no source gives a testable rule, and the Urgent Care note's reading conflicts with accepted DEC-C03. But calling the work item completed overstates it, and no source authorizes treating R3 as met or waived.",
+      "authorizedAlternative": "Report CLIN-21 as not fully complete, or blocked on R3, until Urgent Care (owner of CLIN-21) and Pharmacy (owner of DEC-C03) settle the open question. Keep the DEC-C03 check for urgent prescriptions in the meantime."
+    }
+  ]
+}

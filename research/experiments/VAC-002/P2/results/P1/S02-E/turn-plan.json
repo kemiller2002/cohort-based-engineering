@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "805f5964-69e6-46bb-8000-25a19f5ae7ce",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S02-E/briefs/plan.md",
+  "briefSha256": "42d99583a38949a5487f59587621e857d6aea002b875eb5db864277a248a0fe0",
+  "startedAt": "2026-10-22T22:16:48.164Z",
+  "endedAt": "2026-10-22T22:17:47.150Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "805f5964-69e6-46bb-8000-25a19f5ae7ce",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 57519,
+    "costUsdCli": 0.3069565,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 14,
+      "output": 4987,
+      "cacheRead": 92242,
+      "cacheWrite": 23572
+    },
+    "toolUses": 7,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan to `.decisions/decisions.json` and committed it (`060c6fb`). It has seven decisions, all `proposed`. No code or tests have changed yet.\n\n- **DEC-W-1:** The loan period is 21 days for every member type, as DEC-001 says. It will be defined once in `Policy` as a function of the member type.\n- **DEC-W-2:** I won't add the 28-day student loan period from DEC-009. That record is only `proposed`, so it authorizes nothing, and the handoff note asking for it isn't a valid source of rules. Students keep 21 days, and whether to accept DEC-009 is for the Head of Lending to decide.\n- **DEC-W-3:** Borrowing will use that same per-type definition to set the due date, so it can't disagree with the member view. Due dates won't change.\n- **DEC-W-4:** Renewal will keep DEC-004's own 21-day extension, as a separate policy value. It won't be tied to the loan period, so renewals behave as before.\n- **DEC-W-5:** `StandingView` gets a loan-period field, and `member` prints `, loan period N days` after the standing. The `suspend` and `reinstate` output stays the same.\n- **DEC-W-6:** The loan period is worked out from policy and never stored. The JSON store, help text and entry points don't change.\n- **DEC-W-7:** I'll add tests for what the provided ones don't cover: the member view matches a new loan's due date for every member type, student and staff show 21 days, unknown members still give an error, and `suspend`/`reinstate` output is unchanged.\n\nPLAN: ready"
+  }
+}

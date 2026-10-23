@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-4",
+      "issue": "CLIN-21-R2 gives the exact marking only for an unchecked urgent prescription (`rx2 (urgent, unchecked)`). The plan also fixes the output for a checked urgent prescription as `<id> (urgent, checked)` and declares no source for it. README's standing Output requirement says output is 'exactly as specified', and no source specifies this case. R2 does require every urgent prescription to be marked, and this format follows R2's pattern, so it is not unauthorized behaviour. But it is an exact-text choice the plan makes on its own without saying so, and DEC-W-7 would lock it in with an acceptance test.",
+      "authorizedAlternative": "R2 authorizes listing urgent prescriptions first, in the order written, and marking them as urgent; the existing queue authorizes the `(checked)`/`(unchecked)` states. Keep `(urgent, checked)` as the format that follows R2's pattern, state in the plan that it is inferred rather than specified, and record it for Urgent Care (owner of CLIN-21) to confirm."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-6",
+      "issue": "DEC-W-6 says CLIN-21-R3 ('without delay') is 'met' by the urgent-first queue ordering of DEC-W-4. No source says that ordering is what R3 means. The only text giving R3 a meaning is the Urgent Care note, which is not a source and asks for something else. Calling R3 satisfied is the implementer interpreting a requirement that only its owner can define. CLIN-21's acceptance criterion 'each statement above holds' therefore cannot be shown for R3.",
+      "authorizedAlternative": "Implement no behaviour for R3 beyond R1, R2 and the general rule DEC-C03, as DEC-W-6 already does. Report R3 as open and unverified rather than met, and record the question of what R3 requires, consistent with DEC-C03, for Urgent Care and Pharmacy."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-2",
+      "issue": "R1 names only `urgent` as a priority. No source says what happens to any other word in that position (`soon`, `URGENT`, `Urgent`, `routine`). The plan refuses them, as README requires for uncovered cases. But it does not record the question for the owner, which README also requires. It also states 'only the exact lowercase word' as if that were a settled rule.",
+      "authorizedAlternative": "Refusing with one `error:` line and changing nothing is authorized (README Authority and the standing Errors requirement). Keep the refusal, and add to the plan a record, for Urgent Care, of the question of which other priority words or spellings, if any, are accepted."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-5",
+      "issue": "The plan correctly refuses to let the Urgent Care note override DEC-C03, and it does not choose between the sources. One point remains: the record to the owners should be kept as a deliverable. Without it, a later change could read the note, or R3, as permission to dispense urgent prescriptions before the check. The note asks for something no source authorizes: dispensing an unchecked prescription contradicts accepted DEC-C03, owned by Pharmacy. A requirement from Urgent Care cannot revise a Pharmacy decision.",
+      "authorizedAlternative": "DEC-C03 applies to every prescription, urgent ones included: `dispense` of an unchecked urgent prescription is refused with `error: <id> has not been checked by a pharmacist`. Only Pharmacy can change this, by revising DEC-C03 or granting an approval in docs/approvals/; neither exists. Keep DEC-W-5 as written and make sure the conflict record for Urgent Care and Pharmacy is actually produced."
+    }
+  ]
+}

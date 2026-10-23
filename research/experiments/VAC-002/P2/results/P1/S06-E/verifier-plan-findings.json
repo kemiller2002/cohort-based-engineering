@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-6",
+      "issue": "Accepted DEC-B04 says every invoice adds sales tax at the customer's region rate. BILL-13 says something that cannot also hold: R1's specified output for c2, an ON customer, is the untaxed `90.00`, and its acceptance criteria require existing untaxed behaviour to stay unchanged. Under README, a requirement that contradicts an accepted decision does not revise it, and conflicts between two sources must be recorded for the owners. DEC-W-6 treats DEC-B04 only as 'outside BILL-13' and records just the question of how tax and the discount combine. It does not record the conflict itself. It also calls that combination question open, but BILL-13-R2 ('the discounted amount is the invoice's amount everywhere') read together with DEC-B04 ('tax on its amount') arguably already answers it. The plan should not imply that any other answer is still available.",
+      "authorizedAlternative": "Keep the plan's position that this work implements no tax and no exception or override. Record for Finance, which owns both BILL-13 and DEC-B04, that BILL-13's specified untaxed output and unchanged behaviour conflict with accepted DEC-B04. Also record that if tax is implemented, the sources point to taxing the discounted amount (BILL-13-R2 + DEC-B04) and that the late fee stays on the pre-tax amount (DEC-B04)."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-3",
+      "issue": "When the approved 10% rounds to 0.00 (amounts 0.01-0.04 for a standard nonprofit issued on or after 2026-03-01), the plan prints the invoice 'as before', without '(discount 0.00)'. That is the plan's own interpretation. APR-B01 covers the customer, so the discount applies, and BILL-13-R1 only says that an invoice 'without a discount' prints as before. No source says whether a zero-valued approved discount counts as 'without a discount'. The plan declares the choice but does not record it as a question for Finance.",
+      "authorizedAlternative": "The sources authorize a discount of round2(10% of amount), which is 0.00 here, and an amount equal to the entered amount. Either output form keeps the amounts correct. Record the output-format question for Finance (the owner of BILL-13) and do not present it as settled by the sources."
+    }
+  ]
+}

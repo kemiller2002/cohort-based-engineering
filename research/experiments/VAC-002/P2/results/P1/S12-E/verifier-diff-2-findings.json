@@ -1,0 +1,22 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-10",
+      "issue": "DEC-W-10 and .work/report.json (blockedReason, handoff) justify leaving the two provided CLIN-24 acceptance tests failing partly by citing 'the authorized review findings' and 'the gate'. Review findings and gate results are not sources of business rules under README 'Authority'. The behaviour itself has a valid basis: APR-C01 names the diabetes review clinic, nothing identifies those appointments, and README says to refuse the uncovered case and keep DEC-C02 applying. But the record should rest on those sources, not on reviewer or gate output. The report also correctly states that dotnet test fails (6 passed, 2 failed).",
+      "authorizedAlternative": "Base the refusal only on README 'Authority' (an approval covers exactly what it names; refuse uncovered cases; DEC-C02 keeps applying), APR-C01 and DEC-C02. Keep the open question for Clinical Operations and Dr. Hana Mori."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-9",
+      "issue": "Rules.approvedDoubleBooking hard-codes k2 and Monday and is switched off only because isDiabetesReviewClinic always returns false. The handoff says to 'make Rules.isDiabetesReviewClinic return true for k2 Mondays' once owners confirm. That would implement the broad reading of DEC-W-3, which DEC-W-9 superseded. It needs the owner's confirmation as a granted approval or accepted decision, not a new implementer decision record. DEC-W-9 is also typed 'exception', but it implements no exception.",
+      "authorizedAlternative": "Leave DEC-C02 applying to every booking until Dr. Hana Mori or Clinical Operations records, in docs/approvals/ or docs/decisions/, whether all k2 Monday appointments are covered or how covered appointments are identified. Only then enable the capacity of two."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-6",
+      "issue": "In Commands.schedule and Commands.book, the code itself decides what counts as double-booked: more than one appointment, or a non-empty set of existing appointments at the slot. docs/architecture.md says Commands have no rules of their own. This adds no unauthorized behaviour, because CLIN-24-R2 says to mark every appointment at a double-booked time, but the rule sits outside Rules.",
+      "authorizedAlternative": "Put an 'is double-booked' predicate in Rules, citing CLIN-24-R2, APR-C01 and DEC-C02, and have Commands only format output."
+    }
+  ]
+}

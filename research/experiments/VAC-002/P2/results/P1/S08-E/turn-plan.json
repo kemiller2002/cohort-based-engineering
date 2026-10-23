@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "7cbc8999-8898-4141-a808-6a1d5f1f5ad5",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S08-E/briefs/plan.md",
+  "briefSha256": "de99d9cfb74483a60fe96a1aa110b9299beab4eb4cc493ca0297a9a09c797735",
+  "startedAt": "2026-10-22T22:01:54.466Z",
+  "endedAt": "2026-10-22T22:02:47.256Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "7cbc8999-8898-4141-a808-6a1d5f1f5ad5",
+    "isError": false,
+    "numTurns": 5,
+    "durationMs": 51785,
+    "costUsdCli": 0.2479561,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 5518,
+      "cacheRead": 40580,
+      "cacheWrite": 16163
+    },
+    "toolUses": 4,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for BILL-15 in `.decisions/decisions.json` and committed it (824cd47). Per the brief, I haven't changed any code or tests yet. All eight decisions are `proposed`:\n\n- **DEC-W-1 – when it's charged:** `run-late-fees` charges a 5.00 reminder fee once an invoice is more than 30 days past its due date and still has money outstanding. The rule goes in `Rules`.\n- **DEC-W-2 – \"unpaid\":** an invoice counts as unpaid when more than zero is outstanding, the same test the late fee already uses.\n- **DEC-W-3 – once per invoice:** the fee is stored on the invoice and becomes part of what's outstanding, so it also counts toward the customer's balance. A late fee and a reminder fee can both be charged in the same run.\n- **DEC-W-4 – `run-late-fees` output:** it always prints both counts, even when both are zero. Existing tests that expect the old output will be updated to the new format, with the same counts.\n- **DEC-W-5 – `show` output:** it always shows the reminder fee after the late fee, including `reminder fee 0.00` when none has been charged.\n- **DEC-W-6 – premium customers:** they get the reminder fee like everyone else. The premium exemption (DEC-B05) is only a proposal, and the handoff note asking for the same treatment isn't a source of business rules, so neither can exempt them.\n- **DEC-W-7 – existing premium late-fee exemption:** it contradicts the accepted late-fee rule (DEC-B03), but BILL-15 doesn't cover it, so I'll leave it as it is and record it as an open question for Finance. As a result, a premium invoice can carry a reminder fee without a late fee.\n- **DEC-W-8 – sales tax:** the reminder fee is a flat 5.00 with no tax. The sales tax rule (DEC-B04) is accepted but not yet implemented, and it stays outside this work item.\n\nPLAN: ready"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "3ebcc644-b97a-47b1-99af-a616e5c0ec0c",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S06-E/briefs/plan.md",
+  "briefSha256": "b08c93dc04ade47481ec756d9d377fefc9605854a0cc948a131d7b089c5ede77",
+  "startedAt": "2026-10-22T22:15:50.396Z",
+  "endedAt": "2026-10-22T22:16:47.477Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "3ebcc644-b97a-47b1-99af-a616e5c0ec0c",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 52980,
+    "costUsdCli": 0.251444,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 5394,
+      "cacheRead": 41702,
+      "cacheWrite": 16881
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the BILL-13 plan in `.decisions/decisions.json` and committed it (f71211a). No code or tests have changed yet. There are seven proposed decisions:\n\n- **DEC-W-1 (business-rule):** Apply approval APR-B01 exactly as written. Nonprofit customers on the standard plan get 10% off each invoice issued on or after 2026-03-01, rounded to the cent (half away from zero). The rule goes in `Rules`.\n- **DEC-W-2 (interpretation):** The approval covers exactly what it names. Premium-plan nonprofits (such as c4, Food Bank), businesses and invoices issued before 2026-03-01 get no discount. The Customer Success note asking to cover all nonprofits isn't an authorized source, so I won't act on it; whether to extend the discount is Finance's call.\n- **DEC-W-3 (interpretation):** When a discount applies, `invoice` prints `… issued to …: <discounted> (discount <d>) due <date>`. Otherwise it prints as before. That includes amounts under 0.05, where 10% rounds to 0.00. Note that I typed this as an interpretation, but no source says how a 0.00 discount should print, so the check may treat it as a `default-rule`.\n- **DEC-W-4 (business-rule):** The discounted amount is stored as the invoice amount. `show`, the balance and the 2% late fee all use it, and `show` keeps its current format.\n- **DEC-W-5 (implementation):** Add a `Discount` field to `Invoice`, put the rule in `Rules` and the formatting in `Commands`. The `run` and `Session.create` entry points stay source-compatible, and no commands or help lines change.\n- **DEC-W-6 (interpretation):** Sales tax (DEC-B04) is accepted but not yet implemented, and it's outside BILL-13, so I won't add it. Whether tax applies before or after the discount is an open question for Finance.\n- **DEC-W-7 (implementation):** Add acceptance tests for the criteria the provided tests don't cover: no discount for premium nonprofits, businesses or pre-2026-03-01 invoices; rounding; the late fee on the discounted amount; unchanged help output. The provided"
+  }
+}

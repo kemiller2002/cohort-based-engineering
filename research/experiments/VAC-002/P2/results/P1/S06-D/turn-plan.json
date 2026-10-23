@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "cf15be47-a0a7-479f-93ad-b2b69164176d",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S06-D/briefs/plan.md",
+  "briefSha256": "d7ce09de5aa41932cfd03ab57c7220c7bcbb433bc39ac45448c708411a76df6a",
+  "startedAt": "2026-10-22T22:06:28.936Z",
+  "endedAt": "2026-10-22T22:07:14.905Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "cf15be47-a0a7-479f-93ad-b2b69164176d",
+    "isError": false,
+    "numTurns": 5,
+    "durationMs": 44863,
+    "costUsdCli": 0.22199389999999997,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 4684,
+      "cacheRead": 39969,
+      "cacheWrite": 15018
+    },
+    "toolUses": 4,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan to `.decisions/decisions.json` and committed it. I haven't changed any code or tests yet. There are seven proposed decisions:\n\n- **DEC-W-1, the discount:** The approval APR-B01 is the only granted approval. It gives standard-plan nonprofit customers 10% off each invoice issued on or after 2026-03-01, rounded to the cent (half away from zero). This is the only discount I plan to implement.\n- **DEC-W-2, premium nonprofits:** Premium-plan nonprofits (Food Bank) and business customers get no discount. The Customer Success note asks to cover all nonprofits, but notes don't count as a source of business rules, so I've recorded it as a question for Finance instead.\n- **DEC-W-3, older invoices:** Invoices issued before 2026-03-01 get no discount.\n- **DEC-W-4, output:** A discounted invoice prints with \"(discount X.XX)\". If the discount is 0.00, including a qualifying amount so small that 10% rounds to zero, the invoice prints as before.\n- **DEC-W-5, the discounted amount everywhere:** The discounted amount is stored as the invoice's amount, so `show`, the balance and the late fee all use it.\n- **DEC-W-6, where the code goes:** The discount rule goes in `Rules.fs`, citing the approval, and invoices get a `Discount` field. There are no new commands, `help` doesn't change and the public entry points keep their signatures. I'll add tests for the criteria the provided tests don't cover.\n- **DEC-W-7, sales tax:** Sales tax (DEC-B04) stays out of scope. How the discount should interact with tax is recorded as an open question for Finance.\n\nPLAN: ready"
+  }
+}

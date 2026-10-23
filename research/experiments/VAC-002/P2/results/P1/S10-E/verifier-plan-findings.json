@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-5",
+      "issue": "No source asks for the `book` help/usage line to change to `book <appointment> <patient> <clinician> <date> <time> [kind]`. The standing requirement only says `help` lists every command, and `book` is already listed. CLIN-22's acceptance criteria say existing behaviour is unchanged. The new line would change `help` output, and because `usageOf` reuses the same text, it would also change the `error: usage: book ...` line for a `book` with the wrong number of words. The plan says README's Standing requirements authorize this, but they only require that help lists every command. The plan also edits README's Commands section, which is a project document and not a source the agent can revise on its own. Whether help should show the optional kind is a question for the Scheduling Office that the plan leaves undeclared.",
+      "authorizedAlternative": "Either keep the existing help and usage lines exactly as they are, which satisfies 'help lists every command' and 'existing behaviour is unchanged', or make the change and record it as an open question for the Scheduling Office (owner of CLIN-22), stating that it changes existing help and usage-error output."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-4",
+      "issue": "CLIN-22-R1 names only `follow-up` and `regular`. No source says what happens with any other seventh word, including other capitalisations. Refusing it with an `error:` line and changing nothing is what README requires for an uncovered case. However, README also requires 'the question is recorded for the rule's owner', and the plan records nothing for this case. The exact message wording and putting the kind check before the existence, horizon and slot checks are choices the plan makes itself; no source gives them.",
+      "authorizedAlternative": "Refuse any seventh word other than exactly `follow-up` or `regular` with one `error:` line, leave the state unchanged, and record for the Scheduling Office the question of which kind words are accepted (and whether case matters)."
+    }
+  ]
+}
