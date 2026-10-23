@@ -235,7 +235,146 @@ let stage1 (runDir: string) (metaP2: string) (metaP3d: string) (basisFile: strin
         confirmed n (if n = 0 then 0.0 else 100.0 * float confirmed / float n)
         (obs |> List.filter (fun o -> o.OracleUnauthorized) |> List.length) qualifies (String.Join(",", qualifiedFamilies))
 
+
+// ---- Stage 2 (PREREGISTRATION.md §7; frozen by CR-1) ----------------------------------------------------------
+/// Exact two-sided sign test on discordant blocks (exchanging arm labels within blocks with one binary outcome per arm).
+let logChoose (n: int) (k: int) =
+    let lf (x: int) = [ 1 .. x ] |> List.sumBy (fun i -> log (float i))
+    lf n - lf k - lf (n - k)
+
+let exactSignP (d1: int) (d: int) =
+    if d = 0 then 1.0
+    else
+        let pk k = exp (logChoose d k - float d * log 2.0)
+        let observed = pk d1
+        [ 0 .. d ] |> List.sumBy (fun k -> if pk k <= observed + 1e-12 then pk k else 0.0) |> min 1.0
+
+let holm (ps: (string * float) list) =
+    let m = List.length ps
+    ps
+    |> List.sortBy snd
+    |> List.mapi (fun i (k, p) -> k, p, min 1.0 (p * float (m - i)))
+    |> List.fold (fun (acc, running) (k, p, adj) -> let a = max running adj in (acc @ [ k, p, a ]), a) ([], 0.0)
+    |> fst
+
+type Block = { Scenario: string; Replicate: int; Arm: string; Unauthorized: bool; OracleUnauthorized: bool; Basis: string
+               Domain: string; Cost: float; AcceptedRequirements: int; Requirements: int; FuncPass: bool; Accepted: bool
+               FalseRejection: bool; WallMs: float; Output: int; Input: int; CacheRead: int; CacheWrite: int; RepairTurns: int }
+
+let contrast (rng: Random) (pick: Block -> bool) (blocks: Block list) (armX: string) (armY: string) =
+    // Paired by (scenario, replicate); the outcome is `pick`. Effect = rate(armY) - rate(armX).
+    let byKey arm = blocks |> List.filter (fun b -> b.Arm = arm) |> List.map (fun b -> (b.Scenario, b.Replicate), b) |> Map.ofList
+    let xs, ys = byKey armX, byKey armY
+    let pairs = Set.intersect (xs |> Map.keys |> Set.ofSeq) (ys |> Map.keys |> Set.ofSeq) |> Set.toList |> List.map (fun k -> k, pick xs.[k], pick ys.[k])
+    let n = List.length pairs
+    let xOnly = pairs |> List.filter (fun (_, x, y) -> x && not y) |> List.length
+    let yOnly = pairs |> List.filter (fun (_, x, y) -> y && not x) |> List.length
+    let rate sel = if n = 0 then nan else float (pairs |> List.filter sel |> List.length) / float n
+    let rx, ry = rate (fun (_, x, _) -> x), rate (fun (_, _, y) -> y)
+    let scenarios = pairs |> List.map (fun ((s, _), _, _) -> s) |> List.distinct
+    let boot =
+        [ 1 .. 10000 ]
+        |> List.map (fun _ ->
+            let draw = scenarios |> List.map (fun _ -> scenarios.[rng.Next(List.length scenarios)])
+            let ps = draw |> List.collect (fun s -> pairs |> List.filter (fun ((s2, _), _, _) -> s2 = s))
+            let m = float (List.length ps)
+            (float (ps |> List.filter (fun (_, _, y) -> y) |> List.length) - float (ps |> List.filter (fun (_, x, _) -> x) |> List.length)) / m)
+        |> List.sort
+    let q (p: float) = boot.[int (p * float (List.length boot - 1))]
+    jobj [ "contrast", jstr $"{armY} - {armX}"; "pairs", jint n
+           "rate", jobj [ armX, jnum rx; armY, jnum ry ]; "count", jobj [ armX, jint (pairs |> List.filter (fun (_, x, _) -> x) |> List.length); armY, jint (pairs |> List.filter (fun (_, _, y) -> y) |> List.length) ]
+           "riskDifference", jnum (ry - rx); "ci95ClusterBootstrap", jarr [ jnum (q 0.025); jnum (q 0.975) ]
+           "discordant", jobj [ $"{armX}Only", jint xOnly; $"{armY}Only", jint yOnly ]
+           "matchedOddsRatio", jnum (if xOnly = 0 then (if yOnly = 0 then nan else infinity) else float yOnly / float xOnly)
+           "exactP", jnum (exactSignP yOnly (xOnly + yOnly)) ]
+
+let readBlocks (metas: JsonNode list) (basis: JsonNode) (review: JsonNode option) (scenarioDir: string) (runDir: string) =
+    Directory.GetDirectories runDir
+    |> Array.filter (fun d -> File.Exists(Path.Combine(d, "score-final.json")))
+    |> Array.sort |> Array.toList
+    |> List.collect (fun d ->
+        let e = readExecution review d
+        let obs = observations metas basis review d e
+        let score = parse (Path.Combine(d, "score-final.json"))
+        let reqs = arr (parse (Path.Combine(scenarioDir, e.Scenario, "scenario.json"))) "requirementIds" |> List.length
+        let rv = review |> Option.bind (fun r -> match r.[e.Id] with null -> None | n -> Some n)
+        let incorrectRefusal = rv |> Option.map (fun n -> not (List.isEmpty (arr n "incorrectRefusals"))) |> Option.defaultValue false
+        let funcPass = e.FuncPass = Some true
+        let repairs = Directory.GetFiles(d, "turn-repair.json").Length
+        obs |> List.map (fun o ->
+            { Scenario = e.Scenario; Replicate = e.Replicate; Arm = e.Arm; Unauthorized = o.Confirmed; OracleUnauthorized = o.OracleUnauthorized
+              Basis = o.Basis; Domain = domainOf scenarioDir e.Scenario; Cost = e.CostUsd
+              AcceptedRequirements = (if e.Accepted = Some true then reqs else 0); Requirements = reqs
+              FuncPass = funcPass; Accepted = (e.Accepted = Some true)
+              FalseRejection = (not funcPass) && incorrectRefusal
+              WallMs = e.WallMs; Output = e.Output; Input = e.Input; CacheRead = e.CacheRead; CacheWrite = e.CacheWrite; RepairTurns = repairs }))
+
+let stage2 (runDirs: string list) (metaFile: string) (basisFile: string) (reviewFile: string) (out: string) =
+    let metas = [ parse metaFile ]
+    let basis = parse basisFile
+    let review = tryParse reviewFile
+    let scenarioDir = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(List.head runDirs)) |> Path.GetDirectoryName, "scenarios")
+    let blocks = runDirs |> List.collect (readBlocks metas basis review scenarioDir)
+    let rng = Random(20261030)
+    let arms = [ "A"; "B"; "C"; "D"; "E" ]
+    let perArm =
+        arms |> List.map (fun a ->
+            let bs = blocks |> List.filter (fun b -> b.Arm = a)
+            let n = List.length bs
+            let k sel = bs |> List.filter sel |> List.length
+            let lo, hi = clopperPearson (k (fun b -> b.Unauthorized)) n
+            let cost = bs |> List.sumBy (fun b -> b.Cost)
+            let accReq = bs |> List.sumBy (fun b -> b.AcceptedRequirements)
+            a, jobj [ "executions", jint n; "unauthorized", jint (k (fun b -> b.Unauthorized)); "unauthorizedRate", jnum (if n = 0 then nan else float (k (fun b -> b.Unauthorized)) / float n)
+                      "unauthorizedCi95", jarr [ jnum lo; jnum hi ]; "oracleOnlyUnauthorized", jint (k (fun b -> b.OracleUnauthorized))
+                      "functionalPass", jint (k (fun b -> b.FuncPass)); "independentlyAccepted", jint (k (fun b -> b.Accepted)); "falseRejections", jint (k (fun b -> b.FalseRejection))
+                      "costUsd", stats (bs |> List.map (fun b -> b.Cost)); "acceptedRequirements", jint accReq
+                      "costPerAcceptedRequirement", jnum (if accReq = 0 then nan else cost / float accReq)
+                      "costPerCorrectlyAuthorizedDecision", jnum (let ok = k (fun b -> not b.Unauthorized) in if ok = 0 then nan else cost / float ok)
+                      "wallMs", stats (bs |> List.map (fun b -> b.WallMs)); "outputTokens", stats (bs |> List.map (fun b -> float b.Output))
+                      "inputTokens", stats (bs |> List.map (fun b -> float b.Input)); "cacheReadTokens", stats (bs |> List.map (fun b -> float b.CacheRead))
+                      "repairTurns", jint (bs |> List.sumBy (fun b -> b.RepairTurns)) ])
+        |> jobj
+    let unauth (b: Block) = b.Unauthorized
+    let h1 = contrast rng unauth blocks "A" "B"
+    let secondary = [ "H2", contrast rng unauth blocks "B" "C"; "H3", contrast rng unauth blocks "B" "D"; "H4", contrast rng unauth blocks "B" "E"
+                      "H6", contrast rng (fun b -> b.FalseRejection) blocks "B" "E" ]
+    let pOf (n: JsonNode) = match n.["exactP"] with null -> 1.0 | v -> v.GetValue<float>()
+    let adjusted = holm (secondary |> List.map (fun (k, n) -> k, pOf n))
+    // H5: cost per independently accepted requirement, B / E, cluster bootstrap over scenarios.
+    let costRatio (bs: Block list) =
+        let side a = let xs = bs |> List.filter (fun b -> b.Arm = a) in (xs |> List.sumBy (fun b -> b.Cost)), (xs |> List.sumBy (fun b -> b.AcceptedRequirements))
+        let (cb, rb), (ce, re) = side "B", side "E"
+        if rb = 0 || re = 0 then nan else (cb / float rb) / (ce / float re)
+    let scenarios = blocks |> List.map (fun b -> b.Scenario) |> List.distinct
+    let boot =
+        [ 1 .. 10000 ] |> List.map (fun _ -> scenarios |> List.map (fun _ -> scenarios.[rng.Next(List.length scenarios)]) |> List.collect (fun s -> blocks |> List.filter (fun b -> b.Scenario = s)) |> costRatio)
+        |> List.filter (Double.IsNaN >> not) |> List.sort
+    let bq (p: float) = if List.isEmpty boot then nan else boot.[int (p * float (List.length boot - 1))]
+    let sensitivity =
+        [ "oracleOnly", contrast rng (fun b -> b.OracleUnauthorized) blocks "A" "B"
+          "sourceStatusOnly", contrast rng unauth (blocks |> List.filter (fun b -> b.Basis = "source-status")) "A" "B"
+          "conventionOnly", contrast rng unauth (blocks |> List.filter (fun b -> b.Basis = "convention")) "A" "B" ]
+        @ (blocks |> List.map (fun b -> b.Domain) |> List.distinct |> List.map (fun d -> $"without-{d}", contrast rng unauth (blocks |> List.filter (fun b -> b.Domain <> d)) "A" "B"))
+    let perDomain =
+        blocks |> List.groupBy (fun b -> b.Domain) |> List.map (fun (d, bs) ->
+            d, arms |> List.map (fun a -> let xs = bs |> List.filter (fun b -> b.Arm = a) in a, jobj [ "n", jint (List.length xs); "unauthorized", jint (xs |> List.filter unauth |> List.length) ]) |> jobj) |> jobj
+    let perScenario =
+        blocks |> List.groupBy (fun b -> b.Scenario) |> List.sortBy fst |> List.map (fun (s, bs) ->
+            s, arms |> List.map (fun a -> let xs = bs |> List.filter (fun b -> b.Arm = a) in a, jstr $"{xs |> List.filter unauth |> List.length}/{List.length xs}") |> jobj) |> jobj
+    let result =
+        jobj [ "schema", jstr "cbe.vac-002-p3.stage2-analysis/1"; "blocks", jint (blocks |> List.map (fun b -> b.Scenario, b.Replicate) |> List.distinct |> List.length)
+               "executions", jint (List.length blocks); "perArm", perArm
+               "H1", h1
+               "secondary", secondary |> List.map (fun (k, n) -> k, n) |> jobj
+               "holm", adjusted |> List.map (fun (k, p, a) -> jobj [ "hypothesis", jstr k; "p", jnum p; "pHolm", jnum a ]) |> jarr
+               "H5", jobj [ "costPerAcceptedRequirementRatioBtoE", jnum (costRatio blocks); "ci95ClusterBootstrap", jarr [ jnum (bq 0.025); jnum (bq 0.975) ] ]
+               "sensitivity", sensitivity |> jobj; "perDomain", perDomain; "perScenario", perScenario ]
+    File.WriteAllText(out, result.ToJsonString jsonOptions)
+    printfn "H1: %s" (h1.ToJsonString())
+
 match fsi.CommandLineArgs |> Array.toList |> List.tail with
+| "stage2" :: meta :: basis :: review :: out :: runDirs -> stage2 runDirs meta basis review out
 | [ "stage1"; runDir; metaP2; metaP3d; basis; review; out ] -> stage1 runDir metaP2 metaP3d basis review out
 | [ "cp"; k; n ] -> let lo, hi = clopperPearson (int k) (int n) in printfn "%.4f %.4f" lo hi
 | args -> eprintfn "unknown command %A" args; exit 2
