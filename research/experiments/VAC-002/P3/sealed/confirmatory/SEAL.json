@@ -1,0 +1,14 @@
+{
+  "schema": "cbe.vac-002-p3.seal/1",
+  "plaintextTarGzSha256": "4ef0834e596a94eca238847d22ecdb5de02edb5a2ed63ac2af11274a13fe0d2c",
+  "ciphertextSha256": "d6016eb810f875699837f3db8b88266170663808710580d630ee8b90fe70912e",
+  "manifestSha256": "90071cbb85c421b3d64fca0adfb78bb47e1f6f594c8e2e61cf5532a83050164d",
+  "files": 77,
+  "cipher": "aes-256-cbc pbkdf2 iter 200000 (openssl enc)",
+  "openssl": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "sealedAt": "2026-10-23T09:50:10Z",
+  "contents": "C01-C06/{oracle,ref,trap-*,valid-*}, gen/, support/, meta.json, basis.json, validation-check.txt",
+  "verify": "openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass file:KEY -in p3c-sealed.tar.gz.enc | sha256sum  # equals plaintextTarGzSha256",
+  "store": "p3c (confirmatory: C01-C06)",
+  "key": "kept outside every repository until Stage 2 is scored"
+}

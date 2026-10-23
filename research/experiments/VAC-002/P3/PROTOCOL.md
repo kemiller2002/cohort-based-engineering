@@ -113,7 +113,7 @@ differs from production Ordo in these ways (from P2 `DECISION-AUTHORITY.md` §4)
 |---|---|---|
 | Stage 1 | the commit that adds this file | Contract, arms, harness, discovery corpus (public part), sealed discovery store (ciphertext; key outside the repository), oracle validation, exposure manifest, preregistration |
 | Stage 1, round 2 | the commit titled "VAC-002-P3 FREEZE (Stage 1 round 2)" | D17–D21, sealed store `p3d2` (key outside the repository), oracle validation 18/18, exposure manifest 21/21 |
-| Stage 2 | amendment CR-1 | Confirmatory corpus, sealed store, sample size, seeds |
+| Stage 2 | the commit titled "VAC-002-P3 FREEZE (Stage 2, CR-1)" | Confirmatory corpus C01–C06, sealed store `p3c` (key outside the repository), oracle validation 22/22, exposure 27/27, sample size 18 blocks, seeds, analysis code (`harness/FROZEN.sha256`) |
 
 ## 9. Amendments
 
@@ -178,3 +178,62 @@ Stage 1 froze at commit `766351a` ("VAC-002-P3 FREEZE (Stage 1)").
 - **Status.** Exploratory, for the Stage 2 sample-size calculation only. No sizing execution is confirmatory
   evidence. Scored and reviewed blind exactly as round 2 was.
 - **Budget.** About $9: 15 executions at about $0.27, plus review.
+
+**CR-1 (2026-10-23, after Stage 1 and the sizing run were scored, before any confirmatory execution). Stage 2 frozen.**
+
+**What precedes it.**
+
+- **Qualification.** Round 2: 11 / 15 confirmed (A3).
+- **Sizing run.** Arm B: 1 / 15 confirmed (A4).
+- **Sample size.** `harness/sizing.fsx` with p_A = 0.75 × 0.733 = 0.55, p_B = 0.067 and round 2's per-scenario rates
+  (20,000 simulations, seed 20261029): **17 blocks** reach power 0.84 for H1 at two-sided α = 0.05 (16 give 0.79).
+  The output is in `results/S1B/sizing.txt`.
+
+**Frozen now:**
+
+- **Corpus.**
+  - **Scenarios.** Six new scenarios, C01–C06, in the qualified families, each in its incidental form: F6
+    superseded rule in reused code (C01 Clinic, C02 Billing); F4 unstated default in an existing helper (C03 Clinic,
+    C04 Billing); F10 unrecorded exemption in reused code (C05 Billing, C06 Clinic).
+  - **Independence from discovery.** None reuses a discovery task's text, surface or owner. C01 and C03 follow P2's
+    held-out specifications V03 and V05; C05 is after V08.
+  - **Build.** Each was built and validated like the discovery scenarios (`ORACLE-VALIDATION.md`).
+  - **Sealing.** Store `p3c`, key outside every repository until Stage 2 is scored.
+- **Design.**
+  - All five arms × 6 scenarios × **3 replicates = 18 blocks**, 90 executions.
+  - Run `S2`, one seeded random order over all 90 (seed 20261031), 2 at a time.
+  - A fresh agent per execution in every arm.
+- **Arm instructions, model, harness.** As frozen for Stage 1 with amendment A1 (`harness/briefs/brief.md`,
+  `harness/agent-config.json`, `harness/p3.sh`, `harness/p3.fsx`). Arm E runs contract v0.2 admission and the gate
+  with one repair round.
+- **Oracles.**
+  - FUNC facts and AUTH probes in `p3c/Cxx/oracle/OracleTests.fs`.
+  - Opportunity metadata and basis in `p3c/meta.json` and `p3c/basis.json` (C03 and C04 are convention-dependent;
+    the other four rest on source status).
+  - E is scored at `implement` and at `final`.
+- **Review.**
+  - All 90 items are reviewed blind by R1 and R2 (bundle seed 20261101). Items from all arms are shuffled together,
+    with arm markers removed.
+  - R3 adjudicates disagreements on the primary label.
+- **Analysis.** `harness/analyze.fsx stage2`, frozen at this commit (SHA-256 in the commit's `harness/FROZEN.sha256`):
+  - H1: B − A on confirmed unauthorized decisions, exact within-block sign test, two-sided α = 0.05;
+  - risk difference with a 95% scenario cluster-bootstrap CI (10,000 resamples, seed 20261030);
+  - matched odds ratio;
+  - H2 (C − B), H3 (D − B), H4 (E − B) and H6 (false rejections, E − B), Holm-adjusted as one family;
+  - H5: cost per independently accepted requirement, B / E, with a cluster-bootstrap CI;
+  - sensitivity: oracle-only; source-status only; convention only; leave one domain out;
+  - per-domain and per-scenario tables.
+- **Stopping rules.**
+  - No interim look at outcomes.
+  - The harness stops new executions at $140 cumulative.
+  - If that stops Stage 2 early, the completed blocks are analysed and reported as below the planned size, and no
+    claim is made that the design does not support.
+  - Infrastructure failures are re-run once under a new run id.
+- **Budget estimate.** About $31 to execute (18 blocks × about $1.70) plus about $29 to review (90 items × $0.32).
+  That brings P3 to about $98, inside the $150 ceiling with the $10 reserve intact.
+- **Noninferiority.** No equivalence or noninferiority claim, since the design was not powered for the 0.05 margin.
+  B versus C, D and E are reported with their intervals.
+- **Validation note.** The first validation run found that C03's and C04's variants did not compile: their
+  generators added one closing parenthesis too many. The generators were fixed and the variants regenerated; the
+  public overlays did not change. The rerun passed, and both runs are kept in the sealed validation file.
+  Confirmatory oracle validation: **22 / 22**. Exposure manifest: **27 / 27** scenarios pass.
