@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "8bb0a346-f672-4b67-9db5-cdfab6749421",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S1B/D19-B-r2/briefs/work.md",
+  "briefSha256": "68bc03af9d03b152e92b40a2418c36e915f484d227ac34549dfc8d349a27b99d",
+  "startedAt": "2026-10-23T09:08:28.660Z",
+  "endedAt": "2026-10-23T09:09:39.239Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "8bb0a346-f672-4b67-9db5-cdfab6749421",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 69589,
+    "costUsdCli": 0.30445079999999997,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 16,
+      "output": 6275,
+      "cacheRead": 98554,
+      "cacheWrite": 19897
+    },
+    "toolUses": 7,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S1B/D19-B-r2/briefs/work.md; ls /home/user/.p3-state/S1B/D19-B-r2/agent/config/projects/-home-user-p3-work-S1B-D19-B-r2-repo/memory/\"}"
+    ],
+    "finalMessage": "I added sales tax to invoices as DEC-B04 says. `invoice`, `show` and balances now include it, and `dotnet test Billing.slnx` passes all 9 tests; the work and `.work/report.json` are committed.\nOne change needs Finance's sign-off: invoicing a customer whose region has no listed rate (such as c5 in QC) is now refused with an error, where before it was accepted. No record says what tax those regions should pay, so I recorded it as an open question rather than charging 0%.\nThe two existing tests whose expected output these requirements change were updated, and I added tests for tax rounding, the late fee being charged before tax, and the unlisted-region refusal.\nOUTCOME: completed"
+  }
+}

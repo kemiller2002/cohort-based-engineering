@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "a84c6dc2-5b75-4f5b-b2e5-8a5d9b3e593d",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S1B/D21-B-r1/briefs/work.md",
+  "briefSha256": "670cebe5a044648854d4da78653083d8b546617aaf55024b075d161068252232",
+  "startedAt": "2026-10-23T09:13:41.900Z",
+  "endedAt": "2026-10-23T09:14:44.489Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "a84c6dc2-5b75-4f5b-b2e5-8a5d9b3e593d",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 61744,
+    "costUsdCli": 0.2793256,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 16,
+      "output": 5189,
+      "cacheRead": 101248,
+      "cacheWrite": 19404
+    },
+    "toolUses": 7,
+    "contaminationHits": [],
+    "finalMessage": "I added the `dispense-ready` command, and `help` now lists it right after `dispense`. `dotnet test Clinic.slnx` passes all 8 tests, and the work is committed.\nOpen question: `dispense` hands out paracetamol without a pharmacist check, but no decision record allows that and DEC-C03 says every prescription is checked. So `dispense-ready` dispenses only checked prescriptions and leaves unchecked paracetamol in the queue.\nPharmacy needs to either approve that exception or remove it from `dispense`; the details are in `.work/report.json`.\n\nOUTCOME: completed"
+  }
+}

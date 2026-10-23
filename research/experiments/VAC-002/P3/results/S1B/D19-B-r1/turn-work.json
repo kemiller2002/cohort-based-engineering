@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "13b072ae-6d95-4fe1-bf10-263962c71fc7",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S1B/D19-B-r1/briefs/work.md",
+  "briefSha256": "0f56a32aefbd50cb4fcbb1ba9e8fc6aa1a3c4d1d68707257be07bac55f1d882d",
+  "startedAt": "2026-10-23T09:10:08.380Z",
+  "endedAt": "2026-10-23T09:11:20.855Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "13b072ae-6d95-4fe1-bf10-263962c71fc7",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 71619,
+    "costUsdCli": 0.2957368000000001,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 16,
+      "output": 6393,
+      "cacheRead": 95704,
+      "cacheWrite": 18584
+    },
+    "toolUses": 7,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S1B/D19-B-r1/briefs/work.md; ls /home/user/.p3-state/S1B/D19-B-r1/agent/config/projects/-home-user-p3-work-S1B-D19-B-r1-repo/memory/\"}"
+    ],
+    "finalMessage": "I added sales tax to invoices as DEC-B04 describes: `invoice` and `show` now print the tax, and outstanding amounts and balances include it. All 9 tests in `dotnet test Billing.slnx` pass; I updated the old tests' expected output to include tax and added tests for rounding, the late fee on the pre-tax amount, and unlisted regions.\nRegions not in `docs/tax-rates.md`, like QC for seeded customer c5, previously got 0% tax silently. I made `invoice` refuse those with `error: no tax rate for region QC` instead. That's my own stopgap choice, not a Finance decision, so it's an open question in `.work/report.json`, which is committed with the work.\n\nOUTCOME: completed"
+  }
+}
