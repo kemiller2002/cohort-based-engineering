@@ -1,0 +1,161 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H16",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLM-19-R1",
+      "statement": "A vehicle is a total loss when its repair estimate reaches the total-loss ratio in force of its market value.",
+      "status": "accepted",
+      "owner": "Motor Claims",
+      "source": {
+        "path": "requirements/CLM-19.md",
+        "locator": "## CLM-19-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2981969f18abdd1dc5620e517bda46b72e3fadf6498418ce7afe44cc38eb46a0"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLM-19-R2",
+      "statement": "A total loss is settled at the market value less the expected salvage value under the salvage decision in force. Any other vehicle claim is settled at the repair estimate.",
+      "status": "accepted",
+      "owner": "Motor Claims",
+      "source": {
+        "path": "requirements/CLM-19.md",
+        "locator": "## CLM-19-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2981969f18abdd1dc5620e517bda46b72e3fadf6498418ce7afe44cc38eb46a0"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLM-19-R3",
+      "statement": "While a vehicle is being repaired the claimant is reimbursed for a rental car under the rental decision in force. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Motor Claims",
+      "source": {
+        "path": "requirements/CLM-19.md",
+        "locator": "## CLM-19-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2981969f18abdd1dc5620e517bda46b72e3fadf6498418ce7afe44cc38eb46a0"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-CL14",
+      "statement": "A vehicle is a total loss when the repair estimate is 75% or more of its market value.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Motor Claims",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL14-total-loss-ratio.md",
+        "locator": "# DEC-CL14",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:aca40570b04bc4036ef81f486971b00ab3335ada7175a78c4ad3dbb81cf7601b"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-CL16",
+      "parameters": {
+        "p1": "0.75"
+      }
+    },
+    {
+      "id": "DEC-CL15",
+      "statement": "The expected salvage value of a total loss is 12% of market value for a vehicle up to 10 years old and 4% for an older vehicle, rounded to the cent.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Motor Claims",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Motor Claims",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-27T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL15-salvage-credit.md",
+        "locator": "# DEC-CL15",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:417bdc184f1a5af82e02bdbc6717edccc92b7db6fe00bd94d4c623b3e9abf6a6"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.12",
+        "p2": "10",
+        "p3": "0.04"
+      }
+    },
+    {
+      "id": "DEC-CL16",
+      "statement": "A vehicle is a total loss when the repair estimate is 68% or more of its market value.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Motor Claims",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Motor Claims",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-30T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL16-total-loss-ratio-revised.md",
+        "locator": "# DEC-CL16",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:fc09f574c38a79769f5e5a36e280f60b1b1cb46d5a2ebed554e5227f59be064f"
+      },
+      "supersedes": [
+        "DEC-CL14"
+      ],
+      "parameters": {
+        "p1": "0.68"
+      }
+    },
+    {
+      "id": "DEC-CL17",
+      "statement": "During repairs the claimant is reimbursed for a rental car at up to 45.00 per day, for at most 28 days. A policy without rental cover carries no rental allowance.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Motor Claims",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Motor Claims",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-27T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL17-rental-allowance.md",
+        "locator": "# DEC-CL17",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:229f952aab37f34df6452df4bd6686f8d5ed1154aca5e75729cf4a9dc5d83cf5"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "45.00",
+        "p2": "28"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

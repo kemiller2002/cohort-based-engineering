@@ -1,0 +1,139 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H05",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "PAY-14-R1",
+      "statement": "Each payslip shows the union dues deducted for the period under the dues decision in force. An employee who is not a union member pays no dues.",
+      "status": "accepted",
+      "owner": "Payroll",
+      "source": {
+        "path": "requirements/PAY-14.md",
+        "locator": "## PAY-14-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:3b1ab12a13d9d4f8111f07d041f49260d9a35450c2b6178db37b38405e1b868a"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PAY-14-R2",
+      "statement": "Each payslip shows the employer pension contribution for the period under the pension decision in force.",
+      "status": "accepted",
+      "owner": "Payroll",
+      "source": {
+        "path": "requirements/PAY-14.md",
+        "locator": "## PAY-14-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:3b1ab12a13d9d4f8111f07d041f49260d9a35450c2b6178db37b38405e1b868a"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PAY-14-R3",
+      "statement": "Each payslip shows the vacation hours accrued in the period. An employee on unpaid leave accrues no vacation. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Payroll",
+      "source": {
+        "path": "requirements/PAY-14.md",
+        "locator": "## PAY-14-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:3b1ab12a13d9d4f8111f07d041f49260d9a35450c2b6178db37b38405e1b868a"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-PY04",
+      "statement": "A member of a union local has dues deducted at their local's rate from `docs/union-dues.md`, as a share of gross pay, rounded to the cent. Labour Relations maintains the table.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Labour Relations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Labour Relations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-15T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY04-union-dues.md",
+        "locator": "# DEC-PY04",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:01e6daf6b94e8cd1f60a37f240cead67cb2e42047c9638f0821cf1d725d38158"
+      },
+      "supersedes": [],
+      "parameters": {
+        "union-dues.L114": "0.013",
+        "union-dues.L262": "0.0165",
+        "union-dues.L309": "0.009"
+      }
+    },
+    {
+      "id": "DEC-PY05",
+      "statement": "The employer contributes 4.5% of gross pay to the pension plan for every employee, starting with their first pay period, rounded to the cent.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Benefits",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Benefits",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-15T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY05-employer-pension.md",
+        "locator": "# DEC-PY05",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:7ab19a3050fb381ef129a7e7e1d5d5bae7ab0a36fc13849f7c01508b48f66237"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.045"
+      }
+    },
+    {
+      "id": "DEC-PY10",
+      "statement": "Employees accrue vacation at 6% of the hours paid in the period.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "People Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "People Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-22T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY10-vacation-accrual.md",
+        "locator": "# DEC-PY10",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:a5710e10a09dd7b9c62c65af48f5491e65fa26266f884d5513e01b4e48d44767"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.06"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

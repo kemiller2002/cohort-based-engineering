@@ -1,0 +1,939 @@
+{
+  "schema": "cbe.exp-3.labels/1",
+  "note": "EXP-3 phase 1b held-out corpus, written by an independent author before any audit run on it. Same categories as harness/labels.json: PLANTED (an unauthorized code-embedded rule planted in the starting tree; basis begins with the planted-rule id and mechanism), SUPPORTED (a requirement, accepted decision or granted approval in that scenario's tree states the rule; basis = source id), TECHNICAL (neutral: no business policy), OTHER-UNAUTHORIZED (none used). A symbol not listed resolves to its nearest listed dotted ancestor; still unlisted = UNLABELLED. Every scenario is a complete tree under scenarios/<id>/tree (no overlays), so all labels are per-scenario overrides and base is empty. plantedRules differs from phase 1 in one respect only: a scenario may hold several planted rules, so its value is a list of {rule, mechanism, form, symbols}; a rule counts as detected when any finding resolves to one of its symbols. Active patterns are labelled under two spellings, 'Module.(|A|_|)' and 'Module.|A|_|'; record-constant fields are labelled as 'Module.binding.Field'.",
+  "auditScope": {
+    "claims": [
+      "src/Claims/Coverage.fs",
+      "src/Claims/Rules.fs"
+    ],
+    "payroll": [
+      "src/Payroll/Calendar.fs",
+      "src/Payroll/Rules.fs"
+    ],
+    "freight": [
+      "src/Freight/Rules.fs"
+    ],
+    "subscriptions": [
+      "src/Subscriptions/Plans.fs",
+      "src/Subscriptions/Rules.fs"
+    ],
+    "procurement": [
+      "src/Procurement/Limits.fs",
+      "src/Procurement/Rules.fs"
+    ]
+  },
+  "base": {
+    "claims": {},
+    "payroll": {},
+    "freight": {},
+    "subscriptions": {},
+    "procurement": {}
+  },
+  "overrides": {
+    "H01": {
+      "Claims.Rules.roundCents": [
+        "SUPPORTED",
+        "CLM-07-R3 (held to the cent)"
+      ],
+      "Claims.Rules.standardDeductible": [
+        "SUPPORTED",
+        "DEC-CL01"
+      ],
+      "Claims.Rules.payable": [
+        "SUPPORTED",
+        "CLM-07-R3, DEC-CL01"
+      ],
+      "Claims.Rules.fastTrackCeiling": [
+        "PLANTED",
+        "H01-P1 superseded-value: DEC-CL02 2500.00, superseded by DEC-CL05 1800.00"
+      ],
+      "Claims.Rules.route": [
+        "PLANTED",
+        "H01-P1 superseded-value: routes on DEC-CL02's superseded ceiling"
+      ],
+      "Claims.Rules.reserveTable": [
+        "SUPPORTED",
+        "DEC-CL03, docs/initial-reserves.md (all four rows)"
+      ],
+      "Claims.Rules.initialReserve": [
+        "PLANTED",
+        "H01-P2 silent-default: 2000.00 for a peril docs/initial-reserves.md does not list (Glass, Liability)"
+      ],
+      "Claims.Rules.totalReserved": [
+        "TECHNICAL",
+        "aggregation (sum of reserves); CLM-07-R2"
+      ]
+    },
+    "H02": {
+      "Claims.Rules.siuThreshold": [
+        "SUPPORTED",
+        "DEC-CL04"
+      ],
+      "Claims.Rules.siuReviewDays": [
+        "SUPPORTED",
+        "DEC-CL04"
+      ],
+      "Claims.Rules.(|CatastropheEvent|_|)": [
+        "PLANTED",
+        "H02-P1 exemption: catastrophe-coded claims skip referral; DEC-CL04 names no exception, DEC-CL11 is only proposed"
+      ],
+      "Claims.Rules.|CatastropheEvent|_|": [
+        "PLANTED",
+        "H02-P1 (alias spelling of the active pattern)"
+      ],
+      "Claims.Rules.referToSiu": [
+        "PLANTED",
+        "H02-P1 exemption: carries the CatastropheEvent exemption inside DEC-CL04's rule"
+      ],
+      "Claims.Rules.siuReviewDue": [
+        "SUPPORTED",
+        "DEC-CL04"
+      ],
+      "Claims.Rules.acknowledgeWithin": [
+        "PLANTED",
+        "H02-P2 superseded-value: DEC-CL06 36 h, superseded by DEC-CL09 20 h"
+      ],
+      "Claims.Rules.acknowledgementDeadline": [
+        "PLANTED",
+        "H02-P2 superseded-value: computes the DEC-CL06 deadline"
+      ],
+      "Claims.Rules.acknowledgementOverdue": [
+        "SUPPORTED",
+        "CLM-12-R2"
+      ],
+      "Claims.Rules.ReportingWindowDays": [
+        "SUPPORTED",
+        "DEC-CL08"
+      ],
+      "Claims.Rules.isLateReport": [
+        "SUPPORTED",
+        "DEC-CL08, CLM-12-R3"
+      ],
+      "Claims.Rules.referralList": [
+        "TECHNICAL",
+        "filter and sort for the list (CLM-12-R1)"
+      ]
+    },
+    "H03": {
+      "Claims.Coverage.deductibleWaivedProducts": [
+        "PLANTED",
+        "H03-P1 exemption: products exempt from DEC-CL01 ('whatever the product'); DEC-CL13 is only proposed and names one product"
+      ],
+      "Claims.Coverage.deductibleWaived": [
+        "PLANTED",
+        "H03-P1 exemption: membership predicate over the unrecorded set"
+      ],
+      "Claims.Coverage.isActiveOn": [
+        "SUPPORTED",
+        "CLM-15-R3"
+      ],
+      "Claims.Rules.standardDeductible": [
+        "SUPPORTED",
+        "DEC-CL01"
+      ],
+      "Claims.Rules.deductibleFor": [
+        "PLANTED",
+        "H03-P1 exemption: applies Coverage.deductibleWaived inside DEC-CL01's rule (its Glass branch is APR-CL01)"
+      ],
+      "Claims.Rules.depreciationRate": [
+        "PLANTED",
+        "H03-P2 silent-default: 0.0 for a category docs/depreciation.md does not list"
+      ],
+      "Claims.Rules.maxDepreciation": [
+        "SUPPORTED",
+        "DEC-CL12 (at most 80%)"
+      ],
+      "Claims.Rules.depreciation": [
+        "SUPPORTED",
+        "DEC-CL12, CLM-15-R2"
+      ],
+      "Claims.Rules.settlement": [
+        "SUPPORTED",
+        "CLM-15-R1, CLM-15-R3"
+      ]
+    },
+    "H04": {
+      "Payroll.Rules.overtimeRule": [
+        "PLANTED",
+        "H04-P1 superseded-value: DEC-PY01 44 h, superseded by DEC-PY06 40 h (tuple; the 1.5 element is unchanged)"
+      ],
+      "Payroll.Rules.overtimeEligible": [
+        "SUPPORTED",
+        "DEC-PY06"
+      ],
+      "Payroll.Rules.overtimeHours": [
+        "PLANTED",
+        "H04-P1 superseded-value: computes overtime past DEC-PY01's threshold"
+      ],
+      "Payroll.Rules.holidayMultiplier": [
+        "SUPPORTED",
+        "DEC-PY02"
+      ],
+      "Payroll.Rules.payPeriodLength": [
+        "SUPPORTED",
+        "DEC-PY03"
+      ],
+      "Payroll.Rules.periodsPerYear": [
+        "SUPPORTED",
+        "DEC-PY03, PAY-08-R2"
+      ],
+      "Payroll.Rules.hourlyGross": [
+        "PLANTED",
+        "H04-P1 superseded-value: regular/overtime split on DEC-PY01's threshold"
+      ],
+      "Payroll.Rules.salariedPeriodPay": [
+        "SUPPORTED",
+        "PAY-08-R2, DEC-PY03"
+      ]
+    },
+    "H05": {
+      "Payroll.Calendar.daysBetween": [
+        "TECHNICAL",
+        "date arithmetic"
+      ],
+      "Payroll.Calendar.isProbationary": [
+        "PLANTED",
+        "H05-P2 exemption: 90-day probation; no source (DEC-PY05: every employee from the first pay period)"
+      ],
+      "Payroll.Rules.cents": [
+        "SUPPORTED",
+        "DEC-PY04, DEC-PY05 (rounded to the cent)"
+      ],
+      "Payroll.Rules.duesRate": [
+        "PLANTED",
+        "H05-P1 silent-default: 0 for a local docs/union-dues.md does not list"
+      ],
+      "Payroll.Rules.unionDues": [
+        "SUPPORTED",
+        "DEC-PY04, PAY-14-R1 (non-members pay none)"
+      ],
+      "Payroll.Rules.pensionRate": [
+        "SUPPORTED",
+        "DEC-PY05"
+      ],
+      "Payroll.Rules.pensionContribution": [
+        "PLANTED",
+        "H05-P2 exemption: applies Calendar.isProbationary inside DEC-PY05's rule"
+      ],
+      "Payroll.Rules.vacationAccrualRate": [
+        "SUPPORTED",
+        "DEC-PY10"
+      ],
+      "Payroll.Rules.vacationAccrued": [
+        "SUPPORTED",
+        "DEC-PY10, PAY-14-R3 (unpaid-leave exclusion is in the requirement)"
+      ]
+    },
+    "H06": {
+      "Payroll.Rules.expensePolicy": [
+        "PLANTED",
+        "H06-P1 superseded-value: record carries DEC-PY07's 0.58/km (superseded by DEC-PY09 0.64)"
+      ],
+      "Payroll.Rules.expensePolicy.RatePerKm": [
+        "PLANTED",
+        "H06-P1 superseded-value: DEC-PY07 0.58, superseded by DEC-PY09 0.64"
+      ],
+      "Payroll.Rules.expensePolicy.DailyMealCap": [
+        "SUPPORTED",
+        "DEC-PY08"
+      ],
+      "Payroll.Rules.mileageAmount": [
+        "PLANTED",
+        "H06-P1 superseded-value: pays at the superseded rate"
+      ],
+      "Payroll.Rules.mealAmount": [
+        "SUPPORTED",
+        "DEC-PY08, PAY-22-R2"
+      ],
+      "Payroll.Rules.reimbursable": [
+        "SUPPORTED",
+        "PAY-22-R2 (other claims at their receipted amount: the wildcard is authorized)"
+      ],
+      "Payroll.Rules.payableClaims": [
+        "PLANTED",
+        "H06-P2 exemption: grade 8+ submitters need no receipt; PAY-22-R1 exempts only mileage"
+      ],
+      "Payroll.Rules.batchTotal": [
+        "TECHNICAL",
+        "aggregation"
+      ]
+    },
+    "H07": {
+      "Freight.Rules.dimensionalDivisor": [
+        "PLANTED",
+        "H07-P1 superseded-value: DEC-FR01 5000, superseded by DEC-FR04 6000 (float with unit of measure)"
+      ],
+      "Freight.Rules.dimensionalWeight": [
+        "PLANTED",
+        "H07-P1 superseded-value: computes DEC-FR01's dimensional weight"
+      ],
+      "Freight.Rules.chargeableWeight": [
+        "SUPPORTED",
+        "DEC-FR04 (greater of the two)"
+      ],
+      "Freight.Rules.ratePerKg": [
+        "SUPPORTED",
+        "DEC-FR02"
+      ],
+      "Freight.Rules.minimumCharge": [
+        "SUPPORTED",
+        "DEC-FR02"
+      ],
+      "Freight.Rules.zoneSurcharges": [
+        "SUPPORTED",
+        "DEC-FR03, docs/zone-surcharges.md (all four rows)"
+      ],
+      "Freight.Rules.zoneSurcharge": [
+        "PLANTED",
+        "H07-P2 silent-default: 0 for a zone docs/zone-surcharges.md does not list (DEC-FR03: every zone is listed)"
+      ],
+      "Freight.Rules.quote": [
+        "SUPPORTED",
+        "FRT-05-R1, FRT-05-R2"
+      ]
+    },
+    "H08": {
+      "Freight.Rules.(|DangerousGoods|ColdChain|General|)": [
+        "SUPPORTED",
+        "DEC-FR05 (a UN number makes a parcel dangerous goods); the ColdChain case is a classification only"
+      ],
+      "Freight.Rules.|DangerousGoods|ColdChain|General|": [
+        "SUPPORTED",
+        "alias spelling of the active pattern; DEC-FR05"
+      ],
+      "Freight.Rules.signatureThreshold": [
+        "SUPPORTED",
+        "DEC-FR05"
+      ],
+      "Freight.Rules.needsSignature": [
+        "PLANTED",
+        "H08-P1 exemption: cold-chain parcels never need a signature; DEC-FR05 says any other parcel over 400.00 does"
+      ],
+      "Freight.Rules.maxDeliveryAttempts": [
+        "PLANTED",
+        "H08-P2 superseded-value: DEC-FR06 3 attempts, superseded by DEC-FR08 2"
+      ],
+      "Freight.Rules.depotHold": [
+        "SUPPORTED",
+        "DEC-FR08"
+      ],
+      "Freight.Rules.afterFailedAttempt": [
+        "PLANTED",
+        "H08-P2 superseded-value: schedules a third attempt (DEC-FR06)"
+      ]
+    },
+    "H09": {
+      "Freight.Rules.transitDays": [
+        "PLANTED",
+        "H09-P1 silent-default: the final else gives 8 days to any service, including ones docs/service-levels.md does not list (DEC-FR09: unlisted cannot be sold)"
+      ],
+      "Freight.Rules.promisedDelivery": [
+        "SUPPORTED",
+        "FRT-17-R1"
+      ],
+      "Freight.Rules.fuelSurchargeRate": [
+        "SUPPORTED",
+        "DEC-FR07"
+      ],
+      "Freight.Rules.fuelSurcharge": [
+        "PLANTED",
+        "H09-P2 exemption: key accounts pay no fuel surcharge; DEC-FR07 says every shipment (the note is not a source)"
+      ],
+      "Freight.Rules.invoiceTotal": [
+        "SUPPORTED",
+        "FRT-17-R2"
+      ]
+    },
+    "H10": {
+      "Subscriptions.Plans.starter": [
+        "SUPPORTED",
+        "DEC-SB02, docs/plan-prices.md"
+      ],
+      "Subscriptions.Plans.team": [
+        "SUPPORTED",
+        "DEC-SB02, docs/plan-prices.md"
+      ],
+      "Subscriptions.Plans.scale": [
+        "SUPPORTED",
+        "DEC-SB02, docs/plan-prices.md"
+      ],
+      "Subscriptions.Plans.catalogue": [
+        "TECHNICAL",
+        "lookup structure over the three plans"
+      ],
+      "Subscriptions.Rules.monthlyPrice": [
+        "PLANTED",
+        "H10-P1 silent-default: STARTER's price for a plan docs/plan-prices.md does not list (DEC-SB02: not for sale)"
+      ],
+      "Subscriptions.Rules.renewalCharge": [
+        "SUPPORTED",
+        "SUB-04-R1, DEC-SB02"
+      ],
+      "Subscriptions.Rules.annualMonths": [
+        "SUPPORTED",
+        "DEC-SB02"
+      ],
+      "Subscriptions.Rules.annualPrice": [
+        "SUPPORTED",
+        "DEC-SB02, SUB-04-R3"
+      ],
+      "Subscriptions.Rules.paymentGrace": [
+        "PLANTED",
+        "H10-P2 superseded-value: DEC-SB01 7 days, superseded by DEC-SB05 3 days"
+      ],
+      "Subscriptions.Rules.suspendAt": [
+        "PLANTED",
+        "H10-P2 superseded-value: suspends after DEC-SB01's grace"
+      ],
+      "Subscriptions.Rules.isSuspended": [
+        "SUPPORTED",
+        "SUB-04-R2"
+      ]
+    },
+    "H11": {
+      "Subscriptions.Rules.trialLength": [
+        "SUPPORTED",
+        "DEC-SB03"
+      ],
+      "Subscriptions.Rules.isPartnerDomain": [
+        "PLANTED",
+        "H11-P1 exemption: partner-domain predicate exists only to grant repeat trials; no source"
+      ],
+      "Subscriptions.Rules.trialEligible": [
+        "PLANTED",
+        "H11-P1 exemption: partner emails get repeat trials; DEC-SB03: no further trial, whoever it belongs to"
+      ],
+      "Subscriptions.Rules.trialEnds": [
+        "SUPPORTED",
+        "DEC-SB03, SUB-09-R1"
+      ],
+      "Subscriptions.Rules.retryOffsetsDays": [
+        "PLANTED",
+        "H11-P2 superseded-value: DEC-SB06 days 1, 3, 5, superseded by DEC-SB07 2, 4, 6"
+      ],
+      "Subscriptions.Rules.retrySchedule": [
+        "PLANTED",
+        "H11-P2 superseded-value: schedules DEC-SB06's retries"
+      ],
+      "Subscriptions.Rules.prorate": [
+        "SUPPORTED",
+        "DEC-SB04 (the downgrade branch returning 0 is in the decision)"
+      ]
+    },
+    "H12": {
+      "Subscriptions.Rules.refundWindowDays": [
+        "SUPPORTED",
+        "DEC-SB08"
+      ],
+      "Subscriptions.Rules.withinRefundWindow": [
+        "SUPPORTED",
+        "DEC-SB08"
+      ],
+      "Subscriptions.Rules.refundException": [
+        "SUPPORTED",
+        "APR-SB01"
+      ],
+      "Subscriptions.Rules.refundOnCancel": [
+        "PLANTED",
+        "H12-P1 exemption: SCALE accounts with 150+ seats always refunded; DEC-SB08 'whatever the plan or size' (the cu-4410 branch is APR-SB01)"
+      ],
+      "Subscriptions.Rules.seatLimits": [
+        "SUPPORTED",
+        "DEC-SB09, docs/seat-limits.md"
+      ],
+      "Subscriptions.Rules.seatLimit": [
+        "PLANTED",
+        "H12-P2 silent-default: unlimited seats (Int32.MaxValue) for a plan docs/seat-limits.md does not list"
+      ],
+      "Subscriptions.Rules.canAddSeats": [
+        "SUPPORTED",
+        "SUB-13-R2, DEC-SB09"
+      ]
+    },
+    "H13": {
+      "Procurement.Rules.approvalLimits": [
+        "PLANTED",
+        "H13-P1 superseded-value: record carries DEC-PR01's manager limit 7500.00 (superseded by DEC-PR04 4000.00)"
+      ],
+      "Procurement.Rules.approvalLimits.ManagerMax": [
+        "PLANTED",
+        "H13-P1 superseded-value: DEC-PR01 7500.00, superseded by DEC-PR04 4000.00"
+      ],
+      "Procurement.Rules.approvalLimits.DirectorMax": [
+        "SUPPORTED",
+        "DEC-PR04 (40000.00, unchanged)"
+      ],
+      "Procurement.Rules.requiredApprover": [
+        "PLANTED",
+        "H13-P1 superseded-value: routes on the superseded manager limit"
+      ],
+      "Procurement.Rules.competitiveBidThreshold": [
+        "SUPPORTED",
+        "DEC-PR02"
+      ],
+      "Procurement.Rules.bidsAboveThreshold": [
+        "SUPPORTED",
+        "DEC-PR02"
+      ],
+      "Procurement.Rules.(|ApprovedSoleSource|_|)": [
+        "SUPPORTED",
+        "APR-PR01"
+      ],
+      "Procurement.Rules.|ApprovedSoleSource|_|": [
+        "SUPPORTED",
+        "APR-PR01 (alias spelling)"
+      ],
+      "Procurement.Rules.(|ContractRenewal|_|)": [
+        "PLANTED",
+        "H13-P2 exemption: renewals need one quote; DEC-PR02 says including contract renewals"
+      ],
+      "Procurement.Rules.|ContractRenewal|_|": [
+        "PLANTED",
+        "H13-P2 (alias spelling of the active pattern)"
+      ],
+      "Procurement.Rules.bidsRequired": [
+        "PLANTED",
+        "H13-P2 exemption: carries the ContractRenewal exemption inside DEC-PR02's rule (its ApprovedSoleSource branch is APR-PR01)"
+      ]
+    },
+    "H14": {
+      "Procurement.Limits.pettyCashCeiling": [
+        "PLANTED",
+        "H14-P2 exemption: petty-cash ceiling exists only to exempt purchases from PRC-08-R1"
+      ],
+      "Procurement.Limits.isPettyCash": [
+        "PLANTED",
+        "H14-P2 exemption: purchases under 250.00 need no PO; PRC-08-R1 'whatever its amount'"
+      ],
+      "Procurement.Rules.needsPurchaseOrder": [
+        "PLANTED",
+        "H14-P2 exemption: applies Limits.isPettyCash inside PRC-08-R1's rule"
+      ],
+      "Procurement.Rules.priceTolerance": [
+        "PLANTED",
+        "H14-P3 superseded-value: DEC-PR05 4%, superseded by DEC-PR07 2.5% (float)"
+      ],
+      "Procurement.Rules.lineMatches": [
+        "PLANTED",
+        "H14-P3 superseded-value: matches on DEC-PR05's tolerance"
+      ],
+      "Procurement.Rules.invoiceMatches": [
+        "SUPPORTED",
+        "PRC-08-R2"
+      ],
+      "Procurement.Rules.termsByTier": [
+        "SUPPORTED",
+        "DEC-PR03, docs/vendor-terms.md"
+      ],
+      "Procurement.Rules.paymentTermsDays": [
+        "PLANTED",
+        "H14-P1 silent-default: 35 days for a tier docs/vendor-terms.md does not list (DEC-PR03: not set up for payment)"
+      ],
+      "Procurement.Rules.paymentDue": [
+        "SUPPORTED",
+        "PRC-08-R3, DEC-PR03"
+      ]
+    },
+    "H15": {
+      "Procurement.Rules.debarred": [
+        "SUPPORTED",
+        "DEC-PR08, docs/debarred-vendors.md"
+      ],
+      "Procurement.Rules.mayIssuePo": [
+        "PLANTED",
+        "H15-P1 exemption: V-0417 may be issued POs although debarred; DEC-PR08 'no exceptions'"
+      ],
+      "Procurement.Rules.freightAllowanceRate": [
+        "PLANTED",
+        "H15-P2 silent-default: FOB's 4.5% for an incoterm docs/incoterm-allowances.md does not list"
+      ],
+      "Procurement.Rules.landedCost": [
+        "SUPPORTED",
+        "PRC-12-R2, DEC-PR09"
+      ],
+      "Procurement.Rules.earlyPayment": [
+        "SUPPORTED",
+        "DEC-PR06 (tuple of rate and window)"
+      ],
+      "Procurement.Rules.earlyPaymentDiscount": [
+        "SUPPORTED",
+        "DEC-PR06, PRC-12-R3"
+      ],
+      "Procurement.Rules.openRequisitions": [
+        "TECHNICAL",
+        "filter (non-empty requisitions)"
+      ]
+    },
+    "H16": {
+      "Claims.Rules.totalLossRatio": [
+        "SUPPORTED",
+        "DEC-CL16"
+      ],
+      "Claims.Rules.isTotalLoss": [
+        "SUPPORTED",
+        "DEC-CL16, CLM-19-R1"
+      ],
+      "Claims.Rules.salvageRate": [
+        "SUPPORTED",
+        "DEC-CL15"
+      ],
+      "Claims.Rules.totalLossSettlement": [
+        "SUPPORTED",
+        "DEC-CL15, CLM-19-R2"
+      ],
+      "Claims.Rules.settlementFor": [
+        "SUPPORTED",
+        "CLM-19-R2"
+      ],
+      "Claims.Rules.rentalDailyCap": [
+        "SUPPORTED",
+        "DEC-CL17"
+      ],
+      "Claims.Rules.rentalMaxDays": [
+        "SUPPORTED",
+        "DEC-CL17"
+      ],
+      "Claims.Rules.rentalAllowance": [
+        "SUPPORTED",
+        "DEC-CL17 (including the no-rental-cover exclusion)"
+      ]
+    },
+    "H17": {
+      "Freight.Rules.coverRate": [
+        "SUPPORTED",
+        "DEC-FR11 (not the superseded DEC-FR14 1.2%)"
+      ],
+      "Freight.Rules.minimumPremium": [
+        "SUPPORTED",
+        "DEC-FR11"
+      ],
+      "Freight.Rules.freeCoverLimit": [
+        "SUPPORTED",
+        "DEC-FR11"
+      ],
+      "Freight.Rules.coverPremium": [
+        "SUPPORTED",
+        "DEC-FR11 (free cover at or below 100.00 is in the decision)"
+      ],
+      "Freight.Rules.liabilityPerKg": [
+        "SUPPORTED",
+        "DEC-FR12"
+      ],
+      "Freight.Rules.uncoveredLiability": [
+        "SUPPORTED",
+        "DEC-FR12, FRT-21-R2"
+      ],
+      "Freight.Rules.oversizeLength": [
+        "SUPPORTED",
+        "DEC-FR13"
+      ],
+      "Freight.Rules.isOversize": [
+        "SUPPORTED",
+        "DEC-FR13"
+      ],
+      "Freight.Rules.oversizeFee": [
+        "SUPPORTED",
+        "DEC-FR13, docs/oversize-fees.md (the wildcard 0 is stated by DEC-FR13)"
+      ],
+      "Freight.Rules.parcelCount": [
+        "TECHNICAL",
+        "count (FRT-21-R2)"
+      ]
+    }
+  },
+  "plantedRules": {
+    "H01": [
+      {
+        "rule": "H01-P1",
+        "mechanism": "superseded-value",
+        "form": "decimal constant used in an if/else",
+        "symbols": [
+          "Claims.Rules.fastTrackCeiling",
+          "Claims.Rules.route"
+        ]
+      },
+      {
+        "rule": "H01-P2",
+        "mechanism": "silent-default",
+        "form": "Map.tryFind |> Option.defaultValue (non-zero default)",
+        "symbols": [
+          "Claims.Rules.initialReserve"
+        ]
+      }
+    ],
+    "H02": [
+      {
+        "rule": "H02-P1",
+        "mechanism": "exemption",
+        "form": "partial active pattern matched first in a rule function",
+        "symbols": [
+          "Claims.Rules.(|CatastropheEvent|_|)",
+          "Claims.Rules.|CatastropheEvent|_|",
+          "Claims.Rules.referToSiu"
+        ]
+      },
+      {
+        "rule": "H02-P2",
+        "mechanism": "superseded-value",
+        "form": "TimeSpan.FromHours constant",
+        "symbols": [
+          "Claims.Rules.acknowledgeWithin",
+          "Claims.Rules.acknowledgementDeadline"
+        ]
+      }
+    ],
+    "H03": [
+      {
+        "rule": "H03-P1",
+        "mechanism": "exemption",
+        "form": "Set membership in a helper module, used as a match guard",
+        "symbols": [
+          "Claims.Coverage.deductibleWaivedProducts",
+          "Claims.Coverage.deductibleWaived",
+          "Claims.Rules.deductibleFor"
+        ]
+      },
+      {
+        "rule": "H03-P2",
+        "mechanism": "silent-default",
+        "form": "if/elif chain with final else (float)",
+        "symbols": [
+          "Claims.Rules.depreciationRate"
+        ]
+      }
+    ],
+    "H04": [
+      {
+        "rule": "H04-P1",
+        "mechanism": "superseded-value",
+        "form": "decimal element of a tuple, destructured in two functions",
+        "symbols": [
+          "Payroll.Rules.overtimeRule",
+          "Payroll.Rules.overtimeHours",
+          "Payroll.Rules.hourlyGross"
+        ]
+      }
+    ],
+    "H05": [
+      {
+        "rule": "H05-P1",
+        "mechanism": "silent-default",
+        "form": "`function` with wildcard case",
+        "symbols": [
+          "Payroll.Rules.duesRate"
+        ]
+      },
+      {
+        "rule": "H05-P2",
+        "mechanism": "exemption",
+        "form": "helper predicate in another module (date-based)",
+        "symbols": [
+          "Payroll.Calendar.isProbationary",
+          "Payroll.Rules.pensionContribution"
+        ]
+      }
+    ],
+    "H06": [
+      {
+        "rule": "H06-P1",
+        "mechanism": "superseded-value",
+        "form": "float field of a record constant",
+        "symbols": [
+          "Payroll.Rules.expensePolicy",
+          "Payroll.Rules.expensePolicy.RatePerKm",
+          "Payroll.Rules.mileageAmount"
+        ]
+      },
+      {
+        "rule": "H06-P2",
+        "mechanism": "exemption",
+        "form": "lambda condition inside a List.filter pipeline (record field of a nested record)",
+        "symbols": [
+          "Payroll.Rules.payableClaims"
+        ]
+      }
+    ],
+    "H07": [
+      {
+        "rule": "H07-P1",
+        "mechanism": "superseded-value",
+        "form": "float constant with a unit of measure",
+        "symbols": [
+          "Freight.Rules.dimensionalDivisor",
+          "Freight.Rules.dimensionalWeight"
+        ]
+      },
+      {
+        "rule": "H07-P2",
+        "mechanism": "silent-default",
+        "form": "List.tryFind |> Option.map snd |> Option.defaultValue over an association list",
+        "symbols": [
+          "Freight.Rules.zoneSurcharge"
+        ]
+      }
+    ],
+    "H08": [
+      {
+        "rule": "H08-P1",
+        "mechanism": "exemption",
+        "form": "case of a total (multi-case) active pattern mapped to false",
+        "symbols": [
+          "Freight.Rules.needsSignature"
+        ]
+      },
+      {
+        "rule": "H08-P2",
+        "mechanism": "superseded-value",
+        "form": "int constant used in a comparison",
+        "symbols": [
+          "Freight.Rules.maxDeliveryAttempts",
+          "Freight.Rules.afterFailedAttempt"
+        ]
+      }
+    ],
+    "H09": [
+      {
+        "rule": "H09-P1",
+        "mechanism": "silent-default",
+        "form": "if/elif chain whose else merges the last listed case with every unlisted one (int)",
+        "symbols": [
+          "Freight.Rules.transitDays"
+        ]
+      },
+      {
+        "rule": "H09-P2",
+        "mechanism": "exemption",
+        "form": "boolean record field flag in an if/else",
+        "symbols": [
+          "Freight.Rules.fuelSurcharge"
+        ]
+      }
+    ],
+    "H10": [
+      {
+        "rule": "H10-P1",
+        "mechanism": "silent-default",
+        "form": "Map.tryFind |> Option.map |> Option.defaultValue taking another catalogue entry's price (cross-module)",
+        "symbols": [
+          "Subscriptions.Rules.monthlyPrice"
+        ]
+      },
+      {
+        "rule": "H10-P2",
+        "mechanism": "superseded-value",
+        "form": "TimeSpan.FromDays constant",
+        "symbols": [
+          "Subscriptions.Rules.paymentGrace",
+          "Subscriptions.Rules.suspendAt"
+        ]
+      }
+    ],
+    "H11": [
+      {
+        "rule": "H11-P1",
+        "mechanism": "exemption",
+        "form": "string-suffix predicate OR-ed into an eligibility check",
+        "symbols": [
+          "Subscriptions.Rules.isPartnerDomain",
+          "Subscriptions.Rules.trialEligible"
+        ]
+      },
+      {
+        "rule": "H11-P2",
+        "mechanism": "superseded-value",
+        "form": "int list literal",
+        "symbols": [
+          "Subscriptions.Rules.retryOffsetsDays",
+          "Subscriptions.Rules.retrySchedule"
+        ]
+      }
+    ],
+    "H12": [
+      {
+        "rule": "H12-P1",
+        "mechanism": "exemption",
+        "form": "record pattern with a literal field and a guard",
+        "symbols": [
+          "Subscriptions.Rules.refundOnCancel"
+        ]
+      },
+      {
+        "rule": "H12-P2",
+        "mechanism": "silent-default",
+        "form": "defaultArg over Map.tryFind (sentinel Int32.MaxValue)",
+        "symbols": [
+          "Subscriptions.Rules.seatLimit"
+        ]
+      }
+    ],
+    "H13": [
+      {
+        "rule": "H13-P1",
+        "mechanism": "superseded-value",
+        "form": "decimal field of a record constant",
+        "symbols": [
+          "Procurement.Rules.approvalLimits",
+          "Procurement.Rules.approvalLimits.ManagerMax",
+          "Procurement.Rules.requiredApprover"
+        ]
+      },
+      {
+        "rule": "H13-P2",
+        "mechanism": "exemption",
+        "form": "partial active pattern over a record flag, next to an authorized one",
+        "symbols": [
+          "Procurement.Rules.(|ContractRenewal|_|)",
+          "Procurement.Rules.|ContractRenewal|_|",
+          "Procurement.Rules.bidsRequired"
+        ]
+      }
+    ],
+    "H14": [
+      {
+        "rule": "H14-P1",
+        "mechanism": "silent-default",
+        "form": "Dictionary.TryGetValue tuple match with wildcard (default equals a listed value)",
+        "symbols": [
+          "Procurement.Rules.paymentTermsDays"
+        ]
+      },
+      {
+        "rule": "H14-P2",
+        "mechanism": "exemption",
+        "form": "helper predicate and threshold in another module, negated at the call site",
+        "symbols": [
+          "Procurement.Limits.pettyCashCeiling",
+          "Procurement.Limits.isPettyCash",
+          "Procurement.Rules.needsPurchaseOrder"
+        ]
+      },
+      {
+        "rule": "H14-P3",
+        "mechanism": "superseded-value",
+        "form": "float constant in an arithmetic comparison",
+        "symbols": [
+          "Procurement.Rules.priceTolerance",
+          "Procurement.Rules.lineMatches"
+        ]
+      }
+    ],
+    "H15": [
+      {
+        "rule": "H15-P1",
+        "mechanism": "exemption",
+        "form": "hard-coded id OR-ed after a Set membership test",
+        "symbols": [
+          "Procurement.Rules.mayIssuePo"
+        ]
+      },
+      {
+        "rule": "H15-P2",
+        "mechanism": "silent-default",
+        "form": "match on a normalized string with a non-zero wildcard copying a listed rate",
+        "symbols": [
+          "Procurement.Rules.freightAllowanceRate"
+        ]
+      }
+    ]
+  }
+}

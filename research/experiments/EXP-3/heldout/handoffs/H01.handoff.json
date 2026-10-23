@@ -1,0 +1,161 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H01",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLM-07-R1",
+      "statement": "Each claim is routed on intake. A claim whose reported amount is within the fast-track limit in force is settled from the documents the claimant sends, without an adjuster visit. Every other claim is assigned an adjuster.",
+      "status": "accepted",
+      "owner": "Claims Operations",
+      "source": {
+        "path": "requirements/CLM-07.md",
+        "locator": "## CLM-07-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:815b87ec8a2fecee7fc002566c484db776921088e51162462a761d213a0fc8ca"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLM-07-R2",
+      "statement": "Each new claim opens with the initial reserve for its peril, under the reserving decision in force. The intake summary shows the total reserved across the day's new claims.",
+      "status": "accepted",
+      "owner": "Claims Operations",
+      "source": {
+        "path": "requirements/CLM-07.md",
+        "locator": "## CLM-07-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:815b87ec8a2fecee7fc002566c484db776921088e51162462a761d213a0fc8ca"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLM-07-R3",
+      "statement": "The amount payable on a claim is the reported amount less the policy deductible, never below zero, held to the cent. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Claims Operations",
+      "source": {
+        "path": "requirements/CLM-07.md",
+        "locator": "## CLM-07-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:815b87ec8a2fecee7fc002566c484db776921088e51162462a761d213a0fc8ca"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-CL01",
+      "statement": "Every claim carries a deductible of 750.00, which is taken off the amount payable.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Underwriting",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Underwriting",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-12T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL01-standard-deductible.md",
+        "locator": "# DEC-CL01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:230efc337603876e0b29d50e8f41deb91ca879f26f7f7109af336543396ff37f"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "750.00"
+      }
+    },
+    {
+      "id": "DEC-CL02",
+      "statement": "A claim reported at 2500.00 or less is fast-tracked: it is settled from the photos and receipts the claimant sends, without an adjuster visit.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Claims Governance",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL02-fast-track-limit.md",
+        "locator": "# DEC-CL02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:0012208e9d7524e357c487bccf4faf3e7421bf496661939667cbfa1a14fe42ce"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-CL05",
+      "parameters": {
+        "p1": "2500.00"
+      }
+    },
+    {
+      "id": "DEC-CL03",
+      "statement": "A new claim opens with the initial reserve listed for its peril in `docs/initial-reserves.md`. Actuarial maintains the list.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Actuarial",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Actuarial",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-02T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL03-initial-reserves.md",
+        "locator": "# DEC-CL03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:a114b3fc1c32b0181ce0062f850f89db81595fdf909664304298c2147994bab6"
+      },
+      "supersedes": [],
+      "parameters": {
+        "initial-reserves.Fire": "15000.00",
+        "initial-reserves.Water": "6500.00",
+        "initial-reserves.Theft": "4200.00",
+        "initial-reserves.Wind": "8800.00"
+      }
+    },
+    {
+      "id": "DEC-CL05",
+      "statement": "Leakage on documents-only settlements was higher than forecast. A claim reported at 1800.00 or less is fast-tracked; any larger claim is assigned an adjuster.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Claims Governance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Claims Governance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-04-06T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL05-fast-track-limit-revised.md",
+        "locator": "# DEC-CL05",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f23ad7dcb7232a751e407b747ad45c69a262747064820185e4a3098742dde8f5"
+      },
+      "supersedes": [
+        "DEC-CL02"
+      ],
+      "parameters": {
+        "p1": "1800.00"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

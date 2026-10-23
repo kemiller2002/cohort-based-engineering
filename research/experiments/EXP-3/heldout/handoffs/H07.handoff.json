@@ -1,0 +1,149 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H07",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "FRT-05-R1",
+      "statement": "A quote prices a shipment: the chargeable weight of each parcel times the rate per kilogram in force, summed, and at least the minimum charge per shipment.",
+      "status": "accepted",
+      "owner": "Logistics Pricing",
+      "source": {
+        "path": "requirements/FRT-05.md",
+        "locator": "## FRT-05-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:e212d4c526c953ba96dbb880991acff9c4ab9f064c44b819f3e05fdcdf27097f"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "FRT-05-R2",
+      "statement": "The quote adds the surcharge for the shipment's delivery zone under the zone decision in force. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Logistics Pricing",
+      "source": {
+        "path": "requirements/FRT-05.md",
+        "locator": "## FRT-05-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:e212d4c526c953ba96dbb880991acff9c4ab9f064c44b819f3e05fdcdf27097f"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-FR01",
+      "statement": "A parcel's dimensional weight in kilograms is its length times width times height in centimetres divided by 5000.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Network Operations",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR01-dimensional-weight.md",
+        "locator": "# DEC-FR01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:d57f8be68da94a823d00b9993b0ada39fdf995ba7a1acf95e0e27f3a793d84cc"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-FR04",
+      "parameters": {
+        "p1": "5000"
+      }
+    },
+    {
+      "id": "DEC-FR02",
+      "statement": "Parcels are charged 1.85 per chargeable kilogram, with a minimum charge of 11.40 per shipment.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Logistics Pricing",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Logistics Pricing",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-19T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR02-base-rate.md",
+        "locator": "# DEC-FR02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ffb8f7f6e9424c9f55c07d59e25ea66fb32f61768256ba94b2b9111bb8d38e47"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "1.85",
+        "p2": "11.40"
+      }
+    },
+    {
+      "id": "DEC-FR03",
+      "statement": "Each shipment is charged the surcharge listed for its delivery zone in `docs/zone-surcharges.md`. Logistics Pricing maintains the list; every zone the network delivers to is on it.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Logistics Pricing",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Logistics Pricing",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-19T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR03-zone-surcharges.md",
+        "locator": "# DEC-FR03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:0a30b78316ef47637063114770018c85f1245e006856d3c92d5f5c4f3b34a4f1"
+      },
+      "supersedes": [],
+      "parameters": {
+        "zone-surcharges.URBAN": "0.00",
+        "zone-surcharges.SUBURBAN": "3.75",
+        "zone-surcharges.RURAL": "9.60",
+        "zone-surcharges.REMOTE": "26.40"
+      }
+    },
+    {
+      "id": "DEC-FR04",
+      "statement": "A parcel's dimensional weight in kilograms is its length times width times height in centimetres divided by 6000. A parcel is charged on the greater of its actual weight and its dimensional weight.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Network Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Network Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-09T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR04-dimensional-weight-revised.md",
+        "locator": "# DEC-FR04",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:668cfce5ad565a726ded43e002f2e9020370a61e21621c96ef4ab7208e74cb0d"
+      },
+      "supersedes": [
+        "DEC-FR01"
+      ],
+      "parameters": {
+        "p1": "6000"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

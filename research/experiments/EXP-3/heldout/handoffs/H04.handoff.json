@@ -1,0 +1,148 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H04",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "PAY-08-R1",
+      "statement": "For each hourly employee and week, gross pay is regular pay plus overtime pay plus statutory holiday pay, under the decisions in force.",
+      "status": "accepted",
+      "owner": "Payroll; People Operations",
+      "source": {
+        "path": "requirements/PAY-08.md",
+        "locator": "## PAY-08-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5aa45c869449fcd03765f6f9ff7f74875570480d77a1e5c193eeb29677351538"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PAY-08-R2",
+      "statement": "A salaried employee is paid an equal share of the annual salary each pay period, rounded to the cent. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Payroll; People Operations",
+      "source": {
+        "path": "requirements/PAY-08.md",
+        "locator": "## PAY-08-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5aa45c869449fcd03765f6f9ff7f74875570480d77a1e5c193eeb29677351538"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-PY01",
+      "statement": "Hours worked beyond 44 in a week are paid at 1.5 times the hourly rate.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "People Operations",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY01-overtime.md",
+        "locator": "# DEC-PY01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:e2af6bfc040824eb7b02702b1881084403249218fcaab79d0252a3852ca4a859"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-PY06",
+      "parameters": {
+        "p1": "44",
+        "p2": "1.5"
+      }
+    },
+    {
+      "id": "DEC-PY02",
+      "statement": "Hours worked on a statutory holiday are paid at 2 times the hourly rate.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Payroll",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Payroll",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY02-holiday-pay.md",
+        "locator": "# DEC-PY02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f57a2cc180c0f4fdb6972f54a28b0e600cb7857bdfd1adbde7a165c3ff7cfe2b"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "2"
+      }
+    },
+    {
+      "id": "DEC-PY03",
+      "statement": "Employees are paid every 14 days, so there are 26 pay periods in a year.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Payroll",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Payroll",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY03-pay-period.md",
+        "locator": "# DEC-PY03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:1cbc87839abf489b73274deced1b6f0f7c2798d73f0b7054ccc3d6d6abe12aef"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "14",
+        "p2": "26"
+      }
+    },
+    {
+      "id": "DEC-PY06",
+      "statement": "Hours worked beyond 40 in a week are paid at 1.5 times the hourly rate. Salaried employees do not earn overtime.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "People Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "People Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-23T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY06-overtime-revised.md",
+        "locator": "# DEC-PY06",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:14cc8e34e381e02a1bf0dd1c7b44e18050ff2ff5d5fc621b24efe6f9294e1d8f"
+      },
+      "supersedes": [
+        "DEC-PY01"
+      ],
+      "parameters": {
+        "p1": "40",
+        "p2": "1.5"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}
