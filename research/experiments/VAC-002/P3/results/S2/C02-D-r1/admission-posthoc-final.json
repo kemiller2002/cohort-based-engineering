@@ -1,0 +1,55 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The payment-terms decision in force is DEC-B12 (21 days; supersedes DEC-B01), so a quote is payable 21 days after today. This matches the requirement\u0027s example (2026-03-02 \u002B 21 = 2026-03-23).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "DEC-B12"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Invoice issuing is left on the existing 30-day rule (Rules.dueDate, DEC-B01). BILL-41 requires existing behaviour to be unchanged except as its requirements say, and tests/Billing.Tests/BaseTests.fs pins 30 days. The DEC-B12 term is added to Rules as a separate rule (revisedPaymentTermDays / payableBy) used only by quotes. Whether invoicing should move to DEC-B12 is left as an open question, not decided.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "A quote amount is validated with the existing Commands.parseAmount (positive, at most two decimals) and is checked before the customer, as the invoice command does; usage errors come from the existing help-line lookup.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "help lists \u0027quote \u003Ccustomer\u003E \u003Camount\u003E\u0027 directly after the invoice line; the README command list is updated to match.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

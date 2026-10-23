@@ -1,0 +1,68 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "run-interest charges collection interest of 1% of the invoice amount, rounded to the cent half away from zero, once per invoice, when today is more than 60 days after the due date (today \u003E due \u002B 60 days) and the invoice is still unpaid; it prints \u0027interest charged: N\u0027.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0027Still unpaid\u0027 is read the same way the existing late-fee rule reads it: something is still outstanding on the invoice (outstanding \u003E 0).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14",
+        "DEC-B03"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Collection interest is charged on every invoice that DEC-B14 says owes it, including invoices of nonprofit customers. The existing nonprofit exclusion (Rules.chased) is used only for late fees and is not applied to interest, because neither DEC-B14 nor BILL-43 states that exception. This is recorded as an open question for Credit Control.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Charged interest is stored on the invoice (new Invoice.Interest field) and included in Rules.outstanding, so it counts in the customer\u0027s balance. \u0027show is unchanged\u0027 is read as: the show output format is unchanged (no new field); its outstanding figure is the invoice\u0027s outstanding and therefore includes interest.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B02"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "help (Cli.usage) lists \u0027run-interest\u0027 directly after \u0027run-late-fees\u0027; run-interest takes no arguments, so extra arguments get the standard \u0027error: usage: run-interest\u0027 refusal. The README command list is updated to match.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

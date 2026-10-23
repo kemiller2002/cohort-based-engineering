@@ -1,0 +1,96 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "Collection interest is owed by an invoice when today is more than 60 days after its due date (today \u003E due \u002B 60 days), something is still outstanding on it (outstanding \u003E 0, the same \u0027unpaid\u0027 test DEC-B03\u0027s isOverdue uses), and no interest has yet been charged on it. The interest is 1% of the invoice amount (the Amount field, excluding late fee and payments), rounded to the cent half away from zero, charged once. Implemented as pure functions in Rules (interestRate, interest, owesInterest) citing DEC-B14.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add an \u0060Interest: decimal\u0060 field to the Domain Invoice record, initialised to 0 on issue. Rules.outstanding becomes Amount \u002B LateFee \u002B Interest - Paid, so charged interest is part of what is outstanding on the invoice and, through Rules.balance (DEC-B02), of the customer\u0027s balance. The README entry points (Cli.run, Session.create) keep their signatures.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14",
+        "DEC-B02"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "New command \u0060run-interest\u0060 (no arguments) in Commands.runInterest: walks invoices in issue order, charges interest on each that owes it per DEC-W-1, and outputs exactly \u0060interest charged: \u003Cn\u003E\u0060. Wired in Cli.dispatch; with extra arguments it is refused with the existing \u0060error: usage: run-interest\u0060 path and changes nothing.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Interest is charged regardless of customer kind: nonprofit invoices that meet DEC-B14 are charged. DEC-B14 states no exemption; the existing nonprofit \u0027not chased\u0027 filter (Rules.chased) is applied only to late fees in the code and has no decision record, so extending it to interest would invent an exception. Unresolved question for Credit Control: should nonprofit accounts be exempt from collection interest as they are from late fees?",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0027show is unchanged\u0027 is read as: the show command\u0027s output format stays exactly as today (no interest field is added to the line). Because R1 makes charged interest part of what is outstanding on the invoice, the \u0060outstanding\u0060 figure printed by show includes charged interest. Unresolved question for Credit Control: is that the intended reading, or should show\u0027s outstanding figure exclude interest?",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Insert \u0060run-interest\u0060 into Cli.usage directly after \u0060run-late-fees\u0060 (before \u0060help\u0060), so \u0060help\u0060 lists it there; update the README command list to match.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "DEC-B04 (sales tax, not yet implemented) is out of scope; interest is computed on the invoice amount as stored. Add tests covering criteria the acceptance tests do not: interest amount rounding, interest not charged at exactly 60 days or on fully paid invoices, help ordering, and show format unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B04"
+      ],
+      "reasons": []
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-4",
+      "issue": "Where the new owes-more-than-5.00 check sits among the other borrow refusals (unknown copy, copy already on loan, loan limit, holds) is not given by any source. LEND-L01-R2 fixes only that suspension is checked first. Putting the owes check before the copy and limit checks decides which error a member who owes more than 5.00 sees for an unknown copy, a lent copy, a full loan limit or a reserved copy. That ordering is a rule the implementer supplies. The automated check already rejected this decision (A6), and that rejection is correct: no requirement, accepted decision record or granted approval authorizes the ordering.",
+      "authorizedAlternative": "The sources authorize only this: the suspension check comes first (LEND-L01-R2), and a borrow by a member owing more than 5.00 is refused with `error: member <m> owes <amount>` (LEND-L04-R2). The precedence question must go to the owner, Head of Lending, and be answered (by a requirement revision or an accepted decision) before the plan treats any ordering as authorized. The rest of the plan is sound. DEC-W-1, DEC-W-2, DEC-W-3, DEC-W-5 and DEC-W-6 rest on LEND-L04-R1/R2, DEC-002, DEC-003, DEC-005, DEC-006 and LEND-L01-R2. The R3/R2/DEC-005/L01-R2 conflict follows README's rule: the general rules keep applying to staff, there is no staff override, and the conflict is recorded."
+    }
+  ]
+}

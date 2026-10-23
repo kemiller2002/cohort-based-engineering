@@ -1,0 +1,73 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "\u0060shipping \u003Ccustomer\u003E\u0060 prints \u0060\u003Ccustomer\u003E shipping \u003Ccharge\u003E\u0060, where the charge is the per-delivery charge listed in docs/shipping.md for the customer\u0027s region (DEC-B13), formatted with two decimals (e.g. \u0060c1 shipping 15.00\u0060 for ON, 25.00 for BC, 18.00 for QC). The charge is taken from the existing \u0060Rules.shippingCharge\u0060, which already holds the docs/shipping.md table; its doc comment will be updated to name DEC-B13 as docs/architecture.md requires.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R1",
+        "DEC-B13",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add a pure \u0060Commands.shipping customerId state\u0060 that returns the unchanged state and the output line, and dispatch \u0060[\u0022shipping\u0022; customerId]\u0060 to it in \u0060Cli.dispatch\u0060. The command never changes state. An unknown customer is refused through the existing \u0060UnknownCustomer\u0060 error, printing \u0060error: unknown customer \u003Cid\u003E\u0060 and changing nothing. A wrong number of arguments is refused by the existing usage mechanism (\u0060error: usage: shipping \u003Ccustomer\u003E\u0060), as for every other command.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R1",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Insert \u0060shipping \u003Ccustomer\u003E\u0060 into \u0060Cli.usage\u0060 directly after \u0060balance \u003Ccustomer\u003E\u0060; all other help lines keep their text and relative order.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add acceptance tests for the criteria the provided tests do not cover: BC and QC charges, \u0060shipping\u0060 leaves state unchanged (balance/show output identical before and after), wrong-arity usage error, and that \u0060help\u0060 still lists every command. Add \u0060shipping \u003Ccustomer\u003E\u0060 to the README command list so the documented command list stays complete.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R1",
+        "BILL-42-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "UNRESOLVED QUESTION, not authorized by any source: what \u0060shipping\u0060 does for a customer whose region has no listed charge (the seed has c4 in AB, which docs/shipping.md does not list). DEC-B13 and docs/shipping.md give no charge for AB, and BILL-42 is silent. The existing \u0060Rules.shippingCharge\u0060 returns 0m for unlisted regions, but that fallback is not backed by DEC-B13 and would print \u0060c4 shipping 0.00\u0060, a charge no source sets. Candidate behaviours (keep the 0.00 fallback, or refuse with an \u0060error: \u0060 line and change nothing) are both business policy for Logistics to decide. I do not propose to choose one; I will not implement or test any specific behaviour for unlisted regions unless a decision is authorized, and I will leave the existing fallback untouched.",
+      "notAuthorized": "UNRESOLVED QUESTION, not authorized by any source: what \u0060shipping\u0060 does for a customer whose region has no listed charge (the seed has c4 in AB, which docs/shipping.md does not list). DEC-B13 and docs/shipping.md give no charge for AB, and BILL-42 is silent. The existing \u0060Rules.shippingCharge\u0060 returns 0m for unlisted regions, but that fallback is not backed by DEC-B13 and would print \u0060c4 shipping 0.00\u0060, a charge no source sets. Candidate behaviours (keep the 0.00 fallback, or refuse with an \u0060error: \u0060 line and change nothing) are both business policy for Logistics to decide. I do not propose to choose one; I will not implement or test any specific behaviour for unlisted regions unless a decision is authorized, and I will leave the existing fallback untouched.",
+      "validAuthority": [],
+      "reasons": [
+        "A6 an \u0060default-rule\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    }
+  ]
+}

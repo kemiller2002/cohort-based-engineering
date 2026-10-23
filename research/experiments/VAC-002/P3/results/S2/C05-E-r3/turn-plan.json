@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "1e8d07be-efd5-4431-81c8-7f98b57e4f84",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C05-E-r3/briefs/plan.md",
+  "briefSha256": "e0024f8710678a6563e469d5f3201f1b091eb1d0b41f596500fd9c1fb5946053",
+  "startedAt": "2026-10-23T10:40:13.928Z",
+  "endedAt": "2026-10-23T10:41:14.529Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "1e8d07be-efd5-4431-81c8-7f98b57e4f84",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 59534,
+    "costUsdCli": 0.2957364,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 7134,
+      "cacheRead": 48482,
+      "cacheWrite": 17915
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for BILL-43 to `.decisions/decisions.json` and committed it (9058f93). I haven't changed any code or tests yet. I also didn't source `env.sh`, which the brief asks for before anything else; nothing in this step needed it, and I'll source it first thing when implementing.\n\n**Planned decisions:**\n- **DEC-W-1, when interest is owed:** an invoice owes interest once today is more than 60 days past its due date, something is still unpaid, and no interest has been charged on it yet. That means day 61 or later, which matches the provided test.\n- **DEC-W-2, how much:** 1% of the invoice amount, not counting any late fee, rounded to the cent the same way as late fees.\n- **DEC-W-3, what \"unpaid\" means:** something is still outstanding on the invoice, read the same way the existing late-fee rule reads it.\n- **DEC-W-4, nonprofit customers:** they are charged interest too. The late-fee run skips nonprofits through a rule in `Rules.fs` that no decision record supports. DEC-B14 states no such exception, so I'm not adding one.\n- **DEC-W-5, storing interest:** invoices get a new interest amount, and what is outstanding on an invoice includes it. The customer's balance therefore includes it with no further change.\n- **DEC-W-6, `show`:** its output looks exactly as before, but its \"outstanding\" figure includes interest, because BILL-43-R1 says charged interest is part of what is outstanding.\n- **DEC-W-7, the command:** `run-interest` works like `run-late-fees`: it goes through invoices in the order they were issued and prints `interest charged: N`. Extra words on the line are refused with a usage error and change nothing.\n- **DEC-W-8, help listing:** `run-interest` goes directly after `run-late-fees` in `help` and in the README command list.\n- **DEC-W-9, extra tests:** new acceptance tests for the criteria the provided tests don't cover.\n\n**Open questions (also recorded in the file):**\n- **UQ-1:** Should nonprofits be exempt from collection interest, as they are f"
+  }
+}

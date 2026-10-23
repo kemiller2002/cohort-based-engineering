@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "59f6dcfe-1355-45a4-afd0-e856f9405776",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C05-E-r2/briefs/plan.md",
+  "briefSha256": "62bdf87976382cf3278f7ec10d814a165c169f7774ec1b78ceb193125c01ed1a",
+  "startedAt": "2026-10-23T10:56:43.017Z",
+  "endedAt": "2026-10-23T10:57:27.266Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "59f6dcfe-1355-45a4-afd0-e856f9405776",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 43342,
+    "costUsdCli": 0.24846580000000001,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 5243,
+      "cacheRead": 57469,
+      "cacheWrite": 16508
+    },
+    "toolUses": 5,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C05-E-r2/briefs/plan.md; ls /home/user/.p3-state/S2/C05-E-r2/agent/config/projects/-home-user-p3-work-S2-C05-E-r2-repo/memory/\"}"
+    ],
+    "finalMessage": "I've written the plan for BILL-43 and committed it (`b80849c`) as `.decisions/decisions.json`. No code or tests have changed yet.\n\nThe plan has seven decisions:\n\n- **DEC-W-1 (when interest is owed):** an invoice owes interest when today is more than 60 days after its due date, something is still outstanding, and no interest has been charged yet. The interest is 1% of the invoice amount, rounded to the cent (half away from zero), charged once (DEC-B14). The new rules go in `Rules`.\n- **DEC-W-2 (where interest is stored):** invoices get a new `Interest` field, and what is outstanding becomes amount + late fee + interest − paid. That puts interest into the customer's balance as well. `run` and `Session.create` keep their signatures.\n- **DEC-W-3 (the new command):** `run-interest` charges interest in the order invoices were issued and prints `interest charged: <n>`. Extra arguments get the existing usage error.\n- **DEC-W-4 (nonprofits):** nonprofit invoices are charged interest too. DEC-B14 gives no exemption. The rule that skips nonprofits applies only to late fees in the code and has no decision record behind it, so extending it would invent an exception. **Open question for Credit Control:** should nonprofits be exempt from interest as they are from late fees?\n- **DEC-W-5 (`show`):** I read \"`show` is unchanged\" as meaning its output format stays the same, with no interest field added. The outstanding figure it prints would still include interest, since BILL-43-R1 makes interest part of what is outstanding. **Open question for Credit Control:** is that the intended reading?\n- **DEC-W-6 (`help`):** `run-interest` goes directly after `run-late-fees` in `help`, and the README command list is updated to match.\n- **DEC-W-7 (scope and tests):** sales tax (DEC-B04, not yet implemented) is out of scope. I'll add tests for what the acceptance tests don't cover: rounding, no interest at exactly 60 days or on paid invoices, the `help` order, and `show`'s format.\n\nPLAN: ready"
+  }
+}

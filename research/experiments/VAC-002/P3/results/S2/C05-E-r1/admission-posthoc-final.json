@@ -1,0 +1,132 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "An invoice owes collection interest when today is more than 60 days after its due date (today \u003E Due \u002B 60 days) and something is still outstanding on it. The interest is 1% of the invoice amount (Amount only, not late fee), rounded to the cent half away from zero via Rules.round2. Implemented once, in Rules, citing DEC-B14.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0022Still unpaid\u0022 in DEC-B14 is read as \u0022something is still outstanding on the invoice\u0022 (outstanding \u003E 0), the same reading the existing code already uses for \u0022still unpaid\u0022 in DEC-B03 (Rules.isOverdue). Today no command records payments, so in practice every invoice past the threshold qualifies.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14",
+        "DEC-B03"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Collection interest is charged on every qualifying invoice regardless of the customer\u0027s kind: DEC-B14 and BILL-43-R1 (\u0027every invoice that owes it\u0027) state no exclusion. The existing nonprofit exclusion (Rules.chased, used only by run-late-fees) has no decision record and is NOT extended to interest. Unresolved question for Credit Control: should nonprofit accounts be exempt from collection interest as they are from late fees? Any such exclusion needs an accepted decision before it is implemented.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14",
+        "BILL-43-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Collection interest is independent of the late fee: an invoice owes it whether or not run-late-fees has been run on it, and it is computed on the invoice amount only. DEC-B14 sets no dependency on DEC-B03.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add a field to Domain.Invoice recording the charged interest as an option (None = not yet charged, Some x = charged), initialised to None by issueInvoice. \u0027Once\u0027 is tracked by the option, not by a zero amount, because 1% of a very small invoice (e.g. 0.01) rounds to 0.00 and a zero sentinel would let it be charged (and counted) again on every run.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "Rules.outstanding includes charged interest (Amount \u002B LateFee \u002B Interest - Paid), so balance (DEC-B02) includes it, as does the \u0027still unpaid\u0027 check.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14",
+        "DEC-B02"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0027show is unchanged\u0027 is read as: the show command and its output format are not changed (no interest field is added to the line). Its \u0027outstanding\u0027 figure is computed by Rules.outstanding and therefore includes charged interest, as R1 requires interest to be part of what is outstanding on the invoice. Unresolved question for Credit Control: confirm that show\u0027s outstanding figure should include interest even though the line does not itemise it (the alternative reading - show\u0027s output byte-identical, outstanding excluding interest - would contradict R1\u0027s first statement).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-8",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add Commands.runInterest (pure transition over invoices in issue order, output exactly \u0027interest charged: N\u0027) and dispatch \u0027run-interest\u0027 in Cli; add \u0027run-interest\u0027 to Cli.usage directly after \u0027run-late-fees\u0027, which also gives \u0027run-interest \u003Cextra words\u003E\u0027 the existing \u0027error: usage: run-interest\u0027 response and leaves state unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-9",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add \u0027run-interest\u0027 to the Commands list in README.md, after run-late-fees, so the documented command list matches help.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-10",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add acceptance tests in tests/Billing.Tests/Acceptance/ for criteria the provided tests do not cover: show output format unchanged with outstanding including interest, interest on the amount only alongside a late fee, rounding half away from zero, once-only for a 0.00 interest, and the usage error for extra arguments.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027requirements/BILL-43.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    }
+  ]
+}

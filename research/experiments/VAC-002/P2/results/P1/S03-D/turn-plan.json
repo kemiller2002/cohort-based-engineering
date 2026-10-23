@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "9a256f8e-1e3f-4665-808d-b1f9deccec94",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S03-D/briefs/plan.md",
+  "briefSha256": "9440d50dffbdfc12f154f4443cc4a4a50e62db5c1cc20183ec714cc200eb3c78",
+  "startedAt": "2026-10-22T22:29:07.842Z",
+  "endedAt": "2026-10-22T22:30:15.884Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "9a256f8e-1e3f-4665-808d-b1f9deccec94",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 66760,
+    "costUsdCli": 0.4033725,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 5966,
+      "cacheRead": 92387,
+      "cacheWrite": 33174
+    },
+    "toolUses": 7,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan to `.decisions/decisions.json` and committed it (11d847c). I haven't changed any code or tests.\n\nThere is one conflict the owners need to settle. DEC-010 is accepted and supersedes DEC-003. It sets fines at 0.20 a day, capped at 5.00, but returns still fine 0.25 a day, capped at 10.00. The existing tests check those old amounts, and L14 says existing behaviour must stay the same. So the estimate will follow DEC-010 as L14 asks, and returns will stay as they are. That means an estimate for a late copy can differ from the fine actually charged when it comes back today. I've recorded this for Finance and the Head of Lending (DEC-W-2) and haven't tried to resolve it.\n\nThe six proposed decisions:\n- **DEC-W-1:** the estimate uses DEC-010, the schedule now in force: 0.20 per day late, at most 5.00 per loan.\n- **DEC-W-2:** the conflict above, left open for the owners.\n- **DEC-W-3:** days late are counted the same way a return today would count them: calendar days after the due date. Library closing days are not taken into account, since no source says they should be. A copy due today is not overdue.\n- **DEC-W-4:** the output follows the wording in L14, including \"1 day late\". An unknown copy is checked before \"not on loan\". The estimate covers only this loan, not other fines the member owes, and a suspended member can still get one.\n- **DEC-W-5:** the code is split across the existing tiers. The new fine values go in `Policy`, the calculation in the lending rules, and a read-only use case that never saves anything sits behind the command. `estimate <copy>` goes into `help` right after `renew <copy>`.\n- **DEC-W-6:** extra acceptance tests for the cases the provided tests don't cover: overdue estimates, the 5.00 cap, a copy due today, and checking that nothing is recorded.\n\nPLAN: ready"
+  }
+}

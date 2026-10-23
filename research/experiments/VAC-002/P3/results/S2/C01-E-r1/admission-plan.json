@@ -1,0 +1,109 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0022The reminder decision in force\u0022 is DEC-C08 (accepted 2026-03-01, supersedes DEC-C06): the reminder for an appointment is sent 48 hours before the appointment\u0027s date and time. \u0060reminders \u003Cdate\u003E\u0060 lists the appointments whose reminder instant (appointment date\u002Btime minus 48 hours) falls on \u003Cdate\u003E.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "DEC-C08"
+      ],
+      "reasons": [
+        "A4 \u0027DEC-C06\u0027 is superseded by DEC-C08"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "conflict-resolution",
+      "computedStatus": "authorized",
+      "statement": "Rules.fs currently implements the superseded DEC-C06 (reminderLeadHours = 24), which the existing \u0060reminder \u003Cappointment\u003E\u0060 command and tests/Clinic.Tests/ReminderTests.fs rely on. The architecture requires each rule to be written once in Rules, so \u0060reminders\u0060 and \u0060reminder\u0060 must share one lead time. Proposed: change Rules.reminderLeadHours to 48 and its comment to cite DEC-C08, so both commands follow the decision in force; this changes \u0060reminder\u0060 output (e.g. a1 at 2026-03-12 09:00 -\u003E \u0060a1 reminder at 2026-03-10 09:00\u0060) and requires updating the expectation in ReminderTests.fs. This chooses DEC-C08 and the single-rule architecture over the CLIN-51 acceptance criterion \u0027existing behaviour is unchanged except as these requirements say\u0027 and the existing test. UNRESOLVED QUESTION for Patient Services: is the 24-hour \u0060reminder\u0060 output a defect to be corrected now (as proposed), or must \u0060reminder\u0060 stay unchanged? If this decision is not authorized, the work cannot satisfy both R1 (\u0027decision in force\u0027) and the unchanged-behaviour criterion without writing the reminder rule twice; I would stop and report rather than pick.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-C08",
+        "CLIN-51-R1"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "Output format: \u0060reminders on \u003Cyyyy-MM-dd\u003E: \u003Cid\u003E at \u003Cyyyy-MM-dd\u003E \u003CHH:mm\u003E, ...\u0060 where each entry gives the appointment\u0027s own date and time, entries joined by \u0022, \u0022; \u0060reminders on \u003Cyyyy-MM-dd\u003E: none\u0060 when there are none. Ordered by appointment date and time.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "When two appointments (with different clinicians) have the same date and time, they are listed in ascending appointment-id order (ordinal), matching the existing \u0060schedule\u0060 command\u0027s tie-break. No source specifies this; it is needed only for deterministic output. UNRESOLVED QUESTION: is another tie-break wanted?",
+      "notAuthorized": "When two appointments (with different clinicians) have the same date and time, they are listed in ascending appointment-id order (ordinal), matching the existing \u0060schedule\u0060 command\u0027s tie-break. No source specifies this; it is needed only for deterministic output. UNRESOLVED QUESTION: is another tie-break wanted?",
+      "validAuthority": [],
+      "reasons": [
+        "A6 an \u0060default-rule\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u0060reminders\u0060 is read-only (returns the state unchanged), lists only appointments currently in state (cancelled appointments are removed from state by \u0060cancel\u0060, so they never appear), and puts no restriction on \u003Cdate\u003E (past or future dates are accepted). The date is parsed with the existing Commands.parseDate, so a malformed date gives \u0060error: invalid date \u003Ctext\u003E\u0060 and a wrong number of arguments gives \u0060error: usage: reminders \u003Cdate\u003E\u0060 via the existing usage mechanism. The selection rule (reminder falls on date) lives in Rules next to reminderAt; formatting lives in Commands; parsing/dispatch in Cli.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add \u0060reminders \u003Cdate\u003E\u0060 to Cli.usage immediately after \u0060reminder \u003Cappointment\u003E\u0060; \u0060help\u0060 prints usage, so it lists the new command in that position.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add acceptance tests in tests/Clinic.Tests/Acceptance/CLIN51AcceptanceTests.fs for the criteria not yet covered: listing on the date 48 hours before, ordering by appointment time, read-only (state unchanged), cancelled appointments excluded, and malformed date refused with one \u0060error: \u0060 line. Existing provided tests are not modified.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-8",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add \u0060reminders \u003Cdate\u003E\u0060 to the Commands list in README.md. README\u0027s list also omits the existing \u0060reminder \u003Cappointment\u003E\u0060 command; that gap is recorded as an UNRESOLVED QUESTION and not fixed here (out of scope).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

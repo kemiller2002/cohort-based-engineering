@@ -1,0 +1,23 @@
+<Project>
+  <!-- TestKit: `dotnet test` without NuGet. Test projects (named *.Tests, or flagged IsTestProject) compile the
+       xUnit-compatible TestKit and run as a console program; results go to the .trx file named by the logger. -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <OutputType>Exe</OutputType>
+    <TestKitDir Condition="'$(TestKitDir)' == ''">$(MSBuildThisFileDirectory)tests/TestKit/</TestKitDir>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <CompileBefore Include="$(TestKitDir)Xunit.fs" />
+    <CompileAfter Include="$(TestKitDir)Program.fs" />
+  </ItemGroup>
+  <Target Name="VSTest" DependsOnTargets="$(_TestKitBuild)">
+    <PropertyGroup>
+      <_TestKitTrx>$([System.Text.RegularExpressions.Regex]::Match('$(VSTestLogger)', 'LogFileName=([^;]+)').Groups[1].Value)</_TestKitTrx>
+      <_TestKitTrx Condition="'$(_TestKitTrx)' == ''">$(MSBuildProjectDirectory)/TestResults/results.trx</_TestKitTrx>
+      <_TestKitFilter Condition="'$(VSTestTestCaseFilter)' != ''">--filter "$(VSTestTestCaseFilter)"</_TestKitFilter>
+    </PropertyGroup>
+    <Exec Condition="'$(IsTestProject)' == 'true'" Command="&quot;$(DOTNET_HOST_PATH)&quot; &quot;$(TargetPath)&quot; --trx &quot;$(_TestKitTrx)&quot; $(_TestKitFilter)" />
+  </Target>
+  <PropertyGroup>
+    <_TestKitBuild Condition="'$(VSTestNoBuild)' != 'true'">Build</_TestKitBuild>
+  </PropertyGroup>
+</Project>

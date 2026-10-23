@@ -1,0 +1,57 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The \u0027reminder decision in force\u0027 is DEC-C08 (48 hours before the appointment), which is accepted and supersedes DEC-C06 (24 hours). \u0060reminders \u003Cdate\u003E\u0060 lists appointments whose appointment date-time minus 48 hours falls on \u003Cdate\u003E.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "DEC-C08"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The existing \u0060reminder \u003Cappointment\u003E\u0060 command and \u0060Rules.reminderAt\u0060 (still on superseded DEC-C06, 24 h) are left unchanged, because CLIN-51 requires existing behaviour to be unchanged except as its requirements say and does not ask to change \u0060reminder\u0060. The DEC-C08 rule is added separately in Rules as \u0060reminderInForceAt\u0060. Whether \u0060reminder\u0060 should move to DEC-C08 is recorded as an open question.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "Entries are ordered by appointment date, then time; appointments at the same date and time (different clinicians) are ordered by appointment id, matching the tie-break the existing \u0060schedule\u0060 command uses. No source gives the tie-break.",
+      "notAuthorized": "Entries are ordered by appointment date, then time; appointments at the same date and time (different clinicians) are ordered by appointment id, matching the tie-break the existing \u0060schedule\u0060 command uses. No source gives the tie-break.",
+      "validAuthority": [
+        "CLIN-51-R1"
+      ],
+      "reasons": [
+        "A6 an \u0060default-rule\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The date argument is parsed with the existing \u0060Commands.parseDate\u0060 (yyyy-MM-dd); an invalid date is refused with \u0060error: invalid date \u003Ctext\u003E\u0060 and a missing argument with \u0060error: usage: reminders \u003Cdate\u003E\u0060, via the existing error paths.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

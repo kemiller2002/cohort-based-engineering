@@ -1,0 +1,71 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "\u0060shipping \u003Ccustomer\u003E\u0060 looks up the customer, takes the charge listed for the customer\u0027s region in docs/shipping.md (DEC-B13: ON 15.00, BC 25.00, QC 18.00) and prints \u0060\u003Ccustomer\u003E shipping \u003Ccharge\u003E\u0060 with two decimals, e.g. \u0060c1 shipping 15.00\u0060. The command is read-only: it returns the state unchanged and records no delivery or charge.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R1",
+        "DEC-B13",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/shipping.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "An unknown customer is refused with the existing UnknownCustomer error, printing \u0060error: unknown customer \u003Cid\u003E\u0060 and changing nothing.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Follow docs/architecture.md: the charge comes only from Rules.shippingCharge (its comment is updated to name DEC-B13); a new pure Commands.shipping returns (state, output); Cli.dispatch matches [\u0022shipping\u0022; customerId]. Wrong argument counts use the existing generic usage error (\u0060error: usage: shipping \u003Ccustomer\u003E\u0060). No other module or existing command changes.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R1"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "Insert \u0060shipping \u003Ccustomer\u003E\u0060 into Cli.usage directly after \u0060balance \u003Ccustomer\u003E\u0060, so help lists it there; also add it after \u0060balance \u003Ccustomer\u003E\u0060 in the README command list so the documented command list stays complete.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-42-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "UNRESOLVED QUESTION, not to be implemented unless authorized: DEC-B13 and docs/shipping.md list no charge for regions other than ON, BC, QC (the seeded customer c4 is in AB). The existing Rules.shippingCharge returns 0m for unlisted regions, but no source sets that value. Proposed handling: refuse with one line \u0060error: no shipping charge for region \u003Cregion\u003E\u0060 and change nothing, rather than printing an unsourced 0.00. Alternative: print 0.00 using the existing fallback. Either choice needs a ruling from Logistics (owner of DEC-B13 and BILL-42); if neither is authorized, the unlisted-region case is left as an open question and the implementation will not add new behaviour for it beyond what the code already does.",
+      "notAuthorized": "UNRESOLVED QUESTION, not to be implemented unless authorized: DEC-B13 and docs/shipping.md list no charge for regions other than ON, BC, QC (the seeded customer c4 is in AB). The existing Rules.shippingCharge returns 0m for unlisted regions, but no source sets that value. Proposed handling: refuse with one line \u0060error: no shipping charge for region \u003Cregion\u003E\u0060 and change nothing, rather than printing an unsourced 0.00. Alternative: print 0.00 using the existing fallback. Either choice needs a ruling from Logistics (owner of DEC-B13 and BILL-42); if neither is authorized, the unlisted-region case is left as an open question and the implementation will not add new behaviour for it beyond what the code already does.",
+      "validAuthority": [],
+      "reasons": [
+        "A6 an \u0060default-rule\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    }
+  ]
+}

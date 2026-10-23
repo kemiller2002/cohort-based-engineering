@@ -1,0 +1,70 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "run-interest charges, once per invoice, collection interest of 1% of the invoice amount (rounded to the cent, half away from zero) on every invoice where today is later than due date \u002B 60 days and something is still outstanding; the interest is added to what is outstanding and therefore to the customer\u0027s balance.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14",
+        "DEC-B02"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0027Still unpaid\u0027 is read the same way the existing late-fee rule reads it: something is still outstanding on the invoice (Rules.outstanding \u003E 0).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14",
+        "DEC-B03"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Collection interest is charged on invoices of nonprofit customers too. The existing \u0027nonprofit accounts are not chased\u0027 filter (Rules.chased) is applied only to late fees and has no decision record; DEC-B14 and BILL-43-R1 say \u0027every invoice that owes it\u0027, so no exception is applied. Flagged as an open question.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Interest is stored as a new Interest field on the Invoice record (0 until charged); show keeps its exact existing format, so the interest is visible only through the outstanding figure and the balance.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "run-interest is added to the help/usage list directly after run-late-fees, and to the README command list in the same position.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

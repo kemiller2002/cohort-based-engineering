@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "ab190ad0-0da8-4b4a-8799-5e76e7776ca7",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C06-E-r2/briefs/plan.md",
+  "briefSha256": "ec216dea4aa594349aea22c268ea4d5064efe64660365bb4a52fe5de63e908d8",
+  "startedAt": "2026-10-23T10:47:02.177Z",
+  "endedAt": "2026-10-23T10:47:56.406Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "ab190ad0-0da8-4b4a-8799-5e76e7776ca7",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 53419,
+    "costUsdCli": 0.28255759999999996,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6138,
+      "cacheRead": 61068,
+      "cacheWrite": 18442
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "The plan for CLIN-53 is written and committed (commit `ece18a0`, file `.decisions/decisions.json`). Following the brief, I haven't changed any code or tests yet.\n\n**Planned decisions (DEC-W-1 to DEC-W-7):**\n- **The move itself:** `move` changes only an appointment's date and time. The id, patient and clinician stay the same. It prints `a1 moved to 2026-03-12 at 10:00`.\n- **Same checks as booking:** a move goes through the same existing checks as `book`, in the same order: the 1–90 day booking limit (DEC-C01), then one appointment per clinician per slot (DEC-C02). It refuses with the same error messages, and a refused move changes nothing.\n- **Moving to its current slot:** reading the requirement literally, this is refused with the \"already booked\" error, because a new booking there would be refused too. No exception for its own slot.\n- **Unknown appointment:** prints `error: unknown appointment <id>`.\n- **Mechanics:** the command follows how `book` is built and adds no new error types. Bad dates and times get the existing \"invalid date/time\" errors, and a wrong number of words gets the usual usage error.\n- **Help and README:** `help` lists `move <appointment> <date> <time>` directly after `cancel <appointment>`, and the command list in README.md gets the same line.\n- **Extra tests:** for the criteria the supplied acceptance tests don't cover, mainly that a refused move leaves the schedule unchanged and that a successful one frees the old slot.\n\n**Open questions (recorded, not decided):**\n- **Q-W-1:** `Rules.slotFree` has a hard-coded exception: clinician `k2` (Dr. Patel's walk-in list) can be double-booked. No decision record or approval covers it. Because moves use the booking rules, moves onto k2 slots will be allowed to double-book too. The plan neither removes nor extends this exception; Clinical Operations needs to confirm it.\n- **Q-W-2:** no source says whether an appointment whose date has already passed can be moved, or whether moving to its current slot sho"
+  }
+}

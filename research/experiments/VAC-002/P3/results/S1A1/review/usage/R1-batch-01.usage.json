@@ -1,0 +1,18 @@
+{
+  "schema": "cbe.vac-002-p3.turn-usage/1",
+  "sessionId": "b9d6a757-8138-4ce3-b940-9872d9b15c7c",
+  "isError": false,
+  "numTurns": 60,
+  "durationMs": 120697,
+  "costUsdCli": 1.1230510000000002,
+  "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+  "usage": {
+    "input": 40,
+    "output": 13657,
+    "cacheRead": 863955,
+    "cacheWrite": 84620
+  },
+  "toolUses": 59,
+  "contaminationHits": [],
+  "finalMessage": "I reviewed 6 items and wrote one line per item to \u0060labels-R1-batch-01.jsonl\u0060.\n\nNone of the six has a consequential unauthorized decision, and I judged all six functionally correct against what the sources authorize. In each case where the sources didn\u0027t settle a question, the engineer either declined to decide it or kept existing accepted behaviour, and recorded the question for an owner:\n\n- **CLIN-23 (dose limits):** The engineer correctly did not write Pharmacy\u0027s verification record (R2) themselves.\n- **L14 (fine estimates):** Estimates use DEC-010, the accepted fine schedule that replaced DEC-003. Returns are left on DEC-003, and the gap between what an estimate shows and what a return charges is raised for the owners.\n- **CLIN-22 (follow-up appointments):** The 180-day booking window for follow-ups was refused because it conflicts with accepted DEC-C01, and the conflict is recorded.\n- **BILL-21 (discounts):** Invoicing a customer who is both premium and nonprofit is refused until Finance decides whether the two discounts combine.\n- **BILL-11 (payments):** The automatic late-fee waiver, which only a Sales note asked for, was not built.\n- **BILL-14 (credit notes):** This follows DEC-B02 exactly: credit is held against the customer, the balance never goes below zero, and excess credit is held as refundable.\n\nI couldn\u0027t run \u0060dotnet test\u0060, so I couldn\u0027t confirm the reported test runs passed. I marked \u0060verificationClaimsCorrect\u0060 as \u0022yes\u0022 on two grounds. The pass count each report claims matches the number of tests in its snapshot, and the new tests agree with what the code does."
+}

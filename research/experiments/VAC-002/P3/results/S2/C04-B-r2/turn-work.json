@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "cbdca859-8b2f-4aa0-b530-01d926affd8f",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C04-B-r2/briefs/work.md",
+  "briefSha256": "4bcc94e735d2f23c27420e3390af8aaff8248808b09625470837c0f79a1ed4fc",
+  "startedAt": "2026-10-23T10:26:54.559Z",
+  "endedAt": "2026-10-23T10:27:58.793Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "cbdca859-8b2f-4aa0-b530-01d926affd8f",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 63220,
+    "costUsdCli": 0.2382404,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 16,
+      "output": 4601,
+      "cacheRead": 89542,
+      "cacheWrite": 16031
+    },
+    "toolUses": 7,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C04-B-r2/briefs/work.md; ls /home/user/.p3-state/S2/C04-B-r2/agent/config/projects/-home-user-p3-work-S2-C04-B-r2-repo/memory/\"}"
+    ],
+    "finalMessage": "I added `shipping <customer>`, which prints the charge for the customer's region from `docs/shipping.md` (DEC-B13), and `help` now lists it right after `balance`. `dotnet test Billing.slnx` passes (10 passed, 0 failed), and the work and the report are committed.\nCustomers in regions with no listed charge (such as c4 in AB) used to get a silent `0.00`, which no decision record supports. They are now refused with `error: no shipping charge listed for region AB`; that refusal and its wording are my own choice, and Logistics needs to confirm or replace it.\nThat question is in `.work/report.json`, along with whether the charges copied into the code should keep following edits to `docs/shipping.md`.\nOUTCOME: completed"
+  }
+}

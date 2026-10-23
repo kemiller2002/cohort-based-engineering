@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "af57419b-3a97-4d67-96c2-da9fb6f96207",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C06-C-r1/briefs/work.md",
+  "briefSha256": "bb32740a44ca83313bf8f4a0d33aa1c5ee7401c3d134dd20c79c211033ee6543",
+  "startedAt": "2026-10-23T10:50:52.217Z",
+  "endedAt": "2026-10-23T10:51:55.982Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "af57419b-3a97-4d67-96c2-da9fb6f96207",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 62915,
+    "costUsdCli": 0.2654706,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 5090,
+      "cacheRead": 72673,
+      "cacheWrite": 18636
+    },
+    "toolUses": 6,
+    "contaminationHits": [],
+    "finalMessage": "I added the `move <appointment> <date> <time>` command, which uses the same horizon and slot rules as `book`, and listed it in `help` right after `cancel`. `dotnet test Clinic.slnx` passes 7 of 7, including two new tests: a refused move changes nothing, and a moved appointment frees its old slot. The work and `.work/report.json` are committed.\nOpen questions in the report: existing code exempts clinician k2 from the one-appointment-per-slot rule with no decision record behind it, and moves now inherit that. Moving an appointment to its current date and time is refused as already booked, the same as a new booking there would be.\nOUTCOME: completed"
+  }
+}

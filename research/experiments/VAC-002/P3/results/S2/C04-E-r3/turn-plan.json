@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "fbc19f36-c65e-412f-a205-4347705efcda",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C04-E-r3/briefs/plan.md",
+  "briefSha256": "24e9ecd329a84a5b805d7a591507a3f7e11a3100c605d3ec58ccfdb54ca7f09a",
+  "startedAt": "2026-10-23T09:58:34.062Z",
+  "endedAt": "2026-10-23T09:59:15.059Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "fbc19f36-c65e-412f-a205-4347705efcda",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 40056,
+    "costUsdCli": 0.221974,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4319,
+      "cacheRead": 57530,
+      "cacheWrite": 15505
+    },
+    "toolUses": 5,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C04-E-r3/briefs/plan.md; ls /home/user/.p3-state/S2/C04-E-r3/agent/config/projects/-home-user-p3-work-S2-C04-E-r3-repo/memory/\"}"
+    ],
+    "finalMessage": "I've written the plan for BILL-42 and committed it as `.decisions/decisions.json` in commit `00fe4cb`. No code or tests have changed yet.\n\nThe plan has five decisions:\n\n- **DEC-W-1:** `shipping <customer>` prints the charge listed in `docs/shipping.md` for the customer's region, e.g. `c1 shipping 15.00`. It changes nothing.\n- **DEC-W-2:** An unknown customer gets the existing error, `error: unknown customer c9`.\n- **DEC-W-3:** The code follows `docs/architecture.md`. The charge comes only from `Rules.shippingCharge`, which gets a comment naming DEC-B13. I'll add a read-only `Commands.shipping` and a matching line in `Cli`. A wrong number of arguments gets the existing `usage` error.\n- **DEC-W-4:** `shipping <customer>` goes directly after `balance <customer>` in the `help` output and in the README's command list.\n- **DEC-W-5 (open question, marked as not to be implemented unless authorized):** The shipping list only covers ON, BC and QC, so nothing says what to charge a customer in another region, such as c4 in AB. The existing `Rules.shippingCharge` returns 0.00 for those regions, but no source sets that value. I suggested refusing with `error: no shipping charge for region AB`, and gave 0.00 as the alternative. Logistics, which owns the shipping list, needs to decide which applies.\n\nPLAN: ready"
+  }
+}

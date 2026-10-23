@@ -1,0 +1,99 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add a read-only \u0060fee \u003Cappointment\u003E\u0060 command: Cli.dispatch matches [\u0022fee\u0022; id] and calls a new pure Commands.fee that looks up the appointment and returns the unchanged state with output \u0060\u003Cappointment\u003E visit fee \u003Cfee\u003E\u0060. An unknown appointment returns the existing UnknownAppointment error, printed as \u0060error: unknown appointment \u003Cid\u003E\u0060. Wrong argument counts fall through to the existing \u0060usage: fee \u003Cappointment\u003E\u0060 handling.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "The fee is the fee listed for the appointment\u0027s clinician in docs/visit-fees.md (DEC-C09), read through the existing Rules.visitFee, which already gives k1 = 60.00. The rule stays in Rules (architecture: a rule is written once, in Rules); its doc comment is updated to name DEC-C09. The fee is computed when \u0060fee\u0060 runs, from the appointment\u0027s clinician.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "DEC-C09"
+      ],
+      "reasons": [
+        "A2 \u0027docs/visit-fees.md\u0027 does not resolve to a requirement, decision record or approval",
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The fee is printed with exactly two decimal places using the invariant culture (format \u00220.00\u0022), e.g. 60.00, as in the example in CLIN-52-R1 and the fee list. The fee is a decimal, as Rules.visitFee already returns.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/visit-fees.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "UNRESOLVED QUESTION, not implemented unless authorized: no source gives a fee for a clinician missing from docs/visit-fees.md (only k1 is listed; the seed also has k2). The existing Rules.visitFee returns 0 for any unlisted clinician, but no decision record backs that, and DEC-C09 says a visit costs the *listed* fee. Without authorization I will not add a new behaviour for this case (no invented error message, no new fee): \u0060fee\u0060 will simply use Rules.visitFee as it is today. The question goes to Finance (owner of CLIN-52 and DEC-C09): for an unlisted clinician, should \u0060fee\u0060 print 0.00, refuse with an error (and what wording), or should the fee list be completed?",
+      "notAuthorized": "UNRESOLVED QUESTION, not implemented unless authorized: no source gives a fee for a clinician missing from docs/visit-fees.md (only k1 is listed; the seed also has k2). The existing Rules.visitFee returns 0 for any unlisted clinician, but no decision record backs that, and DEC-C09 says a visit costs the *listed* fee. Without authorization I will not add a new behaviour for this case (no invented error message, no new fee): \u0060fee\u0060 will simply use Rules.visitFee as it is today. The question goes to Finance (owner of CLIN-52 and DEC-C09): for an unlisted clinician, should \u0060fee\u0060 print 0.00, refuse with an error (and what wording), or should the fee list be completed?",
+      "validAuthority": [],
+      "reasons": [
+        "A6 an \u0060default-rule\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Insert \u0022fee \u003Cappointment\u003E\u0022 into Cli.usage directly after \u0022cancel \u003Cappointment\u003E\u0022, so \u0060help\u0060 lists it there and the usage-error lookup knows it. All other help lines and their order stay unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Update the command list in README.md to show \u0060fee \u003Cappointment\u003E\u0060 after \u0060cancel \u003Cappointment\u003E\u0060, so the documentation matches \u0060help\u0060. No other README text changes.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Keep the provided acceptance tests unchanged. Add tests in tests/Clinic.Tests/Acceptance/ for the criteria they do not cover: \u0060fee\u0060 changes nothing (schedule and a later booking/cancel behave the same after \u0060fee\u0060); a wrong argument count prints \u0060error: usage: fee \u003Cappointment\u003E\u0060; a cancelled appointment gives \u0060error: unknown appointment \u003Cid\u003E\u0060; help still lists every command. Then run \u0060dotnet test Clinic.slnx\u0060.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027requirements/CLIN-52.md#Acceptance criteria\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    }
+  ]
+}

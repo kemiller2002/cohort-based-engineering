@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "aa05b1ba-5c73-4ebc-b383-663e58198d29",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C06-D-r3/briefs/work.md",
+  "briefSha256": "a9394dc625c803c5724086f03e44fc248ee5eadf4054dec235a864ec0c76bad3",
+  "startedAt": "2026-10-23T09:54:14.650Z",
+  "endedAt": "2026-10-23T09:55:32.727Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "aa05b1ba-5c73-4ebc-b383-663e58198d29",
+    "isError": false,
+    "numTurns": 9,
+    "durationMs": 77289,
+    "costUsdCli": 0.30954919999999997,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 18,
+      "output": 6572,
+      "cacheRead": 114026,
+      "cacheWrite": 19404
+    },
+    "toolUses": 8,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C06-D-r3/briefs/work.md; ls /home/user/.p3-state/S2/C06-D-r3/agent/config/projects/-home-user-p3-work-S2-C06-D-r3-repo/memory/\"}"
+    ],
+    "finalMessage": "I added `move <appointment> <date> <time>`, which uses the same horizon and slot checks as `book`, and listed it in `help` directly after `cancel`; `dotnet test Clinic.slnx` passes (8 passed, 0 failed) and it is all committed.\nTwo open questions are in `.work/report.json`. `Rules.slotFree` has a hard-coded exception that clinician k2's slots never count as taken, which no decision record supports; I left it alone, so `move` follows it too. Moving an appointment to its own current slot is refused, because a new booking there would be.\n\nOUTCOME: completed"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "afca1e9c-340d-4b39-89b0-3c8bdafb31db",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C06-C-r3/briefs/work.md",
+  "briefSha256": "ea3afb438862a12ff92d94caa282c4991121189c43cdac200847ece0e81a59cd",
+  "startedAt": "2026-10-23T10:42:13.605Z",
+  "endedAt": "2026-10-23T10:43:15.054Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "afca1e9c-340d-4b39-89b0-3c8bdafb31db",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 60530,
+    "costUsdCli": 0.2534496,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4669,
+      "cacheRead": 73068,
+      "cacheWrite": 18176
+    },
+    "toolUses": 6,
+    "contaminationHits": [],
+    "finalMessage": "The new `move <appointment> <date> <time>` command works and is committed with the report; all 6 tests pass (`dotnet test Clinic.slnx`). It uses the same date-range and one-per-time-slot checks as booking, is listed in `help` and the README directly after `cancel`, and I added a test confirming a refused move changes nothing.\nOne existing rule has no decision record: clinician `k2` (Dr. Patel, walk-in list) never counts as booked, so `k2` appointments can also be moved onto taken times. I left it unchanged and recorded it as an open question in `.work/report.json`. Two smaller open questions are also there: moving an appointment to its own current time is refused, and appointments in the past can be moved.\nOUTCOME: completed"
+  }
+}

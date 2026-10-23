@@ -1,0 +1,57 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "move reuses the booking rules from Rules (withinBookingHorizon, slotFree) and the booking errors (OutsideBookingHorizon, SlotTaken), checked in the same order as book, after looking up the appointment (UnknownAppointment). Date and time are parsed with the same parsers as book. No new rule is added to Rules.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "DEC-C01",
+        "DEC-C02"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The slot check for a move is made against the current state, including the appointment being moved, exactly as a new booking at that date and time would be. Moving an appointment to its own current slot is therefore refused as already booked. No exclusion of the moved appointment is invented.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Because move uses the same slotFree function as book, it inherits the existing undocumented exemption in Rules.slotFree for clinician k2 (walk-in list, slots never count as taken). This exemption is not in DEC-C02 or any approval; it is left unchanged (existing behaviour must keep working) and neither extended nor removed. Raised as an open question.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "help lists \u0027move \u003Cappointment\u003E \u003Cdate\u003E \u003Ctime\u003E\u0027 directly after \u0027cancel \u003Cappointment\u003E\u0027; the same usage line drives the \u0027usage:\u0027 error for a move with the wrong number of words, and README\u0027s command list is updated to match.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

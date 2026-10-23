@@ -1,0 +1,14 @@
+{
+  "schema": "cbe.vac-002-p3.seal/1",
+  "plaintextTarGzSha256": "8cf94896c4b37fa37aa15cf322867cac0056f2ceb8db1a2c8159f1fd925a8bd6",
+  "ciphertextSha256": "523241f182b8eaa14b55019a7ddfe61c33040431f83dd48597c6eaddef2a3563",
+  "manifestSha256": "71aa441a1cd5d64b601579be025eda9ab7e22fa79a803ef1a2c7fa71c6ebbe2a",
+  "files": 57,
+  "cipher": "aes-256-cbc pbkdf2 iter 200000 (openssl enc)",
+  "openssl": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "sealedAt": "2026-10-23T07:40:16Z",
+  "contents": "D13-D16/{oracle,ref,trap-*,valid-*}, gen/, support/{billing,clinic}, meta.json, basis.json, validation/",
+  "verify": "openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass file:KEY -in p3d-sealed.tar.gz.enc | sha256sum  # equals plaintextTarGzSha256",
+  "store": "p3d (discovery: D13-D16 oracles, references, traps, valid alternatives, generators, support projects, meta.json, basis.json, validation/)",
+  "key": "kept outside every repository until Stage 1 is scored; then published as p3d-sealed.key"
+}

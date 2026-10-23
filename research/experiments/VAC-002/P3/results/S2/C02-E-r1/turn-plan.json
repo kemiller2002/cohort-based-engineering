@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "c76e0f22-3f9f-43a0-a2a3-ae29e3c93ad2",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C02-E-r1/briefs/plan.md",
+  "briefSha256": "7e10c6fb5ee615b10721b5037c65f171f43ffe90b63fa73670d3faea134102d2",
+  "startedAt": "2026-10-23T10:29:28.824Z",
+  "endedAt": "2026-10-23T10:30:14.018Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "c76e0f22-3f9f-43a0-a2a3-ae29e3c93ad2",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 44359,
+    "costUsdCli": 0.2444486,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 5094,
+      "cacheRead": 58443,
+      "cacheWrite": 16354
+    },
+    "toolUses": 5,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C02-E-r1/briefs/plan.md; ls /home/user/.p3-state/S2/C02-E-r1/agent/config/projects/-home-user-p3-work-S2-C02-E-r1-repo/memory/\"}"
+    ],
+    "finalMessage": "The plan for BILL-41 is written to `.decisions/decisions.json` and committed (`1d21424`). I haven't changed any code or tests yet.\n\nThe main problem is that the code and the decision records give different payment terms:\n- **The code** uses DEC-B01: an invoice is due 30 days after it is issued. `BaseTests` asserts this.\n- **The decision in force** is DEC-B12 (accepted 2026-03-01), which says 21 days. The requirement's example matches it: issued 2026-03-02, payable by 2026-03-23.\n\n**Planned decisions:**\n- **Quote date (DEC-W-1):** `quote` will use DEC-B12, so the date is today plus 21 days. This becomes a new rule in `Rules`.\n- **Invoice date (DEC-W-2):** `invoice` stays at 30 days, because BILL-41 doesn't ask for that to change. This means a quote and an invoice issued on the same day will show different dates.\n- **Amount check (DEC-W-3):** a quote amount is checked the same way an invoice amount is, using `Commands.parseAmount`. The output is `quote <customer> <amount> payable by <yyyy-MM-dd>`.\n- **No side effects (DEC-W-4):** `quote` changes nothing. If both the amount and the customer are bad, the amount error is reported first, as `invoice` already does. A line with the wrong number of words gets the existing usage error.\n- **Help and README (DEC-W-5):** `quote <customer> <amount>` goes directly after `invoice` in `help` and in the README command list.\n- **Extra tests (DEC-W-6):** new tests will cover the exact example date, that a quote creates no invoice, rejected amounts (`x`, `0`, `1.005`), and that invoices are still due after 30 days.\n\n**Decision needed:** should `invoice` also move to DEC-B12's 21 days? I'm not doing that without approval from Finance or Sales Operations. It would also break the existing 30-day test.\n\nPLAN: ready"
+  }
+}

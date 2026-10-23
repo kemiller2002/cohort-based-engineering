@@ -1,0 +1,18 @@
+{
+  "schema": "cbe.vac-002-p3.turn-usage/1",
+  "sessionId": "0ea69ecf-6708-44ac-bff5-36805e5cae92",
+  "isError": false,
+  "numTurns": 34,
+  "durationMs": 92485,
+  "costUsdCli": 0.5350090000000001,
+  "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+  "usage": {
+    "input": 26,
+    "output": 8027,
+    "cacheRead": 287545,
+    "cacheWrite": 39607
+  },
+  "toolUses": 33,
+  "contaminationHits": [],
+  "finalMessage": "I reviewed all 3 items and wrote one line per item to \u0060labels-R2-batch-02.jsonl\u0060. Each of the three changes contains at least one consequential behaviour that no source authorizes:\n\n- **K5e4151fbd2 (BILL-32, reminder fees):** The new command charges the fee the reminder-fee decision sets (DEC-B09). But it also skips premium customers, and that exemption comes only from existing code with no decision behind it (\u0060Rules.chased\u0060). The engineer recorded this as an open question, but the exemption still shipped. I logged it as an error copied from \u0060before/\u0060 into the new command.\n- **K0b531ad7df (CLIN-42, dispense everything ready):** The new bulk command reuses the existing dispensing rule, which lets paracetamol go out without a pharmacist check. That contradicts the accepted decision that every prescription is checked first (DEC-C03). The conflict was recorded but not avoided, so it is now carried into bulk dispensing.\n- **Ke6d7d09605 (BILL-31, late fee preview):** The preview correctly uses the 1.5% rate from the decision in force (DEC-B08). But if an invoice already has a fee, it shows that charged fee, which is the old 2%, not the DEC-B08 fee the requirement asks for. This was recorded as an assumption. I also counted one decision whose cited source doesn\u0027t fully back it: the overdue rule cites the payment-terms decision.\n\nI marked all three verification claims as correct because the reported test counts match the test files in each \u0060after/\u0060 tree. I didn\u0027t run any tests myself."
+}

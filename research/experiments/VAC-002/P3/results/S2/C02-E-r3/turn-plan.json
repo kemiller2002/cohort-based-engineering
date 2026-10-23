@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "a0b7f806-359a-4ad1-8f48-160699348b85",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C02-E-r3/briefs/plan.md",
+  "briefSha256": "20b2a136513a3c28e5899cccdee190631fdb998d502367e1a545f502aaf3829c",
+  "startedAt": "2026-10-23T10:53:26.592Z",
+  "endedAt": "2026-10-23T10:54:28.901Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "a0b7f806-359a-4ad1-8f48-160699348b85",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 61411,
+    "costUsdCli": 0.2805354,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6426,
+      "cacheRead": 58917,
+      "cacheWrite": 17523
+    },
+    "toolUses": 5,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C02-E-r3/briefs/plan.md; ls /home/user/.p3-state/S2/C02-E-r3/agent/config/projects/-home-user-p3-work-S2-C02-E-r3-repo/memory/\"}"
+    ],
+    "finalMessage": "The plan for BILL-41 is written to `.decisions/decisions.json` and committed (`fa9ec6e`). I haven't changed any code or tests.\n\n**The main issue: two different payment terms.** The requirement's example (issued 2026-03-02, payable by 2026-03-23) is 21 days, which is DEC-B12, the decision currently in force. But the `invoice` command still uses the old 30-day rule from DEC-B01, and an existing test checks for 30 days.\n- **DEC-W-1:** `quote` will use DEC-B12, so 21 days.\n- **DEC-W-2:** `invoice` stays at 30 days. BILL-41 doesn't ask to change it and says existing behaviour stays the same. The catch is that a quote and an invoice issued the same day will show different dates. I've raised this as question Q-1 instead of fixing it myself.\n\n**The other decisions:**\n- **Where the rule goes (DEC-W-3):** the 21-day rule goes in the business-rules file as its own named rule. The 30-day rule stays as it is.\n- **Amount check (DEC-W-4):** amounts are checked the same way `invoice` checks them: positive, at most two decimal places.\n- **Output (DEC-W-5):** a quote prints exactly `quote <customer> <amount> payable by <yyyy-MM-dd>` and changes nothing.\n- **Error order (DEC-W-6):** if both the amount and the customer are bad, the amount error is shown first, as with `invoice`. The requirement doesn't say which comes first, so this is also question Q-2.\n- **Help (DEC-W-7):** `help` lists `quote <customer> <amount>` right after `invoice`, and the README command list is updated to match.\n- **Tests (DEC-W-8):** I'll add tests for what the provided tests don't cover: the exact 2026-03-23 example, `error: invalid amount x`, and a quote creating no invoice.\n\n**Open questions**, in an extra `unresolvedQuestions` list in the same file:\n- **Q-1:** should `invoice` move to 21 days?\n- **Q-2:** which error should come first when both inputs are bad?\n- **Q-3:** DEC-B12 gives no effective date. Should a quote dated before 2026-03-01 use the old 30 days? The plan always uses 21.\n\nPLAN: ready"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The reminder decision in force is DEC-C08 (48 hours before the appointment), not DEC-C06 (24 hours), which DEC-C08 supersedes. \u0060reminders \u003Cdate\u003E\u0060 lists appointments whose appointment date-time minus 48 hours falls on \u003Cdate\u003E. The requirement\u0027s own example (reminders on 2026-03-10 lists appointments on 2026-03-12) agrees.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "DEC-C08"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "conflict-resolution",
+      "computedStatus": "authorized",
+      "statement": "The existing \u0060reminder \u003Cappointment\u003E\u0060 command still uses the 24-hour lead (Rules.reminderLeadHours, traced to the superseded DEC-C06) and its existing test expects that. It is left unchanged because CLIN-51 says existing behaviour is unchanged except as its requirements say, and none of them mention \u0060reminder\u0060. The new run list uses a separate DEC-C08 rule (Rules.reminderInForceLeadHours). As a result the two commands disagree on reminder time. Whether \u0060reminder\u0060 should move to DEC-C08 is recorded as an open question, not decided here.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "DEC-C08"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "Appointments with the same date and time (different clinicians) are ordered by appointment id, as the existing \u0060schedule\u0060 command does.",
+      "notAuthorized": "Appointments with the same date and time (different clinicians) are ordered by appointment id, as the existing \u0060schedule\u0060 command does.",
+      "validAuthority": [],
+      "reasons": [
+        "A6 an \u0060default-rule\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u003Cdate\u003E is parsed the same way as the other date arguments (yyyy-MM-dd). A malformed date is refused with \u0060error: invalid date \u003Ctext\u003E\u0060, and a wrong argument count gets \u0060error: usage: reminders \u003Cdate\u003E\u0060, through the existing error paths. Any date is accepted, past or future, with no horizon check, because nothing restricts it.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u0060reminders \u003Cdate\u003E\u0060 is added to Cli.usage directly after \u0060reminder \u003Cappointment\u003E\u0060. The help output and the usage messages both come from that list.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R2"
+      ],
+      "reasons": []
+    }
+  ]
+}

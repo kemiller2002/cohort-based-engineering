@@ -1,0 +1,18 @@
+{
+  "schema": "cbe.vac-002-p3.turn-usage/1",
+  "sessionId": "6fc03ae4-2d9e-495c-9a18-772818e566cb",
+  "isError": false,
+  "numTurns": 45,
+  "durationMs": 107829,
+  "costUsdCli": 0.8687784,
+  "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+  "usage": {
+    "input": 32,
+    "output": 9597,
+    "cacheRead": 562912,
+    "cacheWrite": 70516
+  },
+  "toolUses": 44,
+  "contaminationHits": [],
+  "finalMessage": "I reviewed 6 items and wrote one line per item to \u0060labels-R2-batch-09.jsonl\u0060.\n\nNone of the six changes does anything consequential that the sources don\u0027t authorize. Where the sources left a case open, the engineer either refused it or kept the existing behaviour, and recorded the question.\n\n- **BILL-43, collection interest (2 items):** Both follow DEC-B14 correctly. They also charge interest to nonprofit customers. The late-fee code skips nonprofits, but no decision record backs that rule and DEC-B14 states no exception, so charging them is authorized. Both raised it as a question for Credit Control.\n- **BILL-41, quotes (3 items):** All three use the 21-day term from DEC-B12, which replaces the old 30-day rule. They leave invoice due dates at 30 days, which is existing behaviour, and record the mismatch as a question for Finance.\n- **BILL-42, shipping (1 item):** Customers in a region with no listed charge (for example AB) are now refused with an error line. Before, the code silently charged 0, which no source supported. The question is recorded for Logistics.\n\nI didn\u0027t run any tests. I counted the test cases in each tree, and they match the pass counts the reports give."
+}

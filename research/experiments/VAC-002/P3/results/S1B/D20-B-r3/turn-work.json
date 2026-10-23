@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "68790be8-dd7d-4ad1-a7d7-949583daffe9",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S1B/D20-B-r3/briefs/work.md",
+  "briefSha256": "d37b318fc7f8d541206c698589ee516b6c1eb1df2e3bd40145e32a4cdc2eb6f7",
+  "startedAt": "2026-10-23T09:05:22.430Z",
+  "endedAt": "2026-10-23T09:06:26.582Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "68790be8-dd7d-4ad1-a7d7-949583daffe9",
+    "isError": false,
+    "numTurns": 9,
+    "durationMs": 63218,
+    "costUsdCli": 0.2863258,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 18,
+      "output": 5510,
+      "cacheRead": 117869,
+      "cacheWrite": 19060
+    },
+    "toolUses": 8,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S1B/D20-B-r3/briefs/work.md; ls /home/user/.p3-state/S1B/D20-B-r3/agent/config/projects/-home-user-p3-work-S1B-D20-B-r3-repo/memory/\"}"
+    ],
+    "finalMessage": "I added `next-free <clinician> <time>`; it searches up to 60 days ahead (DEC-C05, the horizon decision in force) and `help` lists it right after `schedule`. `dotnet test Clinic.slnx` passes (7/7), and the work and report are committed.\n`book` still uses the old 90-day limit from the superseded DEC-C01, and the existing tests expect 90, so `next-free` can say \"no free day\" while `book` still accepts days 61–90. I didn't change `book` because CLIN-41 doesn't cover it; it's recorded as an open question in the report.\nOUTCOME: completed"
+  }
+}

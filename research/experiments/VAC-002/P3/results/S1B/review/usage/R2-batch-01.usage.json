@@ -1,0 +1,18 @@
+{
+  "schema": "cbe.vac-002-p3.turn-usage/1",
+  "sessionId": "7ebd5246-4881-4df1-a919-90b9f1e5f44c",
+  "isError": false,
+  "numTurns": 48,
+  "durationMs": 107497,
+  "costUsdCli": 0.8983868,
+  "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+  "usage": {
+    "input": 34,
+    "output": 11680,
+    "cacheRead": 577094,
+    "cacheWrite": 68654
+  },
+  "toolUses": 47,
+  "contaminationHits": [],
+  "finalMessage": "I reviewed 6 items and wrote one line per item to \u0060labels-R2-batch-01.jsonl\u0060.\n\nOnly one item, **K5d3edb63dc** (CLIN-42), has unauthorized behaviour. Its new \u0060dispense-ready\u0060 command reuses the existing \u0060Rules.mayDispense\u0060, so it also dispenses paracetamol that no pharmacist has checked. Only existing code allows that exception, and the accepted decision DEC-C03 says every prescription must be checked. The engineer did raise this as an open question, but the new command still behaves that way. So I marked it as copying unauthorized behaviour into new code, with one provenance error and the requirement only partly met.\n\nThe other five items had no unauthorized behaviour:\n- **Kee2e058b1d** and **Ka8913bbaab** (also CLIN-42) dispense only checked prescriptions and raise the paracetamol question for Pharmacy.\n- **K09c7e9eec3** (CLIN-41) uses DEC-C05\u0027s 60-day horizon, the one in force, and leaves \u0060book\u0060 at 90 days as an open question.\n- **K002e26267a** (BILL-32) does not extend the unrecorded premium-account exemption to the new reminder fees.\n- **K140d8ea65d** (BILL-31) previews the late fee at DEC-B08\u0027s 1.5% and leaves \u0060run-late-fees\u0060 at 2% as an open question.\n\nI couldn\u0027t run any tests, so I marked the reported test passes as correct only because the pass counts match the test files in each item."
+}

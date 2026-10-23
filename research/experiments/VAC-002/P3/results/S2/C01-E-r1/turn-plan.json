@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "3b1c1b26-3410-4acc-9d15-9587babf56b1",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C01-E-r1/briefs/plan.md",
+  "briefSha256": "3c4685c0d29781e09c6b621f30f3dfe3a5d65ab979ca6010da096e2833c4a963",
+  "startedAt": "2026-10-23T10:24:54.761Z",
+  "endedAt": "2026-10-23T10:26:14.849Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "3b1c1b26-3410-4acc-9d15-9587babf56b1",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 79272,
+    "costUsdCli": 0.29817899999999997,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6631,
+      "cacheRead": 62275,
+      "cacheWrite": 19132
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan to `.decisions/decisions.json` and committed it (3e8ec80). No code or tests were changed. Before planning I ran `dotnet test Clinic.slnx`: the two CLIN-51 acceptance tests fail as expected and the other 4 pass.\n\n**The main issue: two sources disagree on the reminder time.** R1 says `reminders` must follow \"the reminder decision in force\". That is DEC-C08: reminders go out 48 hours before the appointment. But `Rules.fs` still uses the replaced DEC-C06 rule of 24 hours. The existing `reminder` command and `ReminderTests.fs` rely on that 24-hour value. Each rule may only be written once in `Rules` (per `docs/architecture.md`), so both commands have to share one lead time.\n\n- **DEC-W-2 (needs a decision):** I propose changing the rule to 48 hours. This changes the output of the existing `reminder` command and means updating `ReminderTests.fs`, which goes against the criterion that existing behaviour stays unchanged.\n- **If DEC-W-2 is not authorized:** the requirement can't be met without writing the rule twice. I'll stop and report rather than choose myself.\n\n**The rest of the plan:**\n- **DEC-W-1:** `reminders <date>` lists the appointments whose reminder time (48 hours before) falls on that date.\n- **DEC-W-3:** the output format and order follow R1 as written.\n- **DEC-W-4:** appointments at the same time are listed by appointment id, as `schedule` already does. No source gives this, so it's flagged as an open question.\n- **DEC-W-5:**\n  - The command changes nothing.\n  - Cancelled appointments don't appear.\n  - Any date is accepted.\n  - Bad dates and wrong argument counts give the usual errors.\n- **DEC-W-6:** `help` lists `reminders <date>` directly after `reminder <appointment>`.\n- **DEC-W-7:** I'll add acceptance tests for the criteria the provided tests don't cover. The provided tests stay as they are.\n- **DEC-W-8:** I'll add the new command to the README's command list.\n\n**Open questions:**\n1. Should the existing `reminder` command switch to 48"
+  }
+}

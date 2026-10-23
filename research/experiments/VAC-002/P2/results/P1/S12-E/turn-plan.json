@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "c898c422-c470-4fe9-aad3-b02a23107824",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S12-E/briefs/plan.md",
+  "briefSha256": "7efd77de3ba39d9e10654ac1a254dcb932c4255bb4e5ecaf98d3ea0fd22fb4ab",
+  "startedAt": "2026-10-22T22:39:24.275Z",
+  "endedAt": "2026-10-22T22:40:21.828Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "c898c422-c470-4fe9-aad3-b02a23107824",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 56474,
+    "costUsdCli": 0.2531331,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 5460,
+      "cacheRead": 51195,
+      "cacheWrite": 16689
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for CLIN-24 to `.decisions/decisions.json` and committed it (commit `9bbbba7`). It has eight decisions, all `proposed` with `implementedIn` empty. No code or tests have changed.\n\nThe decisions:\n\n- **DEC-W-1, approval exception:** approval APR-C01 is the only exception to DEC-C02 (one appointment per slot). Dr. Patel (`k2`) can be double-booked only on Mondays. Every other second booking at a taken time is refused with the existing error.\n- **DEC-W-2, limit of two:** the approval says \"two appointments\", so a third booking at the same time is refused.\n- **DEC-W-3, needs the Clinical Director to confirm:** the approval says the double-booking is \"for her diabetes review clinic\", but the system has no appointment types. I've treated every `k2` Monday appointment as covered. Without that reading, the provided acceptance tests can't pass.\n- **DEC-W-4, Dr. Rossi:** Dr. Rossi (`k1`) does not get double-booking. The request from their office is a note, not an approval, and APR-C01 names only Dr. Patel. The request is recorded as an open question for the approval's owners.\n- **DEC-W-5, other checks:** the existing booking checks, including the 90-day limit, still apply to a double-booking. Only the second booking's output gets the `(double-booked)` suffix.\n- **DEC-W-6, schedule marker:** `schedule` marks every appointment at a time where the clinician has more than one booking. If one of a pair is cancelled, the other is no longer marked.\n- **DEC-W-7, where the rule lives:** the rule goes in `Rules.fs` and refers to APR-C01 and DEC-C02. The program does not read the approval files at run time. There is no new command, and the public entry points stay compatible.\n- **DEC-W-8, extra tests:** new acceptance tests will cover the cases the provided ones miss: `k2` on another weekday, `k1`, a third booking, a refused booking changing nothing, cancelling one of a pair, and the 90-day limit.\n\nPLAN: ready"
+  }
+}

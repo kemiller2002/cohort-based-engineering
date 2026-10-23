@@ -1,0 +1,83 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "The fee printed by \u0060fee \u003Cappointment\u003E\u0060 is the visit fee of the appointment\u0027s clinician as listed in docs/visit-fees.md (DEC-C09), obtained through the single existing rule Rules.visitFee; the rule\u0027s doc comment is updated to name DEC-C09 as the decision it implements. No new fee rule is written in Commands or Cli.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "DEC-C09"
+      ],
+      "reasons": [
+        "A2 \u0027docs/visit-fees.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add Commands.fee : string -\u003E State -\u003E Result\u003CState * string, ClinicError\u003E. It looks up the appointment (UnknownAppointment id if absent, printed as \u0060error: unknown appointment \u003Cid\u003E\u0060 by the existing describeError), returns the state unchanged, and outputs \u0060\u003Cid\u003E visit fee \u003Cfee\u003E\u0060 with the fee formatted with two decimals in the invariant culture (\u00220.00\u0022), e.g. \u0060a1 visit fee 60.00\u0060. Cli.dispatch gains the case [\u0022fee\u0022; id]; a malformed \u0060fee\u0060 line gets the existing \u0060usage:\u0060 error via usageOf.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Insert \u0060fee \u003Cappointment\u003E\u0060 into Cli.usage directly after \u0060cancel \u003Cappointment\u003E\u0060, so \u0060help\u0060 lists it there; also add the same line after \u0060cancel \u003Cappointment\u003E\u0060 in the README Commands list so the documented command list stays complete.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "UNRESOLVED QUESTION for Finance: docs/visit-fees.md lists a fee only for k1, and no source says what the fee is for an appointment whose clinician is not listed (e.g. k2, who is in the standard seed). The existing Rules.visitFee returns 0m for any unlisted clinician, but neither DEC-C09 nor docs/visit-fees.md supports a 0.00 fee, and nothing supports refusing either. The agent does not decide this: it will not add a new fallback, exception or error for unlisted clinicians, will not treat the existing 0m fallback as authorized policy, and will not add tests that assert any output for an unlisted clinician. Whatever Rules.visitFee currently returns is left unchanged pending a Finance decision.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-C09"
+      ],
+      "reasons": [
+        "A2 \u0027docs/visit-fees.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "A cancelled appointment is removed from state by the existing \u0060cancel\u0060, so \u0060fee\u0060 on it prints \u0060error: unknown appointment \u003Cid\u003E\u0060, the same as any unknown appointment. No special handling of cancelled appointments is added.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add unit tests in tests/Clinic.Tests for the supported behaviour not covered by the acceptance tests: \u0060fee\u0060 leaves state unchanged (e.g. schedule output identical before and after), a malformed \u0060fee\u0060 line prints \u0060error: usage: fee \u003Cappointment\u003E\u0060, and help still lists every command. No test asserts a fee for an unlisted clinician (see DEC-W-4).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

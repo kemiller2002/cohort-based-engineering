@@ -1,0 +1,57 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "move reuses the booking rules from Rules (withinBookingHorizon against today\u0027s date at the time of the move, and slotFree for the appointment\u0027s existing clinician) and the existing OutsideBookingHorizon/SlotTaken errors, so that refusals match a booking\u0027s errors exactly. No new rule is added to Rules. Date and time are parsed with the same parsers book uses.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "DEC-C01",
+        "DEC-C02"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The slot check for a move uses the current state as-is, as a new booking would; the appointment being moved is not excluded. So moving an appointment to the date and time it already has is refused with the slot-taken error, as a new booking there would be. No exception for this case was added because no source authorizes one.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The existing k2 walk-in exception in Rules.slotFree, which has no decision record behind it, was neither removed nor extended. move inherits it only because it reuses the booking rule, which is what \u0027the same rules as booking\u0027 asks for. Whether that exception is authorized is left as an open question.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Added \u0027move \u003Cappointment\u003E \u003Cdate\u003E \u003Ctime\u003E\u0027 to Cli.usage directly after \u0027cancel \u003Cappointment\u003E\u0027. This also gives the usage error for wrong argument counts. Added the command to the README command list in the same place so the documentation still lists every command.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "c163efc9-eb66-49bc-ac31-641c29d40304",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C06-E-r3/briefs/plan.md",
+  "briefSha256": "a9ceffd42ef46abebac8a17fe5f3639f1903a66b88dda3f5210635ed49a08fef",
+  "startedAt": "2026-10-23T10:23:04.380Z",
+  "endedAt": "2026-10-23T10:23:52.217Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "c163efc9-eb66-49bc-ac31-641c29d40304",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 46636,
+    "costUsdCli": 0.25015740000000003,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4974,
+      "cacheRead": 58907,
+      "cacheWrite": 17356
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for CLIN-53 (the new `move` command) and committed it as `5b7ad07` in `.decisions/decisions.json`. I haven't changed any code or tests yet, as the brief says. It holds seven decisions:\n\n- **DEC-W-1:** `move` keeps the appointment's patient and clinician and changes only the date and time. It prints `a1 moved to …`, and an unknown appointment gives `error: unknown appointment a9`.\n- **DEC-W-2:** a move is checked against the same rules as a booking: the 90-day booking window (DEC-C01) and one appointment per clinician per slot (DEC-C02). A refused move gives the same error a booking would and changes nothing. I'm adding no rules of my own.\n- **DEC-W-3:** a move counts the appointment against itself, so moving it to the time it already has is refused, just as a new booking there would be. **Open question:** should that case succeed instead?\n- **DEC-W-4:** moves will inherit the existing rule in `Rules.slotFree` that Dr. Patel's (`k2`) slots never count as taken, because booking uses it today. **Open question:** no accepted decision record backs that rule, and DEC-C02 lists no exceptions. Clinical Operations should confirm or retire it. The plan leaves it as it is.\n- **DEC-W-5:** `move` checks things in the same order as `book`: date and time format first, then whether the appointment exists, then the 90-day window, then whether the slot is free. Booking and moving will share one check in `Commands`, so the rules exist in one place, and booking behaves exactly as before.\n- **DEC-W-6:** `help` lists `move <appointment> <date> <time>` directly after `cancel <appointment>`, and the README command list gets the same line.\n- **DEC-W-7:** I'll add tests for what the acceptance tests don't cover: a refused move leaves the schedule unchanged, bad input to `move`, and the old slot becoming free after a move. Tests for DEC-W-3 and DEC-W-4 go in only if those decisions are approved.\n\nPLAN: ready"
+  }
+}

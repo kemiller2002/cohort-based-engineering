@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "fe822e3a-188a-409f-ab56-ad59e5b9fcd1",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S08-D/briefs/plan.md",
+  "briefSha256": "cdc96605f332adbc2a78394de5245c558135f5c25b178f61c331a3752d84ff55",
+  "startedAt": "2026-10-22T21:54:21.370Z",
+  "endedAt": "2026-10-22T21:55:27.488Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "fe822e3a-188a-409f-ab56-ad59e5b9fcd1",
+    "isError": false,
+    "numTurns": 5,
+    "durationMs": 65127,
+    "costUsdCli": 0.27418790000000004,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 6476,
+      "cacheRead": 40624,
+      "cacheWrite": 17046
+    },
+    "toolUses": 4,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for BILL-15 as nine proposed decisions in `.decisions/decisions.json` and committed it (`0d970d5`). I haven't changed any code or tests yet.\n\n- **The fee itself (DEC-W-1, W-2):** when late fees are run, an invoice that still has money outstanding more than 30 days after its due date gets a flat 5.00 reminder fee. It is charged once per invoice and then counts towards what's outstanding and the customer's balance. Exactly 30 days after the due date doesn't qualify; 31 days does.\n- **Relation to the late fee (DEC-W-3):** the reminder fee is charged on top of the late fee, not instead of it, and doesn't depend on whether a late fee was charged. If late fees are first run more than 30 days late, both fees are charged in that one run. The late fee stays at 2% of the invoice amount.\n- **Premium customers (DEC-W-4):** they get the reminder fee too. The premium exemption record (DEC-B05) is only proposed, so it doesn't count as a rule. The handoff note asking new charges to follow it is just a note.\n- **The existing premium late-fee exemption (DEC-W-5):** it's already in the code, but it rests on that same unaccepted record. I plan to leave it as it is, because the brief says existing behaviour must keep working, and record it as a question for Finance.\n- **Output (DEC-W-6, W-7):** `run-late-fees` always prints both counts, including when both are 0. `show` always includes a `reminder fee` field, printing `0.00` when none has been charged. Some existing tests check the old output, so I'll update only the expected text in them.\n- **Implementation and tests (DEC-W-8):** a new reminder-fee field on invoices, with the rule kept alongside the other business rules. The two entry points the tests rely on keep their signatures. I'll add acceptance tests for the cases the provided ones miss: exactly 30 days, charged only once, included in the balance, premium customers, and both fees in one run.\n- **Sales tax (DEC-W-9):** the accepted sales-tax rule (DEC-B04) i"
+  }
+}

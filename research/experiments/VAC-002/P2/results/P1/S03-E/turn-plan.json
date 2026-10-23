@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "17906f84-c72e-41f0-ac25-916999df51d6",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S03-E/briefs/plan.md",
+  "briefSha256": "07b2d41673939c6b268f23d9aecdc3588b6726f092183b8a705211c088a7ed52",
+  "startedAt": "2026-10-22T21:59:11.168Z",
+  "endedAt": "2026-10-22T22:00:21.900Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "17906f84-c72e-41f0-ac25-916999df51d6",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 69739,
+    "costUsdCli": 0.4520185,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6625,
+      "cacheRead": 99672,
+      "cacheWrite": 37425
+    },
+    "toolUses": 7,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for LEND-L14 to `.decisions/decisions.json` and committed it as `71ee6bb`. It has eight decisions, all `proposed`, and no code or tests have changed yet.\n\nThe main decisions:\n\n- **Which fine schedule:** the requirement asks for \"the fine schedule in force\". That is DEC-010 (0.20 per day late, at most 5.00), which replaced DEC-003. The code still uses DEC-003's 0.25 per day and 10.00 cap, so the estimate will use DEC-010's numbers instead (DEC-W-1).\n- **Returns stay as they are:** fines charged on return will not change in this work item. Since returns still charge 0.25 per day, a return can cost more than the estimate said. I've recorded that gap as an open question for Finance and the Head of Lending rather than fixing it here (DEC-W-2).\n- **Counting days late:** days late are plain calendar days, the same count that returns and the `overdue` report already use. The vendored opening-days calendar is not used, because no rule says closed days don't count (DEC-W-3).\n- **Nothing is saved:** an estimate only reads the state. It never writes, so the store format is unaffected (DEC-W-4).\n- **Errors and suspensions:** an unknown copy is reported before \"not on loan\". Suspended members can still get an estimate, because suspension only blocks borrowing, holds and renewals (DEC-W-5).\n- **Output, structure and tests:** DEC-W-6 covers the output format and the `help` order. DEC-W-7 places the new rule values and the calculation in the business-rules layer, with no calculation in the command-line code. DEC-W-8 adds tests for the cases the provided tests miss: 1 day late, several days late, the 5.00 cap, a loan due today, and that an estimate changes nothing.\n\nPLAN: ready"
+  }
+}
