@@ -1,0 +1,74 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Procurement/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:8829d079266285c3d05689ead77f2b531d5a457b6225831c00ceabb88a6ff491",
+    "handoffDigest": "sha256:b0d0944e87c1d29c309715da9a52aec712521f8ad60bd88bfc7a93d1efd3e9fb",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:39b6272151bc92b12fed414f663a6261da362fe7fdd58e39635e00ab397bce14",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 6,
+        "symbol": "Procurement.Rules.approvalLimits"
+      },
+      "authorityRefs": [
+        "DEC-PR01",
+        "DEC-PR04"
+      ],
+      "message": "Rule-bearing legacy code in Procurement.Rules.approvalLimits matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). Superseded authority: numeric literal 7500.00 (line 7): value 7500.00 = DEC-PR01.p1 (superseded by DEC-PR04, same form) and no accepted parameter has the same form. Supported (matching rule): numeric literal 40000.00 (line 8): (b) parameter, value 40000.00 = DEC-PR04.p2 (accepted, same form). The code still carries a superseded decision's value. Question for Finance Controller: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance Controller"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 21,
+        "symbol": "Procurement.Rules.|ApprovedSoleSource|_|"
+      },
+      "authorityRefs": [
+        "APR-PR01"
+      ],
+      "message": "Rule-bearing legacy code in Procurement.Rules.|ApprovedSoleSource|_| matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: category test '= \"LabReagents\"' (line 22): no accepted record names \"LabReagents\". Supported (matching rule): category test '= \"V-3302\"' (line 22): (c) comment citation, \"V-3302\" is named by accepted APR-PR01, cited in the declaration's comment. A category test treats one category differently (a possible exemption); a record that names the category must authorize it. Question for Dana Whitlock, Chief Procurement Officer: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Dana Whitlock, Chief Procurement Officer"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 26,
+        "symbol": "Procurement.Rules.bidsRequired"
+      },
+      "message": "Rule-bearing legacy code in Procurement.Rules.bidsRequired matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: case keyed on ApprovedSoleSource (line 28): no accepted record names ApprovedSoleSource; numeric literal 1 (line 28): value 1 equals no declared parameter of an accepted or superseded record; case keyed on ContractRenewal (line 29): no accepted record names ContractRenewal; numeric literal 1 (line 29): value 1 equals no declared parameter of an accepted or superseded record; wildcard default returning 1 for unlisted cases (line 31): value 1 equals no declared parameter of an accepted or superseded record. A wildcard default silently decides every unlisted case; no record authorizes that default. A category test treats one category differently (a possible exemption); a record that names the category must authorize it. Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 3
+  }
+}

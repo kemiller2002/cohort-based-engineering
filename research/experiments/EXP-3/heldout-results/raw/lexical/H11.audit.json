@@ -1,0 +1,70 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Subscriptions/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:cf8bf3198e9a88cf91c6070076a80f6f24b504817711b87a9895d7c217739fa1",
+    "handoffDigest": "sha256:efededbb8c4f556ed93bcd5a1066904dbf45b8909abcf97f216c690aa6e4f9c4",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:7c9e3b4eeb3ab69d8ed30eceb74c82b96f5b660595b05957db5f661141f241b8",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Subscriptions/Rules.fs",
+        "line": 8,
+        "symbol": "Subscriptions.Rules.trialLength"
+      },
+      "authorityRefs": [
+        "DEC-SB03"
+      ],
+      "message": "Rule-bearing legacy code in Subscriptions.Rules.trialLength matches no observation and cites no authority: decimal literal 14.0 (line 8). Value 14 equals DEC-SB03.p1 (accepted). Question for Growth: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Growth"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Subscriptions/Rules.fs",
+        "line": 10,
+        "symbol": "Subscriptions.Rules.isPartnerDomain"
+      },
+      "message": "Rule-bearing legacy code in Subscriptions.Rules.isPartnerDomain matches no observation and cites no authority: category/prefix check on \"@partners.example.com\" (line 11). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Subscriptions/Rules.fs",
+        "line": 23,
+        "symbol": "Subscriptions.Rules.prorate"
+      },
+      "message": "Rule-bearing legacy code in Subscriptions.Rules.prorate matches no observation and cites no authority: 'if' branch (line 26). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 3
+  }
+}

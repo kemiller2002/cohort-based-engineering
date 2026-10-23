@@ -1,0 +1,102 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Procurement/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:94e2074c41a1621c224377f71a1a3347d9987ebb3ac92e70b209e55f47dbeb65",
+    "handoffDigest": "sha256:afe6594fc9e18750c8fd4bb1a68e0f0c2e8741f187fefa51aaa81e0355f77b6f",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:7c9e3b4eeb3ab69d8ed30eceb74c82b96f5b660595b05957db5f661141f241b8",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 10,
+        "symbol": "Procurement.Rules.mayIssuePo"
+      },
+      "message": "Rule-bearing legacy code in Procurement.Rules.mayIssuePo matches no observation and cites no authority: comparison '= \"V-0417\"' (line 11). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 13,
+        "symbol": "Procurement.Rules.freightAllowanceRate"
+      },
+      "authorityRefs": [
+        "DEC-PR09"
+      ],
+      "message": "Rule-bearing legacy code in Procurement.Rules.freightAllowanceRate matches no observation and cites no authority: 'match' branch (line 14); case pattern \"EXW\" (line 15); decimal literal 0.075 (line 15); case pattern \"FOB\" (line 16); decimal literal 0.045 (line 16); case pattern \"DDP\" (line 17); wildcard default returning 0.045m for unlisted cases (line 18); decimal literal 0.045 (line 18). Value 0.075 equals DEC-PR09.incoterm-allowances.EXW (accepted). Value 0.045 equals DEC-PR09.incoterm-allowances.FOB (accepted). A wildcard default silently decides every unlisted case; no record authorizes that default. Question for Supply Chain: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Supply Chain"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 24,
+        "symbol": "Procurement.Rules.earlyPayment"
+      },
+      "authorityRefs": [
+        "DEC-PR06"
+      ],
+      "message": "Rule-bearing legacy code in Procurement.Rules.earlyPayment matches no observation and cites no authority: decimal literal 0.0125 (line 24). Value 0.0125 equals DEC-PR06.p2 (accepted). Question for Treasury: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Treasury"
+    },
+    {
+      "id": "RPA-004",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 26,
+        "symbol": "Procurement.Rules.earlyPaymentDiscount"
+      },
+      "message": "Rule-bearing legacy code in Procurement.Rules.earlyPaymentDiscount matches no observation and cites no authority: 'match' branch (line 28); 'when' branch (line 29); wildcard default returning 0m for unlisted cases (line 31). A wildcard default silently decides every unlisted case; no record authorizes that default. Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-005",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Procurement/Rules.fs",
+        "line": 33,
+        "symbol": "Procurement.Rules.openRequisitions"
+      },
+      "authorityRefs": [
+        "DEC-PR09"
+      ],
+      "message": "Rule-bearing legacy code in Procurement.Rules.openRequisitions matches no observation and cites no authority: comparison '> 0m' (line 33). Value 0 equals DEC-PR09.incoterm-allowances.DDP (accepted). Question for Supply Chain: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Supply Chain"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 5
+  }
+}

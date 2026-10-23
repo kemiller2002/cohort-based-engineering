@@ -1,0 +1,103 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Claims/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:5f7cf9e42e41ef0ef541b0f6cbd37632b6b439e9b3e56204cbaeaef01bc61aa9",
+    "handoffDigest": "sha256:b847cf1e568aff609df41e59f8b0a72fed6f2d1c4f9cf1718381e82c173ce08f",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:7c9e3b4eeb3ab69d8ed30eceb74c82b96f5b660595b05957db5f661141f241b8",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 12,
+        "symbol": "Claims.Rules.standardDeductible"
+      },
+      "authorityRefs": [
+        "DEC-CL01"
+      ],
+      "message": "Rule-bearing legacy code in Claims.Rules.standardDeductible matches no observation and cites no authority: decimal literal 750.00 (line 12). Value 750.00 equals DEC-CL01.p1 (accepted). Question for Underwriting: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Underwriting"
+    },
+    {
+      "id": "RPA-002",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 18,
+        "symbol": "Claims.Rules.fastTrackCeiling"
+      },
+      "authorityRefs": [
+        "DEC-CL02",
+        "DEC-CL05"
+      ],
+      "message": "Rule-bearing legacy code in Claims.Rules.fastTrackCeiling matches no observation and cites no authority: decimal literal 2500.00 (line 18). Value 2500.00 equals DEC-CL02.p1 (superseded by DEC-CL05). The code still carries a superseded decision's value. Question for Claims Governance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Claims Governance"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 20,
+        "symbol": "Claims.Rules.route"
+      },
+      "message": "Rule-bearing legacy code in Claims.Rules.route matches no observation and cites no authority: 'if' branch (line 21); comparison '<= fastTrackCeiling' (line 21). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-004",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 23,
+        "symbol": "Claims.Rules.reserveTable"
+      },
+      "authorityRefs": [
+        "DEC-CL03"
+      ],
+      "message": "Rule-bearing legacy code in Claims.Rules.reserveTable matches no observation and cites no authority: decimal literal 15000.00 (line 24); decimal literal 6500.00 (line 24); decimal literal 4200.00 (line 24); decimal literal 8800.00 (line 24). Value 15000.00 equals DEC-CL03.initial-reserves.Fire (accepted). Value 4200.00 equals DEC-CL03.initial-reserves.Theft (accepted). Value 6500.00 equals DEC-CL03.initial-reserves.Water (accepted). Value 8800.00 equals DEC-CL03.initial-reserves.Wind (accepted). Question for Actuarial: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Actuarial"
+    },
+    {
+      "id": "RPA-005",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 27,
+        "symbol": "Claims.Rules.initialReserve"
+      },
+      "message": "Rule-bearing legacy code in Claims.Rules.initialReserve matches no observation and cites no authority: decimal literal 2000.00 (line 28). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 5
+  }
+}

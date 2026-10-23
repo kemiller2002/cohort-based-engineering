@@ -1,0 +1,86 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Claims/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:10ab5c1dcd54d2a945fc495c8183d8d97f23206811b0f4010825297721352519",
+    "handoffDigest": "sha256:cdaa6279a49289d299b858f8aa9bfec7f171de19480010ab564c751e202cda01",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:7c9e3b4eeb3ab69d8ed30eceb74c82b96f5b660595b05957db5f661141f241b8",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 8,
+        "symbol": "Claims.Rules.siuThreshold"
+      },
+      "authorityRefs": [
+        "DEC-CL04"
+      ],
+      "message": "Rule-bearing legacy code in Claims.Rules.siuThreshold matches no observation and cites no authority: decimal literal 12000.00 (line 8). Value 12000.00 equals DEC-CL04.p1 (accepted). Question for Special Investigations: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Special Investigations"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 14
+      },
+      "message": "Rule-bearing legacy code in module-level code matches no observation and cites no authority: 'match' branch (line 14); 'when' branch (line 15); category/prefix check on \"CAT-\" (line 15); wildcard default returning None for unlisted cases (line 16). A wildcard default silently decides every unlisted case; no record authorizes that default. Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 18,
+        "symbol": "Claims.Rules.referToSiu"
+      },
+      "message": "Rule-bearing legacy code in Claims.Rules.referToSiu matches no observation and cites no authority: 'match' branch (line 19); comparison '> siuThreshold' (line 21). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-004",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 26,
+        "symbol": "Claims.Rules.acknowledgeWithin"
+      },
+      "authorityRefs": [
+        "DEC-CL06",
+        "DEC-CL09"
+      ],
+      "message": "Rule-bearing legacy code in Claims.Rules.acknowledgeWithin matches no observation and cites no authority: decimal literal 36.0 (line 26). Value 36 equals DEC-CL06.p1 (superseded by DEC-CL09). The code still carries a superseded decision's value. Question for Customer Care: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Customer Care"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 4
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Payroll/Calendar.fs",
+      "src/Payroll/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:1407a2ef6e66383f76b24e772a4bd33d236303e7cb85f813f3ccf806c0391a2b",
+    "handoffDigest": "sha256:88b026f9cea30aacf151300148ea580b6111896798f8db97772d989d2d94f5e7",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:39b6272151bc92b12fed414f663a6261da362fe7fdd58e39635e00ab397bce14",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Calendar.fs",
+        "line": 10,
+        "symbol": "Payroll.Calendar.isProbationary"
+      },
+      "message": "Rule-bearing legacy code in Payroll.Calendar.isProbationary matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: numeric literal 90 (line 10): value 90 equals no declared parameter of an accepted or superseded record. Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 11,
+        "symbol": "Payroll.Rules.duesRate"
+      },
+      "authorityRefs": [
+        "DEC-PY04"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.duesRate matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: wildcard default returning 0m for unlisted cases (line 16): value 0 equals no declared parameter of an accepted or superseded record. Supported (matching rule): case keyed on \"L114\" (line 13): (b) parameter, \"L114\" is named by accepted DEC-PY04; numeric literal 0.013 (line 13): (b) parameter, value 0.013 = DEC-PY04.union-dues.L114 (accepted, same form); case keyed on \"L262\" (line 14): (b) parameter, \"L262\" is named by accepted DEC-PY04; numeric literal 0.0165 (line 14): (b) parameter, value 0.0165 = DEC-PY04.union-dues.L262 (accepted, same form); case keyed on \"L309\" (line 15): (b) parameter, \"L309\" is named by accepted DEC-PY04; numeric literal 0.009 (line 15): (b) parameter, value 0.009 = DEC-PY04.union-dues.L309 (accepted, same form). A wildcard default silently decides every unlisted case; no record authorizes that default. Question for Labour Relations: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Labour Relations"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 18,
+        "symbol": "Payroll.Rules.unionDues"
+      },
+      "message": "Rule-bearing legacy code in Payroll.Rules.unionDues matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: numeric literal 0 (line 21): value 0 equals no declared parameter of an accepted or superseded record. Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-004",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 26,
+        "symbol": "Payroll.Rules.pensionContribution"
+      },
+      "message": "Rule-bearing legacy code in Payroll.Rules.pensionContribution matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: numeric literal 0 (line 27): value 0 equals no declared parameter of an accepted or superseded record. Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-005",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 31,
+        "symbol": "Payroll.Rules.vacationAccrued"
+      },
+      "message": "Rule-bearing legacy code in Payroll.Rules.vacationAccrued matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: numeric literal 0 (line 32): value 0 equals no declared parameter of an accepted or superseded record. Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 5
+  }
+}
