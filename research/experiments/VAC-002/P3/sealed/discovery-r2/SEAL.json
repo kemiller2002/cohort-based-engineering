@@ -1,0 +1,14 @@
+{
+  "schema": "cbe.vac-002-p3.seal/1",
+  "plaintextTarGzSha256": "3ea210760920a052b8e8069a83bcc33ec1f6ab03b972aeeb8940e9b2c95c4bb0",
+  "ciphertextSha256": "fa8e17040a4bd028d535f0bcd47101364c7ad9e5937e2c607ab312f66edf2043",
+  "manifestSha256": "54ba16e7d3aa24acd60c10bfff8815ec7d41885439c1118b6a93f448140a69c9",
+  "files": 48,
+  "cipher": "aes-256-cbc pbkdf2 iter 200000 (openssl enc)",
+  "openssl": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "sealedAt": "2026-10-23T08:43:38Z",
+  "contents": "D17,D18,D20,D21/{oracle,ref,trap-*,valid-*}, gen/, support/, meta.json, basis.json, validation-round2-check.txt",
+  "verify": "openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass file:KEY -in p3d2-sealed.tar.gz.enc | sha256sum  # equals plaintextTarGzSha256",
+  "store": "p3d2 (discovery round 2: D17, D18, D20, D21; D19 uses the P2 store S05)",
+  "key": "kept outside every repository until round 2 is scored"
+}

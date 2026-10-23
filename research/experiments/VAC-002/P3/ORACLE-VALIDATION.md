@@ -22,6 +22,7 @@ For every scenario:
 |---|---|---|---|
 | D01–D12 (P2 S01–S12 under the P3 transform) | 43 | **PASS (43 / 43)** | `oracle-validation/discovery-reused-check.txt` |
 | D13–D16 (new) | 17 | **PASS (17 / 17)** | sealed until scoring (`p3d/validation/discovery-new-check.txt`; its lines name the traps) |
+| D17–D21 (round 2, amendment A3) | 18 | **PASS (18 / 18)** | sealed until round 2 is scored (`p3d2/validation-round2-check.txt`) |
 
 D01–D12 reproduce P2's published result exactly (P2 `REPRODUCTION.md` §3: 43 passed). The P3 transform therefore
 changes nothing the oracle measures. It removes the Authority section, replaces xUnit with the TestKit and switches

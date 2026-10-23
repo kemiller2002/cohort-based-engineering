@@ -112,6 +112,7 @@ differs from production Ordo in these ways (from P2 `DECISION-AUTHORITY.md` §4)
 | Stage | Commit | Contents |
 |---|---|---|
 | Stage 1 | the commit that adds this file | Contract, arms, harness, discovery corpus (public part), sealed discovery store (ciphertext; key outside the repository), oracle validation, exposure manifest, preregistration |
+| Stage 1, round 2 | the commit titled "VAC-002-P3 FREEZE (Stage 1 round 2)" | D17–D21, sealed store `p3d2` (key outside the repository), oracle validation 18/18, exposure manifest 21/21 |
 | Stage 2 | amendment CR-1 | Confirmatory corpus, sealed store, sample size, seeds |
 
 ## 9. Amendments
