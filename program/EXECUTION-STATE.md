@@ -15,7 +15,7 @@ A successor resumes from this file and needs nothing else. Every line points at 
 | 3 Smallest operational improvements | **EP-00 implemented** (praxis#287, CI pending). Intake is written for A3, A2a, A2b, A1, A5, A6a and EP-01 |
 | 4 Verified-construction slice | **Prototypes implemented and tested locally:** B2 (ordo#105, 69/69) and B3 (dokimos#53, 59/59). Both are experimental |
 | 5 Praxis/Ordo/Dokimos integration | **B4 run.** Five frozen outcomes PASS; the Praxis completion step is NOT_RUN (`integration/b4/B4-RESULT.md`) |
-| 6 Authorized experiments | **No paid runs.** EXP-3 phase 1 ($0) ran: **H1 contradicted** (recall 38.5%, false-question rate 90.5%), so phase 2 does not qualify. EXP-2 phase 1 is next |
+| 6 Authorized experiments | **No paid runs.** EXP-3 phase 1 ($0) ran: **H1 contradicted** (recall 38.5%, false-question rate 90.5%), so phase 2 does not qualify. EXP-2 phase 1 ($0) ran: **H1 contradicted** for both policies (selection saves 23.9% with 1 environmental escape; checkpoint CI saves 8.6% with 2 real escapes); A1 stays shadow-only |
 | 7 Promote on evidence | Nothing promoted; nothing meets EXPERIMENTS.md §6 yet |
 
 ## Pull requests
@@ -83,8 +83,9 @@ the pre-existing runner drift that is also red on main.
 
    Develop it against the P3 development set only. Then preregister a confirmation on a **held-out** corpus.
    EXP-3 phase 1 showed the lexical audit misses every exemption (`research/experiments/EXP-3/RESULTS.md`).
-4. **EXP-2 phase 1** ($0): freeze a `praxis.verification-map/0.1` for praxis and dokimos, then replay 50 commits each
-   from GitHub Actions history.
+4. **EP-04:** add secret-scan jobs; EXP-2 found none in either repository. Also propose splitting Praxis's
+   mandatory `validate` steps from the full F# suite, so selection can save more (EXP-2 exploratory estimate:
+   29.7%).
 5. **EP-02 intake hygiene:**
    - triage the CBE inbox: reject ENGINEERING-RELIABILITY-001 as a duplicate; forward VAC-002-01, -02 and -04;
    - Praxis legacy `input-documents/`: update the README; claim and reject `rfa.md`; claim the ROS-ORDO file;

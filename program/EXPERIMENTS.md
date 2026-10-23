@@ -100,6 +100,25 @@ without increasing escaped defects?
 - **H2:** median detection delay ≤ 1 checkpoint.
 - Escaped failures are listed individually, never summarized away.
 
+**Phase 1 result (2026-10-23, $0): H1 Contradicted for both policies.**
+- Preregistered at `80973f5`; results at `3616d07`, in `research/experiments/EXP-2/RESULTS.md`.
+- Window: 60 push-to-main commits per repository. Baseline: praxis 3,696.7 and dokimos 1,092.1 CI job-minutes.
+- **P-A (dependency-aware selection):** saves 23.9% pooled (praxis 20.7%, dokimos 35.0%). 1 escape: dokimos
+  Deploy site after ubuntu-26.04 broke Playwright. That cause is environmental, but it counts under the strict rule.
+- **P-B (full CI only at checkpoints):** saves 8.6%. 2 escapes, both real dokimos build/test defects on a burst of
+  direct pushes, plus 1 delayed failure.
+- **H2 (detection delay):** Demonstrated for P-A (median 0) but rests on only 6 failure episodes; Preliminary for P-B.
+- **Consequences:**
+  - Neither policy may enforce.
+  - A1 continues in **shadow mode only** (EP-A1-R3).
+  - Two cheaper changes the replay exposed:
+    1. Praxis's mandatory `validate` job carries the whole 1,188.8-minute F# suite. Separating the mandatory steps
+       would lift P-A to about 29.7% (exploratory estimate).
+    2. Most of Dokimos's avoided minutes are `sleep 600` debounce time, not computation.
+  - **Neither repository has a dedicated secret-scan job,** which RELEASE-GATES §2.1 requires: increment EP-04.
+  - Environment sensitivity (the runner image) must be declared per check (RELEASE-GATES §4). Otherwise any
+    selection policy skips exactly the checks that runner drift breaks.
+
 **Phase 2: prospective shadow.**
 - A1 runs in shadow on real program work for two weeks. Its predicted selection is recorded next to the full CI
   actually run.

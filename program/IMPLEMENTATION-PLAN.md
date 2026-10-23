@@ -61,6 +61,16 @@ Status values: `not started`, `in progress` (with commits listed in EXECUTION-ST
   Conditor's own pin of Praxis 3.1.4 conflicts with the 3.7.2 it actually runs, and this increment resolves that. No
   repository is moved to an unapproved release.
 
+### EP-04 Secret scanning as a mandatory job
+
+- **Owners:** praxis and dokimos first, then every program repository. **Source:** EXP-2 phase 1 finding;
+  RELEASE-GATES §2.1. **Status:** not started.
+- **Acceptance:**
+  1. A dedicated secret-scan job runs on every push and pull request, using an existing scanner or GitHub secret
+     scanning. A finding fails the job.
+  2. The job is in the C5 verification map's `mandatory` set.
+  3. Any historical findings are reported to the owner and never silently rewritten.
+
 ---
 
 ## Wave A: operational efficiency
