@@ -23,7 +23,7 @@ failure has exactly one opportunity, so an observation is an execution there.
 
 ## 2. Raw counts
 
-| Stage | Run | Arm | Corpus | Observations | Confirmed | Oracle-only | Rate | Exact 95% CI |
+| Stage | Run | Arm | Corpus | Observations | Confirmed | Oracle-flagged | Rate | Exact 95% CI |
 |---|---|---|---|---|---|---|---|---|
 | 1 | S1A1 | A | D01–D16 × 2 (announced) | 40 | 1 | 3 | 2.5% | 0.1%–13.2% |
 | 1 | S1R2 | A | D17–D21 × 3 (incidental) | 15 | 11 | 11 | 73.3% | 44.9%–92.2% |
@@ -60,6 +60,10 @@ data contain no discordance at all, not that the true difference is exactly zero
 
 ## 4. Cost distributions (Stage 2, per execution)
 
+Medians and percentiles use the frozen code's convention: the upper middle value, and the nearest rank rather than
+interpolation. Conventional medians are about $0.001–0.007 lower (A $0.247, B $0.263, C $0.267, D $0.309,
+E $0.437).
+
 | Arm | Min | P10 | Median | P90 | Max | Total (18) |
 |---|---|---|---|---|---|---|
 | A | $0.210 | $0.223 | $0.251 | $0.277 | $0.287 | $4.47 |
@@ -85,7 +89,7 @@ defeats every arm.
 | Analysis | Risk difference | p |
 |---|---|---|
 | Primary (confirmed) | −0.222 | 0.125 |
-| Oracle-only | −0.222 | 0.125 |
+| Oracle-flagged (without review confirmation) | −0.222 | 0.125 |
 | Source-status opportunities only | −0.250 | 0.25 |
 | Convention-dependent only | −0.167 | 1 |
 | Without Billing | −0.111 | 1 |

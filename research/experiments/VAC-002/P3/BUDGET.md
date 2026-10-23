@@ -35,14 +35,14 @@ oracle-flagged items and disagreements, allows about 40. The choice is made in C
 | Stage 1 round 1 (`S1A1`, arm A, D01–D16 × 2) | 32 | $9.02 | $11.23 | $20.24 |
 | Stage 1 round 2 (`S1R2`, arm A, D17–D21 × 3) | 15 | $3.81 | $4.87 | $8.68 |
 | Sizing run (`S1B`, arm B, D17–D21 × 3) | 15 | $4.06 | $4.80 | $8.86 |
-| Stage 2 (`S2`, arms A–E, C01–C06 × 3) | 90 | $27.40 | $26.86 | $54.27 |
+| Stage 2 (`S2`, arms A–E, C01–C06 × 3) | 90 | $27.40 | $26.86 | $54.26 |
 | **Total** | **152** | **$44.29** | **$47.76** | **$92.31** |
 
 **Against the estimates.**
 
 - **Stage 1 round 1** came in at $20.24 against about $24 estimated.
-- **Stage 2** came in at $54.27 against about $60 estimated.
+- **Stage 2** came in at $54.26 against about $60 estimated.
 - **Arm E** averaged $0.439 per execution against $0.55 estimated.
-- **Review** averaged $0.30 per item for two reviewers, against $0.32–0.42 estimated.
+- **Review** averaged $0.31 per item for two reviewers ($47.76 / 152; $0.30 in Stage 2), against $0.32–0.42 estimated.
 
 **Headroom.** The ceiling was never approached: the hard stop at $140 did not fire. $57.69 of the $150 remains.

@@ -24,8 +24,10 @@ Experimental finding: `research/experiments/VAC-002/P3/` (`CONFIRMATORY-RESULTS.
     default reached the output.
   - **One crash.** C03-E-r3's correct refusal was rejected under rule A5 (it cited the agent's own question record),
     and the repair turn replaced it with an exception.
-- **Why the checker missed the errors that remained.** They lived in undeclared reused code (C06, 3) or arose from
-  the rejections themselves (4).
+- **Why the checker missed the errors that remained.**
+  - Three lived in undeclared reused code (C06).
+  - Three arose from the rejections themselves (C03-r1, C04-r1, C04-r3).
+  - One reused a code default the agent never declared (C03-r2).
 - **Cost and time.** +67% per execution over the contract alone; median wall time 2×.
 
 ## Requirements (proposed)

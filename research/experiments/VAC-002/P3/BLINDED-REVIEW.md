@@ -70,5 +70,5 @@ same behaviour as the unauthorized decision, seen from the other side.
 | S2 | $26.86 |
 | **Total** | **$47.76** |
 
-That is about $0.16 per item per reviewer. The review cost slightly more than all of P3's agent executions together
+That is about $0.16 per item per reviewer, or $0.31 per item for both. The review cost slightly more than all of P3's agent executions together
 ($44.29 across all arms and stages).
