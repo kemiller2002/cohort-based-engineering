@@ -168,6 +168,30 @@ without increasing escaped defects?
     values) must be confirmed on a **held-out** corpus that was not used to tune it, such as new VC-001 fixtures, to
     avoid overfitting.
 
+**Phase 1b result: held-out confirmation of audit v2, H1 Contradicted.**
+- **Setup:** an independent author froze 17 new scenarios in 5 new domains at `000e90a`, with 30 planted rules and
+  decoys. Scoring was preregistered at `061eaa4`; results at `c677a9e`, in
+  `research/experiments/EXP-3/heldout-results/RESULTS-1b.md`. Analyzer: dokimos `fc9b31f`.
+
+| | v2 `ast` (confirmatory) | v1 `lexical` (reference) |
+|---|---|---|
+| Recall | 24/30 = 80.0% [62.7, 90.5] | 26/30 = 86.7% |
+| False-question rate | 9/36 = 25.0% [13.8, 41.1] | 46/76 = 60.5% |
+| Recall by mechanism (superseded / exemption / default) | 10/10, 10/11, **4/9** | 9/10, 11/11, 6/9 |
+
+- **Overfitting:** v2 fell from 100% recall and 0% false questions on the development set to 80% and 25% held out.
+  That is consistent with overfitting to P3, though a harder corpus cannot be ruled out (v1 moved the other way).
+- **Remaining causes:**
+  - Silent defaults written as `Option.defaultValue` or `defaultArg` arguments are not recognised.
+  - A wildcard default that equals an accepted table value is wrongly excused.
+  - Zeros that the source states only in words ("free of charge") are not matched to it.
+  - Small spelling mismatches between code and source text break matching.
+- **Consequences:**
+  - The audit stays experimental, with no agent-facing use. Phase 2 remains unqualified.
+  - The held-out corpus is now spent as a confirmation set. A v3 needs a **new** independently authored held-out set.
+  - Precision improved substantially, so v2's owner questions are usable for **human** triage. A non-blocking use under
+    VAC-002-P3-03-R1 is the owner's call: OD-11.
+
 **Phase 2: paid, needs authorization.** Paired arms on P3-style scenarios:
 - A: no contract;
 - B: four-sentence contract;

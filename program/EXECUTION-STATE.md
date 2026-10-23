@@ -75,6 +75,7 @@ the pre-existing runner drift that is also red on main.
 | OD-7 | Home of the C1 schema at 1.0 | Praxis `schemas/` / shared package | Praxis `schemas/` | kemiller2002 |
 | OD-8 | Authority markers in Ordo-generated code? | yes / trace only | Trace only. B4 confirms generated code cannot reach handwritten question mappings | kemiller2002 |
 | OD-9 | Pilot repository for verified completion | dokimos / ordo / praxis | dokimos | kemiller2002 |
+| OD-11 | Use audit v2 owner questions for non-blocking human triage of legacy rules (VAC-002-P3-03-R1)? | yes, non-blocking / wait for v3 | Wait. The held-out false-question rate (25%) would spend owners' attention on about 1 false question in 4 | kemiller2002 |
 | OD-10 | B2 interpretation choices: unlisted pairs refused; PartiallyPaid derived from REQ-INV-002; refusal-code names | confirm / change | Confirm. The fixture is synthetic, and these are presentation and interpretation choices recorded in ordo#105 | kemiller2002 |
 
 ## Next executable actions (in order)
@@ -84,7 +85,10 @@ the pre-existing runner drift that is also red on main.
 2. **Mark the other PRs ready** once green: ordo#105 and dokimos#53 (experimental, outside default paths),
    echelon-registry#90 and cohort-based-engineering#23. Merging an experimental prototype is not promotion
    (EXPERIMENTS.md §6).
-3. **Typed audit (B3 v2):** implemented in Dokimos with FSharp.Compiler.Service. It must find:
+3. **Done this session:** B3 v2 merged (dokimos#54); held-out confirmation **contradicted** (recall 80%, false questions
+   25%); see EXPERIMENTS.md §4. Any v3 needs a new independent held-out set. The paragraph below is kept as the
+   original plan.
+   **Typed audit (B3 v2), original plan:** implemented in Dokimos with FSharp.Compiler.Service. It must find:
    - numeric constants of any type;
    - union-case and named-type comparisons;
    - conditions spread over several lines;
