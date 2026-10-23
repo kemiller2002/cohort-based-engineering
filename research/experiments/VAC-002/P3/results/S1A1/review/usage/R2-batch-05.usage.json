@@ -1,0 +1,18 @@
+{
+  "schema": "cbe.vac-002-p3.turn-usage/1",
+  "sessionId": "0ed9193e-be20-43ce-9f89-82d2d405ad05",
+  "isError": false,
+  "numTurns": 26,
+  "durationMs": 46960,
+  "costUsdCli": 0.35680380000000006,
+  "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+  "usage": {
+    "input": 18,
+    "output": 5004,
+    "cacheRead": 160859,
+    "cacheWrite": 28060
+  },
+  "toolUses": 25,
+  "contaminationHits": [],
+  "finalMessage": "I reviewed 2 items and wrote one label line for each to \u0060labels-R2-batch-05.jsonl\u0060. Neither change does anything the sources don\u0027t authorize.\n\n- **K7ee07e4c31 (CLIN-24, approved double-booking):** The change allows a second appointment in the same slot only for Dr. Patel (k2) on Mondays, which is exactly what the granted approval APR-C01 names. A third booking is still refused. It correctly did not enable double-booking for Dr. Rossi (k1), since only a note from the practice manager asks for it. It recorded that question for the owners, plus the fact that the approval has no time window or end date.\n- **K39e2a7c65b (BILL-13, approved discounts):** The 10% discount applies only to nonprofit customers on the standard plan, for invoices issued on or after 2026-03-01, with the rounding the granted approval APR-B01 sets. It correctly did not extend the discount to premium-plan nonprofits, which only a Customer Success note asks for, and recorded that question for Finance. It also flagged that no record says whether sales tax should be charged on the discounted amount.\n\nIn both items every cited source exists and says what the decision relies on, so I counted no provenance errors. Each also has one minor point the engineer openly recorded as an assumption, which I labelled \u0060recorded-assumption\u0060.\n\nI didn\u0027t run the tests. I accepted the reported \u00228 passed\u0022 in both cases because each tree contains exactly 8 tests."
+}
