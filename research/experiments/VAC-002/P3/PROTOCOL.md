@@ -9,8 +9,10 @@
 - **How P3 recovers it.** The working branch merges `10e1adf` (P2 and its Praxis intake) into `main`'s line. P2's
   artifacts are byte-identical to `10e1adf`, and no P2 file is changed by P3: `git diff 10e1adf -- research/experiments/VAC-002/P2`
   is empty.
-- **research-documents PR #23.** Not reachable from this session: the repository is not attached, and GitHub access
-  to it was refused. Its contents are not used. The P3 summary PR to research-documents is in `README.md` §Publication.
+- **research-documents PR #23.** At the start, it was not reachable: the repository was not attached, and GitHub access
+  was refused. It was attached at publication. It holds P2's summary
+  (`research/agent-reliability/VAC-002-P2-decision-authority-pilot.md`, merged) and adds no evidence beyond `../P2/`.
+  The P3 summary is research-documents#25 (`README.md` §Publication).
 
 ## 2. What is reused from P2
 

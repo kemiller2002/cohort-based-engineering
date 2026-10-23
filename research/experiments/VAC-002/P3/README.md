@@ -156,6 +156,11 @@ B / E = 0.40 (95% CI 0.15–0.63). **Class: Demonstrated (H5).**
 
 **Class: Demonstrated (cost, harm mechanism) / Preliminary (relative benefit).**
 
+## Publication
+
+- This record: kemiller2002/cohort-based-engineering#21. It also brings P2 onto `main`.
+- Summary: kemiller2002/research-documents#25, `research/agent-reliability/VAC-002-P3-minimal-authority-contract.md`.
+
 ## Documents
 
 | Document | Contents |
