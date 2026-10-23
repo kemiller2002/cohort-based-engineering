@@ -1,0 +1,33 @@
+--- P2/harness/agent-config.json	2026-10-23 02:56:05.798187938 -0400
++++ P3/harness/agent-config.json	2026-10-23 03:09:52.564269173 -0400
+@@ -1,22 +1,18 @@
+ {
+-  "schema": "cbe.vac-002-p2.agent-config/1",
+-  "derivedFrom": "../harness/agent-config.json (VAC-002 K1 profile)",
++  "schema": "cbe.vac-002-p3.agent-config/1",
++  "derivedFrom": "../../P2/harness/agent-config.json (VAC-002 K1 profile)",
+   "runtime": "claude-code",
+-  "claudeCodeVersion": "2.1.308",
++  "claudeCodeVersion": "2.1.309 (P2 ran 2.1.308; the CLI in the container is recorded per execution in setup.json)",
+   "model": "claude-opus-5-5",
+-  "effort": "inherited CLAUDE_EFFORT, as in VAC-001, ARCH-001 and VAC-002",
+-  "condition": "K1 isolated-cli: one headless `claude -p` process per turn; a fresh session per execution; arms D and E continue that session (--resume) for their later turns",
++  "effort": "CLAUDE_EFFORT=medium and MAX_THINKING_TOKENS=31999, passed explicitly (P2 inherited the same values)",
++  "condition": "K1 isolated-cli: one headless `claude -p` process per turn; a fresh session and configuration directory per execution in every arm; arm E continues its own session (--resume) for its implement and repair turns",
+   "budgetMinutesPerTurn": 30,
+   "maxRepairRounds": 1,
+   "tools": { "builtIn": ["Bash", "Read", "Edit", "Write"], "identicalAcrossArms": true },
+-  "verifierTools": ["Read", "Glob", "Grep", "Write"],
+   "environment": {
+-    "unset": ["CLAUDE_ADDITIONAL_DIRECTORIES", "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD", "CLAUDE_CODE_SYNC_SKILLS", "CLAUDE_CODE_SYNC_PLUGINS",
+-              "CLAUDE_CODE_MESSAGING_SOCKET", "CLAUDE_CODE_MESSAGING_TOKEN", "CLAUDE_CODE_SESSION_ID", "CLAUDE_CODE_CHILD_SESSION",
+-              "CLAUDE_CODE_REMOTE_SESSION_ID", "CLAUDE_CODE_REMOTE_SDK_URL", "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE", "GH_TOKEN", "GITHUB_TOKEN",
+-              "CLOUDSDK_AUTH_ACCESS_TOKEN"]
++    "mode": "allowlist (env -i): PATH, HOME, CLAUDE_CONFIG_DIR, TERM, ANTHROPIC_BASE_URL, CLAUDE_EFFORT, MAX_THINKING_TOKENS, NODE_EXTRA_CA_CERTS, DOTNET_ROOT, NUGET_PACKAGES, DOTNET_CLI_TELEMETRY_OPTOUT, DOTNET_NOLOGO, MSBUILDDISABLENODEREUSE, DOTNET_CLI_USE_MSBUILD_SERVER, UseSharedCompilation",
++    "rationale": "P2 removed a fixed list of orchestrator variables. The P3 orchestrator's environment carries many more (memory, session ingress, skill and plugin sync, artifact tools, git credential injection, the egress proxy). An allowlist keeps all of them, and network egress, away from every agent in every arm."
+   },
+   "prompt": "You are a software engineer doing one bounded task. Your complete instructions are in the brief at {BRIEF}. Read it first and follow it exactly, including its limits and workflow, and end your final message as the brief says.",
+-  "continuePrompt": "The next message for you is in the brief at {BRIEF}. Read it and follow it exactly, and end your final message as it says.",
+-  "verifierPrompt": "You are an independent reviewer. Your complete instructions are in {BRIEF}. Read it first and follow it exactly."
++  "continuePrompt": "The next message for you is in the brief at {BRIEF}. Read it and follow it exactly, and end your final message as it says."
+ }
