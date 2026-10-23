@@ -10,7 +10,7 @@
   "maxRepairRounds": 1,
   "tools": { "builtIn": ["Bash", "Read", "Edit", "Write"], "identicalAcrossArms": true },
   "environment": {
-    "mode": "allowlist (env -i): PATH, HOME, CLAUDE_CONFIG_DIR, TERM, ANTHROPIC_BASE_URL, CLAUDE_EFFORT, MAX_THINKING_TOKENS, NODE_EXTRA_CA_CERTS, DOTNET_ROOT, NUGET_PACKAGES, DOTNET_CLI_TELEMETRY_OPTOUT, DOTNET_NOLOGO, MSBUILDDISABLENODEREUSE, DOTNET_CLI_USE_MSBUILD_SERVER, UseSharedCompilation",
+    "mode": "allowlist (env -i): PATH, HOME, CLAUDE_CONFIG_DIR, TERM, IS_SANDBOX=1 (the container's own marker; the CLI refuses bypassPermissions as root without it; amendment A1), ANTHROPIC_BASE_URL, CLAUDE_EFFORT, MAX_THINKING_TOKENS, NODE_EXTRA_CA_CERTS, DOTNET_ROOT, NUGET_PACKAGES, DOTNET_CLI_TELEMETRY_OPTOUT, DOTNET_NOLOGO, MSBUILDDISABLENODEREUSE, DOTNET_CLI_USE_MSBUILD_SERVER, UseSharedCompilation",
     "rationale": "P2 removed a fixed list of orchestrator variables. The P3 orchestrator's environment carries many more (memory, session ingress, skill and plugin sync, artifact tools, git credential injection, the egress proxy). An allowlist keeps all of them, and network egress, away from every agent in every arm."
   },
   "prompt": "You are a software engineer doing one bounded task. Your complete instructions are in the brief at {BRIEF}. Read it first and follow it exactly, including its limits and workflow, and end your final message as the brief says.",

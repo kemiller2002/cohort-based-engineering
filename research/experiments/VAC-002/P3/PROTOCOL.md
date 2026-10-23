@@ -116,4 +116,16 @@ differs from production Ordo in these ways (from P2 `DECISION-AUTHORITY.md` §4)
 
 ## 9. Amendments
 
-None yet. Stage 1 froze at the commit titled "VAC-002-P3 FREEZE (Stage 1)".
+Stage 1 froze at commit `766351a` ("VAC-002-P3 FREEZE (Stage 1)").
+
+**A1 (2026-10-23, before any observation). Agent environment: `IS_SANDBOX=1`.**
+
+- **What happened.** The first Stage 1 run (`S1`) failed in every started turn within nine seconds. The CLI refuses
+  `--permission-mode bypassPermissions` as root unless the environment marks a sandbox, and D3's allowlist had
+  dropped the container's own `IS_SANDBOX=1`.
+- **What it cost.** No turn reached the model and no tool ran: two turns failed, and two executions were stopped
+  during setup. No outcome exists. The record is kept in `results/S1-void/`.
+- **The fix.** `IS_SANDBOX=1` is added to the agent and reviewer allowlists (`p3.sh agent_env`,
+  `review/review.sh`). It is identical in every arm, and P2's inherited environment carried the same variable.
+- **The rerun.** Stage 1 runs as `S1A1`, with the same seed and order. Because no outcome was observed, the rerun
+  cannot be selected on results.

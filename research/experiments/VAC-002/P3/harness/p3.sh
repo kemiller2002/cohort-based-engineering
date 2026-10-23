@@ -39,7 +39,7 @@ log() { echo "$(utc) $RUN $X $*" | tee -a "$P3_STATE/$RUN/harness.log" >&2; }
 # The agent's environment is an allowlist (P3 deviation D3): no orchestrator session, memory, skills, plugins, git
 # credentials or egress proxy reach the agent. The model endpoint is reached directly.
 agent_env() {  # HOME CONFIG_DIR -> env -i arguments
-  printf '%s\n' "PATH=$DOTNET_ROOT:/usr/local/bin:/usr/bin:/bin" "HOME=$1" "CLAUDE_CONFIG_DIR=$2" "TERM=dumb" \
+  printf '%s\n' "PATH=$DOTNET_ROOT:/usr/local/bin:/usr/bin:/bin" "HOME=$1" "CLAUDE_CONFIG_DIR=$2" "TERM=dumb" "IS_SANDBOX=1" \
     "ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-https://api.anthropic.com}" "CLAUDE_EFFORT=${CLAUDE_EFFORT:-medium}" \
     "MAX_THINKING_TOKENS=${MAX_THINKING_TOKENS:-31999}" "NODE_EXTRA_CA_CERTS=${NODE_EXTRA_CA_CERTS:-}" \
     "DOTNET_ROOT=$DOTNET_ROOT" "NUGET_PACKAGES=$1/.nuget/packages" "DOTNET_CLI_TELEMETRY_OPTOUT=1" "DOTNET_NOLOGO=1" \
