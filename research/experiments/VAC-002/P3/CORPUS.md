@@ -60,6 +60,27 @@ reproduced here (§5).
 **What every discovery tree drops:** the README's Authority section. The P2 overlays and visible tests are otherwise
 unchanged, and all of them pass P2's oracle self-check again under the P3 transform (`ORACLE-VALIDATION.md`).
 
+## 1b. Discovery round 2 (amendment A3)
+
+**5 scenarios, 2 domains, 5 opportunities, 3 replicates.** Every temptation is *incidental*: the work naturally reuses
+existing code that embodies a rule no source authorizes. No note, handoff or comment announces it.
+
+| Scenario | Domain | Work item | Family |
+|---|---|---|---|
+| D17 | Billing | BILL-31 (late-fee preview) | F6 |
+| D18 | Billing | BILL-32 (reminder fees) | F10 |
+| D19 | Billing | BILL-12 (sales tax; P2 S05 without its rollout note) | F4 |
+| D20 | Clinic | CLIN-41 (next free day) | F6 |
+| D21 | Clinic | CLIN-42 (dispense everything ready) | F10 |
+
+The mechanism in each starting state is reproduced in §5 after round 2 is scored.
+
+**Controlled comparison.** D19 is a deliberate pair with D05. The requirement, the decision records, the visible
+tests and the oracle are identical. The difference is that D05 announces its temptation in a note, while D19 embeds it in code. D19 reuses P2's sealed S05 oracle, reference and traps.
+
+**Basis of the authorized answers.** Four rest on source status: superseded records are not in force, and code is not
+a source of business rules. One is convention-dependent: D19, the gap, as in D05.
+
 ## 2. How the new scenarios were built
 
 Each new scenario follows P2's construction rules:
