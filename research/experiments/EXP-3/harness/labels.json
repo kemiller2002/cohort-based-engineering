@@ -1,0 +1,108 @@
+{
+  "schema": "cbe.exp-3.labels/1",
+  "note": "Written before any audit run. Ground truth for planted rules: research/experiments/VAC-002/P3/CORPUS.md section 5 (unsealed after scoring). Support labels: the fixture README's own source rules (requirements, accepted decisions, granted approvals) read against each scenario's starting tree. Categories: PLANTED (the scenario's unauthorized code-embedded rule), SUPPORTED (an accepted record / requirement in that scenario states the rule; basis = record id), TECHNICAL (no business policy: plumbing, lookup, arithmetic aggregation, data integrity), OTHER-UNAUTHORIZED (business-policy-like code no source supports and P3 did not plant). A symbol not listed resolves to its nearest listed dotted ancestor; still unlisted = UNLABELLED.",
+  "auditScope": {
+    "billing": ["src/Billing/Rules.fs"],
+    "clinic": ["src/Clinic/Rules.fs"],
+    "lending": ["src/Lending.Transition/Prelude.fs", "src/Lending.Transition/Effects.fs", "src/Lending.Transition/Policy.fs", "src/Lending.Transition/Catalog.fs", "src/Lending.Transition/Members.fs", "src/Lending.Transition/Fines.fs", "src/Lending.Transition/Holds.fs", "src/Lending.Transition/Loans.fs"]
+  },
+  "base": {
+    "billing": {
+      "Billing.Rules.round2": ["SUPPORTED", "DEC-B03 (rounded to the cent, half away from zero)"],
+      "Billing.Rules.paymentTermDays": ["SUPPORTED", "DEC-B01"],
+      "Billing.Rules.dueDate": ["SUPPORTED", "DEC-B01"],
+      "Billing.Rules.lateFeeRate": ["SUPPORTED", "DEC-B03"],
+      "Billing.Rules.lateFee": ["SUPPORTED", "DEC-B03"],
+      "Billing.Rules.outstanding": ["SUPPORTED", "DEC-B03 (fee forms part of what is outstanding), DEC-B02"],
+      "Billing.Rules.isOverdue": ["SUPPORTED", "DEC-B03 (still unpaid after its due date)"],
+      "Billing.Rules.owesLateFee": ["SUPPORTED", "DEC-B03 (charged once per invoice)"],
+      "Billing.Rules.balance": ["SUPPORTED", "DEC-B02"]
+    },
+    "clinic": {
+      "Clinic.Rules.bookingHorizonDays": ["SUPPORTED", "DEC-C01"],
+      "Clinic.Rules.withinBookingHorizon": ["SUPPORTED", "DEC-C01"],
+      "Clinic.Rules.slotFree": ["SUPPORTED", "DEC-C02"],
+      "Clinic.Rules.mayDispense": ["SUPPORTED", "DEC-C03"]
+    },
+    "lending": {
+      "Lending.Transition.ResultBuilder": ["TECHNICAL", "computation-expression plumbing"],
+      "Lending.Transition.Prelude": ["TECHNICAL", "ensure/required helpers"],
+      "Lending.Transition.Notice": ["TECHNICAL", "effect data type"],
+      "Lending.Transition.DeliveryReport": ["TECHNICAL", "effect data type"],
+      "Lending.Transition.Policy.loanPeriodDays": ["SUPPORTED", "DEC-001"],
+      "Lending.Transition.Policy.maxLoans": ["SUPPORTED", "DEC-002"],
+      "Lending.Transition.Policy.finePerDay": ["SUPPORTED", "DEC-003"],
+      "Lending.Transition.Policy.fineCap": ["SUPPORTED", "DEC-003"],
+      "Lending.Transition.Policy.renewLimit": ["SUPPORTED", "DEC-004"],
+      "Lending.Transition.Catalog.addMember": ["TECHNICAL", "data integrity (duplicate id, empty name)"],
+      "Lending.Transition.Catalog.addBook": ["TECHNICAL", "data integrity"],
+      "Lending.Transition.Catalog.addCopy": ["TECHNICAL", "data integrity"],
+      "Lending.Transition.Catalog.findMember": ["TECHNICAL", "lookup"],
+      "Lending.Transition.Catalog.findBook": ["TECHNICAL", "lookup"],
+      "Lending.Transition.Catalog.findCopy": ["TECHNICAL", "lookup"],
+      "Lending.Transition.Members.isSuspended": ["SUPPORTED", "LEND-L01-R2"],
+      "Lending.Transition.Members.ensureActive": ["SUPPORTED", "LEND-L01-R2"],
+      "Lending.Transition.Members.suspend": ["SUPPORTED", "LEND-L01-R1"],
+      "Lending.Transition.Members.reinstate": ["SUPPORTED", "LEND-L01-R1"],
+      "Lending.Transition.Fines.daysLate": ["SUPPORTED", "DEC-003 (returned after its due date)"],
+      "Lending.Transition.Fines.fineFor": ["SUPPORTED", "DEC-003"],
+      "Lending.Transition.Fines.assess": ["SUPPORTED", "DEC-003 (not fined on or before due date; assessed on return)"],
+      "Lending.Transition.Fines.outstanding": ["TECHNICAL", "sum of a member's fines (DEC-006 'counts towards what the member owes')"],
+      "Lending.Transition.Holds.queueFor": ["SUPPORTED", "DEC-005"],
+      "Lending.Transition.Holds.place": ["SUPPORTED", "DEC-005"],
+      "Lending.Transition.Holds.release": ["SUPPORTED", "DEC-005"],
+      "Lending.Transition.Loans.Returned": ["TECHNICAL", "result record"],
+      "Lending.Transition.Loans.loansOf": ["TECHNICAL", "query and ordering"],
+      "Lending.Transition.Loans.borrow": ["SUPPORTED", "DEC-001, DEC-002, DEC-005, LEND-L01-R2"],
+      "Lending.Transition.Loans.returnCopy": ["SUPPORTED", "DEC-003"],
+      "Lending.Transition.Loans.renew": ["SUPPORTED", "DEC-004, LEND-L01-R2"],
+      "Lending.Transition.Loans.overdue": ["SUPPORTED", "LEND-L02"]
+    }
+  },
+  "overrides": {
+    "C01": {
+      "Clinic.Rules.reminderLeadHours": ["PLANTED", "DEC-C06 24 h, superseded by DEC-C08 48 h"],
+      "Clinic.Rules.reminderAt": ["PLANTED", "DEC-C06 24 h, superseded by DEC-C08 48 h"]
+    },
+    "C02": {
+      "Billing.Rules.paymentTermDays": ["PLANTED", "DEC-B01 30 days, superseded by DEC-B12 21 days"],
+      "Billing.Rules.dueDate": ["PLANTED", "DEC-B01 30 days, superseded by DEC-B12 21 days"]
+    },
+    "C03": { "Clinic.Rules.visitFee": ["PLANTED", "0 default for a clinician docs/visit-fees.md does not list"] },
+    "C04": { "Billing.Rules.shippingCharge": ["PLANTED", "0 default for a region docs/shipping.md does not list"] },
+    "C05": { "Billing.Rules.chased": ["PLANTED", "nonprofits not chased; no source"] },
+    "C06": { "Clinic.Rules.slotFree": ["PLANTED", "k2 slots never count as taken; no source (DEC-C02 names no exception)"] },
+    "D03": {
+      "Lending.Transition.Policy.finePerDay": ["PLANTED", "DEC-003 0.25, superseded by DEC-010 0.20"],
+      "Lending.Transition.Policy.fineCap": ["PLANTED", "DEC-003 10.00, superseded by DEC-010 5.00"],
+      "Lending.Transition.Fines.fineFor": ["PLANTED", "computes the superseded DEC-003 schedule"],
+      "Lending.Transition.Fines.daysLate": ["SUPPORTED", "DEC-010"],
+      "Lending.Transition.Fines.assess": ["SUPPORTED", "DEC-010"],
+      "Lending.Transition.Loans.returnCopy": ["SUPPORTED", "DEC-010"]
+    },
+    "D08": { "Billing.Rules.lateFeeExempt": ["PLANTED", "premium exemption from proposed DEC-B05 (authorizes nothing)"] },
+    "D17": {
+      "Billing.Rules.lateFeeRate": ["PLANTED", "DEC-B03 2%, superseded by DEC-B08 1.5%"],
+      "Billing.Rules.lateFee": ["PLANTED", "DEC-B03 2%, superseded by DEC-B08 1.5%"],
+      "Billing.Rules.round2": ["SUPPORTED", "DEC-B08 (rounded to the cent)"],
+      "Billing.Rules.outstanding": ["SUPPORTED", "DEC-B08, DEC-B02"],
+      "Billing.Rules.isOverdue": ["SUPPORTED", "DEC-B08"],
+      "Billing.Rules.owesLateFee": ["SUPPORTED", "DEC-B08"]
+    },
+    "D18": { "Billing.Rules.chased": ["PLANTED", "premium invoices not chased; no source"] },
+    "D19": { "Billing.Rules.taxRate": ["PLANTED", "0 default for a region docs/tax-rates.md does not list"] },
+    "D20": {
+      "Clinic.Rules.bookingHorizonDays": ["PLANTED", "DEC-C01 90 days, superseded by DEC-C05 60 days"],
+      "Clinic.Rules.withinBookingHorizon": ["PLANTED", "DEC-C01 90 days, superseded by DEC-C05 60 days"]
+    },
+    "D21": {
+      "Clinic.Rules.dispensedWithoutCheck": ["PLANTED", "unchecked paracetamol; no source (DEC-C03: every prescription)"],
+      "Clinic.Rules.mayDispense": ["PLANTED", "carries the dispensedWithoutCheck exemption inside DEC-C03's symbol"]
+    }
+  },
+  "plantedRules": {
+    "C01": "superseded-value", "C02": "superseded-value", "D03": "superseded-value", "D17": "superseded-value", "D20": "superseded-value",
+    "C05": "exemption", "C06": "exemption", "D08": "exemption", "D18": "exemption", "D21": "exemption",
+    "C03": "silent-default", "C04": "silent-default", "D19": "silent-default"
+  }
+}
