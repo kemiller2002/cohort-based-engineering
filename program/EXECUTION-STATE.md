@@ -15,7 +15,7 @@ A successor resumes from this file and needs nothing else. Every line points at 
 | 3 Smallest operational improvements | **EP-00 implemented** (praxis#287, CI pending). Intake is written for A3, A2a, A2b, A1, A5, A6a and EP-01 |
 | 4 Verified-construction slice | **Prototypes implemented and tested locally:** B2 (ordo#105, 69/69) and B3 (dokimos#53, 59/59). Both are experimental |
 | 5 Praxis/Ordo/Dokimos integration | **B4 run.** Five frozen outcomes PASS; the Praxis completion step is NOT_RUN (`integration/b4/B4-RESULT.md`) |
-| 6 Authorized experiments | **None authorized.** EXP-2 and EXP-3 intake is written; their zero-cost phases are next |
+| 6 Authorized experiments | **No paid runs.** EXP-3 phase 1 ($0) ran: **H1 contradicted** (recall 38.5%, false-question rate 90.5%), so phase 2 does not qualify. EXP-2 phase 1 is next |
 | 7 Promote on evidence | Nothing promoted; nothing meets EXPERIMENTS.md §6 yet |
 
 ## Pull requests
@@ -75,9 +75,14 @@ the pre-existing runner drift that is also red on main.
 2. **Mark the other PRs ready** once green: ordo#105 and dokimos#53 (experimental, outside default paths),
    echelon-registry#90 and cohort-based-engineering#23. Merging an experimental prototype is not promotion
    (EXPERIMENTS.md §6).
-3. **EXP-3 phase 1** ($0): preregister the label mapping for the P3 corpus (C01–C06 plus discovery). Then run the
-   Dokimos audit in legacy mode over each scenario's starting tree and report precision, recall and the false-question
-   rate. This decides O2 and whether phase 2 is worth a budget.
+3. **Typed audit (B3 v2):** implemented in Dokimos with FSharp.Compiler.Service. It must find:
+   - numeric constants of any type;
+   - union-case and named-type comparisons;
+   - conditions spread over several lines;
+   - values matched to accepted decisions' parameters, instead of a question per unmarked line.
+
+   Develop it against the P3 development set only. Then preregister a confirmation on a **held-out** corpus.
+   EXP-3 phase 1 showed the lexical audit misses every exemption (`research/experiments/EXP-3/RESULTS.md`).
 4. **EXP-2 phase 1** ($0): freeze a `praxis.verification-map/0.1` for praxis and dokimos, then replay 50 commits each
    from GitHub Actions history.
 5. **EP-02 intake hygiene:**

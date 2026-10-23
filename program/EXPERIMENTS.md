@@ -127,6 +127,28 @@ without increasing escaped defects?
 - **H1:** recall ≥ 90%, false-question rate ≤ 10%. These figures are O2's promotion threshold.
 - Preregister the label mapping before running.
 
+**Phase 1 result (2026-10-23, $0): H1 Contradicted.**
+- Preregistered at `8f68c6d`; results at `cd41e5f`, in `research/experiments/EXP-3/RESULTS.md`.
+- Across 27 P3 scenarios with 13 planted rules: recall **5/13 = 38.5%** (CI 13.9–68.4%), false-question rate
+  **57/63 = 90.5%**.
+- By mechanism:
+  - silent defaults: 3/3 found;
+  - superseded values: 2/5 found;
+  - **exemptions: 0/5 found, including C06**, the case that beat every control in P3.
+- Causes, all in the lexical method:
+  - whole-number date constants are ignored;
+  - comparisons against named-type values are not treated as constants;
+  - a condition split across lines is missed;
+  - decision citations in comments are dropped, so every unmarked rule becomes a question.
+- **Consequences:**
+  - Phase 2 does not qualify.
+  - The B3 audit stays experimental and off every default path.
+  - O2's promotion threshold is unmet.
+  - The P3 corpus is now a **development set**. The next audit version (typed analysis: FSharp.Compiler.Service
+    symbols, constants of any numeric type, union-case comparisons, and accepted-decision citations matched to
+    values) must be confirmed on a **held-out** corpus that was not used to tune it, such as new VC-001 fixtures, to
+    avoid overfitting.
+
 **Phase 2: paid, needs authorization.** Paired arms on P3-style scenarios:
 - A: no contract;
 - B: four-sentence contract;
