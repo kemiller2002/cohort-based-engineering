@@ -41,6 +41,12 @@ the pre-existing runner drift that is also red on main.
 | echelon-registry#90 (EP-A6a intake) | `50c82e4` |
 | dokimos#53 (B3 slice, EP-01, EP-A2a/EP-01 intake) | `5988bf0` |
 | praxis#287 (EP-00, wave A intake) | `638b2e7` |
+| ordo#106 (VC-002 and VAC-002-P3-02 intake completed) | `2df928a` |
+| dokimos#54 (audit v2, experimental) | `fc9b31f` |
+
+**Open:**
+- praxis#288 (EP-A3-R2/R3): CI pending. Merge when green.
+- cohort-based-engineering#23: the living program record, merged when the owner wants a snapshot on main.
 
 **Opened earlier** (the table below is the state at opening; see the merges above):
 

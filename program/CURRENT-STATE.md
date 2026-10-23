@@ -173,3 +173,18 @@ A status describes what exists **on main**. Work this program has started is lis
   - never registered: Forma 0.9.1, Limen 0.9.1, Aegis 2.0.0.
 - **Repositories pin an older set.** Registry, Percepta, Forma, Limen and Aegis pin **echelon-current 1.2.0**
   (`resolved-release-set.json`, sha256 `ea1b39a0…`), whose profile is no longer in the Registry.
+
+## 6. Changes on main since the inspection (2026-10-23, this program)
+
+These rows change classifications because the work is now merged on main and verified in CI. Everything else above
+still stands.
+
+| ID | Was | Now | Evidence |
+|---|---|---|---|
+| CI health | Praxis main red; Dokimos site validation red | **Green** | praxis#287 (`638b2e7`): git 2.55 test and uutils `date` fix. dokimos#53 (`a4fa237`): Playwright 1.63.0 |
+| B2c/B2e/B2f | 2 / 5 / 3 | **4 Experimental** | ordo#105 (`d31290c`): handoff admission, Ordo-emitted invoice slice, validated constructors, capability-gated persistence, construction trace; 69 tests. Not in the default build |
+| B3a/B3b/B3c | 5 / 2 / 3 | **4 Experimental** | dokimos#53 (`5988bf0`) and #54 (`fc9b31f`): provenance audit v1/v2 and bounded invariant oracle. **Held-out accuracy fails its thresholds** (recall 80%, false-question rate 25%; EXPERIMENTS.md §4) |
+| B4 | 5 | **4 Experimental** | `integration/b4/B4-RESULT.md`: five frozen outcomes PASS; the Praxis completion step NOT_RUN |
+| A2 (Dokimos side) | 2 | 2, plus an experimental `isReusable` prototype | dokimos `experiments/rule-provenance` |
+| A3 | 2 | **2, pending praxis#288** | praxis#288 runs the real-Dokimos completion cases in CI (0 SKIP) and adds CLI idempotence contract tests. Still unreleased and not enabled |
+
