@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-3",
+      "issue": "LEND-L13-R2 requires that borrowing use the same per-member-type loan-period definition as the member view. Borrowing (src/Lending.Transition/Loans.fs:39) still uses the constant Policy.loanPeriodDays, while the member view (src/Lending.Application/Views.fs:150) uses Policy.loanPeriodFor. That leaves two definitions. Today they agree only because every case of loanPeriodFor returns the same constant. The behaviour itself is authorized: 21 days for every loan comes from accepted DEC-001. But R2 is only partly met. .work/report.json still reports outcome 'completed' and lists R2 as 'partially-implemented', and that self-reported outcome overstates the work.",
+      "authorizedAlternative": "LEND-L13-R2 and DEC-001 together authorize Loans.borrow taking its due date from Policy.loanPeriodFor applied to the borrower's member type (21 days for every type). Due dates do not change. That authority comes from the requirement and DEC-001, not from the implementer's DEC-W-1. Until that is done, report the work item as incomplete instead of 'completed'."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-8",
+      "issue": "The existing LEND-L01-R3 acceptance test was rewritten to expect the new ', loan period 21 days' suffix. Requirements/L01.md#LEND-L01-R3 still specifies the old output 'm1 Ada Lovelace (standard), active'. L13-R1 has the same owner (Head of Lending), and its acceptance criteria ('existing behaviour is unchanged except as these requirements say') explicitly allow the change, so the behaviour is authorized. But DEC-W-8 is a self-written 'proposed' record that was never submitted for admission, and L01.md has not been revised by its owner. The text of the two requirements now differs.",
+      "authorizedAlternative": "Keep the extended output as LEND-L13-R1 specifies, and record for the Head of Lending that the L01-R3 output example is superseded by L13-R1, so the owner can revise L01.md."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-1",
+      "issue": "The implementer's decision records do not match the code. DEC-W-1 and DEC-W-5 describe the per-type function as 'Policy.loanPeriodDays : MemberType -> int'. The diff instead keeps loanPeriodDays as an int constant and adds a separate Policy.loanPeriodFor. DEC-W-5 also cites docs/architecture/LENDING-ARCHITECTURE.md#ARC-BND-03 as authority, but architecture documents are not a source of business rules under README 'Authority'. No behaviour is affected.",
+      "authorizedAlternative": "Correct the records to name Policy.loanPeriodFor, and cite only LEND-L13-R1/R2 and DEC-001 as authority."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": null,
+      "issue": ".work/report.json records verification ('dotnet test Lending.slnx' passed, 19/0) that only the implementer reported. No independent record backs it, and docs/approvals/ contains no granted approval. This review did not run the tests.",
+      "authorizedAlternative": "Treat the test result as unverified until the gate or CI runs 'dotnet test Lending.slnx' independently."
+    }
+  ]
+}

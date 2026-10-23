@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "b769d93d-6c93-4c3f-b665-d90935b7af62",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S11-A/briefs/work.md",
+  "briefSha256": "caa5182881ca53713e951beaf2018bca351662d065746d624030aed4c0323cc7",
+  "startedAt": "2026-10-22T22:18:59.575Z",
+  "endedAt": "2026-10-22T22:19:59.764Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "b769d93d-6c93-4c3f-b665-d90935b7af62",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 59129,
+    "costUsdCli": 0.23507950000000002,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 16,
+      "output": 4434,
+      "cacheRead": 91610,
+      "cacheWrite": 15985
+    },
+    "toolUses": 7,
+    "contaminationHits": [],
+    "finalMessage": "I've implemented CLIN-23-R1 and committed it: `prescribe` now refuses doses above the drug's formulary maximum, accepts doses equal to it, and refuses drugs that aren't in the formulary. `dotnet test Clinic.slnx` passes all 7 tests, including the extra acceptance tests I added.\nCLIN-23-R2 isn't done and can't be done by me: Pharmacy has to verify the program's maximum doses against `docs/formulary.md` and record that in `docs/verification/`, so CLIN-23 isn't complete until they do. I made two assumptions, which are logged as open questions for Pharmacy: drug names must match the formulary exactly (so \"Ibuprofen\" is refused), and prescriptions already in a loaded state are not re-checked.\nThe report is in `.work/report.json`.\nOUTCOME: completed"
+  }
+}

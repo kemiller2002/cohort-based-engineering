@@ -1,0 +1,12 @@
+{
+  "schema": "cbe.vac-002-p2.seal/1",
+  "plaintextTarGzSha256": "43d0534aa2be4143997c076d08a4699ef52b0174d5e397aa3562388b938c7004",
+  "ciphertextSha256": "87b0de11e39be19b103c69f5b45513802faf5c9377b884e6edb90a306e73163e",
+  "manifestSha256": "64bb665d788f91a10dab3b8f19107c1099a14c43a4eecd2bef811f81bc175578",
+  "files": 160,
+  "cipher": "aes-256-cbc pbkdf2 iter 200000 (openssl enc)",
+  "openssl": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "sealedAt": "2026-10-22T21:46:01Z",
+  "contents": "Sxx/oracle (hidden FUNC and AUTH facts), Sxx/ref, Sxx/trap-*, Sxx/valid-*, gen/ (variant generators), support/ (oracle projects), meta.json (reference decisions), confirmatory-variants.md, validation/ (pre-freeze self-check outputs and change log), PREFREEZE-LOG.md",
+  "verify": "openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass file:KEY -in p2-sealed.tar.gz.enc | sha256sum  # equals plaintextTarGzSha256"
+}

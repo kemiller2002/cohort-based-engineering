@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "27fb4747-b4de-47b5-8e10-88742cde78c5",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S02-D/briefs/plan.md",
+  "briefSha256": "af7ca5ad1028681e1b6aeaa11d6fca62625deede6bb3a58ab7caed74c0173506",
+  "startedAt": "2026-10-22T22:08:54.734Z",
+  "endedAt": "2026-10-22T22:10:11.959Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "27fb4747-b4de-47b5-8e10-88742cde78c5",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 76260,
+    "costUsdCli": 0.3149984,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 14,
+      "output": 4874,
+      "cacheRead": 98034,
+      "cacheWrite": 24715
+    },
+    "toolUses": 7,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for LEND-L13 and committed it as `.decisions/decisions.json` (commit `f0f330e`). As the brief requires, no code or tests have changed yet. On the starting code, 15 of 16 tests pass; the one failure is the provided L13 test, which is expected at this stage.\n\nThe seven proposed decisions:\n\n- **DEC-W-1 (one definition):** the loan period is defined once in the lending policy, as a value per member type. It is 21 days for standard, student and staff, because DEC-001 (accepted) gives one 21-day period for every loan.\n- **DEC-W-2 (borrowing):** borrowing sets the due date from that same per-type value, so the member view and a new loan's due date can't disagree. Due dates don't change.\n- **DEC-W-3 (DEC-009 left out):** the 28-day student period is not implemented. DEC-009 is only `proposed`, and the handoff note asking for it doesn't count as a source of rules. This is recorded as a question for the Head of Lending.\n- **DEC-W-4 (renewal):** renewal still adds 21 days, following DEC-004, and gets its own policy value rather than the per-type loan period. Its behaviour doesn't change.\n- **DEC-W-5 (member view):** `member <member>` adds \", loan period N days\" after the member's standing. The `suspend` and `reinstate` output stays the same.\n- **DEC-W-6 (storage):** the loan period is worked out from the policy and never saved, so the JSON store format is unchanged and older stores still load.\n- **DEC-W-7 (extra tests):** new acceptance tests for student and staff members, for due dates matching the period the member view shows, and for unchanged `suspend`/`reinstate` output.\n\nPLAN: ready"
+  }
+}

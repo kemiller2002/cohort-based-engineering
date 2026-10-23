@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-8",
+      "issue": "BILL-13-R1's specified untaxed output for c2 (region ON) cannot hold together with accepted DEC-B04 (every invoice adds sales tax at the region rate). The change implements no override or exception: invoices stay untaxed as they were before the change, and the conflict is recorded for Finance as a proposed record plus a note. That follows README's conflict rule as far as this work item goes. However, DEC-W-8 and the note also say what 'the sources point to' (tax on the discounted amount, late fee on the pre-tax amount). That is the implementer's reading of how two Finance-owned sources combine, not a ruling from Finance, and it should not be relied on as settled.",
+      "authorizedAlternative": "Keep the conflict as an open question for Finance, which owns BILL-13 and DEC-B04, and leave out any suggested resolution. DEC-B04 remains the accepted general rule. How it combines with the discount is for Finance to decide."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-3",
+      "issue": "For a standard-plan nonprofit invoice of 0.01-0.04 issued on or after 2026-03-01, APR-B01's discount rounds to 0.00, and the change prints it as an invoice 'without a discount'. Neither BILL-13-R1 nor APR-B01 says whether a 0.00 discount counts as 'without a discount'. DEC-W-3 marks this choice as authorized, while DEC-W-9 records the same question as open. The amounts are correct either way, so only the output format is affected.",
+      "authorizedAlternative": "The discount value of 0.00 and the unchanged amount are authorized by APR-B01. The output-format question should stay open for Finance (DEC-W-9), and DEC-W-3 should not present it as settled."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "178a21d8-b501-4147-91de-681f8a257055",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S05-E/briefs/plan.md",
+  "briefSha256": "8a2b2090be9f7cfdf86667e0ec7df064ba581a2adfc6b72f03ddf6cf6b3b4e64",
+  "startedAt": "2026-10-22T22:15:39.883Z",
+  "endedAt": "2026-10-22T22:16:46.944Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "178a21d8-b501-4147-91de-681f8a257055",
+    "isError": false,
+    "numTurns": 5,
+    "durationMs": 66040,
+    "costUsdCli": 0.22006550000000002,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 4637,
+      "cacheRead": 40077,
+      "cacheWrite": 14892
+    },
+    "toolUses": 4,
+    "contaminationHits": [],
+    "finalMessage": "The plan is written to `.decisions/decisions.json` and committed (1fbfee2). I haven't changed any code or tests yet. The plan has six proposed decisions:\n\n- **DEC-W-1 (rates):** Tax is the amount times the region's rate from `docs/tax-rates.md` (ON 13%, BC 12%, AB 5%), rounded to the cent half away from zero, as DEC-B04 says.\n- **DEC-W-2 (no listed rate, e.g. QC):** No accepted source gives a rate for QC (c5, Lac Bleu), so `invoice` for that customer is refused with `error: no tax rate for region QC` and nothing changes. The engineering note suggesting 0% is only a note, so it isn't used. The question goes to Finance. Adding a customer in any region still works as before.\n- **DEC-W-3 (no exemptions):** Nonprofit and premium customers are taxed too, because no source gives an exemption.\n- **DEC-W-4 (outstanding and balance):** Outstanding becomes amount + tax + late fee − paid, so balances include tax. The late fee stays 2% of the amount before tax.\n- **DEC-W-5 (code changes):** Each invoice stores its tax, worked out once when it is issued. The rate lookup lives in `Rules`, and a new error case covers a missing rate. Output follows the requirement's examples exactly. The entry points, command syntax and help text stay the same.\n- **DEC-W-6 (tests):** The existing tests in `BaseTests.fs` that check the old invoice/show text or pre-tax balances get the new expected values (172.50 and 48.03), and they still test the same behaviour. I'll add acceptance tests for the cases the provided tests don't cover: the QC refusal, nonprofit and AB tax, rounding, the late fee on the pre-tax amount, and help.\n\nPLAN: ready"
+  }
+}

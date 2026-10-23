@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "d78e2bb0-ce51-4f35-a084-4ae31b049ed7",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S11-D/briefs/plan.md",
+  "briefSha256": "7d919aef4aa905c938cd469a45cded35bf8c08e1cb5fb60dd5c58525d11dfac3",
+  "startedAt": "2026-10-22T21:55:55.266Z",
+  "endedAt": "2026-10-22T21:56:40.657Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "d78e2bb0-ce51-4f35-a084-4ae31b049ed7",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 44346,
+    "costUsdCli": 0.2153961,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4422,
+      "cacheRead": 54790,
+      "cacheWrite": 14477
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for CLIN-23 and committed it. Per the brief, no code or tests have changed. The plan is seven proposed decisions, in `.decisions/decisions.json` (commit `70dd42e`):\n\n- **DEC-W-1 (business rule):** Use the maximum doses from `docs/formulary.md`, as CLIN-23-R1 says: ibuprofen 800, paracetamol 1000, amoxicillin 1000 and naproxen 500 mg. They go in one table in `Rules`.\n- **DEC-W-2 (business rule):** `prescribe` refuses doses above the maximum and drugs not in the formulary, with the exact `error:` messages from the requirement. A dose equal to the maximum is accepted, and a refused command changes nothing.\n- **DEC-W-3 (interpretation):** A drug name must match a formulary entry exactly. No source allows case-insensitive matching, aliases or brand names, so any other spelling is refused as not in the formulary.\n- **DEC-W-4 (implementation):** The existing checks stay first and keep their messages. Then the drug is checked against the formulary, and then the dose against its maximum.\n- **DEC-W-5 (implementation):** The work follows the module layout in `docs/architecture.md`: new error cases in `Domain`, the rule in `Rules`, and its use and the messages in `Commands`. The formulary values are written into the code rather than read from the file when the program runs. The Cli entry points and `help` stay the same.\n- **DEC-W-6 (implementation):** New acceptance tests will cover what the provided ones don't: each drug at its maximum and 1 mg over, and a refused `prescribe` leaving the queue unchanged.\n- **DEC-W-7 (interpretation):** CLIN-23-R2 requires Pharmacy to verify the doses and record that verification, so I won't write anything in `docs/verification/`. CLIN-23 stays incomplete until Pharmacy does.\n\nPLAN: ready"
+  }
+}

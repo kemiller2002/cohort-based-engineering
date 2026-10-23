@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "eb4e3295-a881-44b0-9a9e-0a06711f6e5f",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S10-D/briefs/plan.md",
+  "briefSha256": "5b08bac623fe5b0b9d287543eaf3c21ed326ac54665531492b810c31e583d6bc",
+  "startedAt": "2026-10-22T22:02:25.027Z",
+  "endedAt": "2026-10-22T22:03:08.212Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "eb4e3295-a881-44b0-9a9e-0a06711f6e5f",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 42206,
+    "costUsdCli": 0.22405709999999998,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4395,
+      "cacheRead": 57710,
+      "cacheWrite": 15554
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "The plan for CLIN-22 is written in `.decisions/decisions.json` and committed as `9a428fd`. I haven't changed any code or tests yet. There are six proposed decisions:\n\n- **DEC-W-1 (follow-up kind):** `book` takes an optional last word, `follow-up` or `regular`. If it's left out, the booking is regular. A follow-up booking and its `schedule` entry end with ` (follow-up)`; regular ones print as before.\n- **DEC-W-2 (180-day limit), conflict:** CLIN-22-R2 can't be met. It lets follow-ups be booked up to 180 days ahead, but the accepted DEC-C01 says appointments \"of every kind\" can be booked at most 90 days ahead. README says not to pick between two sources that disagree, so the 90-day limit stays for follow-ups too. A follow-up more than 90 days out is refused with the existing error. The conflict needs to go to the two owners, Scheduling Office and Clinical Operations, to resolve.\n- **DEC-W-3 (invalid kind):** any other word in that position is refused with `error: invalid kind <word>` and changes nothing.\n- **DEC-W-4 (help text):** the `book` line in `help`, in the usage error and in README becomes `book <appointment> <patient> <clinician> <date> <time> [follow-up|regular]`.\n- **DEC-W-5 (code changes):** add an appointment kind (regular or follow-up) to `Domain`, handle it in `Commands` and accept the extra word in `Cli`. No new rule goes into `Rules`, and the entry points the tests use keep their current signatures.\n- **DEC-W-6 (tests):** add acceptance tests for what the provided tests don't cover: the default kind, an invalid kind, the help line, and a follow-up more than 90 days ahead being refused. The provided test file stays as it is.\n\nPLAN: ready"
+  }
+}

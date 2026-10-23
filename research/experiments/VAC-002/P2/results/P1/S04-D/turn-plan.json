@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "663f1f0f-449e-4044-a73e-ede21d4ad2e6",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S04-D/briefs/plan.md",
+  "briefSha256": "5ea23329a104c7a267c1851389520f28307f2ed9ac276201173bf760132546c8",
+  "startedAt": "2026-10-22T22:26:06.605Z",
+  "endedAt": "2026-10-22T22:27:06.522Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "663f1f0f-449e-4044-a73e-ede21d4ad2e6",
+    "isError": false,
+    "numTurns": 5,
+    "durationMs": 58822,
+    "costUsdCli": 0.26710989999999996,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 6319,
+      "cacheRead": 40209,
+      "cacheWrite": 16564
+    },
+    "toolUses": 4,
+    "contaminationHits": [],
+    "finalMessage": "I've written and committed the plan in `.decisions/decisions.json` (commit `3293ed0`). It has 10 decisions, all `proposed`, and no code or tests are changed yet.\n\n- **`pay` command (DEC-W-1, 2, 6):**\n  - Output follows the format in BILL-11-R1, and `paid` is the amount of this payment, not the running total.\n  - A payment larger than what's outstanding is refused. That also refuses any payment on an invoice that's already settled.\n  - An unknown invoice is refused.\n  - `help` lists `pay <invoice> <amount>` directly after `show <invoice>`.\n- **What \"outstanding\" means (DEC-W-3, 5):** amount + late fee − paid, per DEC-B03. `show` shows the total paid so far, and `balance` drops by each payment. Since overpayments are refused, a payment can never create a refundable credit.\n- **Amounts no source covers (DEC-W-4):** zero, negative or sub-cent payments are refused with `error: invalid amount …`. Whether they should ever be allowed is left as a question for Finance.\n- **Things deliberately not built:**\n  - **Sales' late-fee waiver (DEC-W-7):** the request in `docs/notes/` is not a source of business rules and would override DEC-B03, so it's recorded as an open question for Finance.\n  - **Sales tax (DEC-W-9):** DEC-B04 is accepted but outside BILL-11, and adding it would change existing output.\n- **Late fees on partly paid invoices (DEC-W-8):** late-fee behaviour stays as it is, which reads \"still unpaid\" as \"something still outstanding\". So a partly paid overdue invoice is still charged 2% of the invoice amount. DEC-B03 doesn't say this explicitly, so I've flagged it for Finance.\n- **Code layout (DEC-W-10):**\n  - A new error case goes in `Domain`, the payment rules in `Rules`, and `Commands.pay` plus the CLI wiring in the other two modules, as `docs/architecture.md` describes.\n  - Extra acceptance tests will cover the `help` order, refused payments leaving state unchanged, paying a late fee, and paying a settled invoice.\n\nPLAN: ready"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "be91707d-447b-4714-b72d-a609fe629ed2",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S11-E/briefs/plan.md",
+  "briefSha256": "880813d519db6321b4c8062d42aaa1a869d3fc062b3cd921124afeec589e33f4",
+  "startedAt": "2026-10-22T22:26:58.686Z",
+  "endedAt": "2026-10-22T22:27:46.855Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "be91707d-447b-4714-b72d-a609fe629ed2",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 47136,
+    "costUsdCli": 0.2176141,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4325,
+      "cacheRead": 55300,
+      "cacheWrite": 14984
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for CLIN-23 and committed it as `9c91d39`. As the brief says, I haven't changed any code or tests in this step. The plan is in `.decisions/decisions.json` and has seven proposed decisions:\n\n- **DEC-W-1:** `prescribe` refuses a dose above the drug's maximum in `docs/formulary.md`, using the message format given in the requirement. A dose equal to the maximum is accepted.\n- **DEC-W-2:** a drug not in the formulary is refused with `error: drug <drug> is not in the formulary`. Until now any drug name was accepted, so this change in behaviour is the one the requirement asks for. No accepted decision record or granted approval conflicts with it.\n- **DEC-W-3:** drug names must match the formulary exactly, including case, because no source gives a rule for anything looser. For example, `Ibuprofen` would be refused.\n- **DEC-W-4:** the maximum doses go in a single table in `Rules`, which points back to the formulary and the requirement. The program won't read `docs/formulary.md` while it runs. New error cases go in `Domain` and their messages in `Commands`, following `docs/architecture.md`.\n- **DEC-W-5:** the existing checks keep their order, and the drug check and then the dose check come after them. A refused `prescribe` changes nothing.\n- **DEC-W-6:** I'll add acceptance tests for what the provided ones don't cover: each formulary drug at its maximum and one above it, no change to state after a refusal, and the case-variant name. Existing tests stay as they are.\n- **DEC-W-7:** I won't write anything in `docs/verification/`, because CLIN-23-R2 makes that Pharmacy's job. CLIN-23 therefore can't be complete until Pharmacy records that verification, and I'll report it as an open item for them.\n\nPLAN: ready"
+  }
+}

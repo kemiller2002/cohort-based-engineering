@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "749f72f3-46f8-48ec-9819-75a7465274dd",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S11-B/briefs/work.md",
+  "briefSha256": "2eebf2fc752cdb282d77529062ba395395b47bb70f616953ca98751d9ac9106c",
+  "startedAt": "2026-10-22T22:14:20.819Z",
+  "endedAt": "2026-10-22T22:15:29.880Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "749f72f3-46f8-48ec-9819-75a7465274dd",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 67786,
+    "costUsdCli": 0.25313050000000004,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 16,
+      "output": 5034,
+      "cacheRead": 92970,
+      "cacheWrite": 16707
+    },
+    "toolUses": 7,
+    "contaminationHits": [],
+    "finalMessage": "I've implemented CLIN-23-R1: `prescribe` now refuses doses above the formulary maximum and drugs not in the formulary, and accepts a dose equal to the maximum. `dotnet test Clinic.slnx` passes 7 of 7, including two acceptance tests I added for the other three drugs and for refusals leaving the state unchanged.\nCLIN-23-R2 is not done and CLIN-23 is not complete: only Pharmacy can check the dose limits against the formulary and record that in `docs/verification/`. Until they do, the release is blocked. The limits are copied by hand into `src/Clinic/Rules.fs`, so any formulary change needs the same edit there.\nDrug names match only in the exact case the formulary uses; whether that's right is an open question for Pharmacy. The work and `.work/report.json` are committed.\nOUTCOME: completed"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "3deaf559-f648-4640-ae41-1f4eceba95f0",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S05-B/briefs/work.md",
+  "briefSha256": "d532a94efe6702fe5e753b48792f987b20db4f60c88f6ad852d37f0619f73990",
+  "startedAt": "2026-10-22T22:00:35.863Z",
+  "endedAt": "2026-10-22T22:01:47.008Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "3deaf559-f648-4640-ae41-1f4eceba95f0",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 70116,
+    "costUsdCli": 0.2835225,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 14,
+      "output": 5961,
+      "cacheRead": 79205,
+      "cacheWrite": 18534
+    },
+    "toolUses": 6,
+    "contaminationHits": [],
+    "finalMessage": "I added sales tax to invoices using the ON, BC and AB rates that DEC-B04 points to. `invoice`, `show` and `balance` now include the tax, and the late fee is still charged before tax. `dotnet test Billing.slnx` passes all 9 tests, and I updated the existing tests' expected outputs to include tax.\nThere is no rate for Quebec, so invoicing a QC customer (Lac Bleu) now fails with `error: no tax rate for region QC`. I didn't use the 0% fallback from the rollout note because a note can't set a business rule. I've logged the QC rate as an open question for Finance in `.work/report.json`, which is committed.\n\nOUTCOME: completed"
+  }
+}

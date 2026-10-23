@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "e723bc5a-4f7f-4720-98a1-b8fd2e2bef1f",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S01-E/briefs/plan.md",
+  "briefSha256": "67c7bd0ef1267809c58c46810836c7dfb464b2d251d06ee39b1a347c7708cb52",
+  "startedAt": "2026-10-22T22:31:28.839Z",
+  "endedAt": "2026-10-22T22:32:27.143Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "e723bc5a-4f7f-4720-98a1-b8fd2e2bef1f",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 56820,
+    "costUsdCli": 0.3696317,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 5168,
+      "cacheRead": 87488,
+      "cacheWrite": 31074
+    },
+    "toolUses": 6,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan and committed it in `.decisions/decisions.json` (commit `990ab0b`). No code or tests have changed yet. It proposes six decisions:\n\n- **DEC-W-1:** add the `owes <member>` command. It adds up the member's fines and prints `m1 owes 1.50`, or `m1 owes 0.00` when there are none. An unknown member gets the usual `error: unknown member` line, and `help` lists the command right after `overdue`.\n- **DEC-W-2:** \"what a member owes\" means every recorded fine. DEC-006 says waived fines stop counting, but the system has no waivers and no payments, and adding them isn't part of this task.\n- **DEC-W-3:** a borrow is refused with `error: member m1 owes 5.50` when the member owes more than 5.00. Exactly 5.00 may still borrow. The 5.00 limit lives in one place (`Policy`) and the check sits in the borrow rules.\n- **DEC-W-4:** no source says which borrow rule is checked first. I chose to run the money-owed check right after the suspension check and before the copy, loan-limit and holds checks, and I've recorded that ordering as a question for the Head of Lending.\n- **DEC-W-5 (the main issue):** LEND-L04-R3, owned by Staff Services, says a staff member's borrow is only ever refused for the loan limit. That can't hold alongside three other rules:\n  - LEND-L04-R2, the money-owed limit;\n  - DEC-005, which lends a book's copies only to the head of its holds queue;\n  - LEND-L01-R2, which stops suspended members from borrowing.\n\n  `README.md` says that when two sources conflict, the general rule keeps applying. So I plan to implement no exception for staff and record the conflict for both owners. The only part of R3 that still holds is that staff below their limit of 10 aren't refused for the limit, which already works today.\n- **DEC-W-6:** nothing new is saved, because the total comes from fines already stored. The file format doesn't change and older stores still load. I'll add acceptance tests for the cases the provided tests don't cover:\n  - owes for an unknown membe"
+  }
+}

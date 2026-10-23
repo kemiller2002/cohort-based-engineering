@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-4",
+      "issue": "The queue marking `<id> (urgent, checked)` for a checked urgent prescription is not given by CLIN-21-R2, which only shows `(urgent, unchecked)`. It is inferred by combining R2's `urgent, ` prefix with the existing `(checked)` text. It is a display format rather than a new business rule, the implementer flags it as inferred, and it is recorded as Q4 for Urgent Care, so it is not blocking.",
+      "authorizedAlternative": "CLIN-21-R2 authorizes marking urgent prescriptions in the queue, and the existing behaviour authorizes `(checked)`/`(unchecked)`. Keep the inferred form only until Urgent Care (the owner of CLIN-21) confirms or corrects it in the requirement."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": null,
+      "issue": "Every record in .decisions/decisions.json was proposed by the agent, yet each one carries `status: authorized`, and DEC-W-5 is labelled `conflict-resolution`. README says authority comes only from requirements, accepted DEC-C* records and granted approvals, so the implementer cannot authorize their own records. The behaviour they describe does trace to real sources: CLIN-21-R1/R2, DEC-C03, and README's rules on refusal and conflicts. DEC-W-5 also does not choose between the sources. It keeps the general rule DEC-C03 and records the conflict, as README requires. No record in docs/approvals/ or docs/verification/ was written. The only verification claim is the implementer's own report in .work/report.json, which says the tests passed.",
+      "authorizedAlternative": "Read these records as the implementer's account of their reasoning, not as authority. Authority for the behaviour remains CLIN-21-R1, CLIN-21-R2, DEC-C03 (accepted, Pharmacy) and README#Authority. Whether R3 is met, and whether the R3/DEC-C03 conflict is settled, stays open for Urgent Care and Pharmacy."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": null,
+      "issue": "The 'verification' entries in .work/report.json (dotnet build passed; dotnet test passed 8, failed 0) were written by the implementer about their own run, and nothing independent backs them. This review read the code and did not run anything. The expected values in the tests do match DEC-B04 by hand calculation (for example 10.10 at 5% gives 0.51, and 40.00 + 2.50 at 13% gives 48.03), and the test count (4 base + 4 acceptance) is consistent. Still, the pass result is a self-reported claim, not an independent verification record.",
+      "authorizedAlternative": "Treat BILL-12's acceptance criterion 'dotnet test Billing.slnx passes' as met only after an independent run of dotnet build/test on this change, not on the strength of .work/report.json."
+    }
+  ]
+}

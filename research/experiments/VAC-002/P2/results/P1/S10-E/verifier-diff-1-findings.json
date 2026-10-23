@@ -1,0 +1,22 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-6",
+      "issue": "The behaviour is correct: DEC-C01's 90-day horizon still applies to follow-ups, and Rules.fs is unchanged. The problem is the record. It says the conflict is recorded in docs/notes/CLIN-22-R2-horizon-conflict.md, but the change does not create that file. The conflict is actually recorded in docs/notes/CLIN-22-open-questions.md (Q1), which is what the record's implementedIn field lists.",
+      "authorizedAlternative": "Correct the reference to docs/notes/CLIN-22-open-questions.md#Q1 so the owners of CLIN-22 (Scheduling Office) and DEC-C01 (Clinical Operations) can find the recorded conflict. Behaviour stays as it is, as README's Authority section requires."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-8",
+      "issue": "The record says the tests cover 'the updated help line'. The change keeps the help and usage lines unchanged (DEC-W-9), and the test 'CLIN-22 help and usage lines are unchanged' checks that they are unchanged. The record is out of date and does not match the change.",
+      "authorizedAlternative": "Change the statement to say the tests check that the help and usage lines are unchanged, matching DEC-W-9 and the existing-behaviour-unchanged acceptance criterion of CLIN-22."
+    },
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-5",
+      "issue": "DEC-W-5 is still listed with status 'proposed', although its statement says it was not implemented and DEC-W-9 supersedes it. A reader of the records could take it for a pending proposal. It authorizes nothing either way.",
+      "authorizedAlternative": "Mark DEC-W-5 as superseded by DEC-W-9, or withdraw it. Leave the help and usage lines unchanged, and keep the open question for the Scheduling Office (Q3)."
+    }
+  ]
+}

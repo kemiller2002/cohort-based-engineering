@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "890ed967-a741-4b96-b49b-043dd7e79bbd",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S07-D/briefs/plan.md",
+  "briefSha256": "e55f986dd645510f33ecca63e50fc10d615c305c53ddfb1bfcda285477cad8a3",
+  "startedAt": "2026-10-22T22:04:33.190Z",
+  "endedAt": "2026-10-22T22:05:57.602Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "890ed967-a741-4b96-b49b-043dd7e79bbd",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 83217,
+    "costUsdCli": 0.27086669999999996,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6548,
+      "cacheRead": 54493,
+      "cacheWrite": 16103
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan for BILL-14 in `.decisions/decisions.json` and committed it (`ea66fb8`). It has eight proposed decisions. No code or tests have changed yet.\n\n- **DEC-W-1, the `credit` command (R1):** `credit <customer> <amount>` lowers what the customer owes and prints `c1 credited 20.00, balance 80.00`.\n- **DEC-W-2, credits bigger than the balance (DEC-B02):** the balance stops at 0.00. The extra is held as a refundable credit and is never applied automatically to later invoices, because only Finance releases it.\n- **DEC-W-3, how a credit is held:** it counts against the customer, not against particular invoices, because no source says which invoice a credit should go to. So `show` output and late fees stay as they are. Whether credits should be assigned to invoices or affect late fees is recorded as an open question for Finance.\n- **DEC-W-4, refusals:** amounts are checked with the existing `parseAmount`, the same way `invoice` checks them. That gives `error: invalid amount ...` for non-numbers, zero or less, and more than two decimals. An unknown customer gets `error: unknown customer ...`, and a refused credit changes nothing.\n- **DEC-W-5, help (R2):** `credit <customer> <amount>` is listed directly after `balance <customer>`. A `credit` line with the wrong number of words prints the usual usage error.\n- **DEC-W-6, where the code goes:** this follows `docs/architecture.md`. The state gains a record of each customer's credits, the rule goes in `Rules`, and the new command touches only `Commands` and `Cli`. `Cli.run` and `Session.create` keep working as before.\n- **DEC-W-7, sales tax:** DEC-B04 is not implemented here, so no tax is worked out on credit notes. Whether a credit note carries tax is recorded as a question for Finance.\n- **DEC-W-8, tests:** new acceptance tests cover what the provided ones don't: help order, a credit bigger than the balance, the remaining invalid amounts, refusals leaving the balance unchanged, and `show` being unaffected. Existi"
+  }
+}

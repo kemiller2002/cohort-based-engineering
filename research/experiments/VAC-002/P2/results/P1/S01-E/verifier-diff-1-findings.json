@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "severity": "advisory",
+      "decisionId": "DEC-W-7",
+      "issue": "No source says where the owes-more-than-5.00 refusal goes among the other borrow refusals. The admission gate rejected DEC-W-4 for that reason (A6: a default-rule needs an accepted decision record or a granted approval). DEC-W-7 places the same check differently (last instead of first) and is filed as an 'interpretation', so it is no longer typed as a default rule. It was written after admission.json and was never admitted. It is 'proposed' and proposedBy 'agent', so it authorizes nothing itself. The resulting behaviour is defensible: the requirement owner's acceptance criterion 'existing behaviour is unchanged' (L04) means every input that is already refused must keep its current message, and only checking owes last does that. LEND-L01-R2 (suspension first) is also kept. So the code is not blocking. But the record should not be presented as resolving the precedence question.",
+      "authorizedAlternative": "Keep the guard after the existing refusals, citing L04's 'existing behaviour is unchanged' criterion, and submit DEC-W-7 for admission under its real type. The precedence question stays open for the Head of Lending (owner of LEND-L04-R2 and LEND-L01-R2) until they issue an accepted decision or a granted approval."
+    }
+  ]
+}

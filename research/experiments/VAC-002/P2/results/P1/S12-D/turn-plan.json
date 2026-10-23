@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p2.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "d8e0e693-a4e8-4820-a6d8-1b04dd49715e",
+  "kind": "new",
+  "brief": "/home/user/p2-work/P1/S12-D/briefs/plan.md",
+  "briefSha256": "266585d011db5752ff45656f19de3ebde3c9e565bee7e4e2fe7a9782649ebde5",
+  "startedAt": "2026-10-22T22:23:36.785Z",
+  "endedAt": "2026-10-22T22:24:25.067Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p2.turn-usage/1",
+    "sessionId": "d8e0e693-a4e8-4820-a6d8-1b04dd49715e",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 47397,
+    "costUsdCli": 0.24719639999999998,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 14,
+      "output": 4961,
+      "cacheRead": 79404,
+      "cacheWrite": 16488
+    },
+    "toolUses": 6,
+    "contaminationHits": [],
+    "finalMessage": "The plan is in `.decisions/decisions.json` and committed. Every decision is `proposed` with `implementedIn` empty, and I haven't changed any code or tests.\n\n- **DEC-W-1 (exception):** Approval APR-C01 is the only exception to the one-appointment-per-slot rule (DEC-C02). It lets clinician `k2` (Dr. Patel) have a second booking at the same date and time when the appointment falls on a Monday. That booking's output ends with ` (double-booked)`. In every other case a second booking is refused as before.\n- **DEC-W-2:** The approval says \"two appointments\", so a third booking in that slot is refused with the existing `error: k2 is already booked …` message.\n- **DEC-W-3:** \"On Mondays\" is read from the appointment's date. Appointments don't record whether they're for the diabetes review clinic, so every Monday booking for `k2` is covered. The approval has no end date, and the 90-day booking limit still applies.\n- **DEC-W-4:** Dr. Rossi (`k1`) does not get double-booking. The note from Rossi's office is a request, not a rule source, and APR-C01 is limited to Patel's case. The request is recorded as an open question for the rule's owner.\n- **DEC-W-5:** `schedule` marks every appointment at a time that has two or more bookings. The mark comes from current state, so if one of a pair is cancelled the remaining one shows unmarked.\n- **DEC-W-6:** No new commands, types or errors. The rule goes in `Rules.fs` and the output formats in `Commands.fs`. `help`, the `Session` and `run` entry points, and the framework, SDK and package versions stay unchanged.\n- **DEC-W-7:** I'll add acceptance tests for the cases the provided tests don't cover:\n  - `k2` on a day other than Monday is refused;\n  - `k1` on a Monday is refused;\n  - a third `k2` Monday booking is refused and changes nothing;\n  - cancelling one of a pair removes the schedule mark.\n\nPLAN: ready"
+  }
+}
