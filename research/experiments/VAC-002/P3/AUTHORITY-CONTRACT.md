@@ -9,9 +9,9 @@ It is the `authority` section of `harness/briefs/brief.md`, rendered under the h
 
 > Implement only behavior supported by requirements or accepted decisions. Do not invent exceptions, precedence rules, or business policies. Record unsupported interpretations as unresolved questions. Do not treat your own proposed decisions as authorized.
 
-- **Words:** 41, four sentences. The text is the mission's wording, byte for byte.
+- **Words:** 33, four sentences. The text is the mission's wording, byte for byte.
 - **SHA-256 of the four sentences** (one line, no trailing newline):
-  `see ARM-EXPOSURE-MANIFEST.json .contract.sha256`.
+  `2af405073b299f562a8321feac875d2b9a9ae6d94171475a59a60a416784862d`.
 - **Position:** after the brief's Task section and before every other arm-specific section.
 
 ## What the contract replaces
