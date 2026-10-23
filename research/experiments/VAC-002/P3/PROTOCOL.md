@@ -88,7 +88,7 @@ differs from production Ordo in these ways (from P2 `DECISION-AUTHORITY.md` §4)
 - hashes the workspace tree;
 - lists the brief headings;
 - searches every readable file (briefs, wrapper prompt, the whole tree) for 12 markers: the contract's four
-  sentences, eight phrases of P2's Authority section, and P2's two brief phrases that point to authority.
+  sentences, six phrases of P2's Authority section, and P2's two brief phrases that point to authority.
 
 **Checks.** The workspace trees are identical across arms; arm A has zero marker hits; arms B–E contain the contract.
 `ARM-EXPOSURE-MANIFEST.json` holds the result for every scenario of the stage. A failing check blocks the stage.
@@ -116,4 +116,4 @@ differs from production Ordo in these ways (from P2 `DECISION-AUTHORITY.md` §4)
 
 ## 9. Amendments
 
-None yet.
+None yet. Stage 1 froze at the commit titled "VAC-002-P3 FREEZE (Stage 1)".
