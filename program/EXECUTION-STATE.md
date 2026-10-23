@@ -12,7 +12,7 @@ A successor resumes from this file and needs nothing else. Every line points at 
 |---|---|
 | 1 Inspect and reconcile | **Done.** See CURRENT-STATE.md and `evidence/inspection-2026-10-23/`. The 7 open intake PRs are merged and reconciled (CURRENT-STATE §4) |
 | 2 Shared authority/provenance contract | **Drafted and exercised.** CONTRACTS.md C1–C3; schemas validated; B4 composes them across Ordo and Dokimos |
-| 3 Smallest operational improvements | **EP-00 implemented** (praxis#287, CI pending). Intake is written for A3, A2a, A2b, A1, A5, A6a and EP-01 |
+| 3 Smallest operational improvements | **EP-00 and EP-01 done:** CI is green on Praxis and Dokimos main again. Intake for A3, A2a, A2b, A1, A5 and A6a is merged into each owner's inbox |
 | 4 Verified-construction slice | **Prototypes implemented and tested locally:** B2 (ordo#105, 69/69) and B3 (dokimos#53, 59/59). Both are experimental |
 | 5 Praxis/Ordo/Dokimos integration | **B4 run.** Five frozen outcomes PASS; the Praxis completion step is NOT_RUN (`integration/b4/B4-RESULT.md`) |
 | 6 Authorized experiments | **No paid runs.** EXP-3 phase 1 ($0) ran: **H1 contradicted** (recall 38.5%, false-question rate 90.5%), so phase 2 does not qualify. EXP-2 phase 1 ($0) ran: **H1 contradicted** for both policies (selection saves 23.9% with 1 environmental escape; checkpoint CI saves 8.6% with 2 real escapes); A1 stays shadow-only |
@@ -33,7 +33,16 @@ the pre-existing runner drift that is also red on main.
 | praxis#285 (VAC-002-P3-01) | `914a2f1` |
 | praxis#286 (VC-003) | `9704841` |
 
-**Opened by the coordinator.** All drafts; the coordinator is watching each one.
+**Opened and merged by the coordinator:**
+
+| PR | Merge commit |
+|---|---|
+| ordo#105 (B2 slice) | `d31290c` |
+| echelon-registry#90 (EP-A6a intake) | `50c82e4` |
+| dokimos#53 (B3 slice, EP-01, EP-A2a/EP-01 intake) | `5988bf0` |
+| praxis#287 (EP-00, wave A intake) | `638b2e7` |
+
+**Opened earlier** (the table below is the state at opening; see the merges above):
 
 | PR | Content | Head | Verification |
 |---|---|---|---|
@@ -48,8 +57,8 @@ the pre-existing runner drift that is also red on main.
 | ID | Blocker | Effect | Needed |
 |---|---|---|---|
 | B-1 | ~~The auto-mode classifier denied git fetch/merge after the PR merges~~ | **Cleared** the same session: fetch, merge and push work again | — |
-| B-2 | Praxis main red (runner drift) | `validate`, registry check and browser tests skipped on main and PRs | Merge praxis#287 once its CI is green |
-| B-3 | Dokimos site `validate` red (Playwright 1.56.1 on ubuntu-26.04) | Browser audit skipped; Deploy site red | EP-01 plus OD-5 |
+| B-2 | ~~Praxis main red (runner drift)~~ | **Cleared:** praxis#287 merged (`638b2e7`); `validate` green on ubuntu-26.04 | — |
+| B-3 | ~~Dokimos site `validate` red~~ | **Cleared:** Playwright upgraded to 1.63.0 in dokimos#53 (`a4fa237`, merged `5988bf0`). OD-5 still open as a policy question | — |
 | B-4 | No paid experiment budget | EXP-1, EXP-3 phase 2, R-EXP-1/2 cannot run | OD-1 |
 | B-5 | Only the .NET 10 runtime is in this container | Ordo's net8.0 suites ran with `DOTNET_ROLL_FORWARD=Major`; the experiments target net10.0 | Install the net8.0 runtime if net8.0 verification is required locally (CI covers net8.0) |
 
