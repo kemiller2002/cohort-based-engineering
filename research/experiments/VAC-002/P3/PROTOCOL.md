@@ -129,3 +129,15 @@ Stage 1 froze at commit `766351a` ("VAC-002-P3 FREEZE (Stage 1)").
   `review/review.sh`). It is identical in every arm, and P2's inherited environment carried the same variable.
 - **The rerun.** Stage 1 runs as `S1A1`, with the same seed and order. Because no outcome was observed, the rerun
   cannot be selected on results.
+
+**A2 (2026-10-23, after Stage 1 executions, before scoring). Contamination scan: an agent's own empty memory folder.**
+
+- **What the scan flagged.** 15 hits in 15 of 32 Stage 1 turns, all of one form. In its first command, the agent
+  lists `…/.p3-state/S1A1/<its own execution>/agent/config/projects/<its own repo>/memory/`. That is the per-project
+  memory folder inside its own fresh configuration directory, which Claude Code's default system prompt tells it to
+  check.
+- **What the folder held.** Every such folder was created at the start of that execution and was empty. No hit
+  names another execution, a sealed store, the experiment repository or the orchestrator's paths.
+- **Disposition.** Not contamination. It is the analogue of P2 amendment A2 (a session's own workspace is not a
+  hit). The behaviour comes from the default system prompt, so it is identical in every arm. No score changes. The
+  hits are kept in the turn files and listed in `DISCOVERY-RESULTS.md`.
