@@ -1,0 +1,356 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Lending.Application/Ports.fs",
+      "src/Lending.Application/UseCases.fs",
+      "src/Lending.Application/Views.fs",
+      "src/Lending.Host/Cli/CommandLine.fs",
+      "src/Lending.Host/Composition.fs",
+      "src/Lending.Host/Persistence/InMemoryStore.fs",
+      "src/Lending.Host/Persistence/JsonCodec.fs",
+      "src/Lending.Host/Persistence/JsonFileStore.fs",
+      "src/Lending.Semantic/Model.fs",
+      "src/Lending.Transition/Catalog.fs",
+      "src/Lending.Transition/Effects.fs",
+      "src/Lending.Transition/Fines.fs",
+      "src/Lending.Transition/Holds.fs",
+      "src/Lending.Transition/Loans.fs",
+      "src/Lending.Transition/Members.fs",
+      "src/Lending.Transition/Policy.fs",
+      "src/Lending.Transition/Prelude.fs",
+      "src/Lending.Transition/Vendor/OpenDays.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:a763089cf3a4d50b3744b3c5668c1dd3fbad69b245e96d9df4cf264c86e90b46",
+    "handoffDigest": "sha256:ba2d63a2be1305b32a38c2b75a67411bcae3fd754c0f9c8d58eedeec8b45f508",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.1.0-experimental",
+    "configDigest": "sha256:213547e197d7035436cb649c6e5d706282034327a4b93175e6ed71a3b82cee40",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Application/UseCases.fs",
+        "line": 9,
+        "symbol": "Lending.Application.UseCases.commit"
+      },
+      "message": "Rule-bearing legacy code in Lending.Application.UseCases.commit matches no observation and cites no authority: 'match' branch (line 12). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Application/UseCases.fs",
+        "line": 20,
+        "symbol": "Lending.Application.UseCases.parseMemberType"
+      },
+      "message": "Rule-bearing legacy code in Lending.Application.UseCases.parseMemberType matches no observation and cites no authority: 'match' branch (line 21); case pattern \"standard\" (line 22); case pattern \"student\" (line 23); case pattern \"staff\" (line 24). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Application/Views.fs",
+        "line": 71,
+        "symbol": "Lending.Application.Views.memberTypeName"
+      },
+      "message": "Rule-bearing legacy code in Lending.Application.Views.memberTypeName matches no observation and cites no authority: 'match' branch (line 72). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-004",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Application/Views.fs",
+        "line": 77,
+        "symbol": "Lending.Application.Views.describeError"
+      },
+      "message": "Rule-bearing legacy code in Lending.Application.Views.describeError matches no observation and cites no authority: 'match' branch (line 78). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-005",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Cli/CommandLine.fs",
+        "line": 8,
+        "symbol": "Lending.Host.Cli.CommandLine.tokenize"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Cli.CommandLine.tokenize matches no observation and cites no authority: 'match' branch (line 11); 'match' branch (line 15); refusal \"unterminated quote\" (line 16); 'when' branch (line 20). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-006",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Cli/CommandLine.fs",
+        "line": 43,
+        "symbol": "Lending.Host.Cli.CommandLine.render"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Cli.CommandLine.render matches no observation and cites no authority: 'match' branch (line 44). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-007",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Cli/CommandLine.fs",
+        "line": 53,
+        "symbol": "Lending.Host.Cli.CommandLine.showReturn"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Cli.CommandLine.showReturn matches no observation and cites no authority: 'match' branch (line 54). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-008",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Cli/CommandLine.fs",
+        "line": 60,
+        "symbol": "Lending.Host.Cli.CommandLine.showLoans"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Cli.CommandLine.showLoans matches no observation and cites no authority: 'match' branch (line 61); 'if' branch (line 67); comparison '> 0' (line 67). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-009",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Cli/CommandLine.fs",
+        "line": 76,
+        "symbol": "Lending.Host.Cli.CommandLine.showStanding"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Cli.CommandLine.showStanding matches no observation and cites no authority: 'match' branch (line 77). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-010",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Cli/CommandLine.fs",
+        "line": 81,
+        "symbol": "Lending.Host.Cli.CommandLine.plural"
+      },
+      "authorityRefs": [
+        "DEC-004"
+      ],
+      "message": "Rule-bearing legacy code in Lending.Host.Cli.CommandLine.plural matches no observation and cites no authority: 'if' branch (line 81); comparison '= 1' (line 81). Value 1 equals DEC-004.p3 (accepted). Question for Head of Lending: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Head of Lending"
+    },
+    {
+      "id": "RPA-011",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Cli/CommandLine.fs",
+        "line": 95,
+        "symbol": "Lending.Host.Cli.CommandLine.run"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Cli.CommandLine.run matches no observation and cites no authority: 'match' branch (line 96); 'match' branch (line 113). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-012",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Composition.fs",
+        "line": 35,
+        "symbol": "Lending.Host.Composition.main"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Composition.main matches no observation and cites no authority: 'if' branch (line 36); comparison '> 0' (line 36); 'match' branch (line 42); case pattern \"exit\" (line 45). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-013",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Persistence/JsonCodec.fs",
+        "line": 24,
+        "symbol": "Lending.Host.Persistence.JsonCodec.memberType"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Persistence.JsonCodec.memberType matches no observation and cites no authority: 'match' branch (line 25). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-014",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Persistence/JsonCodec.fs",
+        "line": 92,
+        "symbol": "Lending.Host.Persistence.JsonCodec.items"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Persistence.JsonCodec.items matches no observation and cites no authority: 'match' branch (line 93). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-015",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Persistence/JsonCodec.fs",
+        "line": 97,
+        "symbol": "Lending.Host.Persistence.JsonCodec.decodeMemberType"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Persistence.JsonCodec.decodeMemberType matches no observation and cites no authority: 'match' branch (line 98); case pattern \"standard\" (line 99); case pattern \"student\" (line 100); case pattern \"staff\" (line 101). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-016",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Host/Persistence/JsonFileStore.fs",
+        "line": 8,
+        "symbol": "Lending.Host.Persistence.JsonFileStore.create"
+      },
+      "message": "Rule-bearing legacy code in Lending.Host.Persistence.JsonFileStore.create matches no observation and cites no authority: 'if' branch (line 11). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-017",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Transition/Fines.fs",
+        "line": 13,
+        "symbol": "Lending.Transition.Fines.assess"
+      },
+      "message": "Rule-bearing legacy code in Lending.Transition.Fines.assess matches no observation and cites no authority: 'if' branch (line 16); comparison '> 0m' (line 16). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-018",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Transition/Loans.fs",
+        "line": 21,
+        "symbol": "Lending.Transition.Loans.borrow"
+      },
+      "message": "Rule-bearing legacy code in Lending.Transition.Loans.borrow matches no observation and cites no authority: 'match' branch (line 31); 'when' branch (line 32). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-019",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Transition/Loans.fs",
+        "line": 84,
+        "symbol": "Lending.Transition.Loans.overdue"
+      },
+      "message": "Rule-bearing legacy code in Lending.Transition.Loans.overdue matches no observation and cites no authority: comparison '> 0' (line 89). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-020",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Transition/Policy.fs",
+        "line": 10,
+        "symbol": "Lending.Transition.Policy.maxLoans"
+      },
+      "message": "Rule-bearing legacy code in Lending.Transition.Policy.maxLoans matches no observation and cites no authority: 'match' branch (line 11). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-021",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Transition/Policy.fs",
+        "line": 17,
+        "symbol": "Lending.Transition.Policy.finePerDay"
+      },
+      "authorityRefs": [
+        "DEC-003",
+        "DEC-010"
+      ],
+      "message": "Rule-bearing legacy code in Lending.Transition.Policy.finePerDay matches no observation and cites no authority: decimal literal 0.25 (line 17). Value 0.25 equals DEC-003.p1 (superseded by DEC-010). The code still carries a superseded decision's value. Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    },
+    {
+      "id": "RPA-022",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Transition/Policy.fs",
+        "line": 19,
+        "symbol": "Lending.Transition.Policy.fineCap"
+      },
+      "authorityRefs": [
+        "DEC-002",
+        "DEC-003",
+        "DEC-010"
+      ],
+      "message": "Rule-bearing legacy code in Lending.Transition.Policy.fineCap matches no observation and cites no authority: decimal literal 10.00 (line 19). Value 10 equals DEC-002.p3 (accepted). Value 10.00 equals DEC-003.p2 (superseded by DEC-010). The code still carries a superseded decision's value. Question for Head of Lending: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Head of Lending"
+    },
+    {
+      "id": "RPA-023",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Lending.Transition/Prelude.fs",
+        "line": 10,
+        "symbol": "Lending.Transition.Prelude"
+      },
+      "message": "Rule-bearing legacy code in Lending.Transition.Prelude matches no observation and cites no authority: 'if' branch (line 14); 'match' branch (line 18). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 23
+  }
+}

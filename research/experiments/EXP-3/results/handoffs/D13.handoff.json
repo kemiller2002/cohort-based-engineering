@@ -1,0 +1,195 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-D13",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "BILL-21-R1",
+      "statement": "Invoices apply the customer discounts that DEC-B06 and DEC-B07 decide. The discount is taken off the amount given to `invoice`, and the invoice is issued for what remains. When a discount applies, `invoice` prints the amount, the discount and the amount invoiced: `i1 issued to c3: 100.00 - discount 5.00 = 95.00 due 2026-04-01`. When no discount applies, the output is unchanged.",
+      "status": "accepted",
+      "owner": "Finance",
+      "source": {
+        "path": "requirements/BILL-21.md",
+        "locator": "## BILL-21-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:c2b50bd9d21c17d0d32002cfb1c3f8f1c53fa3111e6c1a2d274f80c35ebf629f"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "BILL-21-R2",
+      "statement": "`show`, balances and late fees use the amount invoiced, after the discount. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged except as these requirements say; `dotnet test Billing.slnx` passes.",
+      "status": "accepted",
+      "owner": "Finance",
+      "source": {
+        "path": "requirements/BILL-21.md",
+        "locator": "## BILL-21-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:c2b50bd9d21c17d0d32002cfb1c3f8f1c53fa3111e6c1a2d274f80c35ebf629f"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-B01",
+      "statement": "An invoice is due 30 days after the day it is issued.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B01-payment-terms.md",
+        "locator": "# DEC-B01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ea9e27fd223cf0bc1907d3ffe98cae688ef77b42975ae4edb45494764af5508f"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "30"
+      }
+    },
+    {
+      "id": "DEC-B02",
+      "statement": "A customer's balance is what they owe: the sum of what is outstanding on their invoices. A balance never goes below zero. Money a customer is owed back (for example from a credit larger than their balance) is held as a refundable credit; only Finance releases a refundable credit, either as a refund or by applying it to a named invoice.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B02-balances.md",
+        "locator": "# DEC-B02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:7ecd10cb2915e00af54f5b11777b01d84580d814c4570eae1a5576450e1c0f74"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-B03",
+      "statement": "An invoice that is still unpaid after its due date is charged a late fee of 2% of the invoice amount, rounded to the cent (half away from zero). The fee is charged once per invoice, when late fees are run, and then forms part of what is outstanding on the invoice.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B03-late-fees.md",
+        "locator": "# DEC-B03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:402ec760fc5769594e93c2ac46f8c3dc02a4d093a16b5146c5dd1da9a69d8376"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.02"
+      }
+    },
+    {
+      "id": "DEC-B04",
+      "statement": "Each invoice adds sales tax on its amount at the rate of the customer's region, as listed in `docs/tax-rates.md` (rounded to the cent, half away from zero). The late fee is charged on the amount before tax.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-10T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B04-sales-tax.md",
+        "locator": "# DEC-B04",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:63955c5e9538daa56324319e1e29012e8966084f301ce1e1074aae538c42b016"
+      },
+      "supersedes": [],
+      "parameters": {
+        "tax-rates.ON": "0.13",
+        "tax-rates.BC": "0.12",
+        "tax-rates.AB": "0.05"
+      }
+    },
+    {
+      "id": "DEC-B06",
+      "statement": "Premium customers receive a discount of 5% of the invoice amount, rounded to the cent (half away from zero).",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-20T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B06-premium-discount.md",
+        "locator": "# DEC-B06",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5361038068c34c59ca46659b66ae9362bb0d213856f33dae66310236f1056863"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.05"
+      }
+    },
+    {
+      "id": "DEC-B07",
+      "statement": "Nonprofit customers receive a discount of 10% of the invoice amount, rounded to the cent (half away from zero).",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-01T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B07-nonprofit-discount.md",
+        "locator": "# DEC-B07",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:47ae0be8ac455c277a0157f5dea11bde047aca04c6c9ae530bbb1784c689504a"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.1"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

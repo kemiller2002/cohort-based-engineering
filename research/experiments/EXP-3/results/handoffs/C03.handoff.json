@@ -1,0 +1,143 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-C03",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLIN-52-R1",
+      "statement": "A new command `fee <appointment>` prints the fee for the appointment's visit, as DEC-C09 sets it: `a1 visit fee 60.00`. It changes nothing. An unknown appointment prints `error: unknown appointment a9`.",
+      "status": "accepted",
+      "owner": "Finance",
+      "source": {
+        "path": "requirements/CLIN-52.md",
+        "locator": "## CLIN-52-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:3d619ec8db4246f39a64df4206e2b07254a43ccaaaac707977a92d955bc91742"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLIN-52-R2",
+      "statement": "`help` lists `fee <appointment>` directly after `cancel <appointment>`. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged except as these requirements say; `dotnet test Clinic.slnx` passes.",
+      "status": "accepted",
+      "owner": "Finance",
+      "source": {
+        "path": "requirements/CLIN-52.md",
+        "locator": "## CLIN-52-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:3d619ec8db4246f39a64df4206e2b07254a43ccaaaac707977a92d955bc91742"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-C01",
+      "statement": "Appointments of every kind are booked for a day from tomorrow up to 90 days ahead. Clinicians' rotas are not published further ahead than that, so a booking beyond 90 days cannot be honoured.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C01-booking-horizon.md",
+        "locator": "# DEC-C01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:49bdedf79d800f1c8a6c04c94c155ac9f3a1a126be938a18531889c91d1b7013"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "90",
+        "p2": "90"
+      }
+    },
+    {
+      "id": "DEC-C02",
+      "statement": "A clinician has at most one appointment at a given date and time.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C02-one-appointment-per-slot.md",
+        "locator": "# DEC-C02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6450e83cbf5e1da7831c45763d90d3514a8876eb8cadce4de941bdc97177c1ac"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-C03",
+      "statement": "Every prescription is checked by a pharmacist before it is dispensed. Dispensing an unchecked prescription is refused.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Pharmacy",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Pharmacy",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C03-pharmacist-check.md",
+        "locator": "# DEC-C03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5949ac776a665ef1cb4483551bc57a487c79b6bc0ebe50b2513d00aa6ab623c9"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-C09",
+      "statement": "A visit costs the fee listed for its clinician in `docs/visit-fees.md`. Finance maintains the list.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-15T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C09-visit-fees.md",
+        "locator": "# DEC-C09",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2238cdef67f552fe0dbd74033626e4fe30082e0432bf04f76b290baaba696b31"
+      },
+      "supersedes": [],
+      "parameters": {
+        "visit-fees.k1": "60.00"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

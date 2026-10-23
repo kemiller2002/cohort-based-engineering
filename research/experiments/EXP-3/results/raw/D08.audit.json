@@ -1,0 +1,70 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Billing/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:2ee010380fbe1184380a5b522c626acff5c3e8a449e55098e722c53eab4d22e3",
+    "handoffDigest": "sha256:23a42cde4c93f7547dfedeb741acc345bc04d372cae6e5cff557973d51d91ec9",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.1.0-experimental",
+    "configDigest": "sha256:213547e197d7035436cb649c6e5d706282034327a4b93175e6ed71a3b82cee40",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 16,
+        "symbol": "Billing.Rules.lateFeeRate"
+      },
+      "authorityRefs": [
+        "DEC-B03"
+      ],
+      "message": "Rule-bearing legacy code in Billing.Rules.lateFeeRate matches no observation and cites no authority: decimal literal 0.02 (line 16). Value 0.02 equals DEC-B03.p1 (accepted). Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 23,
+        "symbol": "Billing.Rules.isOverdue"
+      },
+      "message": "Rule-bearing legacy code in Billing.Rules.isOverdue matches no observation and cites no authority: comparison '> 0m' (line 23). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 26,
+        "symbol": "Billing.Rules.owesLateFee"
+      },
+      "message": "Rule-bearing legacy code in Billing.Rules.owesLateFee matches no observation and cites no authority: comparison '= 0m' (line 26). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 3
+  }
+}

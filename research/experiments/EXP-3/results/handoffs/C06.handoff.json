@@ -1,0 +1,119 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-C06",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLIN-53-R1",
+      "statement": "A new command `move <appointment> <date> <time>` moves an appointment to another date and time with the same clinician, under the same rules as booking a new appointment, and prints `a1 moved to 2026-03-12 at 10:00`. A move that a new booking at that date and time would be refused for is refused with the same error, and changes nothing. An unknown appointment prints `error: unknown appointment a9`.",
+      "status": "accepted",
+      "owner": "Clinical Operations",
+      "source": {
+        "path": "requirements/CLIN-53.md",
+        "locator": "## CLIN-53-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:d60a6e92e76024af23f597591745f4d136ed7859d0edf915313726c6effb96bc"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLIN-53-R2",
+      "statement": "`help` lists `move <appointment> <date> <time>` directly after `cancel <appointment>`. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged except as these requirements say; `dotnet test Clinic.slnx` passes.",
+      "status": "accepted",
+      "owner": "Clinical Operations",
+      "source": {
+        "path": "requirements/CLIN-53.md",
+        "locator": "## CLIN-53-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:d60a6e92e76024af23f597591745f4d136ed7859d0edf915313726c6effb96bc"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-C01",
+      "statement": "Appointments of every kind are booked for a day from tomorrow up to 90 days ahead. Clinicians' rotas are not published further ahead than that, so a booking beyond 90 days cannot be honoured.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C01-booking-horizon.md",
+        "locator": "# DEC-C01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:49bdedf79d800f1c8a6c04c94c155ac9f3a1a126be938a18531889c91d1b7013"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "90",
+        "p2": "90"
+      }
+    },
+    {
+      "id": "DEC-C02",
+      "statement": "A clinician has at most one appointment at a given date and time.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C02-one-appointment-per-slot.md",
+        "locator": "# DEC-C02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6450e83cbf5e1da7831c45763d90d3514a8876eb8cadce4de941bdc97177c1ac"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-C03",
+      "statement": "Every prescription is checked by a pharmacist before it is dispensed. Dispensing an unchecked prescription is refused.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Pharmacy",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Pharmacy",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C03-pharmacist-check.md",
+        "locator": "# DEC-C03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5949ac776a665ef1cb4483551bc57a487c79b6bc0ebe50b2513d00aa6ab623c9"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

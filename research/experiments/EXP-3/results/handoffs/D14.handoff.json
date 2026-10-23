@@ -1,0 +1,147 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-D14",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "BILL-22-R1",
+      "statement": "A new command `terms <customer>` prints how many days the customer has to pay an invoice: `c1 pays within 30 days`. An unknown customer prints `error: unknown customer c9`. `help` lists `terms <customer>` directly after `balance <customer>`.",
+      "status": "accepted",
+      "owner": "Sales",
+      "source": {
+        "path": "requirements/BILL-22.md",
+        "locator": "## BILL-22-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:cce9d36cc44123c3b586d3ad824ad1b8a7b76cb754cb6b7d1783cefe88ee57aa"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "BILL-22-R2",
+      "statement": "Premium customers pay within 45 days: their invoices are due 45 days after they are issued, and `terms` prints `c3 pays within 45 days`. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged except as these requirements say; `dotnet test Billing.slnx` passes.",
+      "status": "accepted",
+      "owner": "Sales",
+      "source": {
+        "path": "requirements/BILL-22.md",
+        "locator": "## BILL-22-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:cce9d36cc44123c3b586d3ad824ad1b8a7b76cb754cb6b7d1783cefe88ee57aa"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-B01",
+      "statement": "An invoice is due 30 days after the day it is issued.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B01-payment-terms.md",
+        "locator": "# DEC-B01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ea9e27fd223cf0bc1907d3ffe98cae688ef77b42975ae4edb45494764af5508f"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "30"
+      }
+    },
+    {
+      "id": "DEC-B02",
+      "statement": "A customer's balance is what they owe: the sum of what is outstanding on their invoices. A balance never goes below zero. Money a customer is owed back (for example from a credit larger than their balance) is held as a refundable credit; only Finance releases a refundable credit, either as a refund or by applying it to a named invoice.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B02-balances.md",
+        "locator": "# DEC-B02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:7ecd10cb2915e00af54f5b11777b01d84580d814c4570eae1a5576450e1c0f74"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-B03",
+      "statement": "An invoice that is still unpaid after its due date is charged a late fee of 2% of the invoice amount, rounded to the cent (half away from zero). The fee is charged once per invoice, when late fees are run, and then forms part of what is outstanding on the invoice.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B03-late-fees.md",
+        "locator": "# DEC-B03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:402ec760fc5769594e93c2ac46f8c3dc02a4d093a16b5146c5dd1da9a69d8376"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.02"
+      }
+    },
+    {
+      "id": "DEC-B04",
+      "statement": "Each invoice adds sales tax on its amount at the rate of the customer's region, as listed in `docs/tax-rates.md` (rounded to the cent, half away from zero). The late fee is charged on the amount before tax.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-10T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B04-sales-tax.md",
+        "locator": "# DEC-B04",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:63955c5e9538daa56324319e1e29012e8966084f301ce1e1074aae538c42b016"
+      },
+      "supersedes": [],
+      "parameters": {
+        "tax-rates.ON": "0.13",
+        "tax-rates.BC": "0.12",
+        "tax-rates.AB": "0.05"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

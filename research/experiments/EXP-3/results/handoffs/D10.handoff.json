@@ -1,0 +1,119 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-D10",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLIN-22-R1",
+      "statement": "`book` takes an optional kind after the time, `follow-up` or `regular` (the default). A follow-up prints its kind: `book a1 p1 k1 2026-03-10 09:00 follow-up` prints `a1 booked: p1 with k1 on 2026-03-10 at 09:00 (follow-up)`. `schedule` marks follow-ups the same way: `k1 on 2026-03-10: 09:00 a1 p1 (follow-up)`. Regular appointments print as before.",
+      "status": "accepted",
+      "owner": "Scheduling Office",
+      "source": {
+        "path": "requirements/CLIN-22.md",
+        "locator": "## CLIN-22-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:62cc3ecffaf503edc8b0f944fb692cd69c4b751eee1ecbc40de169e10d701157"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLIN-22-R2",
+      "statement": "Follow-up appointments may be booked up to 180 days ahead, so that patients can leave with their next visit booked. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged; `dotnet test Clinic.slnx` passes.",
+      "status": "accepted",
+      "owner": "Scheduling Office",
+      "source": {
+        "path": "requirements/CLIN-22.md",
+        "locator": "## CLIN-22-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:62cc3ecffaf503edc8b0f944fb692cd69c4b751eee1ecbc40de169e10d701157"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-C01",
+      "statement": "Appointments of every kind are booked for a day from tomorrow up to 90 days ahead. Clinicians' rotas are not published further ahead than that, so a booking beyond 90 days cannot be honoured.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C01-booking-horizon.md",
+        "locator": "# DEC-C01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:49bdedf79d800f1c8a6c04c94c155ac9f3a1a126be938a18531889c91d1b7013"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "90",
+        "p2": "90"
+      }
+    },
+    {
+      "id": "DEC-C02",
+      "statement": "A clinician has at most one appointment at a given date and time.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C02-one-appointment-per-slot.md",
+        "locator": "# DEC-C02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6450e83cbf5e1da7831c45763d90d3514a8876eb8cadce4de941bdc97177c1ac"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-C03",
+      "statement": "Every prescription is checked by a pharmacist before it is dispensed. Dispensing an unchecked prescription is refused.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Pharmacy",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Pharmacy",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C03-pharmacist-check.md",
+        "locator": "# DEC-C03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5949ac776a665ef1cb4483551bc57a487c79b6bc0ebe50b2513d00aa6ab623c9"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}
