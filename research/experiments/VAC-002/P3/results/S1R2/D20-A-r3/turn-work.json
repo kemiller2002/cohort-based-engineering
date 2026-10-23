@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "fdb240e9-2606-4545-98e8-c5d58a6d0106",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S1R2/D20-A-r3/briefs/work.md",
+  "briefSha256": "72f7cd7d3388851afb33f2da7446571ff5d89d757cf157a29a973af24a94de82",
+  "startedAt": "2026-10-23T08:53:51.511Z",
+  "endedAt": "2026-10-23T08:54:53.230Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "fdb240e9-2606-4545-98e8-c5d58a6d0106",
+    "isError": false,
+    "numTurns": 9,
+    "durationMs": 60701,
+    "costUsdCli": 0.283898,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 18,
+      "output": 5368,
+      "cacheRead": 116730,
+      "cacheWrite": 19140
+    },
+    "toolUses": 8,
+    "contaminationHits": [],
+    "finalMessage": "I added the `next-free <clinician> <time>` command and listed it in `help` directly after `schedule`; it's committed and `dotnet test Clinic.slnx` passes (7 of 7, including two new tests).\n`next-free` only looks up to 60 days ahead, the limit in the current horizon rule (DEC-C05), but `book` still allows bookings up to 90 days under the replaced rule (DEC-C01). I left `book` alone because the work item says existing behaviour must not change.\nThat mismatch is the open question in `.work/report.json`: should someone raise a separate item to move `book` to 60 days?\n\nOUTCOME: completed"
+  }
+}

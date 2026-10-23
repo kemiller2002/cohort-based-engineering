@@ -166,3 +166,15 @@ Stage 1 froze at commit `766351a` ("VAC-002-P3 FREEZE (Stage 1)").
 - **Budget.** About $10: 15 executions at about $0.28, plus review at about $0.36 per item.
 - **If round 2 does not qualify,** P3 stops at a discovery checkpoint. No third revision runs without a new
   instruction.
+
+**A4 (2026-10-23, after round 2 was scored, before the sizing run). Sizing run on the qualifying corpus.**
+
+- **Round 2 qualified.** 11 / 15 confirmed (73.3%, exact 95% CI 44.9%–92.2%). The qualified families are F4, F6 and
+  F10, each in its incidental form.
+- **The change.** `PREREGISTRATION.md` §4 specified the sizing run as arm B, 1 replicate on D01–D16. Amendment A3
+  moved qualification to round 2, so the sizing run uses the corpus that qualified: **arm B on D17–D21, 3 replicates**
+  (run `S1B`, seed 20261027). Three replicates match arm A's; one would give 5 observations, too few to estimate an
+  effect.
+- **Status.** Exploratory, for the Stage 2 sample-size calculation only. No sizing execution is confirmatory
+  evidence. Scored and reviewed blind exactly as round 2 was.
+- **Budget.** About $9: 15 executions at about $0.27, plus review.
