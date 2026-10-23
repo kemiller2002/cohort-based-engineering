@@ -20,7 +20,7 @@ Status values: `not started`, `in progress` (with commits listed in EXECUTION-ST
 
 ### EP-00 Praxis main green (runner drift)
 
-- **Owner:** praxis. **Source:** CURRENT-STATE §1 (red since `2f4ce68e`). **Status:** in progress.
+- **Owner:** praxis. **Source:** CURRENT-STATE §1 (red since `2f4ce68e`). **Status:** implemented in praxis#287 (2358/2358 locally); CI pending.
 - **Acceptance:**
   1. Classify "outside a repository" from git's exit status or stable prefix, not the full message. A test covers both
      the git ≤ 2.54 and the 2.55 message forms.
@@ -183,7 +183,7 @@ Ordered by readiness. A3 is closest to done, so it goes first.
 
 ### B2 Ordo provenance-backed construction
 
-- **Owner:** ordo. **Status:** prototype in progress (`ordo/experiments/verified-construction/`).
+- **Owner:** ordo. **Status:** prototype implemented and tested locally (ordo#105, 69/69); experimental.
 - **Source:** VC-002 plus VAC-002-P3-03-R2 (ordo inbox); constraint from VAC-002-P3-02 / ordo#103.
 - **Acceptance (VC-002's own):**
   1. Handoff admission accepts the fixture, and accepts the refuse-and-record question. It rejects:
@@ -207,7 +207,7 @@ Ordered by readiness. A3 is closest to done, so it goes first.
 
 ### B3 Dokimos provenance and invariant audit
 
-- **Owner:** dokimos. **Status:** prototype in progress (`dokimos/experiments/rule-provenance/`).
+- **Owner:** dokimos. **Status:** prototype implemented and tested locally (dokimos#53, 59/59); experimental.
 - **Source:** VAC-002-P3-03-R1/R3 plus VC-004 (dokimos inbox, one requirement set).
 - **Acceptance:**
   1. On the fixture's legacy code, the audit reports OBS-LEGACY-001 (exemption) and OBS-LEGACY-002 (superseded limit)
@@ -224,7 +224,7 @@ Ordered by readiness. A3 is closest to done, so it goes first.
 
 ### B4 Integration run
 
-- **Owner:** coordinator (CBE program). **Status:** not started; needs B2 and B3.
+- **Owner:** coordinator (CBE program). **Status:** run 2026-10-23; five outcomes PASS, Praxis step NOT_RUN ([integration/b4/B4-RESULT.md](integration/b4/B4-RESULT.md)).
 - **Acceptance:** one script runs, in order:
   1. fixture handoff;
   2. Ordo admission and construction;

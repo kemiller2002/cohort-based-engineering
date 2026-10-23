@@ -1,26 +1,27 @@
 # Execution state
 
-**Updated:** 2026-10-23. **Coordinator:** a long-running agent session (Claude Code; branch
-`claude/echelon-constraint-driven-program-mq2d6o` in every repository it touches).
+**Updated:** 2026-10-23 (end of first coordination session).
+**Coordinator:** a long-running agent session (Claude Code), working on branch
+`claude/echelon-constraint-driven-program-mq2d6o` in every repository it touches.
 
-A successor resumes from this file. A successor needs nothing else; each line points at the evidence.
+A successor resumes from this file and needs nothing else. Every line points at its evidence.
 
 ## Phase
 
 | Mission step | State |
 |---|---|
-| 1 Inspect and reconcile | **Done.** CURRENT-STATE.md; inspection evidence in `evidence/inspection-2026-10-23/`; 7 open intake PRs merged (§Merged) |
-| 2 Shared authority and provenance contract | **Drafted.** CONTRACTS.md C1–C3, schemas and fixture in `contracts/`, all validated (`check_schema` and fixture validation pass) |
-| 3 Smallest operational improvements | **In progress.** EP-00 (Praxis CI) is being fixed. A3, A2, A1, A5 and A6a are specified, with intake written or listed |
-| 4 Verified-construction slice | **In progress.** B2 (Ordo) and B3 (Dokimos) prototypes are being built locally |
-| 5 Praxis/Ordo/Dokimos integration | Not started (B4); needs B2 and B3 |
-| 6 Authorized experiments | **None authorized.** Zero-cost phases of EXP-2 and EXP-3 are specified |
-| 7 Promote on evidence | Nothing promoted |
+| 1 Inspect and reconcile | **Done.** See CURRENT-STATE.md and `evidence/inspection-2026-10-23/`. The 7 open intake PRs are merged and reconciled (CURRENT-STATE §4) |
+| 2 Shared authority/provenance contract | **Drafted and exercised.** CONTRACTS.md C1–C3; schemas validated; B4 composes them across Ordo and Dokimos |
+| 3 Smallest operational improvements | **EP-00 implemented** (praxis#287, CI pending). Intake is written for A3, A2a, A2b, A1, A5, A6a and EP-01 |
+| 4 Verified-construction slice | **Prototypes implemented and tested locally:** B2 (ordo#105, 69/69) and B3 (dokimos#53, 59/59). Both are experimental |
+| 5 Praxis/Ordo/Dokimos integration | **B4 run.** Five frozen outcomes PASS; the Praxis completion step is NOT_RUN (`integration/b4/B4-RESULT.md`) |
+| 6 Authorized experiments | **None authorized.** EXP-2 and EXP-3 intake is written; their zero-cost phases are next |
+| 7 Promote on evidence | Nothing promoted; nothing meets EXPERIMENTS.md §6 yet |
 
-## Merged by the coordinator (owner-approved: "approve all merges")
+## Pull requests
 
-All are intake-only PRs. Each had CI red **only** from pre-existing runner drift that is also red on main
-(CURRENT-STATE §1).
+**Merged by the coordinator** (owner instruction: "approve all merges"). All intake-only. Their CI was red only from
+the pre-existing runner drift that is also red on main.
 
 | PR | Merge commit |
 |---|---|
@@ -29,56 +30,62 @@ All are intake-only PRs. Each had CI red **only** from pre-existing runner drift
 | ordo#104 (VC-002) | `9addcbe` |
 | dokimos#51 (VAC-002-P3-03) | `9e38a3b` |
 | dokimos#52 (VC-004) | `6c8554e` |
-| praxis#285 (VAC-002-P3-01 R-PRAX-1) | `914a2f1` |
+| praxis#285 (VAC-002-P3-01) | `914a2f1` |
 | praxis#286 (VC-003) | `9704841` |
 
-## Active work
+**Opened by the coordinator.** All drafts; the coordinator is watching each one.
 
-| Item | Repository and path | State | Commits |
+| PR | Content | Head | Verification |
 |---|---|---|---|
-| Program documents and contracts | cohort-based-engineering `program/` | Committed locally | see `git log` on the branch; `63941ce` (contracts, pushed) |
-| EP-00 Praxis CI green | praxis `src/`, `tests/` | Agent running | — |
-| B2 Ordo slice | ordo `experiments/verified-construction/` | Agent running | — |
-| B3 Dokimos slice | dokimos `experiments/rule-provenance/` | Agent running | — |
-| EP-A6a intake | echelon-registry `.praxis/inbox/documents/2026-10-23-EP-A6a-…` | Committed locally | `854ba4c` |
-| EXP-2 / EXP-3 intake | cohort-based-engineering `.praxis/inbox/documents/` | Committed locally | — |
+| cohort-based-engineering#23 | `program/` (this record), contracts, fixture, B4 evidence, EXP-2/EXP-3 intake | branch head | Schemas and fixture validated; no CI in this repository |
+| praxis#287 | EP-00 CI fix (`e9cbfa3f`) plus wave A intake (`9e9e1e6a`) | `9e9e1e6a` | 2358/2358 locally; CI on ubuntu-26.04 pending |
+| ordo#105 | B2 slice (`c67afdf`, `aec6a5f`, `7fbc0f8`, `03b0d30`) | `03b0d30` | 69/69 locally, re-run by the coordinator; CI green on `885ae28` |
+| dokimos#53 | B3 slice (`9a7ad07`, `2b6537b`, `de1a210`, `8d2849e`) plus EP-A2a and EP-01 intake (`91fd1a2`) | `91fd1a2` | 59/59 locally, re-run by the coordinator |
+| echelon-registry#90 | EP-A6a intake (`854ba4c`) | `854ba4c` | CI green |
 
 ## Blockers
 
 | ID | Blocker | Effect | Needed |
 |---|---|---|---|
-| B-1 | After the seven PR merges, this session's auto-mode permission classifier denied `git fetch`, `git merge --ff-only` and `git rebase` ("Merge Without Review") | Local branches cannot pick up the merged intake commits or be pushed until permission is granted. Program work is committed locally only | The owner allows git fetch and push for this session (a Bash permission rule), or pushes the branches |
-| B-2 | Praxis main red (git 2.55 golden test, timestamp flake) | `validate`, registry check and browser tests are skipped on main and on every PR | EP-00 (in progress) |
-| B-3 | Dokimos site `validate` red (Playwright 1.56.1 on ubuntu-26.04) | Site checks skipped; Deploy site red | EP-01 plus OD-5 |
-| B-4 | No paid experiment budget | EXP-1, the paid phase of EXP-3, and R-EXP-1/2 cannot run | OD-1 |
+| B-1 | ~~The auto-mode classifier denied git fetch/merge after the PR merges~~ | **Cleared** the same session: fetch, merge and push work again | — |
+| B-2 | Praxis main red (runner drift) | `validate`, registry check and browser tests skipped on main and PRs | Merge praxis#287 once its CI is green |
+| B-3 | Dokimos site `validate` red (Playwright 1.56.1 on ubuntu-26.04) | Browser audit skipped; Deploy site red | EP-01 plus OD-5 |
+| B-4 | No paid experiment budget | EXP-1, EXP-3 phase 2, R-EXP-1/2 cannot run | OD-1 |
+| B-5 | Only the .NET 10 runtime is in this container | Ordo's net8.0 suites ran with `DOTNET_ROLL_FORWARD=Major`; the experiments target net10.0 | Install the net8.0 runtime if net8.0 verification is required locally (CI covers net8.0) |
 
 ## Open decisions
 
 | ID | Decision | Options | Recommendation | Owner |
 |---|---|---|---|---|
-| OD-1 | Experiment budgets | (a) authorize EXP-1 qualification $40 plus pilot $120, and EXP-3 phase 2 $60; (b) authorize zero-cost phases only; (c) none | (b) now. Decide (a) after B4 and EXP-3 phase 1 | kemiller2002 |
-| OD-2 | Rehearsal 3 release set | (a) echelon-current 1.25.0 (Praxis 3.16.0, pre REL-GATE-003/004 fixes); (b) approve a newer set first, with Praxis ≥ 3.19.0 and Dokimos 0.7.0, via A6a | (a), unless (b) is approved and qualified **before** kickoff. Never mid-run | kemiller2002 |
-| OD-3 | Adopt VAC-002-P3-02-R1: refuse-and-record is an authorized outcome | accept / reject | Accept. It is already implied by approved VAC-CBE-001-R2 and P2's gap rule. C1 and B2 assume it | finance and decision owners / kemiller2002 |
-| OD-4 | Amend Rehearsal 3 to run live-provider tests at the first persistence checkpoint (A4) | amend / keep plan | Amend before kickoff only; R002 evidence supports it | kemiller2002 |
-| OD-5 | Runner-image policy | (a) pin `runs-on` to a dated image and revisit; (b) always track the latest image and fix drift | (a) for release-gating jobs, (b) for everything else | kemiller2002 |
-| OD-6 | Add the four-sentence authority contract to the Praxis brief (R-PRAX-1) | adopt as policy / wait for powered confirmation | Adopt as a statement of existing policy (+6% cost), labelled "not a demonstrated control" | kemiller2002 |
+| OD-1 | Experiment budgets | (a) authorize EXP-1 qualification $40 plus pilot $120, and EXP-3 phase 2 $60; (b) zero-cost phases only; (c) none | (b) now; decide (a) after EXP-3 phase 1 | kemiller2002 |
+| OD-2 | Rehearsal 3 release set | (a) echelon-current 1.25.0 (Praxis 3.16.0); (b) approve a newer set first via A6a | (a), unless (b) is approved and qualified **before** kickoff | kemiller2002 |
+| OD-3 | Adopt VAC-002-P3-02-R1 (refuse-and-record is an authorized outcome) | accept / reject | Accept; C1 and B2 assume it | kemiller2002 |
+| OD-4 | Amend Rehearsal 3 so live-provider tests run at the first persistence checkpoint | amend / keep | Amend, but only before kickoff | kemiller2002 |
+| OD-5 | Runner-image policy | pin release-gating jobs / always latest | Pin release-gating jobs to a dated image; the rest track latest | kemiller2002 |
+| OD-6 | Four-sentence authority contract in the Praxis brief (R-PRAX-1) | adopt as policy / wait | Adopt, labelled "not a demonstrated control" | kemiller2002 |
 | OD-7 | Home of the C1 schema at 1.0 | Praxis `schemas/` / shared package | Praxis `schemas/` | kemiller2002 |
-| OD-8 | Should Authority markers appear in Ordo-generated code? | yes / trace only | Trace only for generated code; markers for handwritten code | kemiller2002 |
-| OD-9 | Pilot repository for verified completion (A3) | dokimos / ordo / praxis | dokimos: its completion-verification is already the verifier | kemiller2002 |
+| OD-8 | Authority markers in Ordo-generated code? | yes / trace only | Trace only. B4 confirms generated code cannot reach handwritten question mappings | kemiller2002 |
+| OD-9 | Pilot repository for verified completion | dokimos / ordo / praxis | dokimos | kemiller2002 |
+| OD-10 | B2 interpretation choices: unlisted pairs refused; PartiallyPaid derived from REQ-INV-002; refusal-code names | confirm / change | Confirm. The fixture is synthetic, and these are presentation and interpretation choices recorded in ordo#105 | kemiller2002 |
 
 ## Next executable actions (in order)
 
-1. Resolve B-1, then push every local branch and open draft PRs:
-   - cohort-based-engineering;
-   - echelon-registry;
-   - praxis (EP-00);
-   - ordo (B2);
-   - dokimos (B3).
-2. Merge `origin/main` into each branch to pick up the intake merged today (merge, not rebase, on pushed branches).
-3. When the agents report, record their commits and test results in **Active work**.
-4. Write the remaining intake listed in IMPLEMENTATION-PLAN.md "Requirements ingestion record": praxis EP-A3, EP-A2b,
-   EP-A1, EP-A5; dokimos EP-A2a, EP-01.
-5. Run B4 (integration) and record the five fixture outcomes as PASS, FAIL or NOT_RUN.
-6. Run EXP-3 phase 1 and EXP-2 phase 1 (zero cost) after preregistration commits.
-7. EP-02 intake hygiene: triage the CBE inbox, clean up legacy Praxis intake, and claim the implemented inputs in
-   Forma, Limen and Aegis.
+1. **praxis#287:** watch CI. When green, mark it ready and merge (owner-approved), which clears B-2. If it is red,
+   root-cause it (see AGENTS.md drive-to-green).
+2. **Mark the other PRs ready** once green: ordo#105 and dokimos#53 (experimental, outside default paths),
+   echelon-registry#90 and cohort-based-engineering#23. Merging an experimental prototype is not promotion
+   (EXPERIMENTS.md §6).
+3. **EXP-3 phase 1** ($0): preregister the label mapping for the P3 corpus (C01–C06 plus discovery). Then run the
+   Dokimos audit in legacy mode over each scenario's starting tree and report precision, recall and the false-question
+   rate. This decides O2 and whether phase 2 is worth a budget.
+4. **EXP-2 phase 1** ($0): freeze a `praxis.verification-map/0.1` for praxis and dokimos, then replay 50 commits each
+   from GitHub Actions history.
+5. **EP-02 intake hygiene:**
+   - triage the CBE inbox: reject ENGINEERING-RELIABILITY-001 as a duplicate; forward VAC-002-01, -02 and -04;
+   - Praxis legacy `input-documents/`: update the README; claim and reject `rfa.md`; claim the ROS-ORDO file;
+   - claim the implemented inputs in Forma, Limen and Aegis.
+6. **EP-01:** fix Dokimos site validation after OD-5.
+7. **A3:** after praxis#287 merges, implement EP-A3-R2/R3 (real-Dokimos CI path, idempotence contract tests). One
+   Praxis agent at a time: DEPENDENCIES.md lane L1.
+8. **A2a in Dokimos:** promote the slice's validity block and `isReusable` into the released result formats. Then A2b
+   in Praxis, then A1 in shadow mode.
