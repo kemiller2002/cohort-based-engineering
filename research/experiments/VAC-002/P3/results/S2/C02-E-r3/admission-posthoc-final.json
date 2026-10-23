@@ -1,0 +1,107 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The payment-terms decision in force is DEC-B12 (accepted 2026-03-01, supersedes DEC-B01): \u0060quote\u0060 reports a payable-by date of today \u002B 21 days. This matches the requirement\u0027s example (issued 2026-03-02 -\u003E payable by 2026-03-23); DEC-B01\u0027s 30 days would give 2026-04-01.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "DEC-B12"
+      ],
+      "reasons": [
+        "A4 \u0027DEC-B01\u0027 is superseded by DEC-B12"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "conflict-resolution",
+      "computedStatus": "rejected",
+      "statement": "The \u0060invoice\u0060 command keeps its current due date (30 days, DEC-B01 via Rules.dueDate) and its existing test is not changed. Moving \u0060invoice\u0060 to DEC-B12 is not asked for by BILL-41, and BILL-41 says existing behaviour is unchanged except as its requirements say. As a result, a quote (21 days) and an invoice issued the same day (30 days) will show different dates until that discrepancy is resolved. This is raised as unresolved question Q-1, not fixed here.",
+      "notAuthorized": "The \u0060invoice\u0060 command keeps its current due date (30 days, DEC-B01 via Rules.dueDate) and its existing test is not changed. Moving \u0060invoice\u0060 to DEC-B12 is not asked for by BILL-41, and BILL-41 says existing behaviour is unchanged except as its requirements say. As a result, a quote (21 days) and an invoice issued the same day (30 days) will show different dates until that discrepancy is resolved. This is raised as unresolved question Q-1, not fixed here.",
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": [
+        "A6 an \u0060conflict-resolution\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it",
+        "A2 \u0027requirements/BILL-41.md#acceptance-criteria\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The DEC-B12 term goes in Rules as its own named rule (a 21-day term and a payable-by function, with a comment naming DEC-B12), next to the existing DEC-B01 rule, which stays as it is. Commands.quote uses it and has no business logic of its own, following docs/architecture.md.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B12"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0027A positive amount of money\u0027 is validated with the existing Commands.parseAmount, the same check \u0060invoice\u0060 uses: a positive decimal with at most two decimal places, invariant culture, no sign or thousands separators. Anything else prints \u0060error: invalid amount \u003Ctext as typed\u003E\u0060.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Success output is exactly \u0060quote \u003Ccustomer\u003E \u003Camount\u003E payable by \u003Cyyyy-MM-dd\u003E\u0060. The amount is printed with two decimals by the existing Commands.money, and the date by Commands.date. \u0060quote\u0060 returns the state unchanged: it creates no invoice and adds nothing to the issue order, and this holds for successes and refusals.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The amount is checked before the customer, the same order \u0060invoice\u0060 uses in Cli.dispatch. So when both are bad, \u0060invalid amount\u0060 is reported. The requirement does not say which comes first; this keeps the existing command convention, and the question is recorded as Q-2.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u0060quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 is added to Cli.usage directly after \u0060invoice \u003Cinvoice\u003E \u003Ccustomer\u003E \u003Camount\u003E\u0060, so \u0060help\u0060 lists it there. Wrong argument counts then print \u0060error: usage: quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 through the existing usageOf fallback. The README command list is updated to match (\u0027help lists every command\u0027).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-8",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Acceptance tests are added in tests/Billing.Tests/Acceptance/ for the criteria the provided tests leave out: the exact example \u0060quote c1 100.00 payable by 2026-03-23\u0060 on 2026-03-02, \u0060error: invalid amount x\u0060, a quote creating no invoice (state unchanged), and the amount printed with two decimals. The provided test file is not edited.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

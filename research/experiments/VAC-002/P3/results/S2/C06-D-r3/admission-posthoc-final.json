@@ -1,0 +1,69 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "move reuses the booking rules from Rules (withinBookingHorizon, DEC-C01; slotFree, DEC-C02) against the appointment\u0027s own clinician, and returns the same ClinicError values as book, so a refused move prints the same error and leaves the state unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "DEC-C01",
+        "DEC-C02"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The slot check is run against the current state without excluding the appointment being moved, because the requirement says a move is refused whenever a new booking at that date and time would be refused. A move to the appointment\u0027s own current date and time is therefore refused as SlotTaken (unless the rule\u0027s existing k2 case applies). This is recorded as an open question.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The move date and time are parsed with the same parsers as book (yyyy-MM-dd, HH:mm) before the appointment is looked up, matching book\u0027s order of checks. A wrong number of arguments prints the usage line through the existing usage mechanism.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Added \u0027move \u003Cappointment\u003E \u003Cdate\u003E \u003Ctime\u003E\u0027 to Cli.usage directly after \u0027cancel \u003Cappointment\u003E\u0027 and to the README command list in the same position.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The existing hard-coded exception in Rules.slotFree (clinician k2\u0027s slots never count as taken) was left as it is, and move inherits it by reusing the rule. No decision record or approval in docs/ supports it, and DEC-C02 makes no exception. I neither changed it nor extended it, and it is raised as an open question.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    }
+  ]
+}

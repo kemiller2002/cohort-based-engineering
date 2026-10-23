@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "d4025720-1b07-4b21-9397-5ee205a6b4e2",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C04-E-r1/briefs/plan.md",
+  "briefSha256": "ad68752c67607cc65519dc06f0736d81d78acd4c0097acc9630188508bb39bdc",
+  "startedAt": "2026-10-23T10:07:35.777Z",
+  "endedAt": "2026-10-23T10:08:24.241Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "d4025720-1b07-4b21-9397-5ee205a6b4e2",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 47501,
+    "costUsdCli": 0.22730039999999999,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4745,
+      "cacheRead": 56722,
+      "cacheWrite": 15126
+    },
+    "toolUses": 5,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C04-E-r1/briefs/plan.md; cat /home/user/.p3-state/S2/C04-E-r1/agent/config/projects/-home-user-p3-work-S2-C04-E-r1-repo/memory/MEMORY.md 2\\u003E/dev/null\"}"
+    ],
+    "finalMessage": "I've written the plan and committed it as `f4c91d3` in `.decisions/decisions.json`. No code or tests have changed.\n\n**Planned decisions (none implemented yet):**\n- **DEC-W-1:** `shipping <customer>` prints `<customer> shipping <charge>`, with the charge for the customer's region taken from `docs/shipping.md` (DEC-B13). The lookup already exists in `Rules.shippingCharge`; I'll only update its comment so it names DEC-B13.\n- **DEC-W-2:** A new read-only `Commands.shipping`, called from `Cli.dispatch`. An unknown customer gets the existing `error: unknown customer <id>`, and the wrong number of arguments gets the existing usage error. Neither changes anything.\n- **DEC-W-3:** `help` lists `shipping <customer>` directly after `balance <customer>`.\n- **DEC-W-4:** Extra tests for what the provided tests miss: the BC and QC charges, that `shipping` changes nothing, the usage error, and that `help` still lists every command. I'll also add the new command to the README's command list.\n\n**One open question (DEC-W-5, recorded as unauthorized):** no source says what `shipping` should do for a region `docs/shipping.md` doesn't list. The seed data has one: c4 in AB. The existing code returns 0.00 for unlisted regions, but nothing backs that charge. Both ways out — keep 0.00, or refuse with an error — are business policy for Logistics to decide, so I haven't chosen either. Unless one is authorized, I'll leave the existing behaviour as it is and won't test it.\n\nPLAN: ready"
+  }
+}

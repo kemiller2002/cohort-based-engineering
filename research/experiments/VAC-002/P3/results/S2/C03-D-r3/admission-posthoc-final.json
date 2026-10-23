@@ -1,0 +1,55 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "The fee of an appointment is the visit fee of the appointment\u0027s clinician as listed in docs/visit-fees.md (k1 = 60.00), taken from the existing Rules.visitFee table; printed with two decimals in invariant culture as \u0027\u003Cappointment\u003E visit fee \u003Camount\u003E\u0027.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "DEC-C09"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Rules.visitFee no longer returns 0 for a clinician without a listed fee; it returns no fee, and \u0060fee\u0060 for such an appointment is refused with \u0027error: no visit fee listed for \u003Cclinician\u003E\u0027 instead of printing a fee no source sets. Whether such a fee should be refused, be 0.00, or something else is an unresolved question for Finance.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-C09",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "A cancelled appointment is removed from state by the existing cancel command, so \u0060fee\u0060 of a cancelled appointment prints \u0027error: unknown appointment \u003Cid\u003E\u0027.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u0060fee \u003Cappointment\u003E\u0060 is added to the usage list directly after \u0060cancel \u003Cappointment\u003E\u0060 (so help and the usage error for a malformed fee command use it), and to the README command list.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "1c15d233-8bc1-41d3-9ef0-578560821b31",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C06-A-r3/briefs/work.md",
+  "briefSha256": "3ae36c798721f72e0eee3ee391aa90555752aa54e6b373f4b74616c07092e929",
+  "startedAt": "2026-10-23T10:51:58.456Z",
+  "endedAt": "2026-10-23T10:53:14.913Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "1c15d233-8bc1-41d3-9ef0-578560821b31",
+    "isError": false,
+    "numTurns": 10,
+    "durationMs": 75507,
+    "costUsdCli": 0.2780326,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 20,
+      "output": 5310,
+      "cacheRead": 132003,
+      "cacheWrite": 18169
+    },
+    "toolUses": 9,
+    "contaminationHits": [],
+    "finalMessage": "I added `move <appointment> <date> <time>`. It uses the same horizon and slot rules as booking, and `help` lists it straight after `cancel`. `dotnet test Clinic.slnx` passes 8/8, including three new tests (a refused move changes nothing, the old slot is freed, a wrong argument count prints the usage line); the work and `.work/report.json` are committed.\nTwo open questions are in the report. First, `Rules.slotFree` lets clinician k2 be double-booked, no decision record or approval covers that, and `move` now inherits it. Second, moving an appointment to the slot it already holds is refused as \"already booked\"; that follows the requirement's wording, but it could be a harmless no-op instead.\nOUTCOME: completed"
+  }
+}

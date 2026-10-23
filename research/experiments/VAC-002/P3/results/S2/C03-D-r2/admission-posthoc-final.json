@@ -1,0 +1,44 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The fee of an appointment is the fee listed in docs/visit-fees.md for the appointment\u0027s clinician (DEC-C09), printed as \u0027\u003Cappointment\u003E visit fee \u003Camount\u003E\u0027 with two decimals in invariant culture. The command is read-only and an unknown (including cancelled) appointment is refused with the existing \u0027unknown appointment\u0027 error.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "DEC-C09"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "default-rule",
+      "computedStatus": "authorized",
+      "statement": "A clinician not listed in docs/visit-fees.md has no fee: Rules.visitFee now returns None instead of the previous unsourced 0m default, and \u0027fee\u0027 for such an appointment is refused with \u0027error: no visit fee listed for clinician \u003Cclinician\u003E\u0027. No source says what an unlisted clinician\u0027s fee is; this avoids printing an invented 0.00 fee but the refusal itself is not authorized and needs Finance confirmation.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-C09",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u0027fee \u003Cappointment\u003E\u0027 is added to Cli.usage directly after \u0027cancel \u003Cappointment\u003E\u0027, which also gives \u0027error: usage: fee \u003Cappointment\u003E\u0027 for wrong arity via the existing usage lookup; README command list updated to match.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

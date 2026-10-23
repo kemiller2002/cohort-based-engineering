@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "b154187a-e799-4303-9340-fe5117f43dab",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C01-E-r3/briefs/plan.md",
+  "briefSha256": "99411bc35be64d2d6b6d119866c2392637c6cd356d4c500e44ae1dec17495fec",
+  "startedAt": "2026-10-23T10:03:34.530Z",
+  "endedAt": "2026-10-23T10:04:37.049Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "b154187a-e799-4303-9340-fe5117f43dab",
+    "isError": false,
+    "numTurns": 8,
+    "durationMs": 61745,
+    "costUsdCli": 0.3056948,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 7063,
+      "cacheRead": 61894,
+      "cacheWrite": 19001
+    },
+    "toolUses": 7,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C01-E-r3/briefs/plan.md; cat /home/user/.p3-state/S2/C01-E-r3/agent/config/projects/-home-user-p3-work-S2-C01-E-r3-repo/memory/MEMORY.md 2\\u003E/dev/null\"}"
+    ],
+    "finalMessage": "The plan is in `.decisions/decisions.json` and committed as `ccd51da`. I haven't changed any code or tests.\n\n**The main conflict (DEC-W-2):** the code computes reminders as 24 hours before the appointment (`Rules.reminderLeadHours = 24`). That follows DEC-C06, which has been superseded. The decision in force is DEC-C08, which says 48 hours, and CLIN-51-R1 asks for the decision in force. The architecture says each rule is written once, in `Rules`. So my proposal is to change that one rule to 48 hours and use it for both `reminder` and the new `reminders`.\n\nThat would change what the existing `reminder <appointment>` command prints. It would also mean updating the expected value in `ReminderTests.fs`. This goes against the acceptance criterion that existing behaviour stays unchanged, so I've left it as an open question. The fallback is to leave `reminder` at 24 hours and give `reminders` its own 48-hour rule in `Rules`. That keeps the existing test as it is, but the 24-hour rule would then stay in the code, even though DEC-C08 replaced it. I'll implement whichever option is authorized.\n\n**The other planned decisions:**\n- **Which date counts:** a reminder is \"sent on\" a date if the reminder time falls on that calendar date. All appointments are checked, with no filtering against today's date (DEC-W-3).\n- **Output:** exactly the format in the requirement, showing each appointment's own date and time. The command changes nothing (DEC-W-4).\n- **Order:** by appointment date, then time. The requirement doesn't say how to order two appointments at the same time, so I'd break ties by appointment id, as `schedule` does. This is an open question (DEC-W-5).\n- **Errors:** a bad date or wrong number of arguments gets a one-line `error:` message using the existing parsing and usage code (DEC-W-6).\n- **Structure and help:** a new `Commands.reminders`, a new case in the command dispatcher, and `reminders <date>` listed in `help` directly after `reminder <appointment>` (DEC-W-7).\n- **"
+  }
+}

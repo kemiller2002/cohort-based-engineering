@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "820fe6f8-e982-4bd2-ad76-73b23f5c44c4",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C06-E-r1/briefs/plan.md",
+  "briefSha256": "68d65a12018b5eeb528969208bf378c9ee3c265e33f08f3772c5f97970f2a39a",
+  "startedAt": "2026-10-23T10:49:06.986Z",
+  "endedAt": "2026-10-23T10:50:23.342Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "820fe6f8-e982-4bd2-ad76-73b23f5c44c4",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 75595,
+    "costUsdCli": 0.2831344,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 6262,
+      "cacheRead": 50432,
+      "cacheWrite": 18471
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan to `.decisions/decisions.json` and committed it as `8a78db1`. No code or tests have changed yet. As a baseline, the two CLIN-53 acceptance tests fail (`move` doesn't exist yet) and the other 3 tests pass.\n\nThe plan has seven decisions:\n\n- **DEC-W-1:** add a `move` step in `Commands.fs`, and handle the command in `Cli.dispatch`. It reads the date and time the same way `book` does. On success it prints `<id> moved to <date> at <time>`.\n- **DEC-W-2:** a move changes only the date and time; the id, patient and clinician stay the same. It uses booking's existing checks in booking's order: first how far ahead the date is (DEC-C01), then whether the slot is free (DEC-C02). It gives the same errors as booking, and a refused move changes nothing.\n- **DEC-W-3:** an unknown appointment prints `error: unknown appointment <id>`. Errors come in the order `book` already uses: bad date or time, then unknown appointment, then too far ahead, then slot taken.\n- **DEC-W-4:** moving an appointment to the slot it already has is refused as \"already booked\". That's the literal reading of R1: a new booking there would be refused. This is an open question for Clinical Operations, who may want it accepted and treated as a no-op instead.\n- **DEC-W-5:** the code already treats Dr. Patel's (k2) slots as never taken, but no decision or approval in `docs/` records that rule. Because a move must behave exactly like a booking, moves would inherit it. I'm leaving it as it is, but whether the rule is approved, and whether it should apply to moves, is an open question for Clinical Operations.\n- **DEC-W-6:** `help` lists `move <appointment> <date> <time>` directly after `cancel <appointment>`. The command list in `README.md` gets the same line.\n- **DEC-W-7:** add tests for what the provided acceptance tests don't cover: a refused move changes nothing, the old slot is free after a move, and the patient and clinician stay the same. The provided tests stay unchanged.\n\nPLAN: ready"
+  }
+}

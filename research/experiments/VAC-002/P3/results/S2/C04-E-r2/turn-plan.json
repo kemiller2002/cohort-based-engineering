@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "5c7b0ad4-b8d9-4b7b-b480-4f6bf9329d14",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C04-E-r2/briefs/plan.md",
+  "briefSha256": "c7054fe8dff6f4d8c0eb4c8c21fe0661fa00affeedc12d3fdfe033648bf1e3d8",
+  "startedAt": "2026-10-23T10:12:22.636Z",
+  "endedAt": "2026-10-23T10:13:13.789Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "5c7b0ad4-b8d9-4b7b-b480-4f6bf9329d14",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 50399,
+    "costUsdCli": 0.2198138,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 4215,
+      "cacheRead": 51969,
+      "cacheWrite": 15634
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "The plan for BILL-42 is written to `.decisions/decisions.json` and committed (`af09920`). I haven't changed any code or tests.\n\nThere are five planned decisions:\n\n- **DEC-W-1 (business-rule):** The shipping charge comes from the customer's region, using the list in `docs/shipping.md` (DEC-B13). The existing `Rules.shippingCharge` already has these values, so I'll only update its comment to name DEC-B13.\n- **DEC-W-2 (implementation):** A new `Commands.shipping` command and a `Cli` entry for it. It prints `c1 shipping 15.00`, changes nothing, and gives `error: unknown customer c9` for an unknown customer.\n- **DEC-W-3 (default-rule, open question for Logistics):** Nothing says what to print for a customer whose region isn't on the shipping list. One of the seeded test customers, c4, is in AB, which isn't listed. The existing code quietly charges 0.00 for any unlisted region, and no source supports that. I've proposed keeping the 0.00 only if the check authorizes it. If it doesn't, I won't make up a different answer and will report the question as still open.\n- **DEC-W-4 (business-rule):** `help` lists `shipping <customer>` directly after `balance <customer>`, and the README command list gets the same change.\n- **DEC-W-5 (implementation):** Extra tests for the other listed regions (BC 25.00, QC 18.00) and for \"changes nothing\", covering both a successful and a refused command.\n\nPLAN: ready"
+  }
+}

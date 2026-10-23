@@ -1,0 +1,57 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The payment-terms decision in force is DEC-B12 (accepted, supersedes DEC-B01): a quote\u0027s payable-by date is today plus 21 days. Implemented as a separate rule Rules.quotedDueDate naming DEC-B12.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "DEC-B12"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "conflict-resolution",
+      "computedStatus": "rejected",
+      "statement": "The invoice command keeps its existing 30-day due date (Rules.dueDate, DEC-B01) and is not migrated to DEC-B12, because the requirement says existing behaviour is unchanged except as stated and an existing test asserts 30 days. As a result a quote and an invoice issued the same day show different dates; this is left as an open question.",
+      "notAuthorized": "The invoice command keeps its existing 30-day due date (Rules.dueDate, DEC-B01) and is not migrated to DEC-B12, because the requirement says existing behaviour is unchanged except as stated and an existing test asserts 30 days. As a result a quote and an invoice issued the same day show different dates; this is left as an open question.",
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": [
+        "A6 an \u0060conflict-resolution\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "A quote amount is validated with the existing Commands.parseAmount (positive, at most two decimals), checked before the customer as the invoice command does; the quote echoes the amount with two decimals and leaves state unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Help lists \u0060quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 directly after the invoice line; the README command list is updated to match.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

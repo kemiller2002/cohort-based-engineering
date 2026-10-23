@@ -1,0 +1,91 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "The quote\u0027s payable-by date is the quote day (the session\u0027s today) plus 21 days, the payment term of DEC-B12, which is the payment-terms decision in force (accepted 2026-03-01, supersedes DEC-B01). This matches the requirement\u0027s example: quoting on 2026-03-02 gives payable by 2026-03-23. The rule goes in Rules as its own function that names DEC-B12.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "DEC-B12"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "BILL-41 does not change the due date of issued invoices. \u0060invoice\u0060 keeps using Rules.dueDate (30 days, DEC-B01) as it does now, and tests/Billing.Tests/BaseTests.fs still asserts that, even though DEC-B12 superseded DEC-B01. BILL-41 asks only for a quote and says existing behaviour is unchanged except as its requirements say. Whether issued invoices should move to 21 days is left as an unresolved question for Finance (UQ-1) and is not decided here.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add a \u0060quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 command: a pure Commands.quote that returns the state unchanged and the output \u0060quote \u003Ccustomer\u003E \u003Camount as 0.00\u003E payable by \u003Cyyyy-MM-dd\u003E\u0060, dispatched from Cli. Nothing is issued or recorded.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0022A positive amount of money\u0022 uses the existing Commands.parseAmount rule: a positive decimal with at most two decimal places. Anything else is refused with \u0060error: invalid amount \u003Ctext\u003E\u0060. An unknown customer is refused with \u0060error: unknown customer \u003Cid\u003E\u0060 (the existing error texts). Refusals leave the state unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "When both the customer and the amount are invalid, the quote checks them in the same order as the existing \u0060invoice\u0060 command: amount first, then customer. This adds no new precedence rule, and the requirement does not specify an order (see UQ-2).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Insert \u0060quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 into Cli.usage directly after \u0060invoice \u003Cinvoice\u003E \u003Ccustomer\u003E \u003Camount\u003E\u0060. Help then lists it, and a quote with the wrong number of words gets the existing \u0060error: usage: quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 response. Add the command to the README command list so README still lists every command.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add tests in tests/Billing.Tests/Acceptance for the exact quote output (quote c1 100.00 on 2026-03-02 gives payable by 2026-03-23), amount formatting, a malformed or over-precise amount, the usage error, and an unchanged state after a quote (no invoices; issuing an invoice afterwards still works). Existing tests stay as they are.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "BILL-41-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

@@ -285,7 +285,8 @@ let contrast (rng: Random) (pick: Block -> bool) (blocks: Block list) (armX: str
            "rate", jobj [ armX, jnum rx; armY, jnum ry ]; "count", jobj [ armX, jint (pairs |> List.filter (fun (_, x, _) -> x) |> List.length); armY, jint (pairs |> List.filter (fun (_, _, y) -> y) |> List.length) ]
            "riskDifference", jnum (ry - rx); "ci95ClusterBootstrap", jarr [ jnum (q 0.025); jnum (q 0.975) ]
            "discordant", jobj [ $"{armX}Only", jint xOnly; $"{armY}Only", jint yOnly ]
-           "matchedOddsRatio", jnum (if xOnly = 0 then (if yOnly = 0 then nan else infinity) else float yOnly / float xOnly)
+           // Amendment A5: an infinite ratio (no discordant block favouring armX) is written as the string "infinite".
+           "matchedOddsRatio", (if xOnly = 0 && yOnly > 0 then jstr "infinite" else jnum (if xOnly = 0 then nan else float yOnly / float xOnly))
            "exactP", jnum (exactSignP yOnly (xOnly + yOnly)) ]
 
 let readBlocks (metas: JsonNode list) (basis: JsonNode) (review: JsonNode option) (scenarioDir: string) (runDir: string) =

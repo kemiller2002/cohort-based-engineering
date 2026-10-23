@@ -1,0 +1,69 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "run-interest charges, once per invoice, collection interest of 1% of the invoice amount (rounded to the cent, half away from zero) on every invoice where today is more than 60 days after the due date (today \u003E due \u002B 60 days) and something is still outstanding; it prints \u0027interest charged: N\u0027.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0027Still unpaid\u0027 is read the same way as for late fees: something is still outstanding on the invoice (Rules.outstanding \u003E 0), reusing the existing reading in Rules.isOverdue.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14",
+        "DEC-B03"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Interest is charged on invoices of nonprofit customers too. The nonprofit exemption in Rules.chased is applied only to late fees in existing code, is not backed by any decision record, and DEC-B14 and BILL-43-R1 (\u0027every invoice that owes it\u0027) state no exemption; no exception is invented. Raised as an open question.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Invoice gains a field Interest: decimal option (None until charged) so \u0027once\u0027 holds even when 1% rounds to 0.00. Rules.outstanding includes charged interest, so balance and show\u0027s outstanding include it; show\u0027s output format is unchanged (no new field printed).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14",
+        "DEC-B02"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u0027run-interest\u0027 is added to Cli.usage directly after \u0027run-late-fees\u0027 (help output and usage errors), and to the README command list.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

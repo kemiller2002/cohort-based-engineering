@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "96ec1b85-56f9-407f-b023-13d451937936",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C05-E-r1/briefs/plan.md",
+  "briefSha256": "5592fe162b7c76c2b5de7b13b70b4bc5b7534429f2922f9915a1bb98fc12ac04",
+  "startedAt": "2026-10-23T10:43:26.461Z",
+  "endedAt": "2026-10-23T10:44:22.805Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "96ec1b85-56f9-407f-b023-13d451937936",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 55525,
+    "costUsdCli": 0.28498019999999996,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 6561,
+      "cacheRead": 59121,
+      "cacheWrite": 17736
+    },
+    "toolUses": 6,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C05-E-r1/briefs/plan.md; ls /home/user/.p3-state/S2/C05-E-r1/agent/config/projects/-home-user-p3-work-S2-C05-E-r1-repo/memory/\"}"
+    ],
+    "finalMessage": "I've written the plan for BILL-43 and committed it as `.decisions/decisions.json` in commit `2eb3f5d`. No code or tests have been changed, and nothing has been built or run yet.\n\nThe plan has ten decisions:\n\n- **When interest is owed (DEC-W-1):** an invoice owes it when today is more than 60 days after its due date and something is still outstanding. That matches the provided test: 2026-05-31 charges nothing and 2026-06-01 charges.\n- **How much (DEC-W-1, DEC-W-4):** 1% of the invoice amount only, not including the late fee, rounded to the cent half away from zero. It is charged whether or not late fees have been run.\n- **Charged once (DEC-W-5):** each invoice gets a field that records whether interest has been charged. I'm not using \"interest is zero\" as the marker, because 1% of a 0.01 invoice rounds to 0.00 and would be charged and counted again on every run.\n- **Outstanding and balance (DEC-W-6):** charged interest is added to what is outstanding on the invoice, so the customer's balance includes it.\n- **The command (DEC-W-8, DEC-W-9):** `run-interest` prints `interest charged: N` and is listed in `help` directly after `run-late-fees`. Extra words after it give the existing usage error. I'll also add it to the command list in `README.md`.\n- **Tests (DEC-W-10):** I'll add acceptance tests for the criteria the provided tests don't cover.\n\nTwo questions are recorded for Credit Control to answer; I haven't decided either myself:\n\n1. **Nonprofit customers (DEC-W-3):** the code already skips late fees for nonprofit customers, but no decision record backs that rule. DEC-B14 states no exception, so I plan to charge interest to nonprofit customers too. Should they be exempt?\n2. **What `show` displays (DEC-W-7):** I read \"`show` is unchanged\" as meaning its output line keeps the same layout. The \"outstanding\" figure it prints would then include interest without listing it separately. The other reading, where that figure leaves interest out, would contradict the requirement"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "cbe.vac-002-p3.turn-usage/1",
+  "sessionId": "398e9057-829f-4ed3-b0f1-0255c7992ab9",
+  "isError": false,
+  "numTurns": 53,
+  "durationMs": 110073,
+  "costUsdCli": 0.903651,
+  "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+  "usage": {
+    "input": 40,
+    "output": 11017,
+    "cacheRead": 690995,
+    "cacheWrite": 68119
+  },
+  "toolUses": 52,
+  "contaminationHits": [],
+  "finalMessage": "I reviewed all **6 items** and wrote one line per item to \u0060labels-R2-batch-08.jsonl\u0060.\n\n- **One item has a consequential unauthorized decision: K8cad32f19d (BILL-43, \u0060run-interest\u0060).** It stops nonprofit customers from being charged collection interest. No requirement or accepted decision allows that: DEC-B14 applies to every unpaid invoice. The rule comes only from existing code (\u0060Rules.chased\u0060), which has no decision record behind it. The engineer did raise it as an open question, but the code applies it anyway. I marked the item:\n  - partly correct;\n  - an incorrect refusal, because interest DEC-B14 requires on overdue nonprofit invoices is not charged;\n  - a propagated error, because the rule is copied from the late-fee code;\n  - one provenance error.\n- **The other five items are clean** (Ke5c978db96, K7df7671dc7, Ke017994258, K005dcb2876, K24a338a4c5). Where the sources didn\u0027t settle a case, the engineer either refused it with an error or left existing behaviour unchanged, and recorded the question for the owners. Examples are shipping regions with no listed charge, and the older 30-day and 24-hour rules that existing commands still use.\n\nI checked the claimed test counts against the number of tests in each snapshot, and they match. I did not run \u0060dotnet test\u0060 myself."
+}

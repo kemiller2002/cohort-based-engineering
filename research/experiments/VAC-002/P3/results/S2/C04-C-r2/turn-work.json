@@ -1,0 +1,33 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "work",
+  "sessionId": "4202f86d-cd00-49f0-947f-1c85c74a636d",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C04-C-r2/briefs/work.md",
+  "briefSha256": "38827c9e9f058f93ddbf8972511c535963e74c1bec58976ee8b3e4237da080aa",
+  "startedAt": "2026-10-23T10:32:49.264Z",
+  "endedAt": "2026-10-23T10:33:41.046Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "4202f86d-cd00-49f0-947f-1c85c74a636d",
+    "isError": false,
+    "numTurns": 7,
+    "durationMs": 50952,
+    "costUsdCli": 0.2399928,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 14,
+      "output": 4591,
+      "cacheRead": 75424,
+      "cacheWrite": 16629
+    },
+    "toolUses": 6,
+    "contaminationHits": [
+      "{\"command\":\"cat /home/user/p3-work/S2/C04-C-r2/briefs/work.md; ls /home/user/.p3-state/S2/C04-C-r2/agent/config/projects/-home-user-p3-work-S2-C04-C-r2-repo/memory/\"}"
+    ],
+    "finalMessage": "I added the `shipping <customer>` command, which prints the charge for the customer's region from `docs/shipping.md`, and `help` now lists it right after `balance`. `dotnet test Billing.slnx` passes 7 of 7, and the work and report are committed.\nOne open question: `docs/shipping.md` has no charge for region AB (customer c4). I took out the existing code that quietly charged 0.00 for unlisted regions, so for those customers the command now shows an error line instead. Logistics needs to confirm what it should do.\n\nOUTCOME: completed"
+  }
+}

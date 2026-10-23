@@ -1,0 +1,117 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "An invoice owes collection interest when today is strictly later than its due date plus 60 days (i.e. on day 61 after the due date or later), it is still unpaid, and no interest has been charged on it yet. Implemented as a pure rule in Rules naming DEC-B14.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "The interest charged is 1% of the invoice amount (the Amount field only, not including any late fee already charged), rounded to the cent half away from zero using the existing Rules.round2.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0022Still unpaid\u0022 in DEC-B14 is read the same way the existing DEC-B03 rule reads it: something is still outstanding on the invoice (outstanding \u003E 0). The existing outstanding calculation is reused.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-B14",
+        "DEC-B03"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Collection interest is charged on every invoice DEC-B14 covers, for all customer kinds. The existing Rules.chased filter (nonprofit accounts are not chased for late payment), which the late-fee run applies and which names no decision record, is NOT applied to interest, because neither DEC-B14 nor BILL-43-R1 states such an exception and the brief forbids inventing exceptions. This is flagged as an unresolved question (UQ-1) for Credit Control.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Record charged interest on the invoice as a new Interest: decimal field on Domain.Invoice (0 when issued). Rules.outstanding becomes Amount \u002B LateFee \u002B Interest - Paid, so the customer\u0027s balance (DEC-B02, sum of outstanding) includes it without further change. The README entry points (Cli.run, Session.create) keep their signatures.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "DEC-B14",
+        "DEC-B02"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0022show is unchanged\u0022 is read as: the show output format stays exactly as it is (no interest field is added), while its outstanding figure, being what is outstanding on the invoice, includes charged interest as BILL-43-R1 requires. Flagged as unresolved question UQ-2.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add Commands.runInterest (pure, mirrors runLateFees): walks invoices in issue order, charges each invoice that owes interest, and outputs \u0022interest charged: N\u0022. Cli dispatches the exact line \u0022run-interest\u0022; any other form (extra words) is refused through the existing usage mechanism with \u0022error: usage: run-interest\u0022 and no state change, per the README Errors standing requirement.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-8",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Insert \u0022run-interest\u0022 into Cli.usage directly after \u0022run-late-fees\u0022 (before \u0022help\u0022), so help lists it in that position, and add it to the README Commands list in the same position so the documented command list stays complete.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-9",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add acceptance tests in tests/Billing.Tests/Acceptance/ for criteria the provided tests do not cover: interest is 1% of the amount only when a late fee is also charged; show keeps its format and its outstanding includes interest; a run with no invoices charges nothing; interest is charged for every customer kind; run-interest with extra words is refused with one error line and no state change. Existing tests are left unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-43-R1",
+        "BILL-43-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

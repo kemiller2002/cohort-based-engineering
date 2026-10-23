@@ -1,0 +1,70 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The reminder decision in force is DEC-C08 (48 hours before the appointment); DEC-C06 (24 hours) is superseded. \u0060reminders \u003Cdate\u003E\u0060 lists appointments whose start minus 48 hours falls on \u003Cdate\u003E.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1",
+        "DEC-C08"
+      ],
+      "reasons": [
+        "A4 \u0027DEC-C06\u0027 is superseded by DEC-C08"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The existing \u0060reminder \u003Cappointment\u003E\u0060 command and Rules.reminderAt (DEC-C06, 24h) are left unchanged, because CLIN-51 requires existing behaviour to be unchanged and tests/Clinic.Tests/ReminderTests.fs asserts the 24h result. The DEC-C08 rule is added separately in Rules (reminderInForceLeadHours, reminderInForceSentOn). The resulting inconsistency between the two commands is raised as an open question, not resolved.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R1"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "Appointments are ordered by appointment date and time; appointments at the same date and time are ordered by appointment id, following the tie-break already used by \u0060schedule\u0060.",
+      "notAuthorized": "Appointments are ordered by appointment date and time; appointments at the same date and time are ordered by appointment id, following the tie-break already used by \u0060schedule\u0060.",
+      "validAuthority": [
+        "CLIN-51-R1"
+      ],
+      "reasons": [
+        "A6 an \u0060default-rule\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "An invalid date is refused with the existing \u0060error: invalid date \u003Ctext\u003E\u0060 message, and a wrong argument count with \u0060error: usage: reminders \u003Cdate\u003E\u0060, using the existing parse and usage handling.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "\u0060reminders \u003Cdate\u003E\u0060 is inserted in the help usage list directly after \u0060reminder \u003Cappointment\u003E\u0060.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-51-R2"
+      ],
+      "reasons": []
+    }
+  ]
+}

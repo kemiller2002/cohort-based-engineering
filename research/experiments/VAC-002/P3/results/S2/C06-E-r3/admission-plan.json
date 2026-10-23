@@ -1,0 +1,94 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "\u0060move \u003Cappointment\u003E \u003Cdate\u003E \u003Ctime\u003E\u0060 keeps the appointment\u0027s id, patient and clinician and changes only its date and time. On success it prints \u0060\u003Cappointment\u003E moved to \u003Cyyyy-MM-dd\u003E at \u003CHH:mm\u003E\u0060; an unknown appointment prints \u0060error: unknown appointment \u003Cappointment\u003E\u0060 and changes nothing.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "A move is checked against exactly the booking rules for the new date and time with the same clinician: the booking horizon (DEC-C01, Rules.withinBookingHorizon against the session clock) and one appointment per slot (DEC-C02, Rules.slotFree). A refused move returns the same error text a booking would and leaves the state unchanged. No rule is added for moves that booking does not have (e.g. no check on the appointment\u0027s original date).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "DEC-C01",
+        "DEC-C02"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The slot check for a move is applied literally as for a new booking: the moved appointment itself is not excluded, so moving an appointment to the date and time it already has is refused with the SlotTaken error, because a new booking there would be refused. No self-exclusion exception is introduced. Unresolved question for Clinical Operations: should a move to the appointment\u0027s own current slot instead succeed (or be a no-op)?",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Moves reuse Rules.slotFree unchanged, so they inherit the existing in-code walk-in exception for clinician k2 (her slots never count as taken), exactly as booking does today. The exception is not changed or removed (existing behaviour, covered by BaseTests). Unresolved question: this k2 exception is not backed by any accepted decision record in docs/decisions/ (DEC-C02 states no exception); Clinical Operations should confirm or retire it. This plan neither extends nor removes it beyond what \u0027the same rules as booking\u0027 implies.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Argument and check order mirrors \u0060book\u0060: the CLI parses \u003Cdate\u003E then \u003Ctime\u003E first (invalid input gives \u0060error: invalid date X\u0060 / \u0060error: invalid time X\u0060), then Commands.move checks the appointment exists, then the horizon, then the slot. Wrong arity gives the generic \u0060error: usage: move \u003Cappointment\u003E \u003Cdate\u003E \u003Ctime\u003E\u0060 via the existing usage lookup. The booking checks (horizon, slot) are factored into one private helper in Commands used by both book and move so the rules are written once and stay identical; booking output and error order are unchanged. No new ClinicError case is needed.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "\u0060help\u0060 (Cli.usage) lists \u0060move \u003Cappointment\u003E \u003Cdate\u003E \u003Ctime\u003E\u0060 immediately after \u0060cancel \u003Cappointment\u003E\u0060; the README Commands list is updated in the same position so the documentation matches \u0060help\u0060.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add unit tests in tests/Clinic.Tests covering criteria the acceptance tests do not: a refused move leaves the appointment where it was (schedule unchanged), invalid date/time and wrong arity for move, the freed original slot can be booked after a move, and existing booking behaviour unchanged. Tests asserting DEC-W-3 or DEC-W-4 behaviour are only added if those decisions are authorized.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-53-R1",
+        "CLIN-53-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

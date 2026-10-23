@@ -1,0 +1,101 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "\u0060fee \u003Cappointment\u003E\u0060 looks up the appointment and prints \u0060\u003Cappointment\u003E visit fee \u003Cfee\u003E\u0060, where the fee is the one listed for the appointment\u0027s clinician in docs/visit-fees.md (DEC-C09). The command never changes state. An appointment id not in the state (never booked, or cancelled and so removed) is refused with the existing UnknownAppointment error, printing \u0060error: unknown appointment \u003Cid\u003E\u0060.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "DEC-C09",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/visit-fees.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "UNRESOLVED QUESTION, not decided by the agent: docs/visit-fees.md lists a fee only for k1, but other clinicians (e.g. k2, seeded in the tests) can be booked. Neither DEC-C09 nor CLIN-52 says what \u0060fee\u0060 prints for an appointment whose clinician has no listed fee. The existing \u0060Rules.visitFee\u0060 fallback of 0m is not backed by DEC-C09 or docs/visit-fees.md and will not be used to print \u00600.00\u0060. The agent will not invent a fee, error wording or other policy for this case; it needs a ruling from Finance (owner of DEC-C09 and CLIN-52). Until ruled, only the listed-fee case is implemented, and the unlisted case is left out of the planned behaviour rather than assigned a policy.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-C09"
+      ],
+      "reasons": [
+        "A2 \u0027docs/visit-fees.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The fee lookup stays a single rule in \u0060Rules\u0060 (per docs/architecture.md). \u0060Rules.visitFee\u0060 is changed to return \u0060decimal option\u0060 (Some for clinicians listed in docs/visit-fees.md, None otherwise) instead of silently returning 0m, and is traced to DEC-C09 in its doc comment. A new pure \u0060Commands.fee\u0060 returns the unchanged state and the output; \u0060Cli.dispatch\u0060 routes \u0060[\u0022fee\u0022; id]\u0060 to it. The fee is formatted with two decimals using the invariant culture (\u006060.00\u0060), independent of the machine\u0027s locale.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "DEC-C09"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add \u0060fee \u003Cappointment\u003E\u0060 to \u0060Cli.usage\u0060 directly after \u0060cancel \u003Cappointment\u003E\u0060, so \u0060help\u0060 lists it there and a malformed \u0060fee\u0060 line gets the existing \u0060error: usage: fee \u003Cappointment\u003E\u0060 refusal through \u0060usageOf\u0060. Add \u0060fee \u003Cappointment\u003E\u0060 after \u0060cancel \u003Cappointment\u003E\u0060 in the README command list so the documented command list stays complete.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add tests beyond the provided acceptance tests: \u0060fee\u0060 leaves state unchanged (schedule before/after identical), \u0060fee\u0060 on a cancelled appointment is refused as unknown, and \u0060fee\u0060 with wrong arguments prints the usage error. Run \u0060dotnet test Clinic.slnx\u0060 to confirm existing and new tests pass. No test is added that fixes behaviour for clinicians without a listed fee (see DEC-W-2).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "default-rule",
+      "computedStatus": "rejected",
+      "statement": "Placeholder until Finance rules on DEC-W-2: when the appointment\u0027s clinician has no fee listed in docs/visit-fees.md, \u0060fee\u0060 refuses with one line \u0060error: no visit fee listed for \u003Cclinician\u003E\u0060 and changes nothing (new ClinicError case NoVisitFee). This avoids inventing a fee amount such as 0.00. The error wording is the agent\u0027s own, and no source supplies it. Finance should replace it once they rule.",
+      "notAuthorized": "Placeholder until Finance rules on DEC-W-2: when the appointment\u0027s clinician has no fee listed in docs/visit-fees.md, \u0060fee\u0060 refuses with one line \u0060error: no visit fee listed for \u003Cclinician\u003E\u0060 and changes nothing (new ClinicError case NoVisitFee). This avoids inventing a fee amount such as 0.00. The error wording is the agent\u0027s own, and no source supplies it. Finance should replace it once they rule.",
+      "validAuthority": [
+        "README#Build and test",
+        "DEC-C09"
+      ],
+      "reasons": [
+        "A5 cites the agent\u0027s own decision record DEC-W-2"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-7",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "The rejected DEC-W-6 (refusal wording for clinicians with no listed fee) is withdrawn from the code. No policy is put in its place for that case: Commands.fee leaves it explicitly unhandled and raises NotImplementedException that names the missing fee, instead of making up a fee or an error. This is a known gap that needs a Finance ruling on what a visit costs when its clinician has no listed fee. It is not intended behaviour.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-C09",
+        "CLIN-52-R1"
+      ],
+      "reasons": []
+    }
+  ]
+}

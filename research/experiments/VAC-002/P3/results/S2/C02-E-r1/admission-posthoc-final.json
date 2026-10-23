@@ -1,0 +1,84 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 1,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0022The payment-terms decision in force\u0022 is DEC-B12 (accepted 2026-03-01, supersedes DEC-B01): a quote\u0027s payable-by date is the session\u0027s today plus 21 days. This matches the requirement\u0027s example (issued 2026-03-02 -\u003E payable by 2026-03-23). The rule is added once in Rules as a DEC-B12 function, and quote uses it.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "DEC-B12"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "conflict-resolution",
+      "computedStatus": "rejected",
+      "statement": "The invoice command keeps its current 30-day due date (DEC-B01, as Rules.dueDate implements and BaseTests asserts); BILL-41 does not change it. As a result a quote (21 days) and an invoice issued the same day (30 days) will show different dates. Whether invoice should also move to DEC-B12 is an unresolved question for Finance / Sales Operations and is not implemented here.",
+      "notAuthorized": "The invoice command keeps its current 30-day due date (DEC-B01, as Rules.dueDate implements and BaseTests asserts); BILL-41 does not change it. As a result a quote (21 days) and an invoice issued the same day (30 days) will show different dates. Whether invoice should also move to DEC-B12 is an unresolved question for Finance / Sales Operations and is not implemented here.",
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": [
+        "A6 an \u0060conflict-resolution\u0060 decision needs an accepted decision record, a granted approval, or a revision by the owner of every source it changes; requirements of other owners, notes and code cannot authorize it",
+        "A2 \u0027requirements/BILL-41.md (acceptance criteria: existing behaviour is unchanged except as these requirements say)\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "\u0022A positive amount of money\u0022 is validated exactly as invoice amounts are, by reusing Commands.parseAmount (greater than zero, at most two decimal places, invariant culture); otherwise \u0060error: invalid amount \u003Ctext\u003E\u0060 with the text as typed. The amount is echoed with two decimals: \u0060quote \u003Ccustomer\u003E \u003Camount\u003E payable by \u003Cyyyy-MM-dd\u003E\u0060.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "quote is a pure Commands function that returns the state unchanged (it issues nothing, adds no invoice, changes no balance). Refusals return an error and change nothing. When both the amount and the customer are invalid, the amount is checked first, the same order the existing invoice command uses; the requirement gives no order, so this follows existing behaviour rather than introducing a new rule. A quote line with the wrong number of words gets the existing generic \u0060error: usage: quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 response.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": [
+        "A2 \u0027docs/architecture.md\u0027 does not resolve to a requirement, decision record or approval"
+      ]
+    },
+    {
+      "decisionId": "DEC-W-5",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "Add \u0060quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 to Cli.usage directly after \u0060invoice \u003Cinvoice\u003E \u003Ccustomer\u003E \u003Camount\u003E\u0060, and to the Commands list in README.md in the same position, so help and the README list every command.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-6",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Add acceptance tests for the criteria the provided tests do not cover: exact payable-by date per the example (2026-03-02 -\u003E 2026-03-23), quote leaves no invoice behind (show/balance unchanged), non-money amounts (x, 0, 1.005) refused, and invoice still due after 30 days.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

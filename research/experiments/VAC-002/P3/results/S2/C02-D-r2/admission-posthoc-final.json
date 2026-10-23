@@ -1,0 +1,55 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "The quote\u0027s payable-by date uses the payment-terms decision in force, DEC-B12 (21 days after today), not the superseded DEC-B01 (30 days) that issueInvoice still applies. This matches the requirement\u0027s example (2026-03-02 -\u003E 2026-03-23).",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "DEC-B12"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "interpretation",
+      "computedStatus": "authorized",
+      "statement": "Invoice issuing keeps its existing 30-day due date (DEC-B01). Moving invoices to DEC-B12 is not asked by BILL-41, would change existing behaviour and break BaseTests; left as an open question. As a result a quote and an invoice issued the same day currently show different dates.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Quote amounts are validated with the existing Commands.parseAmount (positive, at most two decimals, no sign), the customer is checked before nothing else; the amount is echoed in two-decimal format. The quote changes no state.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R1",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-4",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "Added \u0060quote \u003Ccustomer\u003E \u003Camount\u003E\u0060 to Cli.usage directly after the invoice line, and to the README command list in the same position.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "BILL-41-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

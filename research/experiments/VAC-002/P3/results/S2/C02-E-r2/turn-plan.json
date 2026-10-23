@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "95739fd1-0e06-4143-b41b-efd7bf67ba1e",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C02-E-r2/briefs/plan.md",
+  "briefSha256": "59a2ba015a09ef818064e5d9a774affbbfc48451edd57c1280b67d44706fe51e",
+  "startedAt": "2026-10-23T11:00:34.208Z",
+  "endedAt": "2026-10-23T11:01:23.178Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "95739fd1-0e06-4143-b41b-efd7bf67ba1e",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 47636,
+    "costUsdCli": 0.2554032,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 12,
+      "output": 5495,
+      "cacheRead": 58196,
+      "cacheWrite": 16727
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "The BILL-41 plan is written and committed (`22da7c2`) as `.decisions/decisions.json`. No code or tests have changed yet. It contains seven decisions and three questions for the business to answer.\n\n**What the plan does:**\n- **The quote command (DEC-W-1, DEC-W-3):** `quote <customer> <amount>` returns `quote c1 100.00 payable by 2026-03-23`. That date is today plus 21 days, from DEC-B12, the payment-terms decision now in force. The requirement's own example gives the same date. The quote changes nothing in the state.\n- **Invoices keep their 30-day due date (DEC-W-2):** issued invoices still use DEC-B01's 30 days. An existing test checks this, and BILL-41 doesn't ask for it to change.\n- **Bad input (DEC-W-4):** a bad amount is checked the same way `invoice` checks it: positive, at most two decimal places. Error messages reuse the existing wording.\n- **Two bad inputs at once (DEC-W-5):** if both the amount and the customer are wrong, the amount error is reported first, as `invoice` already does.\n- **Help and README (DEC-W-6):** `quote` goes into `help` directly after `invoice`. A quote with the wrong number of words gets the existing usage error, and the README command list gets the new command too.\n- **Tests (DEC-W-7):** I'll add acceptance tests for the cases the provided tests don't cover.\n\n**Questions for the business:**\n- **UQ-1:** a quote made today will say payable in 21 days, but an invoice issued the same day will be due in 30. Finance needs to decide whether invoices should move to 21 days.\n- **UQ-2:** the requirement doesn't say which error to report when both the customer and the amount are wrong. Sales Operations should confirm the amount-first order.\n- **UQ-3:** the sales tax decision (DEC-B04) is accepted but not implemented, so the quote shows the amount without tax.\n\nPLAN: ready"
+  }
+}

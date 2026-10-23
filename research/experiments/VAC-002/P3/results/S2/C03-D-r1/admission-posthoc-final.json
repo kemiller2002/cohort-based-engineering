@@ -1,0 +1,44 @@
+{
+  "schema": "cbe.vac-002-p3.admission/0.2",
+  "ok": true,
+  "rules": "P2 DECISION-AUTHORITY.md \u00A73 A1-A9 with the \u00A75 v0.2 changes C1-C5",
+  "rejected": 0,
+  "decisions": [
+    {
+      "decisionId": "DEC-W-1",
+      "decisionType": "business-rule",
+      "computedStatus": "authorized",
+      "statement": "\u0060fee \u003Cappointment\u003E\u0060 reports the fee listed for the appointment\u0027s clinician in docs/visit-fees.md (k1: 60.00), via Rules.visitFee, formatted with two decimals and invariant culture; it returns the state unchanged.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R1",
+        "DEC-C09"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-2",
+      "decisionType": "default-rule",
+      "computedStatus": "authorized",
+      "statement": "The pre-existing fallback in Rules.visitFee that returned 0 for any clinician not in docs/visit-fees.md is not used as a fee: visitFee now returns no fee for unlisted clinicians, and \u0060fee\u0060 refuses such an appointment with \u0060error: no visit fee is listed for \u003Cclinician\u003E\u0060 and changes nothing. No source states what fee (or response) applies to an unlisted clinician; this refusal is a provisional choice pending Finance.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "DEC-C09",
+        "README#Build and test"
+      ],
+      "reasons": []
+    },
+    {
+      "decisionId": "DEC-W-3",
+      "decisionType": "implementation",
+      "computedStatus": "authorized",
+      "statement": "\u0060fee \u003Cappointment\u003E\u0060 is inserted into Cli.usage directly after \u0060cancel \u003Cappointment\u003E\u0060, so help and the usage error (\u0060error: usage: fee \u003Cappointment\u003E\u0060) both list it; README\u0027s command list is updated to match.",
+      "notAuthorized": null,
+      "validAuthority": [
+        "CLIN-52-R2",
+        "README#Build and test"
+      ],
+      "reasons": []
+    }
+  ]
+}

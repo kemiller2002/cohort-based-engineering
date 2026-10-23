@@ -1,0 +1,31 @@
+{
+  "schema": "cbe.vac-002-p3.turn/1",
+  "role": "implementer",
+  "label": "plan",
+  "sessionId": "d0a91ce7-6cbd-4606-a96f-7ef00d91dd54",
+  "kind": "new",
+  "brief": "/home/user/p3-work/S2/C01-E-r2/briefs/plan.md",
+  "briefSha256": "cdddc0cd22af9a90bb2f89ef98563055daeef992e28643cbfd3d33438dd0ac9a",
+  "startedAt": "2026-10-23T10:58:13.375Z",
+  "endedAt": "2026-10-23T10:59:04.171Z",
+  "exit": 0,
+  "timedOut": false,
+  "usage": {
+    "schema": "cbe.vac-002-p3.turn-usage/1",
+    "sessionId": "d0a91ce7-6cbd-4606-a96f-7ef00d91dd54",
+    "isError": false,
+    "numTurns": 6,
+    "durationMs": 49851,
+    "costUsdCli": 0.2438394,
+    "costBasis": "CLI-reported list-price estimate (total_cost_usd), cumulative per session; not provider-billed",
+    "usage": {
+      "input": 10,
+      "output": 5083,
+      "cacheRead": 41857,
+      "cacheWrite": 16721
+    },
+    "toolUses": 5,
+    "contaminationHits": [],
+    "finalMessage": "I've written the plan as seven decisions in `.decisions/decisions.json` and committed it (`5acfe8c`). No code or tests have changed yet, and nothing has been built or run.\n\nThere's one conflict you need to know about. CLIN-51-R1 says `reminders <date>` must use \"the reminder decision in force\". That is DEC-C08: reminders go out 48 hours before the appointment, and the R1 example matches it. But the code (`Rules.reminderAt`) still uses DEC-C06's 24 hours, which DEC-C08 replaced, and the existing `reminder` command and its test depend on that.\n\n- **DEW-W-1:** the new command follows DEC-C08 (48 hours), added as its own rule in `Rules`.\n- **DEC-W-2:** the existing `reminder <appointment>` stays at 24 hours, because the criteria say existing behaviour is unchanged except as CLIN-51 says. The two commands will then give different reminder times. Whether `reminder` should also move to DEC-C08 is an open question for Patient Services, and I won't change it without their answer.\n\nThe other decisions:\n- **DEC-W-3:** an appointment's reminder is \"sent on\" a date when its reminder time falls on that calendar date. Cancelled appointments never appear, the output follows the R1 format, and nothing is changed.\n- **DEC-W-4:** entries are ordered by date and time. No source says how to order two appointments at the same date and time, so I propose ordering by appointment id, as `schedule` already does. This is my own suggestion.\n- **DEC-W-5:** argument errors reuse the existing messages (`error: invalid date …`, `error: usage: reminders <date>`).\n- **DEC-W-6:** `help` lists `reminders <date>` directly after `reminder <appointment>`.\n- **DEC-W-7:** I'll add acceptance tests for the R1 listing example, for nothing changing, and for an invalid date.\n\nPLAN: ready"
+  }
+}

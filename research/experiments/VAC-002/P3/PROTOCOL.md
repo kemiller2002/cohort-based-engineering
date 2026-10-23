@@ -237,3 +237,12 @@ Stage 1 froze at commit `766351a` ("VAC-002-P3 FREEZE (Stage 1)").
   generators added one closing parenthesis too many. The generators were fixed and the variants regenerated; the
   public overlays did not change. The rerun passed, and both runs are kept in the sealed validation file.
   Confirmatory oracle validation: **22 / 22**. Exposure manifest: **27 / 27** scenarios pass.
+
+**A5 (2026-10-23, after Stage 2 was scored and reviewed). Analysis serialization fix.**
+
+- **What happened.** The frozen `analyze.fsx stage2` stopped while writing its JSON: one contrast had no discordant
+  block favouring its first arm, so its matched odds ratio was infinite. JSON has no encoding for infinity.
+- **The fix.** That ratio is now written as the string `"infinite"`. No statistic, test, interval, seed or input
+  changed.
+- **Evidence.** The 13 frozen files matched `harness/FROZEN.sha256` before the fix; the diff is this one line.
+  `analyze.fsx`'s new hash is recorded in `harness/FROZEN-A5.sha256`.
