@@ -93,11 +93,11 @@ The owner accepted every recommendation below on 2026-10-24. What each decision 
 | OD-1 | Zero-cost experiment phases only; no paid run is authorized | In force |
 | OD-2 | Rehearsal 3 uses Registry echelon-current 1.25.0, unless a newer set is approved and qualified before kickoff | In force; nothing approved since |
 | OD-3 | Refuse-and-record is an authorized outcome; written into `docs/operating-model.md` §5 | Done |
-| OD-4 | Amend Rehearsal 3 so live-provider tests run at the first persistence/authorization checkpoint; amendment goes to Indy-init | In progress |
-| OD-5 | Pin release-gating jobs to an explicit runner image; other jobs track latest | In progress (praxis, dokimos) |
-| OD-6 | Add the four-sentence authority contract to the Praxis implementation brief, labelled policy, with its version in telemetry | In progress (praxis) |
+| OD-4 | Amend Rehearsal 3 so live-provider tests run at the first persistence/authorization checkpoint; amendment goes to Indy-init | **Done:** indy-init#11 (`fc5df1c`), R3-DV-017 |
+| OD-5 | Pin release-gating jobs to an explicit runner image; other jobs track latest | **Done:** dokimos#55 (`003204d`), praxis#290 (`1ee496b`). The pinned `ubuntu-26.04` release jobs ran green on #290 |
+| OD-6 | Add the four-sentence authority contract to the Praxis implementation brief, labelled policy, with its version in telemetry | **Done:** praxis#290 (`1ee496b`): AGENTS.md `## Authority`, construction handoff brief, `authorityContract` on every execution record. Ships in the next release |
 | OD-7, OD-8, OD-10, OD-11 | Recorded; no code change (C1 at 1.0 goes to Praxis `schemas/`; trace only for generated code; B2 interpretations confirmed; audit v2 not used for triage yet) | Done |
-| OD-9 | The verified-completion pilot is Dokimos. It needs a Praxis release containing `work finish` (A3-R1) **and** a Registry-approved set that includes it. The coordinator cuts and registers the release as *assessed*; approving a set is a human approval record the coordinator does not create | Release in progress; set approval needed from the owner |
+| OD-9 | The verified-completion pilot is Dokimos. **Release status:** before cutting Praxis 3.20.0, the coordinator is fixing a submission-archive race that praxis#290 CI exposed (two concurrent saves can both fail and leave an empty file). A second test-timing flake was fixed in #290 (`26164d4`). It needs a Praxis release containing `work finish` (A3-R1) **and** a Registry-approved set that includes it. The coordinator cuts and registers the release as *assessed*; approving a set is a human approval record the coordinator does not create | Release in progress; set approval needed from the owner |
 
 ## Next executable actions (in order)
 
