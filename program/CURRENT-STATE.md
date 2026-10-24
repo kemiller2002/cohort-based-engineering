@@ -186,5 +186,5 @@ still stands.
 | B3a/B3b/B3c | 5 / 2 / 3 | **4 Experimental** | dokimos#53 (`5988bf0`) and #54 (`fc9b31f`): provenance audit v1/v2 and bounded invariant oracle. **Held-out accuracy fails its thresholds** (recall 80%, false-question rate 25%; EXPERIMENTS.md §4) |
 | B4 | 5 | **4 Experimental** | `integration/b4/B4-RESULT.md`: five frozen outcomes PASS; the Praxis completion step NOT_RUN |
 | A2 (Dokimos side) | 2 | 2, plus an experimental `isReusable` prototype | dokimos `experiments/rule-provenance` |
-| A3 | 2 | **2, with the CI gap closed (praxis#288 `24841bb`)** | praxis#288 runs the real-Dokimos completion cases in CI (0 SKIP) and adds CLI idempotence contract tests. Still unreleased and not enabled |
+| A3 | 2 | **2: released in Praxis v3.20.0 (`work finish`, real-Dokimos CI path, idempotence tests); waits only on approval of a release set and pilot enablement (OD-9)** | praxis#288 runs the real-Dokimos completion cases in CI (0 SKIP) and adds CLI idempotence contract tests. Still unreleased and not enabled |
 
