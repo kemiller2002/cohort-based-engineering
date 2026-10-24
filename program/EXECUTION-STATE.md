@@ -68,21 +68,36 @@ the pre-existing runner drift that is also red on main.
 | B-4 | No paid experiment budget | EXP-1, EXP-3 phase 2, R-EXP-1/2 cannot run | OD-1 |
 | B-5 | Only the .NET 10 runtime is in this container | Ordo's net8.0 suites ran with `DOTNET_ROLL_FORWARD=Major`; the experiments target net10.0 | Install the net8.0 runtime if net8.0 verification is required locally (CI covers net8.0) |
 
-## Open decisions
+## Decisions (all decided 2026-10-24)
+
+The owner accepted every recommendation below on 2026-10-24. What each decision set in motion is recorded under **Decision follow-through**.
 
 | ID | Decision | Options | Recommendation | Owner |
 |---|---|---|---|---|
-| OD-1 | Experiment budgets | (a) authorize EXP-1 qualification $40 plus pilot $120, and EXP-3 phase 2 $60; (b) zero-cost phases only; (c) none | (b) now; decide (a) after EXP-3 phase 1 | kemiller2002 |
-| OD-2 | Rehearsal 3 release set | (a) echelon-current 1.25.0 (Praxis 3.16.0); (b) approve a newer set first via A6a | (a), unless (b) is approved and qualified **before** kickoff | kemiller2002 |
-| OD-3 | Adopt VAC-002-P3-02-R1 (refuse-and-record is an authorized outcome) | accept / reject | Accept; C1 and B2 assume it | kemiller2002 |
-| OD-4 | Amend Rehearsal 3 so live-provider tests run at the first persistence checkpoint | amend / keep | Amend, but only before kickoff | kemiller2002 |
-| OD-5 | Runner-image policy | pin release-gating jobs / always latest | Pin release-gating jobs to a dated image; the rest track latest | kemiller2002 |
-| OD-6 | Four-sentence authority contract in the Praxis brief (R-PRAX-1) | adopt as policy / wait | Adopt, labelled "not a demonstrated control" | kemiller2002 |
-| OD-7 | Home of the C1 schema at 1.0 | Praxis `schemas/` / shared package | Praxis `schemas/` | kemiller2002 |
-| OD-8 | Authority markers in Ordo-generated code? | yes / trace only | Trace only. B4 confirms generated code cannot reach handwritten question mappings | kemiller2002 |
-| OD-9 | Pilot repository for verified completion | dokimos / ordo / praxis | dokimos | kemiller2002 |
-| OD-11 | Use audit v2 owner questions for non-blocking human triage of legacy rules (VAC-002-P3-03-R1)? | yes, non-blocking / wait for v3 | Wait. The held-out false-question rate (25%) would spend owners' attention on about 1 false question in 4 | kemiller2002 |
-| OD-10 | B2 interpretation choices: unlisted pairs refused; PartiallyPaid derived from REQ-INV-002; refusal-code names | confirm / change | Confirm. The fixture is synthetic, and these are presentation and interpretation choices recorded in ordo#105 | kemiller2002 |
+| OD-1 | Experiment budgets | (a) authorize EXP-1 qualification $40 plus pilot $120, and EXP-3 phase 2 $60; (b) zero-cost phases only; (c) none | (b) now; decide (a) after EXP-3 phase 1 | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-2 | Rehearsal 3 release set | (a) echelon-current 1.25.0 (Praxis 3.16.0); (b) approve a newer set first via A6a | (a), unless (b) is approved and qualified **before** kickoff | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-3 | Adopt VAC-002-P3-02-R1 (refuse-and-record is an authorized outcome) | accept / reject | Accept; C1 and B2 assume it | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-4 | Amend Rehearsal 3 so live-provider tests run at the first persistence checkpoint | amend / keep | Amend, but only before kickoff | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-5 | Runner-image policy | pin release-gating jobs / always latest | Pin release-gating jobs to a dated image; the rest track latest | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-6 | Four-sentence authority contract in the Praxis brief (R-PRAX-1) | adopt as policy / wait | Adopt, labelled "not a demonstrated control" | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-7 | Home of the C1 schema at 1.0 | Praxis `schemas/` / shared package | Praxis `schemas/` | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-8 | Authority markers in Ordo-generated code? | yes / trace only | Trace only. B4 confirms generated code cannot reach handwritten question mappings | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-9 | Pilot repository for verified completion | dokimos / ordo / praxis | dokimos | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-11 | Use audit v2 owner questions for non-blocking human triage of legacy rules (VAC-002-P3-03-R1)? | yes, non-blocking / wait for v3 | Wait. The held-out false-question rate (25%) would spend owners' attention on about 1 false question in 4 | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+| OD-10 | B2 interpretation choices: unlisted pairs refused; PartiallyPaid derived from REQ-INV-002; refusal-code names | confirm / change | Confirm. The fixture is synthetic, and these are presentation and interpretation choices recorded in ordo#105 | **Decided 2026-10-24:** recommendation accepted (kemiller2002: "do what you recommend") |
+
+## Decision follow-through
+
+| Decision | Action | State |
+|---|---|---|
+| OD-1 | Zero-cost experiment phases only; no paid run is authorized | In force |
+| OD-2 | Rehearsal 3 uses Registry echelon-current 1.25.0, unless a newer set is approved and qualified before kickoff | In force; nothing approved since |
+| OD-3 | Refuse-and-record is an authorized outcome; written into `docs/operating-model.md` §5 | Done |
+| OD-4 | Amend Rehearsal 3 so live-provider tests run at the first persistence/authorization checkpoint; amendment goes to Indy-init | In progress |
+| OD-5 | Pin release-gating jobs to an explicit runner image; other jobs track latest | In progress (praxis, dokimos) |
+| OD-6 | Add the four-sentence authority contract to the Praxis implementation brief, labelled policy, with its version in telemetry | In progress (praxis) |
+| OD-7, OD-8, OD-10, OD-11 | Recorded; no code change (C1 at 1.0 goes to Praxis `schemas/`; trace only for generated code; B2 interpretations confirmed; audit v2 not used for triage yet) | Done |
+| OD-9 | The verified-completion pilot is Dokimos. It needs a Praxis release containing `work finish` (A3-R1) **and** a Registry-approved set that includes it. The coordinator cuts and registers the release as *assessed*; approving a set is a human approval record the coordinator does not create | Release in progress; set approval needed from the owner |
 
 ## Next executable actions (in order)
 
