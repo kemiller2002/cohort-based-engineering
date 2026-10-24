@@ -1,0 +1,218 @@
+{
+  "schema": "arch001.policy/1",
+  "id": "summa/0.1",
+  "description": "ARCH-002 F2 policy for the Summa snapshot (summa@8b0e93e). Implements pack/SUMMA-ARCHITECTURE.md; every rule is stated there. Class and severity are fixed by the verifier, not by this file.",
+  "projects": [
+    {
+      "path": "src/Summa.Contracts/Summa.Contracts.fsproj",
+      "tier": 1
+    },
+    {
+      "path": "src/Summa.Access/Summa.Access.fsproj",
+      "tier": 1
+    },
+    {
+      "path": "src/Summa.Ledger/Summa.Ledger.fsproj",
+      "tier": 1
+    },
+    {
+      "path": "src/Summa.Storage/Summa.Storage.fsproj",
+      "tier": 2
+    },
+    {
+      "path": "src/Summa.Web.Engine/Summa.Web.Engine.fsproj",
+      "tier": 2
+    },
+    {
+      "path": "src/Summa.Web.Application/Summa.Web.Application.fsproj",
+      "tier": 3
+    },
+    {
+      "path": "src/Summa.Wasm/Summa.Wasm.csproj",
+      "tier": 4
+    },
+    {
+      "path": "src/Summa.Operations/Summa.Operations.fsproj",
+      "tier": 4
+    }
+  ],
+  "testProjects": [
+    "tests/"
+  ],
+  "rules": {
+    "ARC-DEP-01": {
+      "forbiddenReferences": []
+    },
+    "ARC-DEP-02": {
+      "tiers": [
+        1,
+        2
+      ],
+      "allowedPackages": [
+        "FSharp.Core",
+        "EchelonFoundry.Arca.Core",
+        "EchelonFoundry.Limen.Routing"
+      ]
+    },
+    "ARC-SYM-01": {
+      "tiers": [
+        1,
+        2
+      ],
+      "namespaces": [
+        "System.IO",
+        "System.Net",
+        "System.Text.Json",
+        "System.Data",
+        "System.Diagnostics.Process",
+        "System.Diagnostics.ProcessStartInfo",
+        "System.Console",
+        "System.Environment"
+      ],
+      "symbols": [
+        "System.Threading.Tasks.Task.Run",
+        "System.Threading.Tasks.Task.Delay",
+        "System.Threading.Tasks.Task.Factory",
+        "System.Threading.Tasks.Task.Start",
+        "System.Threading.Tasks.Task.Yield",
+        "System.Threading.Tasks.TaskFactory",
+        "System.Threading.Tasks.Parallel",
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.printf",
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.printfn",
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.eprintf",
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.eprintfn",
+        "Microsoft.FSharp.Core.Operators.stdin",
+        "Microsoft.FSharp.Core.Operators.stdout",
+        "Microsoft.FSharp.Core.Operators.stderr"
+      ]
+    },
+    "ARC-SYM-02": {
+      "symbols": [
+        "System.DateTime.Now",
+        "System.DateTime.UtcNow",
+        "System.DateTime.Today",
+        "System.DateTimeOffset.Now",
+        "System.DateTimeOffset.UtcNow",
+        "System.Random",
+        "System.Guid.NewGuid",
+        "System.Diagnostics.Stopwatch"
+      ],
+      "exceptModules": [
+        "Summa.Web.Application.Runtime"
+      ]
+    },
+    "ARC-SYM-03": {
+      "tiers": [
+        3
+      ],
+      "namespaces": [
+        "System.IO",
+        "System.Net",
+        "System.Console"
+      ],
+      "symbols": [
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.printf",
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.printfn",
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.eprintf",
+        "Microsoft.FSharp.Core.ExtraTopLevelOperators.eprintfn",
+        "Microsoft.FSharp.Core.Operators.stdin",
+        "Microsoft.FSharp.Core.Operators.stdout",
+        "Microsoft.FSharp.Core.Operators.stderr"
+      ],
+      "exceptModules": [
+        "Summa.Web.Application.Runtime"
+      ]
+    },
+    "ARC-BND-01": {
+      "tiers": [
+        3
+      ],
+      "namespaces": [
+        "Arca.GitHub",
+        "Fides.Client"
+      ],
+      "exceptModules": [
+        "Summa.Web.Application.Runtime"
+      ]
+    },
+    "ARC-BND-02": {
+      "tiers": [
+        3
+      ],
+      "namespaces": [
+        "Summa.Ledger"
+      ],
+      "kinds": [
+        "function",
+        "method",
+        "activePattern"
+      ],
+      "exceptModules": [
+        "Summa.Web.Application.Runtime"
+      ]
+    },
+    "ARC-BND-03": {
+      "tiers": [
+        3
+      ],
+      "entityNamespaces": [
+        "Summa.Ledger"
+      ],
+      "identifierFields": [
+        "Id",
+        "*Id"
+      ],
+      "exceptModules": [
+        "Summa.Web.Application.Runtime"
+      ]
+    },
+    "ARC-HEU-01": {
+      "tiers": [
+        1,
+        2,
+        3
+      ],
+      "unknownTiers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "unknownCases": [
+        "Unknown"
+      ],
+      "failureCases": [
+        "Failed",
+        "Failure",
+        "Error"
+      ]
+    },
+    "ARC-HEU-02": {
+      "tiers": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "ignoredLiterals": [
+        "0",
+        "1",
+        "-1",
+        "2",
+        "10",
+        "100"
+      ]
+    },
+    "ARC-HEU-03": {
+      "modules": [
+        "Summa.Web.Application"
+      ],
+      "domainNamespaces": [
+        "Summa.Ledger"
+      ]
+    },
+    "ARC-HEU-04": {
+      "maxLines": 500
+    }
+  }
+}

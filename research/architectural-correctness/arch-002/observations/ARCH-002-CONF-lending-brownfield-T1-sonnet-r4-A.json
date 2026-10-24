@@ -1,0 +1,1252 @@
+{
+  "acceptedRequirements": 2,
+  "architecture": {
+    "baseline": {
+      "cacheKey": "3441295895c95d7a",
+      "commit": "39c75abd4e554bf801527aceca64b2e2701a6e1e",
+      "gateFindings": 18,
+      "note": "archcheck on the base commit with the pristine policy (gate) and policy + sealed probes (scoring)",
+      "scoringDetFindings": 14
+    },
+    "measure": "baseline-delta: new = DET finding (ARC-TRC-01 excluded) whose (ruleId, file, symbol, scope) the base commit's scoring report does not hold (multiset)",
+    "newSinceS1": {
+      "count": 0,
+      "keys": []
+    },
+    "p1": {
+      "accept": true,
+      "baseline": {
+        "findings": 18,
+        "id": "baseline-scoring.json",
+        "matched": 16,
+        "sha256": "1015a429237f8f2dcb21878bb05604e403a4fcc9141af8d21e1e7908297071c3"
+      },
+      "baselineApplied": true,
+      "byRule": {
+        "ARC-BND-01": 2,
+        "ARC-BND-03": 6,
+        "ARC-SYM-02": 2,
+        "ARC-SYM-03": 2
+      },
+      "commit": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+      "det": 12,
+      "detFixed": 2,
+      "detNew": 0,
+      "detNewSev2plus": 0,
+      "detNewSeverityWeighted": 0,
+      "detPreexisting": 12,
+      "detSev2plus": 12,
+      "detSeverityWeighted": 24,
+      "errors": [],
+      "evaluable": true,
+      "exit": "0",
+      "findings": [
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File.WriteAllLines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/UseCases.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Application.UseCases",
+          "severity": 2,
+          "symbol": "System.DateTime.UtcNow"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 178,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Fines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 178,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 178,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 179,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Payments"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 179,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 179,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 201,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Host.Persistence.JsonFileStore"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 201,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Host.Persistence.JsonFileStore.create"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Transition/Payments.fs",
+          "line": 24,
+          "preexisting": true,
+          "project": "src/Lending.Transition/Lending.Transition.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Transition.Payments",
+          "severity": 2,
+          "symbol": "System.DateTime.Today"
+        }
+      ],
+      "fixedByRule": {
+        "ARC-BND-02": 1,
+        "ARC-BND-03": 1
+      },
+      "fixedKeys": [
+        {
+          "context": "match Loans.renew (ports.Clock()) (CopyId c) library with",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-02",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Transition.Loans.renew"
+        },
+        {
+          "context": "$\"{c} renewed, due {Views.date loan.DueDate}\"",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Semantic.Loan.DueDate"
+        }
+      ],
+      "heu": 4,
+      "heuNew": 0,
+      "label": "p1",
+      "newByRule": {},
+      "newFindings": [],
+      "policy": {
+        "id": "lending-brownfield/0.1",
+        "sha256": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067"
+      },
+      "probesApplied": true,
+      "trc": 0,
+      "verifier": {
+        "dotnetSdk": "10.0.402",
+        "fcs": "43.12.402-servicing.26505.111",
+        "sha256": "f85fa0a93014274e907932eb9ddebdca688d516f021b6ba8f69c0962da853144",
+        "version": "0.2.0"
+      }
+    },
+    "p2": {
+      "accept": true,
+      "baseline": {
+        "findings": 18,
+        "id": "baseline-scoring.json",
+        "matched": 16,
+        "sha256": "1015a429237f8f2dcb21878bb05604e403a4fcc9141af8d21e1e7908297071c3"
+      },
+      "baselineApplied": true,
+      "byRule": {
+        "ARC-BND-01": 2,
+        "ARC-BND-03": 6,
+        "ARC-SYM-02": 2,
+        "ARC-SYM-03": 2
+      },
+      "commit": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+      "det": 12,
+      "detFixed": 2,
+      "detNew": 0,
+      "detNewSev2plus": 0,
+      "detNewSeverityWeighted": 0,
+      "detPreexisting": 12,
+      "detSev2plus": 12,
+      "detSeverityWeighted": 24,
+      "errors": [],
+      "evaluable": true,
+      "exit": "0",
+      "findings": [
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File.WriteAllLines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/UseCases.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Application.UseCases",
+          "severity": 2,
+          "symbol": "System.DateTime.UtcNow"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 178,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Fines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 178,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 178,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 179,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Payments"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 179,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 179,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 201,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Host.Persistence.JsonFileStore"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 201,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Host.Persistence.JsonFileStore.create"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Transition/Payments.fs",
+          "line": 24,
+          "preexisting": true,
+          "project": "src/Lending.Transition/Lending.Transition.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Transition.Payments",
+          "severity": 2,
+          "symbol": "System.DateTime.Today"
+        }
+      ],
+      "fixedByRule": {
+        "ARC-BND-02": 1,
+        "ARC-BND-03": 1
+      },
+      "fixedKeys": [
+        {
+          "context": "match Loans.renew (ports.Clock()) (CopyId c) library with",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-02",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Transition.Loans.renew"
+        },
+        {
+          "context": "$\"{c} renewed, due {Views.date loan.DueDate}\"",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Semantic.Loan.DueDate"
+        }
+      ],
+      "heu": 4,
+      "heuNew": 0,
+      "label": "p2",
+      "newByRule": {},
+      "newFindings": [],
+      "policy": {
+        "id": "lending-brownfield/0.1",
+        "sha256": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067"
+      },
+      "probesApplied": true,
+      "trc": 0,
+      "verifier": {
+        "dotnetSdk": "10.0.402",
+        "fcs": "43.12.402-servicing.26505.111",
+        "sha256": "f85fa0a93014274e907932eb9ddebdca688d516f021b6ba8f69c0962da853144",
+        "version": "0.2.0"
+      }
+    },
+    "p2-initial-contract": null
+  },
+  "arm": "A",
+  "block": "lending-brownfield/T1/sonnet/r4",
+  "commits": {
+    "F1": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+    "F2": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+    "S1": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+    "S2": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+    "base": "39c75abd4e554bf801527aceca64b2e2701a6e1e",
+    "followup": "7396ab2dd0258e27ded35579a1ab97d04213f02f",
+    "start": "39c75abd4e554bf801527aceca64b2e2701a6e1e"
+  },
+  "completed": true,
+  "cost": {
+    "agrees": true,
+    "byPhase": {
+      "1": 0.1684947,
+      "2": 0.0903688
+    },
+    "priceTableSha256": "c49f889f3bd0af37bde1eaf62b2c13320b37e4b55ce03386ea895b9dcf0492fc",
+    "totalUsd": 0.258864
+  },
+  "decisionFidelity": {
+    "conflict": {
+      "applicable": false,
+      "correct": null,
+      "passed": 0,
+      "tests": 0
+    },
+    "decisionTests": {
+      "passed": 15,
+      "total": 15
+    },
+    "trc": {
+      "definedForArm": false,
+      "p1": null,
+      "p2": null,
+      "p2InitialContract": null
+    }
+  },
+  "diff": {
+    "phase1": {
+      "all": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 6,
+        "linesAdded": 113,
+        "linesDeleted": 21,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 134
+      },
+      "from": "39c75abd4e554bf801527aceca64b2e2701a6e1e",
+      "src": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 4,
+        "linesAdded": 99,
+        "linesDeleted": 19,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 118
+      },
+      "tests": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 1,
+        "linesAdded": 13,
+        "linesDeleted": 2,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 15
+      },
+      "to": "fe9adf92587e9912ebf3b52a6df9397d09ea4498"
+    },
+    "phase2": {
+      "all": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 4,
+        "linesAdded": 22,
+        "linesDeleted": 9,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 31
+      },
+      "from": "7396ab2dd0258e27ded35579a1ab97d04213f02f",
+      "src": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 3,
+        "linesAdded": 17,
+        "linesDeleted": 7,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 24
+      },
+      "tests": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 0,
+        "linesAdded": 0,
+        "linesDeleted": 0,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 0
+      },
+      "to": "caad160284df34442b4940fd1e5e50cd68c9bc4f"
+    }
+  },
+  "excluded": false,
+  "exclusionReasons": [],
+  "exclusions": {
+    "x4": {
+      "contaminated": false
+    },
+    "x5": {
+      "phases": {
+        "1": false,
+        "2": false
+      },
+      "scoredAs": "as is (not excluded)",
+      "timedOut": false
+    },
+    "xIntegrity": {
+      "tampered": false
+    }
+  },
+  "experimentId": "ARCH-002",
+  "firstPassCorrect": {
+    "p1": true,
+    "p2": true
+  },
+  "fixture": "lending-brownfield",
+  "label": "confirmatory",
+  "model": {
+    "budgetMinutes": 60,
+    "configured": "claude-sonnet-5-5",
+    "key": "sonnet",
+    "maxSubmits": 3
+  },
+  "modelKey": "sonnet",
+  "oracle": {
+    "p1": {
+      "allPass": true,
+      "built": true,
+      "commit": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+      "exit": 0,
+      "failed": 0,
+      "kind": "initial",
+      "label": "p1",
+      "missingOracle": false,
+      "passed": 12,
+      "perTest": [
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 DEC-004 a loan is renewable on its due date but overdue the day after",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 DEC-004 any hold on the book blocks renewal, also for the holder's own copy",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 DEC-004 the overdue reason comes before the others",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 an empty listing is unchanged",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 loans shows renewable loans",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R2 DEC-004 renew moves the due date from the current due date",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R2 refused renewals change nothing",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 DEC-004 renew-all gives each refusal its reason",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 help lists renew-all after renew",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 renew-all for nobody, an unknown member and bad arity",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 renew-all only touches that member's loans",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 renew-all renews every renewable loan in listing order",
+          "outcome": "Passed"
+        }
+      ],
+      "ran": true,
+      "total": 12
+    },
+    "p1-first": null,
+    "p2": {
+      "allPass": true,
+      "built": true,
+      "commit": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+      "exit": 0,
+      "failed": 0,
+      "kind": "followup",
+      "label": "p2",
+      "missingOracle": false,
+      "passed": 6,
+      "perTest": [
+        {
+          "name": "OracleT1Followup.LEND2-T1-F1 DEC-004 holds and overdue still block renewal for staff",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Followup.LEND2-T1-F1 DEC-004 staff loans renew four times",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Followup.LEND2-T1-F1 DEC-004 standard loans still renew twice",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Followup.LEND2-T1-F1 DEC-004 student loans renew once",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Followup.LEND2-T1-F1 DEC-004 the limit is the borrower's, per loan",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Followup.LEND2-T1-F1 renew-all with mixed limits",
+          "outcome": "Passed"
+        }
+      ],
+      "ran": true,
+      "total": 6
+    },
+    "p2-first": null,
+    "p2-regression": {
+      "allPass": true,
+      "built": true,
+      "commit": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+      "exit": 0,
+      "failed": 0,
+      "kind": "initial",
+      "label": "p2-regression",
+      "missingOracle": false,
+      "passed": 12,
+      "perTest": [
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 DEC-004 a loan is renewable on its due date but overdue the day after",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 DEC-004 any hold on the book blocks renewal, also for the holder's own copy",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 DEC-004 the overdue reason comes before the others",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 an empty listing is unchanged",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R1 loans shows renewable loans",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R2 DEC-004 renew moves the due date from the current due date",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R2 refused renewals change nothing",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 DEC-004 renew-all gives each refusal its reason",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 help lists renew-all after renew",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 renew-all for nobody, an unknown member and bad arity",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 renew-all only touches that member's loans",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT1Initial.LEND2-T1-R3 renew-all renews every renewable loan in listing order",
+          "outcome": "Passed"
+        }
+      ],
+      "ran": true,
+      "total": 12
+    }
+  },
+  "phases": {
+    "1": {
+      "brief": {
+        "path": "/home/user/arch002-runs/ARCH-002-CONF-lending-brownfield-T1-sonnet-r4-A/brief/AGENT_BRIEF-phase1.md",
+        "sha256": "6ca6a7665fe62ca669bca2d750c3d5df61976aca97ffa29a25b3d29b42be8525",
+        "templates": [
+          {
+            "sha256": "d3d0d6f579b53bac9220e5abfafa31e0967c9b2ab717590e98e3238c42adc7fa",
+            "template": "briefs/core.md"
+          }
+        ],
+        "valuesSha256": "e2d99310fa4b20f3505b4b4f6d77f7822881ecbd2d36e4a495c014b83814a9f4"
+      },
+      "buildExecutions": 1,
+      "byTool": {
+        "Bash": 7,
+        "Read": 1
+      },
+      "cache": {
+        "cacheReadShare": 0.834643,
+        "firstRequestCacheRead": 3440,
+        "firstRequestCacheWrite": 2119,
+        "firstRequestCold": false
+      },
+      "coldEquivalentUsd": 0.40223,
+      "contamination": {
+        "advisory": [],
+        "contaminated": false,
+        "hits": []
+      },
+      "costSource": "result.total_cost_usd",
+      "costUsd": 0.1684947,
+      "crossCheck": {
+        "agrees": true,
+        "basis": "stream usage deduplicated by message id, priced with the harness price table, vs the result event's modelUsage",
+        "mainModelCostRelativeGap": 2e-06,
+        "tokensTotalRelativeGap": 0.0,
+        "totalCostVsModelUsageSumGap": 0.0
+      },
+      "endHead": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+      "exit": 0,
+      "finalLine": {
+        "gitHead": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+        "present": true,
+        "presentNotLast": false
+      },
+      "finalMessageSha256": "740d5a1fa1c8c14820bf74da19c9393afedb3a8c1114257bc4c6ad111a4a3710",
+      "integrity": {
+        "changed": [],
+        "tampered": false
+      },
+      "lastEventAt": "2026-10-23T02:00:39.885000Z",
+      "nonce": "52f134252ddedc1c1298a3c60f3eebbb",
+      "otherModels": {
+        "claude-haiku-5-5": {
+          "costUsd": 0.00014330000000000001,
+          "input": 1288,
+          "output": 29
+        }
+      },
+      "recomputedMainModelUsd": 0.168351,
+      "reportedMainModelUsd": 0.16835139999999998,
+      "requests": 9,
+      "requestsOtherModels": 0,
+      "resultEvent": {
+        "duration_api_ms": 42848,
+        "duration_ms": 153911,
+        "is_error": false,
+        "num_turns": 9,
+        "stop_reason": "end_turn",
+        "subtype": "success",
+        "terminal_reason": "completed"
+      },
+      "sessionId": "bd6819ec-b3f0-4b87-bf39-7ad773cd0697",
+      "startCommit": "39c75abd4e554bf801527aceca64b2e2701a6e1e",
+      "startedAt": "2026-10-23T01:58:06.385Z",
+      "streamOutputTokensLowerBound": 546,
+      "submit": {
+        "attempts": 1,
+        "firstCommit": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+        "firstVerdict": "PASS",
+        "lastCommit": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+        "passed": true,
+        "records": [
+          {
+            "at": "2026-10-23T02:00:34.382Z",
+            "attempt": 1,
+            "checks": {
+              "build": {
+                "exit": 0,
+                "pass": true
+              },
+              "clean": {
+                "pass": true
+              },
+              "tests": {
+                "exit": 0,
+                "pass": true
+              }
+            },
+            "gitHead": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+            "ms": 33043,
+            "phase": 1,
+            "schema": "arch002.submit/1",
+            "treeHash": "e97a8b5b0c0bb0817fe246b1e3a5198898737e8b",
+            "verdict": "PASS"
+          }
+        ],
+        "refused": 0,
+        "verdicts": [
+          "PASS"
+        ]
+      },
+      "testExecutions": 2,
+      "timedOut": false,
+      "tokens": {
+        "cacheRead": 123094,
+        "cacheWrite": 24369,
+        "cacheWrite1h": 24369,
+        "cacheWrite5m": 0,
+        "input": 18,
+        "output": 5853,
+        "total": 153334
+      },
+      "toolCalls": 8,
+      "usageSource": "session transcript",
+      "verificationExecutions": {
+        "archcheck": 0,
+        "ordo": 0,
+        "submit": 1
+      },
+      "wallMs": 153500
+    },
+    "2": {
+      "brief": {
+        "path": "/home/user/arch002-runs/ARCH-002-CONF-lending-brownfield-T1-sonnet-r4-A/brief/AGENT_BRIEF-phase2.md",
+        "sha256": "5bed4d0cd302ee0c93d97322ff62fb3956897ae66fc6ffc22eaa26f2b6add7d4",
+        "templates": [
+          {
+            "sha256": "d3d0d6f579b53bac9220e5abfafa31e0967c9b2ab717590e98e3238c42adc7fa",
+            "template": "briefs/core.md"
+          }
+        ],
+        "valuesSha256": "d22914e3164e1af546cea3185b12e57309ba94e0654abf933ca4a3111f3a4857"
+      },
+      "buildExecutions": 1,
+      "byTool": {
+        "Bash": 6,
+        "Read": 1
+      },
+      "cache": {
+        "cacheReadShare": 0.854135,
+        "firstRequestCacheRead": 3440,
+        "firstRequestCacheWrite": 2121,
+        "firstRequestCold": false
+      },
+      "coldEquivalentUsd": 0.243396,
+      "contamination": {
+        "advisory": [],
+        "contaminated": false,
+        "hits": []
+      },
+      "costSource": "result.total_cost_usd",
+      "costUsd": 0.0903688,
+      "crossCheck": {
+        "agrees": true,
+        "basis": "stream usage deduplicated by message id, priced with the harness price table, vs the result event's modelUsage",
+        "mainModelCostRelativeGap": 6e-06,
+        "tokensTotalRelativeGap": 0.0,
+        "totalCostVsModelUsageSumGap": 0.0
+      },
+      "endHead": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+      "exit": 0,
+      "finalLine": {
+        "gitHead": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+        "present": true,
+        "presentNotLast": false
+      },
+      "finalMessageSha256": "3426f920616db39e33d05f0e7ad4b4b06881f4fb6f60b027ab1d1135168f9758",
+      "integrity": {
+        "changed": [],
+        "tampered": false
+      },
+      "lastEventAt": "2026-10-23T02:02:22.032000Z",
+      "nonce": "8b2e01e4a2d74f36bb47fdd4f595090b",
+      "otherModels": {
+        "claude-haiku-5-5": {
+          "costUsd": 0.00014130000000000002,
+          "input": 1288,
+          "output": 25
+        }
+      },
+      "recomputedMainModelUsd": 0.090228,
+      "reportedMainModelUsd": 0.09022749999999999,
+      "requests": 8,
+      "requestsOtherModels": 0,
+      "resultEvent": {
+        "duration_api_ms": 23705,
+        "duration_ms": 96151,
+        "is_error": false,
+        "num_turns": 8,
+        "stop_reason": "end_turn",
+        "subtype": "success",
+        "terminal_reason": "completed"
+      },
+      "sessionId": "a3f676a8-12b7-4e69-a8ad-435d0c7833a9",
+      "startCommit": "7396ab2dd0258e27ded35579a1ab97d04213f02f",
+      "startedAt": "2026-10-23T02:00:45.731Z",
+      "streamOutputTokensLowerBound": 556,
+      "submit": {
+        "attempts": 1,
+        "firstCommit": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+        "firstVerdict": "PASS",
+        "lastCommit": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+        "passed": true,
+        "records": [
+          {
+            "at": "2026-10-23T02:02:17.655Z",
+            "attempt": 1,
+            "checks": {
+              "build": {
+                "exit": 0,
+                "pass": true
+              },
+              "clean": {
+                "pass": true
+              },
+              "tests": {
+                "exit": 0,
+                "pass": true
+              }
+            },
+            "gitHead": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+            "ms": 29853,
+            "phase": 2,
+            "schema": "arch002.submit/1",
+            "treeHash": "6c380388b55e287e709a2dbbb0f34740163f129e",
+            "verdict": "PASS"
+          }
+        ],
+        "refused": 0,
+        "verdicts": [
+          "PASS"
+        ]
+      },
+      "testExecutions": 1,
+      "timedOut": false,
+      "tokens": {
+        "cacheRead": 80615,
+        "cacheWrite": 13751,
+        "cacheWrite1h": 13751,
+        "cacheWrite5m": 0,
+        "input": 16,
+        "output": 2713,
+        "total": 97095
+      },
+      "toolCalls": 7,
+      "usageSource": "session transcript",
+      "verificationExecutions": {
+        "archcheck": 0,
+        "ordo": 0,
+        "submit": 1
+      },
+      "wallMs": 96301
+    }
+  },
+  "provenance": {
+    "cohortCommit": "f7a00144c321ccdd4bc88886257af36ec00330cf",
+    "digests": {
+      "agentConfig": "9c1758b27c29105b5e5d3806f62d5d0f0d0797af05a6e9a04592b4d1b35e3e34",
+      "archcheckDist": "9d87aef89adc7d3939ce986cd41fe039f2536bb3711f85cdbb8545dbaccba5d8",
+      "baselineGate": "721e78b0b15d946e6f82f71d949b0a78c400fa13af84e0f968ae7410ff8cbe0d",
+      "baselineScoring": "1015a429237f8f2dcb21878bb05604e403a4fcc9141af8d21e1e7908297071c3",
+      "fixtureRepoTree": "b46cb7c1cf5d3146f50cdd944fc799068f79674761b86bc33e70b63daf2fc826",
+      "ordo": null,
+      "packTree": "12eb6b5582a85266da83ef1cf2c34c4fa249daa0e414613202e9f117809f6870",
+      "policy": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067",
+      "priceTable": "c49f889f3bd0af37bde1eaf62b2c13320b37e4b55ce03386ea895b9dcf0492fc",
+      "probes": "1730cbc21c7f565a9482b50de2bb73f75fb336daf58d6ae38d398a1e099cbf91",
+      "taskTree": "1e670907c279378433699025f23d059d098a96b2ba903b029b903c679bca1817"
+    },
+    "integritySetup": {
+      "harness": "d2e76f212f201e31703efcba8558019c4454021a7110aa3fa8f29e0a495d02f0",
+      "ordo": null,
+      "policySource": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067",
+      "pristine": "472aa3e70ca08ae2a8d66b2ee674801971a0c4023efe046cbaae4d97753d1000",
+      "sealed": "c742a07acf7d4b1192035903747d4a7d9eb8c0fb168899d69a6d2107ead371c5",
+      "tools": "c2145134baa3a23e1ba1645a15ae615ebd0df427a8accbef6f850b5aa9af19ae",
+      "verifierDist": "9d87aef89adc7d3939ce986cd41fe039f2536bb3711f85cdbb8545dbaccba5d8"
+    },
+    "tools": {
+      "claudeCode": "2.1.308 (Claude Code)",
+      "dotnet": "10.0.402",
+      "ordo": null
+    }
+  },
+  "regression": {
+    "allPass": true,
+    "basis": "oracle.json regression list",
+    "built": true,
+    "failed": 0,
+    "passed": 12,
+    "ran": true,
+    "tests": [
+      "OracleT1Initial.LEND2-T1-R1 DEC-004 a loan is renewable on its due date but overdue the day after",
+      "OracleT1Initial.LEND2-T1-R1 DEC-004 any hold on the book blocks renewal, also for the holder's own copy",
+      "OracleT1Initial.LEND2-T1-R1 DEC-004 the overdue reason comes before the others",
+      "OracleT1Initial.LEND2-T1-R1 an empty listing is unchanged",
+      "OracleT1Initial.LEND2-T1-R1 loans shows renewable loans",
+      "OracleT1Initial.LEND2-T1-R2 DEC-004 renew moves the due date from the current due date",
+      "OracleT1Initial.LEND2-T1-R2 refused renewals change nothing",
+      "OracleT1Initial.LEND2-T1-R3 DEC-004 renew-all gives each refusal its reason",
+      "OracleT1Initial.LEND2-T1-R3 help lists renew-all after renew",
+      "OracleT1Initial.LEND2-T1-R3 renew-all for nobody, an unknown member and bad arity",
+      "OracleT1Initial.LEND2-T1-R3 renew-all only touches that member's loans",
+      "OracleT1Initial.LEND2-T1-R3 renew-all renews every renewable loan in listing order"
+    ],
+    "total": 12
+  },
+  "replicate": 4,
+  "requirements": [
+    {
+      "accepted": true,
+      "archAccept": true,
+      "archEvaluable": true,
+      "commit": "fe9adf92587e9912ebf3b52a6df9397d09ea4498",
+      "functionalPass": true,
+      "id": "R1",
+      "phase": 1
+    },
+    {
+      "accepted": true,
+      "archAccept": true,
+      "archEvaluable": true,
+      "commit": "caad160284df34442b4940fd1e5e50cd68c9bc4f",
+      "functionalPass": true,
+      "id": "R2",
+      "phase": 2
+    }
+  ],
+  "review": {
+    "endedAt": "2026-10-24T00:41:28.996Z",
+    "evaluationCost": {
+      "modelUsage": {
+        "claude-haiku-5-5": {
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "canonicalModel": "claude-haiku-5-5",
+          "contextWindow": 1000000,
+          "costBasis": "list",
+          "costUSD": 0.0001336,
+          "inputTokens": 1246,
+          "maxOutputTokens": 128000,
+          "outputTokens": 18,
+          "provider": "firstParty",
+          "thinkingTokens": 0,
+          "webSearchRequests": 0
+        },
+        "claude-sonnet-5-5": {
+          "cacheCreationInputTokens": 18978,
+          "cacheReadInputTokens": 13497,
+          "canonicalModel": "claude-sonnet-5-5",
+          "contextWindow": 1000000,
+          "costBasis": "list",
+          "costUSD": 0.10298370000000001,
+          "inputTokens": 6,
+          "maxOutputTokens": 128000,
+          "outputTokens": 2571,
+          "provider": "firstParty",
+          "thinkingTokens": 723,
+          "webSearchRequests": 0
+        }
+      },
+      "note": "evaluation cost; never added to arm cost",
+      "totalUsd": 0.10311730000000001
+    },
+    "exit": 0,
+    "nonce": "a2b1caf360600a8da0c5bdd4cd674147",
+    "reply": {
+      "changeSets": {
+        "1": {
+          "ARC-REV-01": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Loans.fs",
+                "line": 64,
+                "quote": "let renewalBlock (today: DateOnly) (copy: Copy) (loan: Loan) (library: Library) : LendingError option ="
+              },
+              {
+                "file": "src/Lending.Application/Views.fs",
+                "line": 212,
+                "quote": "|> Option.bind (fun copy -> Loans.renewalBlock today copy loan library)"
+              }
+            ],
+            "rationale": "The new rule, the first reason a loan cannot be renewed in the decision's order, is a single Tier 2 function. `Loans.renew` now calls it. The Tier 3 view and `renewAll` only call Tier 2 (`renewalBlock`, `Loans.renew`) and format the result. `renewalReason` only maps error values to text. The CLI no longer calls `Loans.renew` itself, which removes an existing Tier 4 to Tier 2 re-entry.",
+            "score": 2
+          },
+          "ARC-REV-02": {
+            "evidence": [
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 99,
+                "quote": "query ports (Views.memberLoans (ports.Clock()) (MemberId memberId))"
+              },
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 119,
+                "quote": "let library = ports.Store.Load()"
+              }
+            ],
+            "rationale": "The clock, load and save all go through the existing `Ports` record in Tier 3. `Views.ofLoan` takes `today` as a parameter, so it stays pure. The CLI now only calls use cases (`UseCases.renew`, `UseCases.renewAll`) and renders the views. This removes the old direct `Store.Load`/`Save` and `Loans.renew` calls from presentation. No new effects were added below Tier 4.",
+            "score": 2
+          },
+          "ARC-REV-03": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Loans.fs",
+                "line": 65,
+                "quote": "elif loan.Renewals >= Policy.renewLimit then Some(RenewLimitReached(loan.Copy, Policy.renewLimit))"
+              }
+            ],
+            "rationale": "The limit stays as the single `Policy.renewLimit`. The reason ordering and conditions are defined once in `renewalBlock`, and `renew`, `loans` and `renew-all` all use it. `RenewalView.Limit` reads the policy value rather than copying a literal. `renewalReason` takes the limit from the error value, so nothing is restated.",
+            "score": 2
+          }
+        },
+        "2": {
+          "ARC-REV-01": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Loans.fs",
+                "line": 65,
+                "quote": "let renewLimitOf (loan: Loan) (library: Library) ="
+              },
+              {
+                "file": "src/Lending.Transition/Policy.fs",
+                "line": 22,
+                "quote": "let renewLimit memberType ="
+              },
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 111,
+                "quote": "Limit = Loans.renewLimitOf loan library"
+              }
+            ],
+            "rationale": "The per-member-type limit is chosen entirely in Tier 2 (`Policy.renewLimit` by member type, and `Loans.renewLimitOf` to find the borrower). Tier 3 only calls `Loans.renewLimitOf` to display the limit. `Views.renewalReason` is untouched and keeps taking the limit from the error. No Tier 3 or Tier 4 site re-decides anything.",
+            "score": 2
+          },
+          "ARC-REV-02": {
+            "evidence": [],
+            "rationale": "The change adds no effects. It only changes pure Tier 2 code and the Tier 3 view mapping, which still runs inside the existing `commit` and `Store` flow.",
+            "score": 2
+          },
+          "ARC-REV-03": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Policy.fs",
+                "line": 22,
+                "quote": "| Standard -> 2 | Student -> 1 | Staff -> 4"
+              }
+            ],
+            "rationale": "The limits live in one place, `Policy.renewLimit`. The old `Policy.renewLimit` constant is replaced, not duplicated, and `Loans.renewLimitOf` is the only route to it. The check, the error payload and the display all use that one function. `renewalBlock` calls `renewLimitOf` twice, but both calls give the same value. The decision document was updated to match. The fallback to `Standard` for a missing member is a small defensive default, not a drifting copy of the facts.",
+            "score": 2
+          }
+        }
+      },
+      "schema": "arch002.review/1"
+    },
+    "reviewId": "7b6a8741b3470ee4",
+    "schema": "arch002.review-result/1",
+    "scores": {
+      "1": {
+        "ARC-REV-01": 2,
+        "ARC-REV-02": 2,
+        "ARC-REV-03": 2
+      },
+      "2": {
+        "ARC-REV-01": 2,
+        "ARC-REV-02": 2,
+        "ARC-REV-03": 2
+      }
+    },
+    "sessionId": "99581270-667c-459c-8350-6db76eeb154c",
+    "startedAt": "2026-10-24T00:41:03.762Z",
+    "unblindingAccess": [],
+    "valid": true,
+    "writeAttempts": 0
+  },
+  "runId": "ARCH-002-CONF-lending-brownfield-T1-sonnet-r4-A",
+  "schema": "arch002.observation/1",
+  "status": "scored",
+  "task": "T1",
+  "taskKey": "lending-brownfield/T1",
+  "taskMeta": {
+    "categories": [
+      1,
+      5
+    ],
+    "conflict": false,
+    "control": false,
+    "crossTierCount": 3,
+    "standIn": false,
+    "trap": true,
+    "trapRules": [
+      "ARC-BND-03",
+      "ARC-BND-02"
+    ]
+  },
+  "visibleTests": {
+    "p1": {
+      "allPass": true,
+      "failed": 0,
+      "passed": 24,
+      "total": 24
+    },
+    "p2": {
+      "allPass": true,
+      "failed": 0,
+      "passed": 26,
+      "total": 26
+    },
+    "preexistingBroken": {
+      "count": 0,
+      "missingAtS2": [],
+      "names": []
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "acceptanceDifferenceD-A": {
+    "delta": 0.2,
+    "replicatesPerCell": 3,
+    "trialsPerArm": 48
+  },
+  "archAcceptanceRatePooled": {
+    "clampedTo": [
+      0.05,
+      0.95
+    ],
+    "designEffect": 1.5,
+    "rate": 0.8
+  },
+  "assumptions": "two-sided alpha 0.05, power 0.80; normal approximation; rho 0.5 within trial; pilot spread is a floor estimate",
+  "decision": {
+    "capBinds": false,
+    "confirmatoryTrials": 320,
+    "maxReplicatesUnderCap": 7,
+    "needed": 4,
+    "projectedCostUsd": 329.44,
+    "replicates": 4,
+    "rule": "replicates = max(2, min(needed, maxReplicatesUnderCap, 4)); needed = max(acceptance delta 0.2, ratio 0.7), per (task, model, arm) cell"
+  },
+  "label": "PILOT ESTIMATE (planning only; pooled across arms and models)",
+  "logRatioVariancePerTrialPooled": 0.560053,
+  "models": 2,
+  "pilotTrials": 15,
+  "primaryRatioD/A": {
+    "ratio": 0.7,
+    "replicatesPerCell": 4,
+    "trialsPerArm": 70
+  },
+  "resource": {
+    "byModel": {
+      "opus": {
+        "meanCostPerTrialUsd": 1.5284,
+        "trials": 8
+      },
+      "sonnet": {
+        "meanCostPerTrialUsd": 0.4593,
+        "trials": 7
+      }
+    },
+    "byReplicates": {
+      "2": {
+        "costUsd": 164.72,
+        "trials": 160,
+        "wallHoursAtConcurrency": 9.72
+      },
+      "3": {
+        "costUsd": 247.08,
+        "trials": 240,
+        "wallHoursAtConcurrency": 14.59
+      },
+      "4": {
+        "costUsd": 329.44,
+        "trials": 320,
+        "wallHoursAtConcurrency": 19.45
+      }
+    },
+    "capUsd": 600.0,
+    "costPerReplicateUsd": 82.36,
+    "meanCostPerTrialUsd": 1.0295,
+    "meanWallMinutesPerTrial": 10.94
+  },
+  "tasks": 10
+}

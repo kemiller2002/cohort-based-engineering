@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Tests of Summa's storage on Arca, against Arca's in-memory provider. -->
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Support.fs" />
+    <Compile Include="DeploymentTests.fs" />
+    <Compile Include="StorageTests.fs" />
+    <Compile Include="AccessTests.fs" />
+    <Compile Include="GovernanceTests.fs" />
+    <Compile Include="Books.fs" />
+    <Compile Include="FinancialRecordsTests.fs" />
+    <Compile Include="CommandTests.fs" />
+    <Compile Include="IntegrityTests.fs" />
+    <Compile Include="MigrationTests.fs" />
+    <Compile Include="WorkspaceTests.fs" />
+    <Compile Include="FinancialMigrationTests.fs" />
+    <Compile Include="RecoveryTests.fs" />
+    <Compile Include="RoutineTests.fs" />
+    <Compile Include="EnvironmentTests.fs" />
+    <Compile Include="ArtifactsTests.fs" />
+    <Compile Include="OperationalSafetyTests.fs" />
+    <Compile Include="InvoiceExportTests.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Summa.Storage/Summa.Storage.fsproj" />
+    <ProjectReference Include="../../src/Summa.Operations/Summa.Operations.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EchelonFoundry.Arca.Core" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+</Project>

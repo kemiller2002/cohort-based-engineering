@@ -1,0 +1,108 @@
+{
+  "schema": "arch002.task/1",
+  "fixture": "lending-brownfield",
+  "id": "T4",
+  "workItem": "LEND2-T4",
+  "title": "T4: Restoring backups",
+  "categories": [
+    4,
+    8
+  ],
+  "categoryNames": [
+    "bypassed repository/service abstractions",
+    "works initially but makes follow-ups expensive"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND2-T4-R1",
+      "LEND2-T4-R2",
+      "LEND2-T4-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T4.md#LEND2-T4-R1",
+      "requirements/T4.md#LEND2-T4-R2",
+      "requirements/T4.md#LEND2-T4-R3"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T4 follow-up: Restoring one member",
+    "requirementIds": [
+      "LEND2-T4-F1"
+    ],
+    "requirementKeys": [
+      "requirements/T4-followup.md#LEND2-T4-F1"
+    ],
+    "decisionIds": [],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T4/requirement.md",
+      "target": "requirements/T4.md",
+      "sha256": "2607b946d8e4826b45cdc59a7f9020cbb0eab6b6c6db8980066d8b223f60c8a8"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T4/acceptance/T4AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T4AcceptanceTests.fs",
+        "sha256": "c236e207326a0a3e3d6c067802d10a09efe4d7bc0c58dbe976eb9377136407f7"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T4/followup.md",
+      "target": "requirements/T4-followup.md",
+      "sha256": "7762884ec4db810ccc904cc9221464ba27875094f3aff60cd6676f8ca8e9b0b8"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T4/followup-acceptance/T4FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T4FollowupAcceptanceTests.fs",
+        "sha256": "eff0dfe1f00f350f4e09da653ab3a7ac7ef0a597a51d61c90625f9a5340e017f"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T4/InitialOracleTests.fs",
+        "sha256": "faa6f70562b9d0dd04aae0b65da226b46e1c9bf350fadbbac2e138e37a6a164f"
+      },
+      "followup": {
+        "path": "sealed:oracle/T4/FollowupOracleTests.fs",
+        "sha256": "b67055078b6eb309f2bb3c2f4ab118966118bb4d9b1967e9b346b01621316e47"
+      },
+      "manifest": {
+        "path": "sealed:oracle/T4/oracle.json",
+        "sha256": "3c2f4ec51e26b213ba855ea6b68100dab18cf35aa39e6fa042e77420e1f4b80a"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T4/probes.json",
+      "sha256": "0d63f37b911c174868cc95721e6d3fcdd05a516f3e5761f1ab465dc8d07bb03f"
+    }
+  },
+  "contract": {
+    "path": "tasks/T4/contract.json",
+    "sha256": "712a385f949d56f64780dbd409596c641ec539bc2642cafc4036131177ccdce3",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:cb02884a66ba0ead75d266833811891dc50404885d56597b3154fbec2f65f8e7",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T4/followup-contract.json",
+    "sha256": "8f8b5d08ca8eb87fd6426b2035114d71fcf51a92d9caaab93e72468df0964e17",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:5837a6bf583a9a355619f5c9a0acf88b2766b1060c70b5def8ab60a47665f91c",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T4.json"
+}

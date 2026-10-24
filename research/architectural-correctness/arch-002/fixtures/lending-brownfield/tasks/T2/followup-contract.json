@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:4d29690a26be49c306a1dccdbfa259300699a968fe25f22b6772afd00ab602d9",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T2-followup.md#LEND2-T2-F1",
+        "originalId": "LEND2-T2-F1",
+        "document": "requirements/T2-followup.md",
+        "location": "L8",
+        "revision": "sha256:4d29690a26be49c306a1dccdbfa259300699a968fe25f22b6772afd00ab602d9",
+        "contentDigest": "sha256:0b3f6647dff8182c374b8e28fd6db8089319914e3c91b9a1beb56be1518abeb9"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-009",
+        "VERIFY-T2F-F1",
+        "COHORT-T2F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-009",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T2-followup.md#LEND2-T2-F1"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2: the blocking balance is the member type's (standard 5.00, student 2.00, staff 10.00); the rest of DEC-009 is unchanged"
+    },
+    {
+      "id": "VERIFY-T2F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2-followup.md#LEND2-T2-F1"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    },
+    {
+      "id": "COHORT-T2F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T2-followup.md#LEND2-T2-F1"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    }
+  ]
+}

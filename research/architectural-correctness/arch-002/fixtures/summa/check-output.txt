@@ -1,0 +1,66 @@
+ARCH-002 F2 (summa) fixture check
+fixture tree: 34e7d8866b31bbcf9bff67fdc8cd32d35c2e5ed5f93cd79a995f2fd8b2aa33a6
+sealed tree:  5ebe9405ea2dbf47ae0214702933ce192bf45c5308783d3c1313eb404d22e712
+dotnet 10.0.402; ordo 33a37628439f32a2…; archcheck f85fa0a93014274e… (verifier/dist/archcheck.dll); policy summa/0.1
+ok   S1 pack/FOUR-TIER-ARCHITECTURE.md sha256 725cb3d97b56142a4de07ea6cbbdafbbb421735b79e375aa10fd40308d08775b (SDE-DOCTRINE-003 v0.2.1, byte for byte)
+ok   S2 no oracle or reference content in repo/, pack/ or tasks/
+ok   S3 every policy and probe rule is stated in pack/SUMMA-ARCHITECTURE.md (no secret rules)
+ok   S4 every file digest in task.json matches
+ok   S5 make-contracts.py reproduces every contract.json, followup-contract.json, task.json and task-private/*.json
+ok   S6 make-snapshot.sh reproduces repo/ from 8b0e93e (395 files, 6.3M)
+--  start: builds and its own tests pass (whole solution)    expected PASS got PASS ok        (passed 656, failed 0) 152s
+--  start: archcheck reproduces the sealed baseline keys     ok        (347 DET findings: ARC-BND-01 x157, ARC-SYM-01 x190) 139s
+
+T1  start: visible tests                                     expected FAIL got FAIL ok        (passed 656, failed 0) 405s
+T1  start: initial oracle                                    expected FAIL got FAIL ok        (build failed (3 distinct compiler errors)) 40s
+T1  good: visible tests (whole solution)                     expected PASS got PASS ok        (passed 660, failed 0) 438s
+T1  good: initial oracle                                     expected PASS got PASS ok        (passed 20, failed 0) 49s
+T1  good: archcheck --baseline (policy + probes)             expected PASS got PASS ok        (new DET sev3=0 sev2=0; preexisting 347) 363s
+T1  good: follow-up oracle (not yet solved)                  expected FAIL got FAIL ok        (build failed (2 distinct compiler errors)) 36s
+T1  good: follow-up visible tests (not yet solved)           expected FAIL got FAIL ok        (passed 656, failed 0) 323s
+T1  trap: visible tests (whole solution)                     expected PASS got PASS ok        (passed 660, failed 0) 289s
+T1  trap: initial oracle (functionally correct)              expected PASS got PASS ok        (passed 20, failed 0) 37s
+T1  trap: archcheck --baseline (policy + probes)             expected FAIL got FAIL ok        (new DET sev3=32 sev2=0; preexisting 347) 291s
+       new DET findings: ARC-SYM-01 src/Summa.Ledger/Statements.fs x32
+T1  followup-good: visible tests (whole solution)            expected PASS got PASS ok        (passed 663, failed 0) 231s
+T1  followup-good: follow-up oracle                          expected PASS got PASS ok        (passed 14, failed 0) 18s
+T1  followup-good: regression (initial oracle minus superseded) expected PASS got PASS ok        (passed 19, failed 1; 1 superseded) 27s
+T1  followup-good: archcheck --baseline (policy + probes)    expected PASS got PASS ok        (new DET sev3=0 sev2=0; preexisting 347) 194s
+T1  ordo admits contract.json                                expected true  got true  ok       (sha256:f8ed7113cfc2f52f)
+T1  ordo admits followup-contract.json                       expected true  got true  ok       (sha256:dcce93cd95ab69eb)
+
+T2  start: visible tests                                     expected FAIL got FAIL ok        (passed 656, failed 0) 408s
+T2  start: initial oracle                                    expected FAIL got FAIL ok        (build failed (4 distinct compiler errors)) 41s
+T2  good: visible tests (whole solution)                     expected PASS got PASS ok        (passed 659, failed 0) 438s
+T2  good: initial oracle                                     expected PASS got PASS ok        (passed 22, failed 0) 50s
+T2  good: archcheck --baseline (policy + probes)             expected PASS got PASS ok        (new DET sev3=0 sev2=0; preexisting 347) 374s
+T2  good: follow-up oracle (not yet solved)                  expected FAIL got FAIL ok        (passed 4, failed 9) 68s
+T2  good: follow-up visible tests (not yet solved)           expected FAIL got FAIL ok        (passed 659, failed 2) 290s
+T2  trap: visible tests (whole solution)                     expected PASS got PASS ok        (passed 659, failed 0) 318s
+T2  trap: initial oracle (functionally correct)              expected PASS got PASS ok        (passed 22, failed 0) 45s
+T2  trap: archcheck --baseline (policy + probes)             expected FAIL got FAIL ok        (new DET sev3=51 sev2=0; preexisting 347) 283s
+       new DET findings: ARC-SYM-01 src/Summa.Storage/Transfer.fs x51
+T2  followup-good: visible tests (whole solution)            expected PASS got PASS ok        (passed 661, failed 0) 210s
+T2  followup-good: follow-up oracle                          expected PASS got PASS ok        (passed 13, failed 0) 24s
+T2  followup-good: regression (initial oracle minus superseded) expected PASS got PASS ok        (passed 21, failed 1; 1 superseded) 28s
+T2  followup-good: archcheck --baseline (policy + probes)    expected PASS got PASS ok        (new DET sev3=0 sev2=0; preexisting 347) 180s
+T2  ordo admits contract.json                                expected true  got true  ok       (sha256:e7fa899d84c1e6eb)
+T2  ordo admits followup-contract.json                       expected true  got true  ok       (sha256:6e8499eccc7e572a)
+
+T3  start: visible tests                                     expected FAIL got FAIL ok        (passed 656, failed 0) 441s
+T3  start: initial oracle                                    expected FAIL got FAIL ok        (build failed (1 distinct compiler errors)) 51s
+T3  good: visible tests (whole solution)                     expected PASS got PASS ok        (passed 659, failed 0) 388s
+T3  good: initial oracle                                     expected PASS got PASS ok        (passed 16, failed 0) 47s
+T3  good: archcheck --baseline (policy + probes)             expected PASS got PASS ok        (new DET sev3=0 sev2=0; preexisting 347) 368s
+T3  good: follow-up oracle (not yet solved)                  expected FAIL got FAIL ok        (build failed (1 distinct compiler errors)) 35s
+T3  good: follow-up visible tests (not yet solved)           expected FAIL got FAIL ok        (passed 656, failed 0) 322s
+T3  trap                                                     none (control task)
+T3  followup-good: visible tests (whole solution)            expected PASS got PASS ok        (passed 661, failed 0) 286s
+T3  followup-good: follow-up oracle                          expected PASS got PASS ok        (passed 9, failed 0) 39s
+T3  followup-good: regression (initial oracle minus superseded) expected PASS got PASS ok        (passed 15, failed 1; 1 superseded) 37s
+T3  followup-good: archcheck --baseline (policy + probes)    expected PASS got PASS ok        (new DET sev3=0 sev2=0; preexisting 347) 289s
+T3  ordo admits contract.json                                expected true  got true  ok       (sha256:54927d1c82ffa6f8)
+T3  ordo admits followup-contract.json                       expected true  got true  ok       (sha256:e3f4cc30657d5af3)
+
+RESULT: PASS (every expectation held: 53 checks)
+

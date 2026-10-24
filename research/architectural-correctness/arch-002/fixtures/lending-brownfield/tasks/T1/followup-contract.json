@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:7e6191c19456f2e137e0add6debcc67a1fe4ca5cf9586f96e8c0250d95206964",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T1-followup.md#LEND2-T1-F1",
+        "originalId": "LEND2-T1-F1",
+        "document": "requirements/T1-followup.md",
+        "location": "L9",
+        "revision": "sha256:7e6191c19456f2e137e0add6debcc67a1fe4ca5cf9586f96e8c0250d95206964",
+        "contentDigest": "sha256:a82dc849b7608e58a9583201504b6fc5541501dfead393a541f26108968db1b5"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-004",
+        "VERIFY-T1F-F1",
+        "COHORT-T1F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-004",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T1-followup.md#LEND2-T1-F1"
+      ],
+      "dependsOn": [],
+      "justification": "revision 2: the renewal limit is the borrower's member type's (standard 2, student 1, staff 4); the rest of DEC-004 is unchanged"
+    },
+    {
+      "id": "VERIFY-T1F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T1-followup.md#LEND2-T1-F1"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    },
+    {
+      "id": "COHORT-T1F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T1-followup.md#LEND2-T1-F1"
+      ],
+      "dependsOn": [
+        "DEC-004"
+      ]
+    }
+  ]
+}

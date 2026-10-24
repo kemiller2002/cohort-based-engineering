@@ -1,0 +1,112 @@
+{
+  "schema": "arch002.task/1",
+  "fixture": "lending-brownfield",
+  "id": "T1",
+  "workItem": "LEND2-T1",
+  "title": "T1: Renewals at the desk",
+  "categories": [
+    1,
+    5
+  ],
+  "categoryNames": [
+    "business logic in UI",
+    "duplicated domain rules"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "LEND2-T1-R1",
+      "LEND2-T1-R2",
+      "LEND2-T1-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T1.md#LEND2-T1-R1",
+      "requirements/T1.md#LEND2-T1-R2",
+      "requirements/T1.md#LEND2-T1-R3"
+    ],
+    "decisionIds": [
+      "DEC-004"
+    ],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T1 follow-up: Renewal limits by member type",
+    "requirementIds": [
+      "LEND2-T1-F1"
+    ],
+    "requirementKeys": [
+      "requirements/T1-followup.md#LEND2-T1-F1"
+    ],
+    "decisionIds": [
+      "DEC-004"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T1/requirement.md",
+      "target": "requirements/T1.md",
+      "sha256": "5f0f005c8eec46959b16e057ba326040e1b56d6cb24be6be1a501dcfdbd99dbe"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T1/acceptance/T1AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T1AcceptanceTests.fs",
+        "sha256": "6a65f0b0f53685bbf27ad332e39289816b232e69f80c46e75d2af6124f258c84"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T1/followup.md",
+      "target": "requirements/T1-followup.md",
+      "sha256": "7e6191c19456f2e137e0add6debcc67a1fe4ca5cf9586f96e8c0250d95206964"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T1/followup-acceptance/T1FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T1FollowupAcceptanceTests.fs",
+        "sha256": "75b84a248cee4bbb87fa79c1a8e180fe7feeccc234620cfefbd08e1327c225d6"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T1/InitialOracleTests.fs",
+        "sha256": "becf8692207c0b5f1cc893ca3aa17815d19bc50297efc4160184f9efcf5dd41b"
+      },
+      "followup": {
+        "path": "sealed:oracle/T1/FollowupOracleTests.fs",
+        "sha256": "71539990754f4dfddaacd20eb7163d11d0911f9037cb74c6f246b4ce72ae1eda"
+      },
+      "manifest": {
+        "path": "sealed:oracle/T1/oracle.json",
+        "sha256": "9043826160ccc93d72d1b1552d22b59740d269c1c50acb65ef52bc2807759565"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T1/probes.json",
+      "sha256": "1730cbc21c7f565a9482b50de2bb73f75fb336daf58d6ae38d398a1e099cbf91"
+    }
+  },
+  "contract": {
+    "path": "tasks/T1/contract.json",
+    "sha256": "593f695cda5623c4975ec19dd693392d9b8f875a8872a2c2e66190ee42248519",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:b3a1755e20dca5a459f4627461e5d9f8d840f7d60bfced4eee0723972957377c",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T1/followup-contract.json",
+    "sha256": "8af6f72460baf44290e014284bb4471dab76f7712bd6c694bf0d8913582e4ff3",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:c09f495d23f62654c5785c116eb363d69029fa4e12bbbb06370daefc0bdb875e",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T1.json"
+}

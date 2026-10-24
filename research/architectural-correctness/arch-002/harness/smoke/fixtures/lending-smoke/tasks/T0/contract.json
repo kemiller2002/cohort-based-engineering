@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "requirements": [
+    {
+      "source": {"key": "requirements/T0.md#LENDING-T0-R1", "originalId": "LENDING-T0-R1", "document": "requirements/T0.md", "location": "L3",
+                 "revision": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+                 "contentDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"},
+      "disposition": {"kind": "modeled"},
+      "nodeIds": ["DEC-T0-FEE-RULE", "VERIFY-T0-R1", "COHORT-T0-R1"]
+    }
+  ],
+  "nodes": [
+    {"id": "DEC-T0-FEE-RULE", "kind": "decision", "requirementKeys": ["requirements/T0.md#LENDING-T0-R1"], "dependsOn": [], "justification": "the fee rule lives in Lending.Semantic.Fees only"},
+    {"id": "VERIFY-T0-R1", "kind": "verificationObligation", "requirementKeys": ["requirements/T0.md#LENDING-T0-R1"], "dependsOn": ["DEC-T0-FEE-RULE"]},
+    {"id": "COHORT-T0-R1", "kind": "cohort", "requirementKeys": ["requirements/T0.md#LENDING-T0-R1"], "dependsOn": ["DEC-T0-FEE-RULE"]}
+  ]
+}

@@ -1,0 +1,131 @@
+/// An organization's books kept in one browser, for a local or demo
+/// deployment that names no data location (WI-0030).
+///
+/// The snapshot is the organization manifest's canonical text plus every
+/// financial record's canonical text, by the same paths Arca would store
+/// them under. Reading it back runs the same checks as reading a folder:
+/// - each record is validated;
+/// - its path must be the one its content names;
+/// - the books must satisfy every invariant.
+///
+/// The browser's copy is untrusted like any stored data. A GitHub-backed
+/// deployment replaces this with Arca (WI-0037).
+///
+/// Pure.
+module Summa.Storage.LocalSnapshot
+
+open System
+open System.IO
+open System.Text
+open System.Text.Json
+open Arca
+open Summa.Ledger.Ledger
+open Summa.Ledger.Invoicing
+open Summa.Ledger.Payments
+open Summa.Storage.Diagnostics
+
+[<Literal>]
+let Version = 1
+
+/// The local organization's id; a local deployment serves one organization.
+[<Literal>]
+let OrganizationId = "org_local"
+
+/// The chart a new local organization starts with: the same starting chart
+/// as books on a store.
+let defaultChart = Organization.startingChart
+
+/// A new local organization: its manifest and books with the default chart.
+let start (context: Context) (displayName: string) (company: Organization.CompanyInformation) (paymentInstructions: string) =
+    let created = Organization.create OrganizationId displayName "local" "USD" "UTC" context.When
+
+    let manifest =
+        { created with
+            Company = company
+            Invoices = { created.Invoices with PaymentInstructions = paymentInstructions } }
+
+    let ledger =
+        defaultChart
+        |> List.fold (fun ledger account -> ledger |> Result.bind (addAccount context account)) (Ok empty)
+
+    ledger |> Result.map (fun l -> manifest, start (openBooks l))
+
+let private storedObject (path: string) (content: string) : Result<StoredObject, string> =
+    RelativePath.parse path
+    |> Result.mapError LocationError.describe
+    |> Result.map (fun p ->
+        { Path = p
+          Content = content
+          Revision = Revision("local:" + path) })
+
+/// The snapshot's text, or why the books cannot be stored.
+let encode (manifest: Organization.OrganizationManifest) (r: Receivables) : Result<string, Diagnostic list> =
+    Organization.encode manifest
+    |> Result.bind (fun manifestText ->
+        FinancialRecords.toRecords r
+        |> Result.bind FinancialRecords.contents
+        |> Result.map (fun records ->
+            use stream = new MemoryStream()
+
+            do
+                use w = new Utf8JsonWriter(stream)
+                w.WriteStartObject()
+                w.WriteNumber("version", Version)
+                w.WriteString("manifest", manifestText)
+                w.WriteStartObject "records"
+
+                for KeyValue(path, (_, content)) in records do
+                    w.WriteString(path, content)
+
+                w.WriteEndObject()
+                w.WriteEndObject()
+
+            Encoding.UTF8.GetString(stream.ToArray())))
+
+/// What a snapshot holds, after every check.
+[<NoComparison; NoEquality>]
+type Restored =
+    { Manifest: Organization.OrganizationManifest
+      Books: Receivables
+      /// Integrity problems; the books must not be used when there are any.
+      Problems: Diagnostic list
+      /// The manifest was at an older schema and was migrated as it was
+      /// read (`Migrations.currentManifest`); save the snapshot again.
+      Migrated: bool }
+
+/// Reads a snapshot back. A snapshot that is not one at all is an error;
+/// one whose records fail checks is restored with its problems listed.
+let decode (text: string) : Result<Restored, string> =
+    try
+        use document = JsonDocument.Parse text
+        let root = document.RootElement
+
+        match root.TryGetProperty "version", root.TryGetProperty "manifest", root.TryGetProperty "records" with
+        | (true, v), (true, m), (true, records) when v.ValueKind = JsonValueKind.Number && v.GetInt32() = Version && m.ValueKind = JsonValueKind.String && records.ValueKind = JsonValueKind.Object ->
+            let objects =
+                records.EnumerateObject()
+                |> Seq.map (fun p ->
+                    match p.Value.ValueKind with
+                    | JsonValueKind.String -> storedObject p.Name (p.Value.GetString() |> Option.ofObj |> Option.defaultValue "")
+                    | _ -> Error $"record {p.Name} is not text")
+                |> List.ofSeq
+
+            match objects |> List.tryPick (function Error e -> Some e | Ok _ -> None) with
+            | Some problem -> Error problem
+            | None ->
+                let manifestText = m.GetString() |> Option.ofObj |> Option.defaultValue ""
+
+                let loaded = FinancialRecords.load (objects |> List.choose Result.toOption)
+
+                Organization.path OrganizationId
+                |> Result.bind (fun path -> Organization.decodeStored OrganizationId { Path = path; Content = manifestText; Revision = Revision "local:manifest" })
+                |> Result.bind (Migrations.currentManifest loaded.State.Books.Ledger)
+                |> Result.mapError Diagnostics.describe
+                |> Result.map (fun (manifest, migrated) ->
+                    { Manifest = manifest
+                      Books = loaded.State
+                      Problems = loaded.Problems
+                      Migrated = migrated })
+        | _ -> Error $"this is not a version {Version} Summa snapshot"
+    with :? JsonException as e ->
+        Error $"the snapshot is not JSON ({e.Message})"

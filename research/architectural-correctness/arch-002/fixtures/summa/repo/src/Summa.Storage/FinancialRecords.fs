@@ -1,0 +1,2802 @@
+/// Summa's books as authoritative Arca records (SUM0-002, SUM0-012..014,
+/// SUM0-027, SUM0-044): one financial object or event per file, at a
+/// deterministic path, in canonical JSON, inside the organization's folder.
+///
+/// | Record type | Path under `records/` | Mutability |
+/// |---|---|---|
+/// | `summa.account` | `summa.account/<id>` | mutable |
+/// | `summa.period` | `summa.period/<yyyy-mm>` | mutable |
+/// | `summa.entry` | `summa.entry/<yyyy>/<mm>/<id>` | immutable |
+/// | `summa.customer` | `summa.customer/<id>` | mutable |
+/// | `summa.draft` | `summa.draft/<id>` | mutable, deleted when issued |
+/// | `summa.invoice` | `summa.invoice/<yyyy>/<id>` | immutable |
+/// | `summa.delivery` | `summa.delivery/<attempt id>` | mutable (its outcome moves forward) |
+/// | `summa.obligation` | `summa.obligation/<id>` | mutable |
+/// | `summa.payment` | `summa.payment/<yyyy>/<id>` | immutable |
+/// | `summa.allocation` | `summa.allocation/<id>` | immutable |
+/// | `summa.audit` | `summa.audit/<yyyy>/<mm>/<id>` | immutable |
+/// | `summa.invoice-void` | `summa.invoice-void/<invoice id>` | immutable |
+/// | `summa.engagement` | `summa.engagement/<id>` | mutable |
+/// | `summa.expense` | `summa.expense/<yyyy>/<id>` | immutable |
+/// | `summa.time` | `summa.time/<yyyy>/<publication id>` | immutable |
+/// | `summa.time-withdrawal` | `summa.time-withdrawal/<publication id>` | immutable |
+/// | `summa.proposal` | `summa.proposal/<id>` | mutable |
+/// | `summa.rate-card` | `summa.rate-card/rates` | mutable |
+/// | `summa.billing-review` | `summa.billing-review/<id>` | mutable |
+/// | `summa.artifact` | `summa.artifact/<id>` | mutable (a generated artifact never changes) |
+/// | `summa.payment-profile` | `summa.payment-profile/<id>-v<version>` | immutable |
+/// | `summa.follow-up` | `summa.follow-up/<invoice id>` | mutable |
+/// | `summa.recurring-template` | `summa.recurring-template/<id>-v<version>` | immutable |
+/// | `summa.legal-fields` | `summa.legal-fields/organization` | mutable |
+///
+/// Posted entries, issued invoices, payments, allocations and audit events
+/// are written once. A reversal is a new entry naming the one it reverses,
+/// and "Reversed" is derived from it on load, so nothing posted is rewritten
+/// (SUM0-027). Derived values (journal order, idempotency keys, invoice
+/// status) are recomputed on load, never stored (SUM0-014).
+///
+/// Pure.
+module Summa.Storage.FinancialRecords
+
+open System
+open System.Security.Cryptography
+open System.Text
+open Arca
+open Summa.Ledger.Money
+open Summa.Ledger.Ledger
+open Summa.Ledger.Sources
+open Summa.Ledger.Invoicing
+open Summa.Ledger.Payments
+open Summa.Storage.Codec
+open Summa.Storage.Diagnostics
+
+let private recordType text =
+    match RecordType.create text with
+    | Ok found -> found
+    | Error _ -> invalidOp ("internal: not a record type: " + text)
+
+let accountType = recordType "summa.account"
+let periodType = recordType "summa.period"
+let entryType = recordType "summa.entry"
+let customerType = recordType "summa.customer"
+let draftType = recordType "summa.draft"
+let invoiceType = recordType "summa.invoice"
+let deliveryType = recordType "summa.delivery"
+let obligationType = recordType "summa.obligation"
+let paymentType = recordType "summa.payment"
+let allocationType = recordType "summa.allocation"
+let auditType = recordType "summa.audit"
+let creditType = recordType "summa.credit"
+let depositType = recordType "summa.deposit"
+let creditMemoType = recordType "summa.credit-memo"
+let applicationType = recordType "summa.application"
+let refundType = recordType "summa.refund"
+let reversalType = recordType "summa.payment-reversal"
+let writeOffType = recordType "summa.write-off"
+let voidType = recordType "summa.invoice-void"
+let engagementType = recordType "summa.engagement"
+let expenseType = recordType "summa.expense"
+let timeType = recordType "summa.time"
+let withdrawalType = recordType "summa.time-withdrawal"
+let proposalType = recordType "summa.proposal"
+let rateCardType = recordType "summa.rate-card"
+let reviewType = recordType "summa.billing-review"
+let artifactType = recordType "summa.artifact"
+let profileType = recordType "summa.payment-profile"
+let followUpType = recordType "summa.follow-up"
+let templateType = recordType "summa.recurring-template"
+let legalFieldsType = recordType "summa.legal-fields"
+
+/// Every financial record type, with its mutability and whether a record of
+/// it may ever be deleted.
+let types: (RecordType * Mutability * bool) list =
+    [ accountType, Mutability.Mutable, false
+      periodType, Mutability.Mutable, false
+      entryType, Mutability.Immutable, false
+      customerType, Mutability.Mutable, false
+      draftType, Mutability.Mutable, true
+      invoiceType, Mutability.Immutable, false
+      deliveryType, Mutability.Mutable, false
+      obligationType, Mutability.Mutable, false
+      paymentType, Mutability.Immutable, false
+      allocationType, Mutability.Immutable, false
+      auditType, Mutability.Immutable, false
+      creditType, Mutability.Immutable, false
+      depositType, Mutability.Immutable, false
+      creditMemoType, Mutability.Immutable, false
+      applicationType, Mutability.Immutable, false
+      refundType, Mutability.Immutable, false
+      reversalType, Mutability.Immutable, false
+      writeOffType, Mutability.Immutable, false
+      voidType, Mutability.Immutable, false
+      engagementType, Mutability.Mutable, false
+      expenseType, Mutability.Immutable, false
+      timeType, Mutability.Immutable, false
+      withdrawalType, Mutability.Immutable, false
+      proposalType, Mutability.Mutable, false
+      rateCardType, Mutability.Mutable, false
+      reviewType, Mutability.Mutable, false
+      artifactType, Mutability.Mutable, false
+      profileType, Mutability.Immutable, false
+      followUpType, Mutability.Mutable, false
+      templateType, Mutability.Immutable, false
+      legalFieldsType, Mutability.Mutable, false ]
+
+/// The record types with a schema 2: tax as the person said it (customers,
+/// drafts, invoices, proposals; INV-ADJ-005), and where an action came from
+/// (audit events, proposal contributions; INV-AUD-002, INV-PROV-007), a
+/// follow-up's resolved delivery problem (INV-DEL-008), the record a
+/// journal entry was posted for (INV-ACC-002), the occurrence a recurring
+/// proposal was made for, and recurring template lines that record tax
+/// (INV-REC).
+let private taxedTypes = set [ "summa.customer"; "summa.draft"; "summa.invoice"; "summa.proposal"; "summa.audit"; "summa.follow-up"; "summa.entry"; "summa.recurring-template" ]
+
+/// Schema support for every financial record type: version 1, and version 2
+/// for the types that can record tax. A record is written at version 2 only
+/// when it records tax (`schemaVersionOf`), so records without tax keep
+/// their version 1 bytes and an older Summa still reads them.
+let schemas =
+    types
+    |> List.map (fun (t, _, _) ->
+        { Type = t
+          OldestReadable = 1
+          Current = if taxedTypes.Contains(RecordType.value t) then 2 else 1 })
+
+let private mutabilityOf (t: RecordType) =
+    types |> List.find (fun (found, _, _) -> found = t) |> fun (_, m, _) -> m
+
+let deletable (t: RecordType) =
+    types |> List.exists (fun (found, _, d) -> found = t && d)
+
+let isFinancial (t: RecordType) =
+    types |> List.exists (fun (found, _, _) -> found = t)
+
+// ---- Values -----------------------------------------------------------------
+
+let private money (m: Money) =
+    Json.objectOf [ "currency", Json.String m.Currency; "minor", Json.Number(decimal m.Minor) ]
+
+let private moneyOf (value: Json) : Decoded<Money> =
+    decode {
+        do! closed [ "currency"; "minor" ] value
+        let! currency = text "currency" value
+        let! minor = long "minor" value
+        return { Currency = currency; Minor = minor }
+    }
+
+let private moneyField name value = field name value |> Result.bind moneyOf
+
+let private dimensions (d: Dimensions) =
+    Json.objectOf
+        [ "client", optionalString d.Client
+          "project", optionalString d.Project
+          "engagement", optionalString d.Engagement
+          "workItem", optionalString d.WorkItem
+          "product", optionalString d.Product ]
+
+let private dimensionsOf (value: Json) : Decoded<Dimensions> =
+    decode {
+        do! closed [ "client"; "engagement"; "product"; "project"; "workItem" ] value
+        let! client = optionalText "client" value
+        let! project = optionalText "project" value
+        let! engagement = optionalText "engagement" value
+        let! workItem = optionalText "workItem" value
+        let! product = optionalText "product" value
+
+        return
+            { Client = client
+              Project = project
+              Engagement = engagement
+              WorkItem = workItem
+              Product = product }
+    }
+
+let private line (l: Line) =
+    let side, amount =
+        match l.Side with
+        | Debit m -> "debit", m
+        | Credit m -> "credit", m
+
+    Json.objectOf
+        [ "accountId", Json.String l.AccountId
+          "side", Json.String side
+          "amount", money amount
+          "memo", optionalString l.Memo
+          "dimensions", dimensions l.Dimensions ]
+
+let private lineOf (value: Json) : Decoded<Line> =
+    decode {
+        do! closed [ "accountId"; "amount"; "dimensions"; "memo"; "side" ] value
+        let! accountId = text "accountId" value
+        let! amount = moneyField "amount" value
+
+        let! side =
+            text "side" value
+            |> Result.bind (function
+                | "debit" -> Ok(Debit amount)
+                | "credit" -> Ok(Credit amount)
+                | other -> Error $"'{other}' is not debit or credit")
+
+        let! memo = optionalText "memo" value
+        let! dims = field "dimensions" value |> Result.bind dimensionsOf
+
+        return
+            { AccountId = accountId
+              Side = side
+              Memo = memo
+              Dimensions = dims }
+    }
+
+let private terms =
+    function
+    | DueOnReceipt -> Json.objectOf [ "kind", Json.String "due-on-receipt" ]
+    | Net days -> Json.objectOf [ "kind", Json.String "net"; "days", number days ]
+    | CustomDate d -> Json.objectOf [ "kind", Json.String "custom-date"; "date", Json.String(dateText d) ]
+
+let private termsOf (value: Json) : Decoded<PaymentTerms> =
+    text "kind" value
+    |> Result.bind (function
+        | "due-on-receipt" -> closed [ "kind" ] value |> Result.map (fun () -> DueOnReceipt)
+        | "net" -> closed [ "days"; "kind" ] value |> Result.bind (fun () -> integer "days" value |> Result.map Net)
+        | "custom-date" -> closed [ "date"; "kind" ] value |> Result.bind (fun () -> date "date" value |> Result.map CustomDate)
+        | other -> Error $"'{other}' is not a payment term")
+
+let private recurrence =
+    function
+    | Monthly day -> Json.objectOf [ "kind", Json.String "monthly"; "dayOfMonth", number day ]
+    | EveryWeeks weeks -> Json.objectOf [ "kind", Json.String "every-weeks"; "weeks", number weeks ]
+
+let private recurrenceOf (value: Json) : Decoded<Recurrence> =
+    text "kind" value
+    |> Result.bind (function
+        | "monthly" -> closed [ "dayOfMonth"; "kind" ] value |> Result.bind (fun () -> integer "dayOfMonth" value |> Result.map Monthly)
+        | "every-weeks" -> closed [ "kind"; "weeks" ] value |> Result.bind (fun () -> integer "weeks" value |> Result.map EveryWeeks)
+        | other -> Error $"'{other}' is not a recurrence")
+
+let private discount =
+    function
+    | Percent bp -> Json.objectOf [ "kind", Json.String "percent"; "basisPoints", number bp ]
+    | Fixed m -> Json.objectOf [ "kind", Json.String "fixed"; "amount", money m ]
+
+let private discountOf (value: Json) : Decoded<Discount> =
+    text "kind" value
+    |> Result.bind (function
+        | "percent" -> closed [ "basisPoints"; "kind" ] value |> Result.bind (fun () -> integer "basisPoints" value |> Result.map Percent)
+        | "fixed" -> closed [ "amount"; "kind" ] value |> Result.bind (fun () -> moneyField "amount" value |> Result.map Fixed)
+        | other -> Error $"'{other}' is not a discount")
+
+let private invoiceDiscount (d: InvoiceDiscount) =
+    Json.objectOf [ "label", Json.String d.Label; "rule", discount d.Rule; "reason", optionalString d.Reason ]
+
+let private invoiceDiscountOf (value: Json) : Decoded<InvoiceDiscount> =
+    decode {
+        do! closed [ "label"; "reason"; "rule" ] value
+        let! label = text "label" value
+        let! rule = field "rule" value |> Result.bind discountOf
+        let! reason = optionalText "reason" value
+        return { Label = label; Rule = rule; Reason = reason }
+    }
+
+let private optionalOf (decoder: Json -> Decoded<'a>) (name: string) (value: Json) : Decoded<'a option> =
+    match Json.field name value with
+    | None
+    | Some Json.Null -> Ok None
+    | Some found -> decoder found |> Result.map Some
+
+let private optionalJson (encoder: 'a -> Json) (value: 'a option) =
+    value |> Option.map encoder |> Option.defaultValue Json.Null
+
+let private termsSourceName =
+    function
+    | InvoiceTerms -> "invoice"
+    | EngagementTerms -> "engagement"
+    | CustomerTerms -> "customer"
+    | SystemTerms -> "system"
+
+let private termsSourceOf =
+    function
+    | "invoice" -> Ok InvoiceTerms
+    | "engagement" -> Ok EngagementTerms
+    | "customer" -> Ok CustomerTerms
+    | "system" -> Ok SystemTerms
+    | other -> Error $"'{other}' is not where terms come from"
+
+let private strings (name: string) value : Decoded<string list> =
+    list
+        name
+        (function
+        | Json.String s -> Ok s
+        | _ -> Error $"'{name}' holds something other than text")
+        value
+
+let private timeReference (t: TimeReference) =
+    Json.objectOf
+        [ "publicationId", Json.String t.PublicationId
+          "activityId", Json.String t.ActivityId
+          "revision", number t.Revision
+          "minutes", number t.Minutes ]
+
+let private timeReferenceOf (value: Json) : Decoded<TimeReference> =
+    decode {
+        do! closed [ "activityId"; "minutes"; "publicationId"; "revision" ] value
+        let! publication = text "publicationId" value
+        let! activity = text "activityId" value
+        let! revision = integer "revision" value
+        let! minutes = integer "minutes" value
+
+        return
+            { PublicationId = publication
+              ActivityId = activity
+              Revision = revision
+              Minutes = minutes }
+    }
+
+let private lineSource =
+    function
+    | ManualLine -> Json.objectOf [ "kind", Json.String "manual" ]
+    | TimeSource refs -> Json.objectOf [ "kind", Json.String "time"; "entries", Json.Array(List.map timeReference refs) ]
+    | FixedFeeSource e -> Json.objectOf [ "kind", Json.String "fixed-fee"; "engagementId", Json.String e ]
+    | MilestoneSource(e, m) -> Json.objectOf [ "kind", Json.String "milestone"; "engagementId", Json.String e; "milestoneId", Json.String m ]
+    | ExpenseSource x -> Json.objectOf [ "kind", Json.String "expense"; "expenseId", Json.String x ]
+
+let private lineSourceOf (value: Json) : Decoded<LineSource> =
+    text "kind" value
+    |> Result.bind (function
+        | "manual" -> closed [ "kind" ] value |> Result.map (fun () -> ManualLine)
+        | "time" -> closed [ "entries"; "kind" ] value |> Result.bind (fun () -> list "entries" timeReferenceOf value |> Result.map TimeSource)
+        | "fixed-fee" -> closed [ "engagementId"; "kind" ] value |> Result.bind (fun () -> text "engagementId" value |> Result.map FixedFeeSource)
+        | "milestone" ->
+            decode {
+                do! closed [ "engagementId"; "kind"; "milestoneId" ] value
+                let! e = text "engagementId" value
+                let! m = text "milestoneId" value
+                return MilestoneSource(e, m)
+            }
+        | "expense" -> closed [ "expenseId"; "kind" ] value |> Result.bind (fun () -> text "expenseId" value |> Result.map ExpenseSource)
+        | other -> Error $"'{other}' is not a line source")
+
+let private rateSourceNames =
+    [ InvoiceOverride, "invoice-override"
+      EngagementAgreement, "engagement"
+      ProjectAgreement, "project"
+      CustomerDefault, "customer"
+      PersonRate, "person"
+      RoleRate, "role"
+      SystemDefault, "system" ]
+
+let private rateProvenance (p: RateProvenance) =
+    Json.objectOf
+        [ "source", Json.String(rateSourceNames |> List.find (fun (s, _) -> s = p.RateSource) |> snd)
+          "reference", Json.String p.Reference
+          "override",
+          p.Override
+          |> Option.map (fun o ->
+              Json.objectOf
+                  [ "previous", optionalJson money o.Previous
+                    "reason", Json.String o.Reason
+                    "actor", Json.String o.Actor
+                    "at", Json.String(preciseTimestamp o.At) ])
+          |> Option.defaultValue Json.Null ]
+
+let private overrideOf (o: Json) : Decoded<RateOverride> =
+    decode {
+        do! closed [ "actor"; "at"; "previous"; "reason" ] o
+        let! previous = optionalOf moneyOf "previous" o
+        let! reason = text "reason" o
+        let! actor = text "actor" o
+        let! at = preciseInstant "at" o
+
+        return
+            { Previous = previous
+              Reason = reason
+              Actor = actor
+              At = at }
+    }
+
+let private rateProvenanceOf (value: Json) : Decoded<RateProvenance> =
+    decode {
+        do! closed [ "override"; "reference"; "source" ] value
+        let! name = text "source" value
+
+        let! source =
+            match rateSourceNames |> List.tryFind (fun (_, n) -> n = name) with
+            | Some(s, _) -> Ok s
+            | None -> Error $"'{name}' is not a rate source"
+
+        let! reference = text "reference" value
+        let! change = optionalOf overrideOf "override" value
+
+        return
+            { RateSource = source
+              Reference = reference
+              Override = change }
+    }
+
+let private groupByNames =
+    [ ByProject, "project"
+      ByEngagement, "engagement"
+      ByPerson, "person"
+      ByActivityType, "activity-type"
+      ByServiceMonth, "service-month" ]
+
+let private groupByOf (value: Json) : Decoded<GroupBy> =
+    match value with
+    | Json.String name ->
+        match groupByNames |> List.tryFind (fun (_, n) -> n = name) with
+        | Some(g, _) -> Ok g
+        | None -> Error $"'{name}' is not a grouping"
+    | _ -> Error "a grouping is text"
+
+let private milestoneAmountJson =
+    function
+    | ShareOfFee bp -> Json.objectOf [ "kind", Json.String "share-of-fee"; "basisPoints", number bp ]
+    | MilestoneFixed m -> Json.objectOf [ "kind", Json.String "fixed"; "amount", money m ]
+
+let private milestoneAmountOf (value: Json) : Decoded<MilestoneAmount> =
+    text "kind" value
+    |> Result.bind (function
+        | "share-of-fee" -> closed [ "basisPoints"; "kind" ] value |> Result.bind (fun () -> integer "basisPoints" value |> Result.map ShareOfFee)
+        | "fixed" -> closed [ "amount"; "kind" ] value |> Result.bind (fun () -> moneyField "amount" value |> Result.map MilestoneFixed)
+        | other -> Error $"'{other}' is not a milestone amount")
+
+let private milestone (m: Milestone) =
+    Json.objectOf
+        [ "id", Json.String m.Id
+          "label", Json.String m.Label
+          "amount", milestoneAmountJson m.Amount
+          "completedOn", optionalJson (dateText >> Json.String) m.CompletedOn ]
+
+let private milestoneOf (value: Json) : Decoded<Milestone> =
+    decode {
+        do! closed [ "amount"; "completedOn"; "id"; "label" ] value
+        let! id = text "id" value
+        let! label = text "label" value
+        let! amount = field "amount" value |> Result.bind milestoneAmountOf
+        let! completed = optionalDate "completedOn" value
+
+        return
+            { Id = id
+              Label = label
+              Amount = amount
+              CompletedOn = completed }
+    }
+
+let private origin =
+    function
+    | OriginUnknown -> Json.objectOf [ "kind", Json.String "unknown" ]
+    | OriginKnown(method, observation, execution) ->
+        Json.objectOf
+            [ "kind", Json.String "known"
+              "method", Json.String method
+              "observation", optionalString observation
+              "executionId", optionalString execution ]
+
+let private originOf (value: Json) : Decoded<TimeOrigin> =
+    text "kind" value
+    |> Result.bind (function
+        | "unknown" -> closed [ "kind" ] value |> Result.map (fun () -> OriginUnknown)
+        | "known" ->
+            decode {
+                do! closed [ "executionId"; "kind"; "method"; "observation" ] value
+                let! method = text "method" value
+                let! observation = optionalText "observation" value
+                let! execution = optionalText "executionId" value
+                return OriginKnown(method, observation, execution)
+            }
+        | other -> Error $"'{other}' is not an origin")
+
+let private scope =
+    function
+    | ForEngagement id -> Json.objectOf [ "kind", Json.String "engagement"; "id", Json.String id ]
+    | ForProject id -> Json.objectOf [ "kind", Json.String "project"; "id", Json.String id ]
+    | ForCustomer id -> Json.objectOf [ "kind", Json.String "customer"; "id", Json.String id ]
+    | ForPerson id -> Json.objectOf [ "kind", Json.String "person"; "id", Json.String id ]
+    | ForRole id -> Json.objectOf [ "kind", Json.String "role"; "id", Json.String id ]
+    | Everyone -> Json.objectOf [ "kind", Json.String "everyone"; "id", Json.Null ]
+
+let private scopeOf (value: Json) : Decoded<RateScope> =
+    decode {
+        do! closed [ "id"; "kind" ] value
+        let! kind = text "kind" value
+        let! id = optionalText "id" value
+
+        return!
+            match kind, id with
+            | "engagement", Some id -> Ok(ForEngagement id)
+            | "project", Some id -> Ok(ForProject id)
+            | "customer", Some id -> Ok(ForCustomer id)
+            | "person", Some id -> Ok(ForPerson id)
+            | "role", Some id -> Ok(ForRole id)
+            | "everyone", None -> Ok Everyone
+            | other, _ -> Error $"'{other}' is not a rate scope with the id it needs"
+    }
+
+let private proposalState =
+    function
+    | Proposed -> Json.objectOf [ "kind", Json.String "proposed"; "invoiceId", Json.Null ]
+    | ReadyForReview -> Json.objectOf [ "kind", Json.String "ready-for-review"; "invoiceId", Json.Null ]
+    | Abandoned -> Json.objectOf [ "kind", Json.String "abandoned"; "invoiceId", Json.Null ]
+    | Accepted invoice -> Json.objectOf [ "kind", Json.String "accepted"; "invoiceId", Json.String invoice ]
+
+let private proposalStateOf (value: Json) : Decoded<ProposalState> =
+    decode {
+        do! closed [ "invoiceId"; "kind" ] value
+        let! kind = text "kind" value
+        let! invoice = optionalText "invoiceId" value
+
+        return!
+            match kind, invoice with
+            | "proposed", None -> Ok Proposed
+            | "ready-for-review", None -> Ok ReadyForReview
+            | "abandoned", None -> Ok Abandoned
+            | "accepted", Some id -> Ok(Accepted id)
+            | other, _ -> Error $"'{other}' is not a proposal state with the invoice it needs"
+    }
+
+let private referenceKinds = clientReferenceKinds
+
+let private referenceKindName (kind: ClientReferenceKind) = referenceKinds |> List.find (fst >> (=) kind) |> snd
+
+let private referenceOf (value: Json) : Decoded<ClientReferenceKind * string> =
+    decode {
+        do! closed [ "kind"; "value" ] value
+        let! name = text "kind" value
+        let! text' = text "value" value
+
+        return!
+            match referenceKinds |> List.tryFind (snd >> (=) name) with
+            | Some(kind, _) -> Ok(kind, text')
+            | None -> Error $"'{name}' is not a client reference kind"
+    }
+
+let private details (d: InvoiceDetails) =
+    Json.objectOf
+        [ "purchaseOrder", optionalString d.PurchaseOrder
+          "clientReference", optionalString d.ClientReference
+          "servicePeriod",
+          d.ServicePeriod
+          |> Option.map (fun (a, b) -> Json.objectOf [ "from", Json.String(dateText a); "to", Json.String(dateText b) ])
+          |> Option.defaultValue Json.Null
+          "customerNotes", optionalString d.CustomerNotes
+          "internalNotes", optionalString d.InternalNotes
+          // Written only when given, so other invoices keep their bytes (INV-DATA-014).
+          if not d.References.IsEmpty then
+              "clientReferences",
+              Json.Array(d.References |> List.map (fun (kind, value) -> Json.objectOf [ "kind", Json.String(referenceKindName kind); "value", Json.String value ])) ]
+
+let private servicePeriodOf (value: Json) : Decoded<DateOnly * DateOnly> =
+    decode {
+        do! closed [ "from"; "to" ] value
+        let! a = date "from" value
+        let! b = date "to" value
+        return a, b
+    }
+
+let private detailsOf (value: Json) : Decoded<InvoiceDetails> =
+    decode {
+        do! closed [ "clientReference"; "clientReferences"; "customerNotes"; "internalNotes"; "purchaseOrder"; "servicePeriod" ] value
+        let! po = optionalText "purchaseOrder" value
+        let! reference = optionalText "clientReference" value
+        let! period = optionalOf servicePeriodOf "servicePeriod" value
+        let! customerNotes = optionalText "customerNotes" value
+        let! internalNotes = optionalText "internalNotes" value
+
+        let! references =
+            match Codec.tryField "clientReferences" value with
+            | None -> Ok []
+            | Some _ -> list "clientReferences" referenceOf value
+
+        return
+            { PurchaseOrder = po
+              ClientReference = reference
+              ServicePeriod = period
+              CustomerNotes = customerNotes
+              InternalNotes = internalNotes
+              References = references }
+    }
+
+let private review =
+    function
+    | Editing -> Json.objectOf [ "kind", Json.String "editing"; "version", Json.Null ]
+    | SubmittedForReview v -> Json.objectOf [ "kind", Json.String "submitted-for-review"; "version", number v ]
+
+let private reviewOf (value: Json) : Decoded<DraftReview> =
+    decode {
+        do! closed [ "kind"; "version" ] value
+        let! kind = text "kind" value
+
+        return!
+            match kind with
+            | "editing" -> Ok Editing
+            | "submitted-for-review" -> integer "version" value |> Result.map SubmittedForReview
+            | other -> Error $"'{other}' is not a review state"
+    }
+
+let private legalFieldKinds =
+    [ TaxRegistrationNumber, "tax-registration-number"
+      VatId, "vat-id"
+      BusinessRegistrationNumber, "business-registration-number"
+      CustomerTaxId, "customer-tax-id"
+      StatutoryWording, "statutory-wording" ]
+
+let private legalField (f: LegalField) =
+    Json.objectOf
+        [ "kind", Json.String(legalFieldKinds |> List.find (fun (k, _) -> k = f.Kind) |> snd)
+          "jurisdiction", Json.String f.Jurisdiction
+          "value", Json.String f.Value ]
+
+let private legalFieldOf (value: Json) : Decoded<LegalField> =
+    decode {
+        do! closed [ "jurisdiction"; "kind"; "value" ] value
+        let! name = text "kind" value
+
+        let! kind =
+            match legalFieldKinds |> List.tryFind (fun (_, n) -> n = name) with
+            | Some(k, _) -> Ok k
+            | None -> Error $"'{name}' is not a legal field"
+
+        let! jurisdiction = text "jurisdiction" value
+        let! fieldValue = text "value" value
+        return { Kind = kind; Jurisdiction = jurisdiction; Value = fieldValue }
+    }
+
+/// `legalFields`, written only when there are some, so a record without
+/// them keeps its bytes (INV-INTL-001).
+let private legalFieldsMember (fields: LegalField list) =
+    if fields.IsEmpty then [] else [ "legalFields", Json.Array(fields |> List.map legalField) ]
+
+let private legalFieldsOf (value: Json) : Decoded<LegalField list> =
+    match Codec.tryField "legalFields" value with
+    | None -> Ok []
+    | Some _ -> list "legalFields" legalFieldOf value
+
+let private issuer (i: IssuerSnapshot) =
+    Json.objectOf (
+        [ "legalName", Json.String i.LegalName
+          "address", Json.String i.Address
+          "taxId", optionalString i.TaxId
+          "email", Json.String i.Email
+          "paymentInstructions", Json.String i.PaymentInstructions
+          "paymentMethods", Json.Array(i.PaymentMethods |> List.map Json.String)
+          "paymentProfile", optionalString i.PaymentProfile ]
+        @ legalFieldsMember i.LegalFields
+    )
+
+let private issuerOf (value: Json) : Decoded<IssuerSnapshot> =
+    decode {
+        do! closed [ "address"; "email"; "legalFields"; "legalName"; "paymentInstructions"; "paymentMethods"; "paymentProfile"; "taxId" ] value
+        let! legal = text "legalName" value
+        let! address = text "address" value
+        let! tax = optionalText "taxId" value
+        let! email = text "email" value
+        let! instructions = text "paymentInstructions" value
+        let! methods = strings "paymentMethods" value
+        let! profile = optionalText "paymentProfile" value
+        let! fields = legalFieldsOf value
+
+        return
+            { LegalName = legal
+              Address = address
+              TaxId = tax
+              Email = email
+              PaymentInstructions = instructions
+              PaymentMethods = methods
+              PaymentProfile = profile
+              LegalFields = fields }
+    }
+
+let private customerSnapshot (c: CustomerSnapshot) =
+    Json.objectOf (
+        [ "customerId", Json.String c.CustomerId
+          "name", Json.String c.Name
+          "billingName", Json.String c.BillingName
+          "billingAddress", Json.String c.BillingAddress
+          "email", Json.String c.Email ]
+        @ legalFieldsMember c.LegalFields
+    )
+
+let private customerSnapshotOf (value: Json) : Decoded<CustomerSnapshot> =
+    decode {
+        do! closed [ "billingAddress"; "billingName"; "customerId"; "email"; "legalFields"; "name" ] value
+        let! id = text "customerId" value
+        let! name = text "name" value
+        let! billingName = text "billingName" value
+        let! address = text "billingAddress" value
+        let! email = text "email" value
+        let! fields = legalFieldsOf value
+
+        return
+            { CustomerId = id
+              Name = name
+              BillingName = billingName
+              BillingAddress = address
+              Email = email
+              LegalFields = fields }
+    }
+
+let private template (t: TemplateRef) =
+    Json.objectOf [ "id", Json.String t.Id; "version", Json.String t.Version; "profile", Json.String t.Profile ]
+
+let private templateOf (value: Json) : Decoded<TemplateRef> =
+    decode {
+        do! closed [ "id"; "profile"; "version" ] value
+        let! id = text "id" value
+        let! version = text "version" value
+        let! profile = text "profile" value
+        return { Id = id; Version = version; Profile = profile }
+    }
+
+let private approval (a: Approval) =
+    Json.objectOf
+        [ "by", Json.String a.By
+          "at", Json.String(preciseTimestamp a.At)
+          "draftVersion", number a.DraftVersion
+          "correlationId", optionalString a.CorrelationId
+          "reason", optionalString a.Reason ]
+
+let private approvalOf (value: Json) : Decoded<Approval> =
+    decode {
+        do! closed [ "at"; "by"; "correlationId"; "draftVersion"; "reason" ] value
+        let! by = text "by" value
+        let! at = preciseInstant "at" value
+        let! version = integer "draftVersion" value
+        let! correlation = optionalText "correlationId" value
+        let! reason = optionalText "reason" value
+
+        return
+            { By = by
+              At = at
+              DraftVersion = version
+              CorrelationId = correlation
+              Reason = reason }
+    }
+
+let private artifactKindNames =
+    [ InvoiceHtml, "invoice-html"; InvoicePdf, "invoice-pdf"; InvoiceJson, "invoice-json" ]
+
+let private artifactStatus =
+    function
+    | Generated -> Json.objectOf [ "kind", Json.String "generated"; "reason", Json.Null ]
+    | Pending -> Json.objectOf [ "kind", Json.String "pending"; "reason", Json.Null ]
+    | Failed reason -> Json.objectOf [ "kind", Json.String "failed"; "reason", Json.String reason ]
+
+let private artifactStatusOf (value: Json) : Decoded<ArtifactStatus> =
+    decode {
+        do! closed [ "kind"; "reason" ] value
+        let! kind = text "kind" value
+        let! reason = optionalText "reason" value
+
+        return!
+            match kind, reason with
+            | "generated", None -> Ok Generated
+            | "pending", None -> Ok Pending
+            | "failed", Some why -> Ok(Failed why)
+            | other, _ -> Error $"'{other}' is not an artifact status with the reason it needs"
+    }
+
+let private adjustment (a: Adjustment) =
+    Json.objectOf
+        [ "kind",
+          (match a.Kind with
+           | Surcharge -> Json.objectOf [ "type", Json.String "surcharge" ]
+           | Fee -> Json.objectOf [ "type", Json.String "fee" ]
+           | Tax tax ->
+               Json.objectOf (
+                   [ "type", Json.String "tax"; "code", Json.String tax.Code; "accountId", Json.String tax.AccountId ]
+                   @ (if tax = taxCharge tax.Code tax.AccountId then
+                          []
+                      else
+                          [ "taxDetails",
+                            Json.objectOf
+                                [ "jurisdiction", optionalString tax.Jurisdiction
+                                  "rateSource", optionalString tax.RateSource
+                                  "rateHundredthBasisPoints", (match tax.RateHundredthBasisPoints with Some r -> Json.Number(decimal r) | None -> Json.Null)
+                                  "evidence", optionalString tax.Evidence
+                                  "pricing", Json.String(match tax.Pricing with TaxExclusive -> "exclusive" | TaxInclusive -> "inclusive") ] ])
+               ))
+          "label", Json.String a.Label
+          "amount", money a.Amount ]
+
+let private adjustmentKindOf (value: Json) : Decoded<AdjustmentKind> =
+    text "type" value
+    |> Result.bind (function
+        | "surcharge" -> closed [ "type" ] value |> Result.map (fun () -> Surcharge)
+        | "fee" -> closed [ "type" ] value |> Result.map (fun () -> Fee)
+        | "tax" ->
+            decode {
+                do! closed [ "accountId"; "code"; "taxDetails"; "type" ] value
+                let! code = text "code" value
+                let! account = text "accountId" value
+
+                let! details =
+                    match Codec.tryField "taxDetails" value with
+                    | None -> Ok(taxCharge code account)
+                    | Some d ->
+                        decode {
+                            do! closed [ "evidence"; "jurisdiction"; "pricing"; "rateHundredthBasisPoints"; "rateSource" ] d
+                            let! jurisdiction = optionalText "jurisdiction" d
+                            let! rateSource = optionalText "rateSource" d
+                            let! rate = optionalOf (fun j -> match j with Json.Number n when n = Decimal.Truncate n && n >= 0m && n <= 1000000m -> Ok(int n) | _ -> Error "a rate is a whole number of hundredths of a basis point") "rateHundredthBasisPoints" d
+                            let! evidence = optionalText "evidence" d
+                            let! pricing = text "pricing" d |> Result.bind (function "exclusive" -> Ok TaxExclusive | "inclusive" -> Ok TaxInclusive | other -> Error $"'{other}' is not exclusive or inclusive")
+
+                            return
+                                { Code = code
+                                  AccountId = account
+                                  Jurisdiction = jurisdiction
+                                  RateSource = rateSource
+                                  RateHundredthBasisPoints = rate
+                                  Evidence = evidence
+                                  Pricing = pricing }
+                        }
+
+                return Tax details
+            }
+        | other -> Error $"'{other}' is not an adjustment kind")
+
+let private adjustmentOf (value: Json) : Decoded<Adjustment> =
+    decode {
+        do! closed [ "amount"; "kind"; "label" ] value
+        let! kind = field "kind" value |> Result.bind adjustmentKindOf
+        let! label = text "label" value
+        let! amount = moneyField "amount" value
+        return { Kind = kind; Label = label; Amount = amount }
+    }
+
+let private recipients (r: Recipients) =
+    Json.objectOf
+        [ "to", Json.Array(r.To |> List.map Json.String)
+          "cc", Json.Array(r.Cc |> List.map Json.String)
+          "replyTo", optionalString r.ReplyTo ]
+
+let private recipientsOf (value: Json) : Decoded<Recipients> =
+    decode {
+        do! closed [ "cc"; "replyTo"; "to" ] value
+        let! recipientsTo = strings "to" value
+        let! cc = strings "cc" value
+        let! replyTo = optionalText "replyTo" value
+        return { To = recipientsTo; Cc = cc; ReplyTo = replyTo }
+    }
+
+let private channel =
+    function
+    | EmailChannel -> Json.objectOf [ "kind", Json.String "email"; "how", Json.Null ]
+    | SecureLink -> Json.objectOf [ "kind", Json.String "secure-link"; "how", Json.Null ]
+    | Manual how -> Json.objectOf [ "kind", Json.String "manual"; "how", Json.String how ]
+
+let private channelOf (value: Json) : Decoded<DeliveryChannel> =
+    decode {
+        do! closed [ "how"; "kind" ] value
+        let! kind = text "kind" value
+        let! how = optionalText "how" value
+
+        return!
+            match kind, how with
+            | "email", None -> Ok EmailChannel
+            | "secure-link", None -> Ok SecureLink
+            | "manual", Some h -> Ok(Manual h)
+            | other, _ -> Error $"'{other}' is not a delivery channel"
+    }
+
+let private policyNames = [ AttachPdf, "attach-pdf"; LinkOnly, "link-only"; AttachAndLink, "attach-and-link" ]
+
+let private outcome =
+    function
+    | Queued -> Json.objectOf [ "kind", Json.String "queued"; "detail", Json.Null ]
+    | SentToProvider -> Json.objectOf [ "kind", Json.String "sent-to-provider"; "detail", Json.Null ]
+    | ProviderAccepted -> Json.objectOf [ "kind", Json.String "provider-accepted"; "detail", Json.Null ]
+    | Delivered -> Json.objectOf [ "kind", Json.String "delivered"; "detail", Json.Null ]
+    | DeliveryFailed why -> Json.objectOf [ "kind", Json.String "failed"; "detail", Json.String why ]
+    | Bounced why -> Json.objectOf [ "kind", Json.String "bounced"; "detail", Json.String why ]
+    | ManuallySent -> Json.objectOf [ "kind", Json.String "manually-sent"; "detail", Json.Null ]
+
+let private outcomeOf (value: Json) : Decoded<DeliveryOutcome> =
+    decode {
+        do! closed [ "detail"; "kind" ] value
+        let! kind = text "kind" value
+        let! detail = optionalText "detail" value
+
+        return!
+            match kind, detail with
+            | "queued", None -> Ok Queued
+            | "sent-to-provider", None -> Ok SentToProvider
+            | "provider-accepted", None -> Ok ProviderAccepted
+            | "delivered", None -> Ok Delivered
+            | "failed", Some why -> Ok(DeliveryFailed why)
+            | "bounced", Some why -> Ok(Bounced why)
+            | "manually-sent", None -> Ok ManuallySent
+            | other, _ -> Error $"'{other}' is not a delivery outcome"
+    }
+
+let private disputeJson =
+    function
+    | NotDisputed -> Json.objectOf [ "kind", Json.String "none"; "text", Json.Null; "on", Json.Null ]
+    | Disputed(reason, since) -> Json.objectOf [ "kind", Json.String "disputed"; "text", Json.String reason; "on", Json.String(dateText since) ]
+    | DisputeResolved(resolution, on) -> Json.objectOf [ "kind", Json.String "resolved"; "text", Json.String resolution; "on", Json.String(dateText on) ]
+
+let private disputeOf (value: Json) : Decoded<DisputeState> =
+    decode {
+        do! closed [ "kind"; "on"; "text" ] value
+        let! kind = text "kind" value
+        let! words = optionalText "text" value
+        let! on = optionalDate "on" value
+
+        return!
+            match kind, words, on with
+            | "none", None, None -> Ok NotDisputed
+            | "disputed", Some w, Some d -> Ok(Disputed(w, d))
+            | "resolved", Some w, Some d -> Ok(DisputeResolved(w, d))
+            | other, _, _ -> Error $"'{other}' is not a dispute state with what it needs"
+    }
+
+let private collectionJson =
+    function
+    | NoFollowUp -> Json.objectOf [ "kind", Json.String "none"; "times", Json.Null; "text", Json.Null ]
+    | Reminded n -> Json.objectOf [ "kind", Json.String "reminded"; "times", number n; "text", Json.Null ]
+    | Escalated note -> Json.objectOf [ "kind", Json.String "escalated"; "times", Json.Null; "text", Json.String note ]
+    | OnHold reason -> Json.objectOf [ "kind", Json.String "on-hold"; "times", Json.Null; "text", Json.String reason ]
+
+/// A follow-up's resolved delivery problem, when it has one.
+let private deliveryResolutionOf (followUp: Json) : Decoded<DeliveryResolution option> =
+    match Codec.tryField "deliveryResolved" followUp with
+    | None -> Ok None
+    | Some value ->
+        decode {
+            do! closed [ "at"; "attemptId"; "by"; "note" ] value
+            let! attempt = text "attemptId" value
+            let! note = text "note" value
+            let! by = text "by" value
+            let! at = preciseInstant "at" value
+            return Some { AttemptId = attempt; Note = note; By = by; At = at }
+        }
+
+let private collectionOf (value: Json) : Decoded<CollectionStage> =
+    decode {
+        do! closed [ "kind"; "text"; "times" ] value
+        let! kind = text "kind" value
+        let! words = optionalText "text" value
+
+        return!
+            match kind, words with
+            | "none", None -> Ok NoFollowUp
+            | "reminded", None -> integer "times" value |> Result.map Reminded
+            | "escalated", Some w -> Ok(Escalated w)
+            | "on-hold", Some w -> Ok(OnHold w)
+            | other, _ -> Error $"'{other}' is not a collection stage with what it needs"
+    }
+
+let private invoiceLine (l: InvoiceLine) =
+    Json.objectOf (
+        [ "description", Json.String l.Description
+          "quantityThousandths", Json.Number(decimal l.QuantityThousandths)
+          "unitPrice", money l.UnitPrice
+          "revenueAccountId", Json.String l.RevenueAccountId
+          "project", optionalString l.Project
+          "workItem", optionalString l.WorkItem
+          "discount", optionalJson discount l.Discount
+          "source", lineSource l.Source
+          "rate", optionalJson rateProvenance l.Rate ]
+        @ (match l.Tax with
+           | NotAssessed -> []
+           | Taxable category -> [ "tax", Json.objectOf [ "kind", Json.String "taxable"; "category", Json.String category ] ]
+           | NonTaxable reason -> [ "tax", Json.objectOf [ "kind", Json.String "non-taxable"; "reason", Json.String reason ] ])
+        // Written only when given, so other lines keep their bytes (INV-DATA-008).
+        @ (match l.Details with
+           | None -> []
+           | Some d ->
+               [ "lineDetails",
+                 Json.objectOf
+                     [ "detailedDescription", optionalString d.DetailedDescription
+                       "unit", optionalString d.Unit
+                       "servicePeriod",
+                       d.ServicePeriod
+                       |> Option.map (fun (a, b) -> Json.objectOf [ "from", Json.String(dateText a); "to", Json.String(dateText b) ])
+                       |> Option.defaultValue Json.Null
+                       "category", optionalString d.Category
+                       "customerCode", optionalString d.CustomerCode ] ])
+    )
+
+let private lineDetailsOf (value: Json) : Decoded<LineDetails> =
+    decode {
+        do! closed [ "category"; "customerCode"; "detailedDescription"; "servicePeriod"; "unit" ] value
+        let! detailed = optionalText "detailedDescription" value
+        let! unit = optionalText "unit" value
+        let! period = optionalOf servicePeriodOf "servicePeriod" value
+        let! category = optionalText "category" value
+        let! code = optionalText "customerCode" value
+
+        return
+            { DetailedDescription = detailed
+              Unit = unit
+              ServicePeriod = period
+              Category = category
+              CustomerCode = code }
+    }
+
+let private invoiceLineOf (value: Json) : Decoded<InvoiceLine> =
+    decode {
+        do! closed [ "description"; "discount"; "lineDetails"; "project"; "quantityThousandths"; "rate"; "revenueAccountId"; "source"; "tax"; "unitPrice"; "workItem" ] value
+        let! description = text "description" value
+        let! quantity = long "quantityThousandths" value
+        let! price = moneyField "unitPrice" value
+        let! revenue = text "revenueAccountId" value
+        let! project = optionalText "project" value
+        let! workItem = optionalText "workItem" value
+        let! lineDiscount = optionalOf discountOf "discount" value
+        let! source = field "source" value |> Result.bind lineSourceOf
+        let! rate = optionalOf rateProvenanceOf "rate" value
+
+        let! lineDetails =
+            match Codec.tryField "lineDetails" value with
+            | None -> Ok None
+            | Some d -> lineDetailsOf d |> Result.map Some
+
+        let! tax =
+            match Codec.tryField "tax" value with
+            | None -> Ok NotAssessed
+            | Some t ->
+                decode {
+                    let! kind = text "kind" t
+
+                    return!
+                        match kind with
+                        | "taxable" -> closed [ "category"; "kind" ] t |> Result.bind (fun () -> text "category" t) |> Result.map Taxable
+                        | "non-taxable" -> closed [ "kind"; "reason" ] t |> Result.bind (fun () -> text "reason" t) |> Result.map NonTaxable
+                        | other -> Error $"'{other}' is not taxable or non-taxable"
+                }
+
+        return
+            { Description = description
+              QuantityThousandths = quantity
+              UnitPrice = price
+              RevenueAccountId = revenue
+              Project = project
+              WorkItem = workItem
+              Discount = lineDiscount
+              Source = source
+              Rate = rate
+              Tax = tax
+              Details = lineDetails }
+    }
+
+let private accountTypeName =
+    function
+    | Asset -> "asset"
+    | Liability -> "liability"
+    | Equity -> "equity"
+    | Revenue -> "revenue"
+    | Expense -> "expense"
+
+let private accountTypeOf =
+    function
+    | "asset" -> Ok Asset
+    | "liability" -> Ok Liability
+    | "equity" -> Ok Equity
+    | "revenue" -> Ok Revenue
+    | "expense" -> Ok Expense
+    | other -> Error $"'{other}' is not an account type"
+
+let private periodName =
+    function
+    | PeriodState.Open -> "open"
+    | PeriodState.Closed -> "closed"
+    | PeriodState.Locked -> "locked"
+
+let private periodOf =
+    function
+    | "open" -> Ok PeriodState.Open
+    | "closed" -> Ok PeriodState.Closed
+    | "locked" -> Ok PeriodState.Locked
+    | other -> Error $"'{other}' is not a period state"
+
+let private methodName =
+    function
+    | Ach -> "ach"
+    | Check -> "check"
+    | Wire -> "wire"
+    | CreditCard -> "credit-card"
+    | PaymentMethod.Cash -> "cash"
+    | PaymentMethod.Other -> "other"
+
+let private methodOf =
+    function
+    | "ach" -> Ok Ach
+    | "check" -> Ok Check
+    | "wire" -> Ok Wire
+    | "credit-card" -> Ok CreditCard
+    | "cash" -> Ok PaymentMethod.Cash
+    | "other" -> Ok PaymentMethod.Other
+    | other -> Error $"'{other}' is not a payment method"
+
+let private source =
+    function
+    | FromCredit id -> Json.objectOf [ "kind", Json.String "credit"; "id", Json.String id ]
+    | FromDeposit id -> Json.objectOf [ "kind", Json.String "deposit"; "id", Json.String id ]
+    | FromCreditMemo id -> Json.objectOf [ "kind", Json.String "credit-memo"; "id", Json.String id ]
+
+let private sourceOf (value: Json) : Decoded<CreditSource> =
+    decode {
+        do! closed [ "id"; "kind" ] value
+        let! id = text "id" value
+
+        return!
+            text "kind" value
+            |> Result.bind (function
+                | "credit" -> Ok(FromCredit id)
+                | "deposit" -> Ok(FromDeposit id)
+                | "credit-memo" -> Ok(FromCreditMemo id)
+                | other -> Error $"'{other}' is not a credit source")
+    }
+
+// ---- Records ----------------------------------------------------------------
+
+/// One record to store: its key and body.
+[<NoComparison>]
+type FinancialRecord = { Key: RecordKey; Body: Json }
+
+let private segment (text: string) =
+    match Segment.create text with
+    | Ok found -> Ok found
+    | Error error -> Error(StorageOperationRefused(LocationError.describe error))
+
+let private keyOf (t: RecordType) (partition: string list) (id: string) : Result<RecordKey, Diagnostic> =
+    match RecordId.create id with
+    | Error _ -> Error(StorageOperationRefused $"'{id}' cannot be stored as a {RecordType.value t} id")
+    | Ok recordId ->
+        List.foldBack
+            (fun item state -> state |> Result.bind (fun rest -> segment item |> Result.map (fun s -> s :: rest)))
+            partition
+            (Ok [])
+        |> Result.map (fun parts ->
+            { Type = t
+              Partition = parts
+              Id = recordId })
+
+let private yearMonth (d: DateOnly) = [ $"{d.Year:D4}"; $"{d.Month:D2}" ]
+
+/// Where an action came from (INV-AUD-002, INV-PROV-001, INV-PROV-002).
+let provenanceJson (p: Provenance) =
+    Json.objectOf
+        [ "actorKind", Json.String p.ActorKind
+          "agent",
+          (match p.Agent with
+           | Some a -> Json.objectOf [ "provider", Json.String a.Provider; "model", Json.String a.Model; "runtime", Json.String a.Runtime ]
+           | None -> Json.Null)
+          "executionId", optionalString p.ExecutionId
+          "sourceSystem", optionalString p.SourceSystem
+          "sourceId", optionalString p.SourceId
+          "reason", optionalString p.Reason ]
+
+let provenanceOf (value: Json) : Decoded<Provenance> =
+    decode {
+        do! closed [ "actorKind"; "agent"; "executionId"; "reason"; "sourceId"; "sourceSystem" ] value
+        let! kind = text "actorKind" value
+
+        let! agent =
+            match Codec.tryField "agent" value with
+            | None -> Ok None
+            | Some a ->
+                decode {
+                    do! closed [ "model"; "provider"; "runtime" ] a
+                    let! provider = text "provider" a
+                    let! model = text "model" a
+                    let! runtime = text "runtime" a
+                    return Some { Provider = provider; Model = model; Runtime = runtime }
+                }
+
+        let! execution = optionalText "executionId" value
+        let! system = optionalText "sourceSystem" value
+        let! sourceId = optionalText "sourceId" value
+        let! reason = optionalText "reason" value
+
+        return!
+            match kind with
+            | "human"
+            | "agent"
+            | "automation"
+            | "unknown" ->
+                Ok
+                    { ActorKind = kind
+                      Agent = agent
+                      ExecutionId = execution
+                      SourceSystem = system
+                      SourceId = sourceId
+                      Reason = reason }
+            | other when other.StartsWith "x-" ->
+                Ok
+                    { ActorKind = other
+                      Agent = agent
+                      ExecutionId = execution
+                      SourceSystem = system
+                      SourceId = sourceId
+                      Reason = reason }
+            | other -> Error $"'{other}' is not an actor kind"
+    }
+
+/// What a change did to its entity (INV-AUD-002).
+let changeJson (c: AuditChange) =
+    Json.objectOf
+        [ "version", (match c.Version with Some v -> Codec.number v | None -> Json.Null)
+          "outcome", Json.String c.Outcome
+          "changed", Json.Array(c.Changed |> List.map Json.String) ]
+
+let changeOf (value: Json) : Decoded<AuditChange> =
+    decode {
+        do! closed [ "changed"; "outcome"; "version" ] value
+
+        let! version =
+            match Codec.tryField "version" value with
+            | None -> Ok None
+            | Some _ -> integer "version" value |> Result.map Some
+
+        let! outcome = text "outcome" value
+
+        let! changed =
+            list "changed" (function
+                | Json.String s -> Ok s
+                | _ -> Error "'changed' holds text only") value
+
+        return!
+            match outcome with
+            | "applied" -> Ok { Version = version; Outcome = outcome; Changed = changed }
+            | other -> Error $"'{other}' is not an audit outcome"
+    }
+
+/// Stable ids of audit events: a hash of the event and how many identical
+/// events precede it, so the same history always has the same paths.
+let private auditBody (a: AuditRecord) =
+    Json.objectOf (
+        [ "who", Json.String a.Who
+          "what", Json.String a.What
+          "when", Json.String(preciseTimestamp a.When)
+          "source", Json.String a.Source
+          "correlationId", optionalString a.CorrelationId
+          "subject", Json.String a.Subject ]
+        @ (a.Provenance |> Option.map (fun p -> "provenance", provenanceJson p) |> Option.toList)
+        @ (a.Change |> Option.map (fun c -> "change", changeJson c) |> Option.toList)
+    )
+
+let private auditIds (audit: AuditRecord list) =
+    audit
+    |> List.mapFold
+        (fun (seen: Map<string, int>) record ->
+            let canonical = Json.canonicalText (auditBody record)
+            let n = seen.TryFind canonical |> Option.defaultValue 0
+            let digest = SHA256.HashData(Encoding.UTF8.GetBytes($"{canonical}#{n}")) |> Convert.ToHexString
+            ("a" + digest.Substring(0, 32).ToLowerInvariant(), record), seen.Add(canonical, n + 1))
+        Map.empty
+    |> fst
+
+/// The records the receivables hold: everything authoritative, nothing
+/// derived. Every key is deterministic.
+let toRecords (r: Receivables) : Result<FinancialRecord list, Diagnostic list> =
+    let books = r.Books
+    let ledger = books.Ledger
+    let keyFor (entryId: string) = ledger.Keys |> Map.tryFindKey (fun _ id -> id = entryId)
+    let draftFor (invoiceId: string) = books.IssuedFrom |> Map.tryFindKey (fun _ id -> id = invoiceId)
+
+    let records =
+        [ for KeyValue(_, a) in ledger.Accounts ->
+              keyOf accountType [] a.Id,
+              Json.objectOf
+                  [ "id", Json.String a.Id
+                    "code", Json.String a.Code
+                    "name", Json.String a.Name
+                    "type", Json.String(accountTypeName a.Type)
+                    "active", Json.Bool a.Active ]
+          for KeyValue((year, month), state) in ledger.Periods ->
+              keyOf periodType [] $"{year:D4}-{month:D2}",
+              Json.objectOf [ "year", number year; "month", number month; "state", Json.String(periodName state) ]
+          for KeyValue(_, e) in ledger.Entries ->
+              keyOf entryType (yearMonth e.Date) e.Id,
+              Json.objectOf
+                  [ "id", Json.String e.Id
+                    "date", Json.String(dateText e.Date)
+                    "description", Json.String e.Description
+                    "lines", Json.Array(List.map line e.Lines)
+                    "source", Json.String e.Source
+                    "reverses", optionalString e.Reverses
+                    "postedAt", Json.String(preciseTimestamp e.PostedAt)
+                    "idempotencyKey", optionalString (keyFor e.Id)
+                    // Written only when named, so other entries keep their bytes (INV-ACC-002).
+                    match e.Reference with
+                    | Some r -> "postedFor", Json.objectOf [ "kind", Json.String r.Kind; "id", Json.String r.Id ]
+                    | None -> () ]
+          for KeyValue(_, c) in books.Customers ->
+              keyOf customerType [] c.Id,
+              Json.objectOf (
+                  [ "id", Json.String c.Id
+                    "name", Json.String c.Name
+                    "billingName", Json.String c.BillingName
+                    "billingAddress", Json.String c.BillingAddress
+                    "email", Json.String c.Email
+                    "defaultTerms", optionalJson terms c.DefaultTerms
+                    "paymentProfileId", optionalString c.PaymentProfileId
+                    "active", Json.Bool c.Active ]
+                  @ (match c.Tax with
+                     | TaxNotAssessed -> []
+                     | SubjectToTax jurisdiction -> [ "tax", Json.objectOf [ "kind", Json.String "subject"; "jurisdiction", optionalString jurisdiction ] ]
+                     | TaxExempt(evidence, jurisdiction) ->
+                         [ "tax", Json.objectOf [ "kind", Json.String "exempt"; "evidence", Json.String evidence; "jurisdiction", optionalString jurisdiction ] ])
+                  @ legalFieldsMember c.LegalFields
+                  // Written only when required, so other customers keep their bytes (INV-OPS-006).
+                  @ (if c.RequiresPurchaseOrder then [ "requiresPurchaseOrder", Json.Bool true ] else [])
+              )
+          // The organization's legal fields, once it has recorded any (INV-INTL-001).
+          match books.LegalFields with
+          | Some fields -> yield keyOf legalFieldsType [] "organization", Json.objectOf [ "fields", Json.Array(fields |> List.map legalField) ]
+          | None -> ()
+          for KeyValue(_, d) in books.Drafts ->
+              keyOf draftType [] d.DraftId,
+              Json.objectOf
+                  [ "draftId", Json.String d.DraftId
+                    "customerId", Json.String d.CustomerId
+                    "currency", Json.String d.Currency
+                    "lines", Json.Array(List.map invoiceLine d.Lines)
+                    "adjustments", Json.Array(List.map adjustment d.Adjustments)
+                    "discounts", Json.Array(List.map invoiceDiscount d.Discounts)
+                    "terms", optionalJson terms d.Terms
+                    "dueDate", optionalJson (dateText >> Json.String) d.DueDate
+                    "corrects", optionalString d.Corrects
+                    "engagementId", optionalString d.EngagementId
+                    "details", details d.Details
+                    "assumptions", Json.Array(d.Assumptions |> List.map Json.String)
+                    "recipients", optionalJson recipients d.Recipients
+                    "version", number d.Version
+                    "review", review d.Review ]
+          for KeyValue(_, i) in books.Invoices do
+              yield
+                  keyOf invoiceType [ $"{i.IssueDate.Year:D4}" ] i.InvoiceId,
+                  Json.objectOf
+                      [ "invoiceId", Json.String i.InvoiceId
+                        "number", Json.String i.Number
+                        "draftId", optionalString (draftFor i.InvoiceId)
+                        "customerId", Json.String i.CustomerId
+                        "currency", Json.String i.Currency
+                        "issueDate", Json.String(dateText i.IssueDate)
+                        "dueDate", Json.String(dateText i.DueDate)
+                        "terms", terms i.Terms
+                        "termsSource", Json.String(termsSourceName i.TermsSource)
+                        "lines", Json.Array(List.map invoiceLine i.Lines)
+                        "subtotal", money i.Subtotal
+                        "discounts", Json.Array(List.map invoiceDiscount i.Discounts)
+                        "adjustments", Json.Array(List.map adjustment i.Adjustments)
+                        "corrects", optionalString i.Corrects
+                        "engagementId", optionalString i.EngagementId
+                        "details", details i.Details
+                        "assumptions", Json.Array(i.Assumptions |> List.map Json.String)
+                        "issuer", issuer i.Issuer
+                        "customer", customerSnapshot i.Customer
+                        "template", template i.Template
+                        "approval", approval i.Approval
+                        "total", money i.Total
+                        "journalEntryId", Json.String i.JournalEntryId
+                        "obligationId", Json.String i.ObligationId
+                        "issuedAt", Json.String(preciseTimestamp i.IssuedAt)
+                        // The rounding policy its amounts were calculated under (INV-DATA-011).
+                        "rounding", Json.String i.Rounding ]
+
+          for KeyValue(_, o) in books.Obligations ->
+              keyOf obligationType [] o.Id,
+              Json.objectOf
+                  [ "id", Json.String o.Id
+                    "kind",
+                    Json.String(
+                        match o.Kind with
+                        | Receivable -> "receivable"
+                        | Payable -> "payable"
+                    )
+                    "source", Json.String o.Source
+                    "party", Json.String o.Party
+                    "originalAmount", money o.OriginalAmount
+                    "dueDate", Json.String(dateText o.DueDate)
+                    "cancelled", Json.Bool o.Cancelled ]
+          for KeyValue(_, p) in r.Payments ->
+              keyOf paymentType [ $"{p.DateReceived.Year:D4}" ] p.Id,
+              Json.objectOf
+                  [ "id", Json.String p.Id
+                    "customerId", Json.String p.CustomerId
+                    "dateReceived", Json.String(dateText p.DateReceived)
+                    "amount", money p.Amount
+                    "method", Json.String(methodName p.Method)
+                    "reference", Json.String p.Reference
+                    "memo", optionalString p.Memo ]
+          for a in r.Allocations ->
+              keyOf allocationType [] a.Id,
+              Json.objectOf
+                  [ "id", Json.String a.Id
+                    "paymentId", Json.String a.PaymentId
+                    "invoiceId", Json.String a.InvoiceId
+                    "amount", money a.Amount
+                    "journalEntryId", Json.String a.JournalEntryId ]
+          for KeyValue(_, c) in r.Credits ->
+              keyOf creditType [] c.Id,
+              Json.objectOf
+                  [ "id", Json.String c.Id
+                    "customerId", Json.String c.CustomerId
+                    "sourcePaymentId", Json.String c.SourcePaymentId
+                    "amount", money c.Amount
+                    "date", Json.String(dateText c.Date)
+                    "journalEntryId", Json.String c.JournalEntryId ]
+          for KeyValue(_, d) in r.Deposits ->
+              keyOf depositType [ $"{d.DateReceived.Year:D4}" ] d.Id,
+              Json.objectOf
+                  [ "id", Json.String d.Id
+                    "customerId", Json.String d.CustomerId
+                    "dateReceived", Json.String(dateText d.DateReceived)
+                    "amount", money d.Amount
+                    "method", Json.String(methodName d.Method)
+                    "reference", Json.String d.Reference
+                    "journalEntryId", Json.String d.JournalEntryId ]
+          for KeyValue(_, m) in r.CreditMemos ->
+              keyOf creditMemoType [ $"{m.IssueDate.Year:D4}" ] m.Id,
+              Json.objectOf
+                  [ "id", Json.String m.Id
+                    "customerId", Json.String m.CustomerId
+                    "invoiceId", optionalString m.InvoiceId
+                    "amount", money m.Amount
+                    "revenueAccountId", Json.String m.RevenueAccountId
+                    "reason", Json.String m.Reason
+                    "issueDate", Json.String(dateText m.IssueDate)
+                    "journalEntryId", Json.String m.JournalEntryId
+                    "lines", Json.Array(m.Lines |> List.map number) ]
+          for a in r.Applications ->
+              keyOf applicationType [] a.Id,
+              Json.objectOf
+                  [ "id", Json.String a.Id
+                    "source", source a.Source
+                    "invoiceId", Json.String a.InvoiceId
+                    "amount", money a.Amount
+                    "date", Json.String(dateText a.Date)
+                    "journalEntryId", Json.String a.JournalEntryId ]
+          for KeyValue(_, f) in r.Refunds ->
+              keyOf refundType [ $"{f.Date.Year:D4}" ] f.Id,
+              Json.objectOf
+                  [ "id", Json.String f.Id
+                    "customerId", Json.String f.CustomerId
+                    "source", source f.Source
+                    "amount", money f.Amount
+                    "date", Json.String(dateText f.Date)
+                    "method", Json.String(methodName f.Method)
+                    "reference", Json.String f.Reference
+                    "journalEntryId", Json.String f.JournalEntryId ]
+          for KeyValue(_, v) in r.Reversals ->
+              keyOf reversalType [] v.PaymentId,
+              Json.objectOf
+                  [ "paymentId", Json.String v.PaymentId
+                    "reason", Json.String v.Reason
+                    "date", Json.String(dateText v.Date)
+                    "journalEntryIds", Json.Array(v.JournalEntryIds |> List.map Json.String) ]
+          for KeyValue(_, w) in r.WriteOffs ->
+              keyOf writeOffType [] w.Id,
+              Json.objectOf
+                  [ "id", Json.String w.Id
+                    "invoiceId", Json.String w.InvoiceId
+                    "amount", money w.Amount
+                    "reason", Json.String w.Reason
+                    "date", Json.String(dateText w.Date)
+                    "journalEntryId", Json.String w.JournalEntryId ]
+          for KeyValue(_, v) in r.Voids ->
+              keyOf voidType [] v.InvoiceId,
+              Json.objectOf
+                  [ "invoiceId", Json.String v.InvoiceId
+                    "reason", Json.String v.Reason
+                    "date", Json.String(dateText v.Date)
+                    "journalEntryId", Json.String v.JournalEntryId ]
+          for KeyValue(_, e) in books.Engagements ->
+              keyOf engagementType [] e.Id,
+              Json.objectOf
+                  [ "id", Json.String e.Id
+                    "customerId", Json.String e.CustomerId
+                    "name", Json.String e.Name
+                    "currency", Json.String e.Currency
+                    "fixedFee", optionalJson money e.FixedFee
+                    "milestones", Json.Array(List.map milestone e.Milestones)
+                    "terms", optionalJson terms e.Terms ]
+          for KeyValue(_, x) in books.Expenses ->
+              keyOf expenseType [ $"{x.Date.Year:D4}" ] x.Id,
+              Json.objectOf
+                  [ "id", Json.String x.Id
+                    "date", Json.String(dateText x.Date)
+                    "description", Json.String x.Description
+                    "amount", money x.Amount
+                    "expenseAccountId", Json.String x.ExpenseAccountId
+                    "paidFromAccountId", Json.String x.PaidFromAccountId
+                    "customerId", optionalString x.CustomerId
+                    "projectId", optionalString x.ProjectId
+                    "engagementId", optionalString x.EngagementId
+                    "billable", Json.Bool x.Billable
+                    "journalEntryId", Json.String x.JournalEntryId ]
+          for KeyValue(_, t) in books.Time ->
+              keyOf timeType [ $"{t.BusinessDate.Year:D4}" ] t.PublicationId,
+              Json.objectOf
+                  [ "publicationId", Json.String t.PublicationId
+                    "organizationId", Json.String t.OrganizationId
+                    "activityId", Json.String t.ActivityId
+                    "revision", number t.Revision
+                    "performerId", Json.String t.PerformerId
+                    "businessDate", Json.String(dateText t.BusinessDate)
+                    "projectId", Json.String t.ProjectId
+                    "clientId", optionalString t.ClientId
+                    "engagementId", optionalString t.EngagementId
+                    "activityTypeId", Json.String t.ActivityTypeId
+                    "description", Json.String t.Description
+                    "exactMinutes", number t.ExactMinutes
+                    "billableMinutes", number t.BillableMinutes
+                    "approved", Json.Bool t.Approved
+                    "rateReference", optionalString t.RateReference
+                    "origin", origin t.Origin
+                    "lineage", Json.Array(t.Lineage |> List.map Json.String)
+                    "workItem", optionalString t.WorkItem
+                    "supersedes", optionalString t.Supersedes
+                    "publishedAt", Json.String(preciseTimestamp t.PublishedAt) ]
+          for KeyValue(_, w) in books.Withdrawals ->
+              keyOf withdrawalType [] w.PublicationId,
+              Json.objectOf
+                  [ "publicationId", Json.String w.PublicationId
+                    "revision", number w.Revision
+                    "reason", Json.String w.Reason
+                    "withdrawnAt", Json.String(preciseTimestamp w.WithdrawnAt) ]
+          for KeyValue(_, p) in books.Proposals ->
+              keyOf proposalType [] p.Id,
+              Json.objectOf (
+                  [ "id", Json.String p.Id
+                    "customerId", Json.String p.CustomerId
+                    "engagementId", optionalString p.EngagementId
+                    "currency", Json.String p.Currency
+                    "lines", Json.Array(p.Lines |> List.map (fun l -> Json.objectOf [ "line", invoiceLine l.Line; "priced", Json.Bool l.Priced ]))
+                    "grouping", Json.Array(p.Grouping |> List.map (fun g -> Json.String(groupByNames |> List.find (fun (x, _) -> x = g) |> snd)))
+                    "state", proposalState p.State
+                    "createdAt", Json.String(preciseTimestamp p.CreatedAt) ]
+                  // Written only when there are some, so a proposal from before keeps its bytes.
+                  @ (if p.Contributions.IsEmpty then
+                         []
+                     else
+                         [ "contributions",
+                           Json.Array(
+                               p.Contributions
+                               |> List.map (fun c ->
+                                   Json.objectOf (
+                                       [ "who", Json.String c.Who; "what", Json.String c.What; "at", Json.String(preciseTimestamp c.At) ]
+                                       @ (c.Provenance |> Option.map (fun pv -> "provenance", provenanceJson pv) |> Option.toList)
+                                   ))
+                           ) ])
+                  // The occurrence a recurring template made it for (INV-REC-004).
+                  @ (p.Occurrence
+                     |> Option.map (fun o ->
+                         "recurring",
+                         Json.objectOf
+                             [ "templateId", Json.String o.TemplateId
+                               "templateVersion", number o.TemplateVersion
+                               "date", Json.String(dateText o.Date) ])
+                     |> Option.toList)
+              )
+          if not books.Rates.Rates.IsEmpty || not books.Rates.Roles.IsEmpty then
+              yield
+                  keyOf rateCardType [] "rates",
+                  Json.objectOf
+                      [ "rates", Json.Array(books.Rates.Rates |> List.map (fun (sc, rate) -> Json.objectOf [ "scope", scope sc; "rate", money rate ]))
+                        "roles",
+                        Json.Array(
+                            books.Rates.Roles
+                            |> Map.toList
+                            |> List.map (fun (person, role) -> Json.objectOf [ "personId", Json.String person; "roleId", Json.String role ])
+                        ) ]
+          for KeyValue(_, v) in books.Reviews ->
+              keyOf reviewType [] v.Id,
+              Json.objectOf
+                  [ "id", Json.String v.Id
+                    "publicationId", Json.String v.PublicationId
+                    "invoiceId", Json.String v.InvoiceId
+                    "reason", Json.String v.Reason
+                    "raisedAt", Json.String(preciseTimestamp v.RaisedAt)
+                    "resolution", optionalString v.Resolution ]
+          for KeyValue(_, a) in books.Artifacts ->
+              keyOf artifactType [] a.Id,
+              Json.objectOf
+                  [ "id", Json.String a.Id
+                    "invoiceId", Json.String a.InvoiceId
+                    "kind", Json.String(artifactKindNames |> List.find (fun (k, _) -> k = a.Kind) |> snd)
+                    "mediaType", Json.String a.MediaType
+                    "reference", Json.String a.Reference
+                    "sha256", optionalString a.Sha256
+                    "size", (a.Size |> Option.map (fun n -> Json.Number(decimal n)) |> Option.defaultValue Json.Null)
+                    "createdAt", Json.String(preciseTimestamp a.CreatedAt)
+                    "templateId", Json.String a.TemplateId
+                    "templateVersion", Json.String a.TemplateVersion
+                    "renderer", optionalString a.Renderer
+                    "status", artifactStatus a.Status ]
+          for KeyValue(_, d) in books.Deliveries ->
+              keyOf deliveryType [] d.Id,
+              Json.objectOf
+                  [ "id", Json.String d.Id
+                    "invoiceId", Json.String d.InvoiceId
+                    "at", Json.String(preciseTimestamp d.At)
+                    "actor", Json.String d.Actor
+                    "recipients", recipients d.Recipients
+                    "channel", channel d.Channel
+                    "policy", Json.String(policyNames |> List.find (fun (x, _) -> x = d.Policy) |> snd)
+                    "messageTemplate", Json.String d.MessageTemplate
+                    "outcome", outcome d.Outcome
+                    "providerReference", optionalString d.ProviderReference
+                    "retryOf", optionalString d.RetryOf ]
+          for KeyValue(_, p) in books.PaymentProfiles ->
+              keyOf profileType [] $"{p.Id}-v{p.Version}",
+              Json.objectOf
+                  [ "id", Json.String p.Id
+                    "version", number p.Version
+                    "label", Json.String p.Label
+                    "methods", Json.Array(p.Methods |> List.map Json.String)
+                    "instructions", Json.String p.Instructions ]
+          for KeyValue(_, t) in books.Templates ->
+              keyOf templateType [] $"{t.Id}-v{t.Version}",
+              Json.objectOf
+                  [ "id", Json.String t.Id
+                    "version", number t.Version
+                    "customerId", Json.String t.CustomerId
+                    "engagementId", optionalString t.EngagementId
+                    "currency", Json.String t.Currency
+                    "schedule", recurrence t.Schedule
+                    "lines", Json.Array(t.Lines |> List.map invoiceLine)
+                    "terms", optionalJson terms t.Terms
+                    "recipients", optionalJson recipients t.Recipients
+                    "startsOn", Json.String(dateText t.StartsOn)
+                    "endsOn", (t.EndsOn |> Option.map (dateText >> Json.String) |> Option.defaultValue Json.Null)
+                    "occurrences", (t.Occurrences |> Option.map number |> Option.defaultValue Json.Null)
+                    "active", Json.Bool t.Active ]
+          for KeyValue(_, f) in books.FollowUps ->
+              keyOf followUpType [] f.InvoiceId,
+              Json.objectOf
+                  [ "invoiceId", Json.String f.InvoiceId
+                    "dispute", disputeJson f.Dispute
+                    "collection", collectionJson f.Collection
+                    // Written only once a delivery problem is resolved, so other follow-ups keep their bytes.
+                    match f.DeliveryResolved with
+                    | Some d ->
+                        "deliveryResolved",
+                        Json.objectOf
+                            [ "attemptId", Json.String d.AttemptId
+                              "note", Json.String d.Note
+                              "by", Json.String d.By
+                              "at", Json.String(preciseTimestamp d.At) ]
+                    | None -> ()
+                    // Written only while there is a promise, so other follow-ups keep their bytes (SUM4-016).
+                    match f.Promise with
+                    | Some p ->
+                        "promise",
+                        Json.objectOf
+                            [ "amount", money p.Amount
+                              "by", Json.String(dateText p.By)
+                              "madeOn", Json.String(dateText p.MadeOn)
+                              "outstandingWhenMade", money p.OutstandingWhenMade
+                              "note", Json.String p.Note ]
+                    | None -> () ]
+          for id, a in auditIds ledger.Audit -> keyOf auditType (yearMonth (DateOnly.FromDateTime a.When.UtcDateTime)) id, auditBody a ]
+
+    match records |> List.choose (fun (k, _) -> match k with Error d -> Some d | Ok _ -> None) with
+    | [] -> Ok(records |> List.choose (fun (k, body) -> k |> Result.toOption |> Option.map (fun key -> { Key = key; Body = body })))
+    | problems -> Error problems
+
+/// The schema version a record is written at: 2 when it records tax (a
+/// `tax` or `taxDetails` anywhere in it), else 1, so a record without tax
+/// is written exactly as before.
+let schemaVersionOf (record: FinancialRecord) =
+    let rec recordsTax (value: Json) =
+        match value with
+        | Json.Object members ->
+            members
+            |> List.exists (fun (key, inner) -> key = "tax" || key = "taxDetails" || key = "provenance" || key = "contributions" || key = "change" || key = "deliveryResolved" || key = "postedFor" || key = "lineDetails" || key = "clientReferences" || key = "rounding" || key = "recurring" || key = "legalFields" || key = "requiresPurchaseOrder" || key = "promise" || recordsTax inner)
+        | Json.Array items -> items |> List.exists recordsTax
+        | _ -> false
+
+    if taxedTypes.Contains(RecordType.value record.Key.Type) && recordsTax record.Body then 2 else 1
+
+/// The canonical stored text of a record.
+let encode (record: FinancialRecord) : Result<string, Diagnostic> =
+    { Id = record.Key.Id
+      Type = record.Key.Type
+      SchemaVersion = schemaVersionOf record
+      Mutability = mutabilityOf record.Key.Type
+      Body = record.Body }
+    |> Record.encode Record.DefaultMaxBytes
+    |> Result.mapError (fun _ -> StorageOperationRefused $"'{RecordId.value record.Key.Id}' is too large to store")
+
+/// The records as namespace-relative path text -> (key, canonical content).
+let contents (records: FinancialRecord list) : Result<Map<string, RecordKey * string>, Diagnostic list> =
+    let encoded =
+        records
+        |> List.map (fun r ->
+            Layout.recordPath r.Key
+            |> Result.mapError (LocationError.describe >> InvalidDataLocation)
+            |> Result.bind (fun p -> encode r |> Result.map (fun c -> RelativePath.render p, (r.Key, c))))
+
+    match encoded |> List.choose (function Error d -> Some d | Ok _ -> None) with
+    | [] -> Ok(encoded |> List.choose Result.toOption |> Map.ofList)
+    | problems -> Error problems
+
+// ---- Loading ----------------------------------------------------------------
+
+/// The decoded parts of a folder, before they are assembled.
+type private Part =
+    | AccountPart of Account
+    | PeriodPart of (int * int) * PeriodState
+    | EntryPart of PostedEntry * key: string option
+    | CustomerPart of Customer
+    | DraftPart of DraftInvoice
+    | InvoicePart of IssuedInvoice * draftId: string option
+    | DeliveryPart of DeliveryAttempt
+    | ProfilePart of PaymentProfile
+    | TemplatePart of RecurringTemplate
+    | LegalFieldsPart of LegalField list
+    | FollowUpPart of FollowUp
+    | ObligationPart of Obligation
+    | PaymentPart of Payment
+    | AllocationPart of Allocation
+    | AuditPart of AuditRecord
+    | CreditPart of CustomerCredit
+    | DepositPart of Deposit
+    | CreditMemoPart of CreditMemo
+    | ApplicationPart of Application
+    | RefundPart of Refund
+    | ReversalPart of PaymentReversal
+    | WriteOffPart of WriteOff
+    | VoidPart of InvoiceVoid
+    | EngagementPart of Engagement
+    | ExpensePart of Expense
+    | TimePart of SourceTime
+    | WithdrawalPart of TimeWithdrawal
+    | ProposalPart of Proposal
+    | RateCardPart of RateCard
+    | ReviewPart of BillingReview
+    | ArtifactPart of InvoiceArtifact
+
+let private partOf (t: RecordType) (b: Json) : Decoded<Part> =
+    match RecordType.value t with
+    | "summa.account" ->
+        decode {
+            do! closed [ "active"; "code"; "id"; "name"; "type" ] b
+            let! id = text "id" b
+            let! code = text "code" b
+            let! name = text "name" b
+            let! kind = text "type" b |> Result.bind accountTypeOf
+            let! active = flag "active" b
+
+            return
+                AccountPart
+                    { Id = id
+                      Code = code
+                      Name = name
+                      Type = kind
+                      Active = active }
+        }
+    | "summa.period" ->
+        decode {
+            do! closed [ "month"; "state"; "year" ] b
+            let! year = integer "year" b
+            let! month = integer "month" b
+            let! state = text "state" b |> Result.bind periodOf
+            return PeriodPart((year, month), state)
+        }
+    | "summa.entry" ->
+        decode {
+            do! closed [ "date"; "description"; "id"; "idempotencyKey"; "lines"; "postedAt"; "postedFor"; "reverses"; "source" ] b
+            let! id = text "id" b
+            let! date = date "date" b
+            let! description = text "description" b
+            let! lines = list "lines" lineOf b
+            let! source = text "source" b
+            let! reverses = optionalText "reverses" b
+            let! postedAt = preciseInstant "postedAt" b
+            let! key = optionalText "idempotencyKey" b
+
+            let! reference =
+                match Codec.tryField "postedFor" b with
+                | None -> Ok None
+                | Some r ->
+                    decode {
+                        do! closed [ "id"; "kind" ] r
+                        let! kind = text "kind" r
+                        let! id = text "id" r
+                        return Some { Kind = kind; Id = id }
+                    }
+
+            return
+                EntryPart(
+                    { Id = id
+                      Date = date
+                      Description = description
+                      Lines = lines
+                      Source = source
+                      State = Posted
+                      Reverses = reverses
+                      Reference = reference
+                      PostedAt = postedAt },
+                    key
+                )
+        }
+    | "summa.customer" ->
+        decode {
+            do! closed [ "active"; "billingAddress"; "billingName"; "defaultTerms"; "email"; "id"; "legalFields"; "name"; "paymentProfileId"; "requiresPurchaseOrder"; "tax" ] b
+            let! id = text "id" b
+            let! name = text "name" b
+            let! billingName = text "billingName" b
+            let! address = text "billingAddress" b
+            let! email = text "email" b
+            let! terms = optionalOf termsOf "defaultTerms" b
+            let! profile = optionalText "paymentProfileId" b
+            let! active = flag "active" b
+
+            let! tax =
+                match Codec.tryField "tax" b with
+                | None -> Ok TaxNotAssessed
+                | Some t ->
+                    decode {
+                        let! kind = text "kind" t
+                        let! jurisdiction = optionalText "jurisdiction" t
+
+                        return!
+                            match kind with
+                            | "subject" -> closed [ "jurisdiction"; "kind" ] t |> Result.map (fun () -> SubjectToTax jurisdiction)
+                            | "exempt" ->
+                                closed [ "evidence"; "jurisdiction"; "kind" ] t
+                                |> Result.bind (fun () -> text "evidence" t)
+                                |> Result.map (fun evidence -> TaxExempt(evidence, jurisdiction))
+                            | other -> Error $"'{other}' is not a tax status"
+                    }
+
+            let! fields = legalFieldsOf b
+            let! requiresPo = (match Codec.tryField "requiresPurchaseOrder" b with None -> Ok false | Some _ -> flag "requiresPurchaseOrder" b)
+
+            return
+                CustomerPart
+                    { Id = id
+                      Name = name
+                      BillingName = billingName
+                      BillingAddress = address
+                      Email = email
+                      DefaultTerms = terms
+                      PaymentProfileId = profile
+                      Active = active
+                      Tax = tax
+                      LegalFields = fields
+                      RequiresPurchaseOrder = requiresPo }
+        }
+    | "summa.legal-fields" ->
+        decode {
+            do! closed [ "fields" ] b
+            let! fields = list "fields" legalFieldOf b
+            return LegalFieldsPart fields
+        }
+    | "summa.draft" ->
+        decode {
+            do!
+                closed
+                    [ "adjustments"; "assumptions"; "corrects"; "currency"; "customerId"; "details"; "discounts"; "draftId"; "dueDate"; "engagementId"
+                      "lines"; "recipients"; "review"; "terms"; "version" ]
+                    b
+            let! id = text "draftId" b
+            let! customer = text "customerId" b
+            let! currency = text "currency" b
+            let! lines = list "lines" invoiceLineOf b
+            let! adjustments = list "adjustments" adjustmentOf b
+            let! discounts = list "discounts" invoiceDiscountOf b
+            let! terms = optionalOf termsOf "terms" b
+            let! due = optionalDate "dueDate" b
+            let! corrects = optionalText "corrects" b
+            let! engagement = optionalText "engagementId" b
+            let! draftDetails = field "details" b |> Result.bind detailsOf
+            let! draftAssumptions = strings "assumptions" b
+            let! draftRecipients = optionalOf recipientsOf "recipients" b
+            let! version = integer "version" b
+            let! draftReview = field "review" b |> Result.bind reviewOf
+
+            return
+                DraftPart
+                    { DraftId = id
+                      CustomerId = customer
+                      Currency = currency
+                      Lines = lines
+                      Adjustments = adjustments
+                      Discounts = discounts
+                      Terms = terms
+                      DueDate = due
+                      Corrects = corrects
+                      EngagementId = engagement
+                      Details = draftDetails
+                      Assumptions = draftAssumptions
+                      Recipients = draftRecipients
+                      Version = version
+                      Review = draftReview }
+        }
+    | "summa.invoice" ->
+        decode {
+            do!
+                closed
+                    [ "adjustments"; "approval"; "assumptions"; "corrects"; "currency"; "customer"; "customerId"; "details"; "discounts"; "draftId"; "dueDate"
+                      "engagementId"; "invoiceId"; "issuer"; "template"; "issueDate"
+                      "issuedAt"; "journalEntryId"; "lines"; "number"; "obligationId"; "rounding"; "subtotal"; "terms"; "termsSource"; "total" ]
+                    b
+
+            let! id = text "invoiceId" b
+            let! number = text "number" b
+            let! draftId = optionalText "draftId" b
+            let! customer = text "customerId" b
+            let! currency = text "currency" b
+            let! issueDate = date "issueDate" b
+            let! dueDate = date "dueDate" b
+            let! terms = field "terms" b |> Result.bind termsOf
+            let! termsSource = text "termsSource" b |> Result.bind termsSourceOf
+            let! lines = list "lines" invoiceLineOf b
+            let! subtotal = moneyField "subtotal" b
+            let! discounts = list "discounts" invoiceDiscountOf b
+            let! adjustments = list "adjustments" adjustmentOf b
+            let! corrects = optionalText "corrects" b
+            let! engagement = optionalText "engagementId" b
+            let! invoiceDetails = field "details" b |> Result.bind detailsOf
+            let! invoiceAssumptions = strings "assumptions" b
+            let! issuedBy = field "issuer" b |> Result.bind issuerOf
+            let! billed = field "customer" b |> Result.bind customerSnapshotOf
+            let! printedWith = field "template" b |> Result.bind templateOf
+            let! approved = field "approval" b |> Result.bind approvalOf
+            let! total = moneyField "total" b
+            let! entry = text "journalEntryId" b
+            let! obligation = text "obligationId" b
+            let! issuedAt = preciseInstant "issuedAt" b
+            // An invoice written before the policy was recorded was calculated
+            // under its first version: the rounding code has not changed since.
+            let! rounding = optionalText "rounding" b
+
+            return
+                InvoicePart(
+                    { InvoiceId = id
+                      Number = number
+                      CustomerId = customer
+                      Currency = currency
+                      IssueDate = issueDate
+                      DueDate = dueDate
+                      Terms = terms
+                      TermsSource = termsSource
+                      Lines = lines
+                      Subtotal = subtotal
+                      Discounts = discounts
+                      Adjustments = adjustments
+                      Total = total
+                      Corrects = corrects
+                      EngagementId = engagement
+                      Details = invoiceDetails
+                      Assumptions = invoiceAssumptions
+                      Issuer = issuedBy
+                      Customer = billed
+                      Template = printedWith
+                      Approval = approved
+                      JournalEntryId = entry
+                      ObligationId = obligation
+                      IssuedAt = issuedAt
+                      Rounding = rounding |> Option.defaultValue Summa.Ledger.Invoicing.roundingPolicy },
+                    draftId
+                )
+        }
+    | "summa.delivery" ->
+        decode {
+            do!
+                closed
+                    [ "actor"; "at"; "channel"; "id"; "invoiceId"; "messageTemplate"; "outcome"; "policy"; "providerReference"; "recipients"
+                      "retryOf" ]
+                    b
+
+            let! id = text "id" b
+            let! invoice = text "invoiceId" b
+            let! at = preciseInstant "at" b
+            let! actor = text "actor" b
+            let! sentTo = field "recipients" b |> Result.bind recipientsOf
+            let! via = field "channel" b |> Result.bind channelOf
+            let! policyName = text "policy" b
+
+            let! policy =
+                match policyNames |> List.tryFind (fun (_, n) -> n = policyName) with
+                | Some(p, _) -> Ok p
+                | None -> Error $"'{policyName}' is not a delivery policy"
+
+            let! template = text "messageTemplate" b
+            let! result = field "outcome" b |> Result.bind outcomeOf
+            let! reference = optionalText "providerReference" b
+            let! retryOf = optionalText "retryOf" b
+
+            return
+                DeliveryPart
+                    { Id = id
+                      InvoiceId = invoice
+                      At = at
+                      Actor = actor
+                      Recipients = sentTo
+                      Channel = via
+                      Policy = policy
+                      MessageTemplate = template
+                      Outcome = result
+                      ProviderReference = reference
+                      RetryOf = retryOf }
+        }
+    | "summa.recurring-template" ->
+        decode {
+            do!
+                closed
+                    [ "active"; "currency"; "customerId"; "endsOn"; "engagementId"; "id"; "lines"; "occurrences"; "recipients"; "schedule"; "startsOn"
+                      "terms"; "version" ]
+                    b
+
+            let! id = text "id" b
+            let! version = integer "version" b
+            let! customer = text "customerId" b
+            let! engagement = optionalText "engagementId" b
+            let! currency = text "currency" b
+            let! schedule = field "schedule" b |> Result.bind recurrenceOf
+            let! lines = list "lines" invoiceLineOf b
+            let! templateTerms = optionalOf termsOf "terms" b
+            let! sendTo = optionalOf recipientsOf "recipients" b
+            let! starts = date "startsOn" b
+            let! ends = optionalDate "endsOn" b
+
+            let! count =
+                match Json.field "occurrences" b with
+                | None
+                | Some Json.Null -> Ok None
+                | Some _ -> integer "occurrences" b |> Result.map Some
+
+            let! active = flag "active" b
+
+            return
+                TemplatePart
+                    { Id = id
+                      Version = version
+                      CustomerId = customer
+                      EngagementId = engagement
+                      Currency = currency
+                      Schedule = schedule
+                      Lines = lines
+                      Terms = templateTerms
+                      Recipients = sendTo
+                      StartsOn = starts
+                      EndsOn = ends
+                      Occurrences = count
+                      Active = active }
+        }
+    | "summa.payment-profile" ->
+        decode {
+            do! closed [ "id"; "instructions"; "label"; "methods"; "version" ] b
+            let! id = text "id" b
+            let! version = integer "version" b
+            let! label = text "label" b
+            let! methods = strings "methods" b
+            let! instructions = text "instructions" b
+
+            return
+                ProfilePart
+                    { Id = id
+                      Version = version
+                      Label = label
+                      Methods = methods
+                      Instructions = instructions }
+        }
+    | "summa.follow-up" ->
+        decode {
+            do! closed [ "collection"; "deliveryResolved"; "dispute"; "invoiceId"; "promise" ] b
+            let! invoice = text "invoiceId" b
+            let! dispute = field "dispute" b |> Result.bind disputeOf
+            let! collection = field "collection" b |> Result.bind collectionOf
+            let! resolved = deliveryResolutionOf b
+
+            let! promise =
+                match Codec.tryField "promise" b with
+                | None -> Ok None
+                | Some p ->
+                    decode {
+                        do! closed [ "amount"; "by"; "madeOn"; "note"; "outstandingWhenMade" ] p
+                        let! amount = moneyField "amount" p
+                        let! by = date "by" p
+                        let! madeOn = date "madeOn" p
+                        let! owed = moneyField "outstandingWhenMade" p
+                        let! note = text "note" p
+
+                        return
+                            Some
+                                { Amount = amount
+                                  By = by
+                                  MadeOn = madeOn
+                                  OutstandingWhenMade = owed
+                                  Note = note }
+                    }
+
+            return
+                FollowUpPart
+                    { InvoiceId = invoice
+                      Dispute = dispute
+                      Collection = collection
+                      DeliveryResolved = resolved
+                      Promise = promise }
+        }
+    | "summa.obligation" ->
+        decode {
+            do! closed [ "cancelled"; "dueDate"; "id"; "kind"; "originalAmount"; "party"; "source" ] b
+            let! id = text "id" b
+
+            let! kind =
+                text "kind" b
+                |> Result.bind (function
+                    | "receivable" -> Ok Receivable
+                    | "payable" -> Ok Payable
+                    | other -> Error $"'{other}' is not receivable or payable")
+
+            let! source = text "source" b
+            let! party = text "party" b
+            let! amount = moneyField "originalAmount" b
+            let! due = date "dueDate" b
+            let! cancelled = flag "cancelled" b
+
+            return
+                ObligationPart
+                    { Id = id
+                      Kind = kind
+                      Source = source
+                      Party = party
+                      OriginalAmount = amount
+                      DueDate = due
+                      Cancelled = cancelled }
+        }
+    | "summa.payment" ->
+        decode {
+            do! closed [ "amount"; "customerId"; "dateReceived"; "id"; "memo"; "method"; "reference" ] b
+            let! id = text "id" b
+            let! customer = text "customerId" b
+            let! received = date "dateReceived" b
+            let! amount = moneyField "amount" b
+            let! method = text "method" b |> Result.bind methodOf
+            let! reference = text "reference" b
+            let! memo = optionalText "memo" b
+
+            return
+                PaymentPart
+                    { Id = id
+                      CustomerId = customer
+                      DateReceived = received
+                      Amount = amount
+                      Method = method
+                      Reference = reference
+                      Memo = memo }
+        }
+    | "summa.allocation" ->
+        decode {
+            do! closed [ "amount"; "id"; "invoiceId"; "journalEntryId"; "paymentId" ] b
+            let! id = text "id" b
+            let! payment = text "paymentId" b
+            let! invoice = text "invoiceId" b
+            let! amount = moneyField "amount" b
+            let! entry = text "journalEntryId" b
+
+            return
+                AllocationPart
+                    { Id = id
+                      PaymentId = payment
+                      InvoiceId = invoice
+                      Amount = amount
+                      JournalEntryId = entry }
+        }
+    | "summa.audit" ->
+        decode {
+            do! closed [ "change"; "correlationId"; "provenance"; "source"; "subject"; "what"; "when"; "who" ] b
+            let! who = text "who" b
+            let! what = text "what" b
+            let! at = preciseInstant "when" b
+            let! source = text "source" b
+            let! correlation = optionalText "correlationId" b
+            let! subject = text "subject" b
+
+            let! provenance =
+                match Codec.tryField "provenance" b with
+                | None -> Ok None
+                | Some p -> provenanceOf p |> Result.map Some
+
+            let! change =
+                match Codec.tryField "change" b with
+                | None -> Ok None
+                | Some c -> changeOf c |> Result.map Some
+
+            return
+                AuditPart
+                    { Who = who
+                      What = what
+                      When = at
+                      Source = source
+                      CorrelationId = correlation
+                      Subject = subject
+                      Provenance = provenance
+                      Change = change }
+        }
+    | "summa.credit" ->
+        decode {
+            do! closed [ "amount"; "customerId"; "date"; "id"; "journalEntryId"; "sourcePaymentId" ] b
+            let! id = text "id" b
+            let! customer = text "customerId" b
+            let! payment = text "sourcePaymentId" b
+            let! amount = moneyField "amount" b
+            let! date = date "date" b
+            let! entry = text "journalEntryId" b
+
+            return
+                CreditPart
+                    { Id = id
+                      CustomerId = customer
+                      SourcePaymentId = payment
+                      Amount = amount
+                      Date = date
+                      JournalEntryId = entry }
+        }
+    | "summa.deposit" ->
+        decode {
+            do! closed [ "amount"; "customerId"; "dateReceived"; "id"; "journalEntryId"; "method"; "reference" ] b
+            let! id = text "id" b
+            let! customer = text "customerId" b
+            let! received = date "dateReceived" b
+            let! amount = moneyField "amount" b
+            let! method = text "method" b |> Result.bind methodOf
+            let! reference = text "reference" b
+            let! entry = text "journalEntryId" b
+
+            return
+                DepositPart
+                    { Id = id
+                      CustomerId = customer
+                      DateReceived = received
+                      Amount = amount
+                      Method = method
+                      Reference = reference
+                      JournalEntryId = entry }
+        }
+    | "summa.credit-memo" ->
+        decode {
+            do! closed [ "amount"; "customerId"; "id"; "invoiceId"; "issueDate"; "journalEntryId"; "lines"; "reason"; "revenueAccountId" ] b
+            let! id = text "id" b
+            let! customer = text "customerId" b
+            let! invoice = optionalText "invoiceId" b
+            let! amount = moneyField "amount" b
+            let! revenue = text "revenueAccountId" b
+            let! reason = text "reason" b
+            let! issued = date "issueDate" b
+            let! entry = text "journalEntryId" b
+
+            let! credited =
+                list "lines" (function
+                    | Json.Number n when n = Math.Floor n && n >= 0m -> Ok(int n)
+                    | _ -> Error "'lines' holds something other than line positions") b
+
+            return
+                CreditMemoPart
+                    { Id = id
+                      CustomerId = customer
+                      InvoiceId = invoice
+                      Amount = amount
+                      RevenueAccountId = revenue
+                      Reason = reason
+                      IssueDate = issued
+                      JournalEntryId = entry
+                      Lines = credited }
+        }
+    | "summa.application" ->
+        decode {
+            do! closed [ "amount"; "date"; "id"; "invoiceId"; "journalEntryId"; "source" ] b
+            let! id = text "id" b
+            let! from = field "source" b |> Result.bind sourceOf
+            let! invoice = text "invoiceId" b
+            let! amount = moneyField "amount" b
+            let! date = date "date" b
+            let! entry = text "journalEntryId" b
+
+            return
+                ApplicationPart
+                    { Id = id
+                      Source = from
+                      InvoiceId = invoice
+                      Amount = amount
+                      Date = date
+                      JournalEntryId = entry }
+        }
+    | "summa.refund" ->
+        decode {
+            do! closed [ "amount"; "customerId"; "date"; "id"; "journalEntryId"; "method"; "reference"; "source" ] b
+            let! id = text "id" b
+            let! customer = text "customerId" b
+            let! from = field "source" b |> Result.bind sourceOf
+            let! amount = moneyField "amount" b
+            let! date = date "date" b
+            let! method = text "method" b |> Result.bind methodOf
+            let! reference = text "reference" b
+            let! entry = text "journalEntryId" b
+
+            return
+                RefundPart
+                    { Id = id
+                      CustomerId = customer
+                      Source = from
+                      Amount = amount
+                      Date = date
+                      Method = method
+                      Reference = reference
+                      JournalEntryId = entry }
+        }
+    | "summa.payment-reversal" ->
+        decode {
+            do! closed [ "date"; "journalEntryIds"; "paymentId"; "reason" ] b
+            let! payment = text "paymentId" b
+            let! reason = text "reason" b
+            let! date = date "date" b
+
+            let! ids =
+                list "journalEntryIds" (function
+                    | Json.String s -> Ok s
+                    | _ -> Error "'journalEntryIds' holds something other than text") b
+
+            return
+                ReversalPart
+                    { PaymentId = payment
+                      Reason = reason
+                      Date = date
+                      JournalEntryIds = ids }
+        }
+    | "summa.write-off" ->
+        decode {
+            do! closed [ "amount"; "date"; "id"; "invoiceId"; "journalEntryId"; "reason" ] b
+            let! id = text "id" b
+            let! invoice = text "invoiceId" b
+            let! amount = moneyField "amount" b
+            let! reason = text "reason" b
+            let! date = date "date" b
+            let! entry = text "journalEntryId" b
+
+            return
+                WriteOffPart
+                    { Id = id
+                      InvoiceId = invoice
+                      Amount = amount
+                      Reason = reason
+                      Date = date
+                      JournalEntryId = entry }
+        }
+    | "summa.invoice-void" ->
+        decode {
+            do! closed [ "date"; "invoiceId"; "journalEntryId"; "reason" ] b
+            let! invoice = text "invoiceId" b
+            let! reason = text "reason" b
+            let! date = date "date" b
+            let! entry = text "journalEntryId" b
+
+            return
+                VoidPart
+                    { InvoiceId = invoice
+                      Reason = reason
+                      Date = date
+                      JournalEntryId = entry }
+        }
+    | "summa.engagement" ->
+        decode {
+            do! closed [ "currency"; "customerId"; "fixedFee"; "id"; "milestones"; "name"; "terms" ] b
+            let! id = text "id" b
+            let! customer = text "customerId" b
+            let! name = text "name" b
+            let! currency = text "currency" b
+            let! fee = optionalOf moneyOf "fixedFee" b
+            let! milestones = list "milestones" milestoneOf b
+            let! terms = optionalOf termsOf "terms" b
+
+            return
+                EngagementPart
+                    { Id = id
+                      CustomerId = customer
+                      Name = name
+                      Currency = currency
+                      FixedFee = fee
+                      Milestones = milestones
+                      Terms = terms }
+        }
+    | "summa.expense" ->
+        decode {
+            do!
+                closed
+                    [ "amount"; "billable"; "customerId"; "date"; "description"; "engagementId"; "expenseAccountId"; "id"; "journalEntryId"
+                      "paidFromAccountId"; "projectId" ]
+                    b
+
+            let! id = text "id" b
+            let! date = date "date" b
+            let! description = text "description" b
+            let! amount = moneyField "amount" b
+            let! expenseAccount = text "expenseAccountId" b
+            let! paidFrom = text "paidFromAccountId" b
+            let! customer = optionalText "customerId" b
+            let! project = optionalText "projectId" b
+            let! engagement = optionalText "engagementId" b
+            let! billable = flag "billable" b
+            let! entry = text "journalEntryId" b
+
+            return
+                ExpensePart
+                    { Id = id
+                      Date = date
+                      Description = description
+                      Amount = amount
+                      ExpenseAccountId = expenseAccount
+                      PaidFromAccountId = paidFrom
+                      CustomerId = customer
+                      ProjectId = project
+                      EngagementId = engagement
+                      Billable = billable
+                      JournalEntryId = entry }
+        }
+    | "summa.time" ->
+        decode {
+            do!
+                closed
+                    [ "activityId"; "activityTypeId"; "approved"; "billableMinutes"; "businessDate"; "clientId"; "description"; "engagementId"
+                      "exactMinutes"; "lineage"; "organizationId"; "origin"; "performerId"; "projectId"; "publicationId"; "publishedAt"
+                      "rateReference"; "revision"; "supersedes"; "workItem" ]
+                    b
+
+            let! publication = text "publicationId" b
+            let! organization = text "organizationId" b
+            let! activity = text "activityId" b
+            let! revision = integer "revision" b
+            let! performer = text "performerId" b
+            let! businessDate = date "businessDate" b
+            let! project = text "projectId" b
+            let! client = optionalText "clientId" b
+            let! engagement = optionalText "engagementId" b
+            let! activityType = text "activityTypeId" b
+            let! description = text "description" b
+            let! exact = integer "exactMinutes" b
+            let! billable = integer "billableMinutes" b
+            let! approved = flag "approved" b
+            let! rateReference = optionalText "rateReference" b
+            let! from = field "origin" b |> Result.bind originOf
+            let! lineage = strings "lineage" b
+            let! workItem = optionalText "workItem" b
+            let! supersedes = optionalText "supersedes" b
+            let! published = preciseInstant "publishedAt" b
+
+            return
+                TimePart
+                    { PublicationId = publication
+                      OrganizationId = organization
+                      ActivityId = activity
+                      Revision = revision
+                      PerformerId = performer
+                      BusinessDate = businessDate
+                      ProjectId = project
+                      ClientId = client
+                      EngagementId = engagement
+                      ActivityTypeId = activityType
+                      Description = description
+                      ExactMinutes = exact
+                      BillableMinutes = billable
+                      Approved = approved
+                      RateReference = rateReference
+                      Origin = from
+                      Lineage = lineage
+                      WorkItem = workItem
+                      Supersedes = supersedes
+                      PublishedAt = published }
+        }
+    | "summa.time-withdrawal" ->
+        decode {
+            do! closed [ "publicationId"; "reason"; "revision"; "withdrawnAt" ] b
+            let! publication = text "publicationId" b
+            let! revision = integer "revision" b
+            let! reason = text "reason" b
+            let! at = preciseInstant "withdrawnAt" b
+
+            return
+                WithdrawalPart
+                    { PublicationId = publication
+                      Revision = revision
+                      Reason = reason
+                      WithdrawnAt = at }
+        }
+    | "summa.proposal" ->
+        decode {
+            do! closed [ "contributions"; "createdAt"; "currency"; "customerId"; "engagementId"; "grouping"; "id"; "lines"; "recurring"; "state" ] b
+            let! id = text "id" b
+            let! customer = text "customerId" b
+            let! engagement = optionalText "engagementId" b
+            let! currency = text "currency" b
+
+            let! lines =
+                list
+                    "lines"
+                    (fun l ->
+                        decode {
+                            do! closed [ "line"; "priced" ] l
+                            let! line = field "line" l |> Result.bind invoiceLineOf
+                            let! priced = flag "priced" l
+                            return { Line = line; Priced = priced }
+                        })
+                    b
+
+            let! grouping = list "grouping" groupByOf b
+            let! state = field "state" b |> Result.bind proposalStateOf
+            let! created = preciseInstant "createdAt" b
+
+            let! contributions =
+                match Codec.tryField "contributions" b with
+                | None -> Ok []
+                | Some _ ->
+                    list
+                        "contributions"
+                        (fun c ->
+                            decode {
+                                do! closed [ "at"; "provenance"; "what"; "who" ] c
+                                let! who = text "who" c
+                                let! what = text "what" c
+                                let! at = preciseInstant "at" c
+
+                                let! provenance =
+                                    match Codec.tryField "provenance" c with
+                                    | None -> Ok None
+                                    | Some p -> provenanceOf p |> Result.map Some
+
+                                return
+                                    { Who = who
+                                      What = what
+                                      At = at
+                                      Provenance = provenance }
+                            })
+                        b
+
+            let! occurrence =
+                match Codec.tryField "recurring" b with
+                | None -> Ok None
+                | Some o ->
+                    decode {
+                        do! closed [ "date"; "templateId"; "templateVersion" ] o
+                        let! template = text "templateId" o
+                        let! version = integer "templateVersion" o
+                        let! on = date "date" o
+                        return Some { TemplateId = template; TemplateVersion = version; Date = on }
+                    }
+
+            return
+                ProposalPart
+                    { Id = id
+                      CustomerId = customer
+                      EngagementId = engagement
+                      Currency = currency
+                      Lines = lines
+                      Grouping = grouping
+                      State = state
+                      CreatedAt = created
+                      Contributions = contributions
+                      Occurrence = occurrence }
+        }
+    | "summa.rate-card" ->
+        decode {
+            do! closed [ "rates"; "roles" ] b
+
+            let! rates =
+                list
+                    "rates"
+                    (fun r ->
+                        decode {
+                            do! closed [ "rate"; "scope" ] r
+                            let! sc = field "scope" r |> Result.bind scopeOf
+                            let! rate = moneyField "rate" r
+                            return sc, rate
+                        })
+                    b
+
+            let! roles =
+                list
+                    "roles"
+                    (fun r ->
+                        decode {
+                            do! closed [ "personId"; "roleId" ] r
+                            let! person = text "personId" r
+                            let! role = text "roleId" r
+                            return person, role
+                        })
+                    b
+
+            return RateCardPart { Rates = rates; Roles = Map.ofList roles }
+        }
+    | "summa.billing-review" ->
+        decode {
+            do! closed [ "id"; "invoiceId"; "publicationId"; "raisedAt"; "reason"; "resolution" ] b
+            let! id = text "id" b
+            let! publication = text "publicationId" b
+            let! invoice = text "invoiceId" b
+            let! reason = text "reason" b
+            let! raised = preciseInstant "raisedAt" b
+            let! resolution = optionalText "resolution" b
+
+            return
+                ReviewPart
+                    { Id = id
+                      PublicationId = publication
+                      InvoiceId = invoice
+                      Reason = reason
+                      RaisedAt = raised
+                      Resolution = resolution }
+        }
+    | "summa.artifact" ->
+        decode {
+            do!
+                closed
+                    [ "createdAt"; "id"; "invoiceId"; "kind"; "mediaType"; "reference"; "renderer"; "sha256"; "size"; "status"; "templateId"
+                      "templateVersion" ]
+                    b
+
+            let! id = text "id" b
+            let! invoice = text "invoiceId" b
+            let! kindName = text "kind" b
+
+            let! kind =
+                match artifactKindNames |> List.tryFind (fun (_, n) -> n = kindName) with
+                | Some(k, _) -> Ok k
+                | None -> Error $"'{kindName}' is not an artifact kind"
+
+            let! media = text "mediaType" b
+            let! reference = text "reference" b
+            let! sha = optionalText "sha256" b
+
+            let! size =
+                match Json.field "size" b with
+                | None
+                | Some Json.Null -> Ok None
+                | Some _ -> long "size" b |> Result.map Some
+
+            let! created = preciseInstant "createdAt" b
+            let! templateId = text "templateId" b
+            let! templateVersion = text "templateVersion" b
+            let! renderer = optionalText "renderer" b
+            let! status = field "status" b |> Result.bind artifactStatusOf
+
+            return
+                ArtifactPart
+                    { Id = id
+                      InvoiceId = invoice
+                      Kind = kind
+                      MediaType = media
+                      Reference = reference
+                      Sha256 = sha
+                      Size = size
+                      CreatedAt = created
+                      TemplateId = templateId
+                      TemplateVersion = templateVersion
+                      Renderer = renderer
+                      Status = status }
+        }
+    | other -> Error $"'{other}' is not a financial record type"
+
+/// A financial object as read: path text and revision.
+type Seen = { Path: string; Revision: Revision; Content: string }
+
+/// What the organization's financial records hold, as far as Summa may trust
+/// them, and the revision of every object read (for the next commit).
+[<NoComparison>]
+type Loaded =
+    { State: Receivables
+      Seen: Map<string, Seen>
+      Problems: Diagnostic list }
+
+let private assemble (parts: Part list) : Receivables =
+    let entries = parts |> List.choose (function EntryPart(e, k) -> Some(e, k) | _ -> None)
+    let reversedBy = entries |> List.choose (fun (e, _) -> e.Reverses |> Option.map (fun original -> original, e.Id)) |> Map.ofList
+
+    let posted =
+        entries
+        |> List.map (fun (e, _) ->
+            match reversedBy.TryFind e.Id with
+            | Some by -> { e with State = Reversed by }
+            | None -> e)
+
+    let invoices = parts |> List.choose (function InvoicePart(i, d) -> Some(i, d) | _ -> None)
+
+    let ledger =
+        { Accounts = parts |> List.choose (function AccountPart a -> Some(a.Id, a) | _ -> None) |> Map.ofList
+          Periods = parts |> List.choose (function PeriodPart(p, s) -> Some(p, s) | _ -> None) |> Map.ofList
+          Entries = posted |> List.map (fun e -> e.Id, e) |> Map.ofList
+          Journal = posted |> List.sortBy (fun e -> e.PostedAt, e.Id) |> List.map _.Id
+          Keys = entries |> List.choose (fun (e, k) -> k |> Option.map (fun key -> key, e.Id)) |> Map.ofList
+          Audit = parts |> List.choose (function AuditPart a -> Some a | _ -> None) |> List.sortBy (fun a -> a.When, a.What, a.Subject) }
+
+    let books =
+        { Ledger = ledger
+          Customers = parts |> List.choose (function CustomerPart c -> Some(c.Id, c) | _ -> None) |> Map.ofList
+          Drafts = parts |> List.choose (function DraftPart d -> Some(d.DraftId, d) | _ -> None) |> Map.ofList
+          Invoices = invoices |> List.map (fun (i, _) -> i.InvoiceId, i) |> Map.ofList
+          Obligations = parts |> List.choose (function ObligationPart o -> Some(o.Id, o) | _ -> None) |> Map.ofList
+          IssuedFrom = invoices |> List.choose (fun (i, d) -> d |> Option.map (fun draft -> draft, i.InvoiceId)) |> Map.ofList
+          Engagements = parts |> List.choose (function EngagementPart e -> Some(e.Id, e) | _ -> None) |> Map.ofList
+          Expenses = parts |> List.choose (function ExpensePart x -> Some(x.Id, x) | _ -> None) |> Map.ofList
+          Time = parts |> List.choose (function TimePart t -> Some(t.PublicationId, t) | _ -> None) |> Map.ofList
+          Withdrawals = parts |> List.choose (function WithdrawalPart w -> Some(w.PublicationId, w) | _ -> None) |> Map.ofList
+          Proposals = parts |> List.choose (function ProposalPart p -> Some(p.Id, p) | _ -> None) |> Map.ofList
+          Rates = parts |> List.tryPick (function RateCardPart c -> Some c | _ -> None) |> Option.defaultValue noRates
+          Reviews = parts |> List.choose (function ReviewPart v -> Some(v.Id, v) | _ -> None) |> Map.ofList
+          Artifacts = parts |> List.choose (function ArtifactPart a -> Some(a.Id, a) | _ -> None) |> Map.ofList
+          PaymentProfiles = parts |> List.choose (function ProfilePart p -> Some($"{p.Id}@{p.Version}", p) | _ -> None) |> Map.ofList
+          Deliveries = parts |> List.choose (function DeliveryPart d -> Some(d.Id, d) | _ -> None) |> Map.ofList
+          FollowUps = parts |> List.choose (function FollowUpPart f -> Some(f.InvoiceId, f) | _ -> None) |> Map.ofList
+          Templates = parts |> List.choose (function TemplatePart t -> Some($"{t.Id}@{t.Version}", t) | _ -> None) |> Map.ofList
+          LegalFields = parts |> List.tryPick (function LegalFieldsPart f -> Some f | _ -> None) }
+
+    { Books = books
+      Payments = parts |> List.choose (function PaymentPart p -> Some(p.Id, p) | _ -> None) |> Map.ofList
+      Allocations = parts |> List.choose (function AllocationPart a -> Some a | _ -> None) |> List.sortBy _.Id
+      Credits = parts |> List.choose (function CreditPart c -> Some(c.Id, c) | _ -> None) |> Map.ofList
+      Deposits = parts |> List.choose (function DepositPart d -> Some(d.Id, d) | _ -> None) |> Map.ofList
+      CreditMemos = parts |> List.choose (function CreditMemoPart m -> Some(m.Id, m) | _ -> None) |> Map.ofList
+      Applications = parts |> List.choose (function ApplicationPart a -> Some a | _ -> None) |> List.sortBy _.Id
+      Refunds = parts |> List.choose (function RefundPart f -> Some(f.Id, f) | _ -> None) |> Map.ofList
+      Reversals = parts |> List.choose (function ReversalPart v -> Some(v.PaymentId, v) | _ -> None) |> Map.ofList
+      WriteOffs = parts |> List.choose (function WriteOffPart w -> Some(w.Id, w) | _ -> None) |> Map.ofList
+      Voids = parts |> List.choose (function VoidPart v -> Some(v.InvoiceId, v) | _ -> None) |> Map.ofList }
+
+/// Cross-record rules that make the books trustworthy (`Invariants`), plus
+/// what only the stored form can show: an idempotency key used twice.
+let private consistency (entries: (PostedEntry * string option) list) (r: Receivables) =
+    let reusedKeys =
+        entries
+        |> List.choose (fun (e, k) -> k |> Option.map (fun key -> key, e.Id))
+        |> List.groupBy fst
+        |> List.filter (fun (_, uses) -> uses.Length > 1)
+        |> List.map (fun (key, uses) -> InvariantViolated("unique-idempotency-keys", key, $"used by {uses.Length} entries"))
+
+    reusedKeys
+    @ (Invariants.check r |> List.map (fun v -> InvariantViolated(v.Rule, v.Subject, v.Detail)))
+
+/// Loads the financial records read from an organization's folder. Each
+/// object must be a canonical record of a financial type, at the path its
+/// content names; then the books must be consistent. Problems are reported,
+/// never ignored, and a command never runs on books with problems.
+let load (objects: StoredObject list) : Loaded =
+    let decoded =
+        objects
+        |> List.map (fun stored ->
+            let where = RelativePath.render stored.Path
+
+            match Layout.keyOf stored.Path with
+            | Some key when isFinancial key.Type ->
+                let schema = schemas |> List.find (fun s -> s.Type = key.Type)
+
+                Integrity.validate key schema Record.DefaultMaxBytes stored
+                |> Result.mapError (Organization.describeIntegrity >> fun detail -> InvalidStoredRecord(where, detail))
+                |> Result.bind (fun valid ->
+                    if valid.Record.Mutability <> mutabilityOf key.Type then
+                        Error(InvalidStoredRecord(where, "the record's mutability is not its type's"))
+                    else
+                        partOf key.Type valid.Record.Body |> Result.mapError (fun detail -> InvalidStoredRecord(where, detail)))
+                |> Result.map (fun part -> stored, part)
+            | _ -> Error(InvalidStoredRecord(where, "not a financial record's path")))
+
+    let parts = decoded |> List.choose (function Ok(_, p) -> Some p | Error _ -> None)
+    let state = assemble parts
+
+    // Each record must sit where its content says it belongs.
+    let misplaced =
+        match toRecords state |> Result.bind contents with
+        | Error problems -> problems
+        | Ok expected ->
+            let actual = objects |> List.map (fun o -> RelativePath.render o.Path) |> Set.ofList
+
+            Set.difference actual (expected |> Map.keys |> Set.ofSeq)
+            |> Set.toList
+            |> List.filter (fun p -> decoded |> List.exists (function Ok(s, _) -> RelativePath.render s.Path = p | _ -> false))
+            |> List.map (fun p -> InvalidStoredRecord(p, "the record is not at the path its content names"))
+
+    { State = state
+      Seen =
+        objects
+        |> List.map (fun o ->
+            let p = RelativePath.render o.Path
+            p, { Path = p; Revision = o.Revision; Content = o.Content })
+        |> Map.ofList
+      Problems =
+        (decoded |> List.choose (function Error d -> Some d | Ok _ -> None))
+        @ misplaced
+        @ consistency (parts |> List.choose (function EntryPart(e, k) -> Some(e, k) | _ -> None)) state }

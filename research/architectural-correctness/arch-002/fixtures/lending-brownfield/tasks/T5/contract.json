@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:4c56d45c49f065f89284596475765a413467b8e29132fae78a3d4638836f976a",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T5.md#LEND2-T5-R1",
+        "originalId": "LEND2-T5-R1",
+        "document": "requirements/T5.md",
+        "location": "L12",
+        "revision": "sha256:4c56d45c49f065f89284596475765a413467b8e29132fae78a3d4638836f976a",
+        "contentDigest": "sha256:a6733b9de9c389d1757b922f89845a7e97e1b193f29b0ac9667c4350f8b5bc42"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-003",
+        "DEC-010",
+        "VERIFY-T5-R1",
+        "COHORT-T5"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T5.md#LEND2-T5-R2",
+        "originalId": "LEND2-T5-R2",
+        "document": "requirements/T5.md",
+        "location": "L30",
+        "revision": "sha256:4c56d45c49f065f89284596475765a413467b8e29132fae78a3d4638836f976a",
+        "contentDigest": "sha256:ec2940c263dee3f3137b505451f9467d356c0f94bec4336f7c89d78e8d65e8fa"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-010",
+        "VERIFY-T5-R2",
+        "COHORT-T5"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T5.md#LEND2-T5-R3",
+        "originalId": "LEND2-T5-R3",
+        "document": "requirements/T5.md",
+        "location": "L40",
+        "revision": "sha256:4c56d45c49f065f89284596475765a413467b8e29132fae78a3d4638836f976a",
+        "contentDigest": "sha256:06df821c4a0cffbc816496fc19f5bebaa4294ae1910b433cd98c71335a527693"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-010",
+        "DEC-006",
+        "VERIFY-T5-R3",
+        "COHORT-T5",
+        "CONFLICT-T5-WRITE-OFF"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-003",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R1"
+      ],
+      "dependsOn": [],
+      "justification": "0.25 per day late, at most 10.00 per loan, assessed on return"
+    },
+    {
+      "id": "DEC-010",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R1",
+        "requirements/T5.md#LEND2-T5-R2",
+        "requirements/T5.md#LEND2-T5-R3"
+      ],
+      "dependsOn": [],
+      "justification": "a payment is positive, at most two decimals, not more than is owed; payments are applied to the fines oldest first"
+    },
+    {
+      "id": "DEC-006",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R3"
+      ],
+      "dependsOn": [],
+      "justification": "fines are assessed only by the schedule; no part of the system may reduce or cancel a fine on its own initiative; a waiver needs a named approver for the specific fine"
+    },
+    {
+      "id": "VERIFY-T5-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R1"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-010"
+      ]
+    },
+    {
+      "id": "VERIFY-T5-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R2"
+      ],
+      "dependsOn": [
+        "DEC-010"
+      ]
+    },
+    {
+      "id": "VERIFY-T5-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R3"
+      ],
+      "dependsOn": [
+        "DEC-010",
+        "DEC-006"
+      ]
+    },
+    {
+      "id": "COHORT-T5",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R1",
+        "requirements/T5.md#LEND2-T5-R2",
+        "requirements/T5.md#LEND2-T5-R3"
+      ],
+      "dependsOn": [
+        "DEC-003",
+        "DEC-006",
+        "DEC-010"
+      ]
+    },
+    {
+      "id": "CONFLICT-T5-WRITE-OFF",
+      "kind": "conflict",
+      "requirementKeys": [
+        "requirements/T5.md#LEND2-T5-R3"
+      ],
+      "dependsOn": [
+        "DEC-006",
+        "DEC-010"
+      ],
+      "justification": "LEND2-T5-R3 asks the desk to write off a remainder below 0.50 after a payment; accepted DEC-006 lets no part of the system reduce or cancel a fine on its own initiative, and DEC-010 reduces what is owed only by what is paid; unresolved"
+    }
+  ]
+}

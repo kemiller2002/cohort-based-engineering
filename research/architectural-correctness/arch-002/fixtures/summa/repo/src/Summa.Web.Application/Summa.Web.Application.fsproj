@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Limen engine, application tier: Limen's protocol (JSON in, view and
+       effects out), the decoding of the server's bodies, and the Aegis
+       boundary every kernel message crosses. Deterministic apart from the
+       Aegis fault ids and timestamps; no browser, network or file access. -->
+
+  <ItemGroup>
+    <Compile Include="Json.fs" />
+    <Compile Include="Limen.fs" />
+    <Compile Include="Boundary.fs" />
+    <Compile Include="Replies.fs" />
+    <Compile Include="BacklogWire.fs" />
+    <Compile Include="HubWire.fs" />
+    <Compile Include="Bridge.fs" />
+    <Compile Include="Identity.fs" />
+    <Compile Include="Store.fs" />
+    <Compile Include="AccountingWire.fs" />
+    <Compile Include="Runtime.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EchelonFoundry.Aegis.Core" />
+    <PackageReference Include="EchelonFoundry.Fides.Client" />
+    <PackageReference Include="EchelonFoundry.Fides.Arca" />
+    <PackageReference Include="EchelonFoundry.Arca.GitHub" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Summa.Web.Engine/Summa.Web.Engine.fsproj" />
+  </ItemGroup>
+
+</Project>

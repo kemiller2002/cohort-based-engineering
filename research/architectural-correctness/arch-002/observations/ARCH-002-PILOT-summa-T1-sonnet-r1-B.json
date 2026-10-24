@@ -1,0 +1,490 @@
+{
+  "acceptedRequirements": 0,
+  "architecture": {
+    "baseline": {
+      "cacheKey": "5ba86b39162c1a03",
+      "commit": "1e9e9e717593949425e8c63d917d4560ae8c820f",
+      "gateFindings": 440,
+      "note": "archcheck on the base commit with the pristine policy (gate) and policy + sealed probes (scoring)",
+      "scoringDetFindings": 347
+    },
+    "measure": "baseline-delta: new = DET finding (ARC-TRC-01 excluded) whose (ruleId, file, symbol, scope) the base commit's scoring report does not hold (multiset)",
+    "newSinceS1": null,
+    "p1": null,
+    "p2": null,
+    "p2-initial-contract": null
+  },
+  "arm": "B",
+  "block": "summa/T1/sonnet/r1",
+  "commits": {
+    "F1": null,
+    "F2": null,
+    "S1": null,
+    "S2": null,
+    "base": "1e9e9e717593949425e8c63d917d4560ae8c820f",
+    "followup": "395414e78faa649956d19f12fdaca13209d87166",
+    "start": "f6f559537b68abf7fd73960ffa784829815ff0c2"
+  },
+  "completed": false,
+  "cost": {
+    "agrees": false,
+    "byPhase": {
+      "1": 0.4278575,
+      "2": 0.182088
+    },
+    "priceTableSha256": "c49f889f3bd0af37bde1eaf62b2c13320b37e4b55ce03386ea895b9dcf0492fc",
+    "totalUsd": 0.609946
+  },
+  "decisionFidelity": {
+    "conflict": {
+      "applicable": false,
+      "correct": null,
+      "passed": 0,
+      "tests": 0
+    },
+    "decisionTests": {
+      "passed": 0,
+      "total": 0
+    },
+    "trc": {
+      "definedForArm": false,
+      "p1": null,
+      "p2": null,
+      "p2InitialContract": null
+    }
+  },
+  "diff": {
+    "phase1": null,
+    "phase2": null
+  },
+  "excluded": true,
+  "exclusionReasons": [
+    "X4 contamination"
+  ],
+  "exclusions": {
+    "x4": {
+      "contaminated": true
+    },
+    "x5": {
+      "phases": {
+        "1": false,
+        "2": false
+      },
+      "scoredAs": "as is (not excluded)",
+      "timedOut": false
+    },
+    "xIntegrity": {
+      "tampered": false
+    }
+  },
+  "experimentId": "ARCH-002",
+  "firstPassCorrect": {
+    "p1": false,
+    "p2": false
+  },
+  "fixture": "summa",
+  "label": "pilot",
+  "model": {
+    "budgetMinutes": 60,
+    "configured": "claude-sonnet-5-5",
+    "key": "sonnet",
+    "maxSubmits": 3
+  },
+  "modelKey": "sonnet",
+  "oracle": {
+    "p1": null,
+    "p1-first": null,
+    "p2": null,
+    "p2-first": null,
+    "p2-regression": null
+  },
+  "phases": {
+    "1": {
+      "brief": {
+        "path": "/home/user/arch002-runs/ARCH-002-PILOT-summa-T1-sonnet-r1-B/brief/AGENT_BRIEF-phase1.md",
+        "sha256": "0e4ad05c89e6df02f8bda1464d561e8f7c7b61a6a2a79205a323c8f8c97619c4",
+        "templates": [
+          {
+            "sha256": "d3d0d6f579b53bac9220e5abfafa31e0967c9b2ab717590e98e3238c42adc7fa",
+            "template": "briefs/core.md"
+          },
+          {
+            "sha256": "af581707085ca1ca0a54efc435510a650940ecd11a692a41891120360e3c1722",
+            "template": "briefs/arm-b-architecture.md"
+          }
+        ],
+        "valuesSha256": "ef45f16bd4c4bba3a11fb85a5d1cb1622012b5ea4fa6ae20d7ffaaeac19e2188"
+      },
+      "buildExecutions": 2,
+      "byTool": {
+        "Bash": 21,
+        "Monitor": 1,
+        "Read": 2
+      },
+      "cache": {
+        "cacheReadShare": 0.948839,
+        "firstRequestCacheRead": 3440,
+        "firstRequestCacheWrite": 2102,
+        "firstRequestCold": false
+      },
+      "coldEquivalentUsd": 2.295998,
+      "contamination": {
+        "advisory": [
+          {
+            "examples": [
+              {
+                "input": "{\"command\": \"submit > /tmp/claude-0/submit2.log 2>&1; echo exit $?; tail -30 /tmp/claude-0/submit2.log\", \"run_in_background\": true}",
+                "tool": "Bash"
+              },
+              {
+                "input": "{\"command\": \"git status --short --ignored | head -5; find . -type d \\\\( -name bin -o -name obj \\\\) -not -path './vendor/*' -not -path './web*' -prune -exec rm -rf {} + ; rm -f /tmp/claude-0/submit2.log; df -h . | tail -1; git status --short | head\"}",
+                "tool": "Bash"
+              }
+            ],
+            "matches": 2,
+            "signal": "tmp-claude-root"
+          }
+        ],
+        "contaminated": false,
+        "hits": []
+      },
+      "costSource": "result.total_cost_usd",
+      "costUsd": 0.4278575,
+      "crossCheck": {
+        "agrees": true,
+        "basis": "stream usage deduplicated by message id, priced with the harness price table, vs the result event's modelUsage",
+        "mainModelCostRelativeGap": 1e-06,
+        "tokensTotalRelativeGap": 0.0,
+        "totalCostVsModelUsageSumGap": 0.0
+      },
+      "endHead": "959b630f5c7a05237973058c60a9f7686ff867fc",
+      "exit": 0,
+      "finalLine": {
+        "gitHead": "959b630f5c7a05237973058c60a9f7686ff867fc",
+        "present": true,
+        "presentNotLast": false
+      },
+      "finalMessageSha256": "87eefa90719346f19457059a5b077fa14c2c21a4a814a787dd2b020a825ad4bf",
+      "integrity": {
+        "changed": [],
+        "tampered": false
+      },
+      "lastEventAt": "2026-10-22T18:58:58.879000Z",
+      "nonce": "f74a55b563c7dccedb4e9ab794595b54",
+      "otherModels": {
+        "claude-haiku-5-5": {
+          "costUsd": 0.0001409,
+          "input": 1284,
+          "output": 25
+        }
+      },
+      "recomputedMainModelUsd": 0.427717,
+      "reportedMainModelUsd": 0.4277166,
+      "requests": 25,
+      "requestsOtherModels": 0,
+      "resultEvent": {
+        "duration_api_ms": 148317,
+        "duration_ms": 550914,
+        "is_error": false,
+        "num_turns": 25,
+        "stop_reason": "end_turn",
+        "subtype": "success",
+        "terminal_reason": "completed"
+      },
+      "sessionId": "68e35a51-b36d-4b95-b178-fc9bf388923d",
+      "startCommit": "f6f559537b68abf7fd73960ffa784829815ff0c2",
+      "startedAt": "2026-10-22T18:49:50.958Z",
+      "streamOutputTokensLowerBound": 1108,
+      "submit": {
+        "attempts": 3,
+        "firstCommit": "959b630f5c7a05237973058c60a9f7686ff867fc",
+        "firstVerdict": "FAIL",
+        "lastCommit": "959b630f5c7a05237973058c60a9f7686ff867fc",
+        "passed": false,
+        "records": [
+          {
+            "at": "2026-10-22T18:56:50.823Z",
+            "attempt": 1,
+            "checks": {
+              "build": {
+                "exit": 1,
+                "pass": false
+              },
+              "clean": {
+                "pass": true
+              }
+            },
+            "gitHead": "959b630f5c7a05237973058c60a9f7686ff867fc",
+            "ms": 72119,
+            "phase": 1,
+            "schema": "arch002.submit/1",
+            "treeHash": "e8ab5b505e19963f7134a4a4a0df070f227b7eb6",
+            "verdict": "FAIL"
+          },
+          {
+            "at": "2026-10-22T18:57:05.252Z",
+            "attempt": 2,
+            "checks": {
+              "build": {
+                "exit": 1,
+                "pass": false
+              },
+              "clean": {
+                "pass": true
+              }
+            },
+            "gitHead": "959b630f5c7a05237973058c60a9f7686ff867fc",
+            "ms": 4034,
+            "phase": 1,
+            "schema": "arch002.submit/1",
+            "treeHash": "e8ab5b505e19963f7134a4a4a0df070f227b7eb6",
+            "verdict": "FAIL"
+          },
+          {
+            "at": "2026-10-22T18:58:51.581Z",
+            "attempt": 3,
+            "checks": {
+              "build": {
+                "exit": 1,
+                "pass": false
+              },
+              "clean": {
+                "pass": true
+              }
+            },
+            "gitHead": "959b630f5c7a05237973058c60a9f7686ff867fc",
+            "ms": 86723,
+            "phase": 1,
+            "schema": "arch002.submit/1",
+            "treeHash": "e8ab5b505e19963f7134a4a4a0df070f227b7eb6",
+            "verdict": "FAIL"
+          }
+        ],
+        "refused": 0,
+        "verdicts": [
+          "FAIL",
+          "FAIL",
+          "FAIL"
+        ]
+      },
+      "testExecutions": 3,
+      "timedOut": false,
+      "tokens": {
+        "cacheRead": 983306,
+        "cacheWrite": 52969,
+        "cacheWrite1h": 52969,
+        "cacheWrite5m": 0,
+        "input": 50,
+        "output": 11741,
+        "total": 1048066
+      },
+      "toolCalls": 24,
+      "usageSource": "session transcript",
+      "verificationExecutions": {
+        "archcheck": 0,
+        "ordo": 0,
+        "submit": 3
+      },
+      "wallMs": 547921
+    },
+    "2": {
+      "brief": {
+        "path": "/home/user/arch002-runs/ARCH-002-PILOT-summa-T1-sonnet-r1-B/brief/AGENT_BRIEF-phase2.md",
+        "sha256": "637780b67e4f3b0a548b1ca4cce5dade408da0b3803142527db9ce880720fdb7",
+        "templates": [
+          {
+            "sha256": "d3d0d6f579b53bac9220e5abfafa31e0967c9b2ab717590e98e3238c42adc7fa",
+            "template": "briefs/core.md"
+          },
+          {
+            "sha256": "af581707085ca1ca0a54efc435510a650940ecd11a692a41891120360e3c1722",
+            "template": "briefs/arm-b-architecture.md"
+          }
+        ],
+        "valuesSha256": "1f81c82cbb6ed7bffa26d95b29fa727567c74eb84684a2fec5e626de548f12d4"
+      },
+      "buildExecutions": 2,
+      "byTool": {
+        "Bash": 11,
+        "Read": 1
+      },
+      "cache": {
+        "cacheReadShare": 0.889424,
+        "firstRequestCacheRead": 3440,
+        "firstRequestCacheWrite": 2101,
+        "firstRequestCold": false
+      },
+      "coldEquivalentUsd": 0.756564,
+      "contamination": {
+        "advisory": [
+          {
+            "examples": [
+              {
+                "input": "{\"command\": \"du -sh /tmp/claude-0/* 2>/dev/null | sort -h | tail -5; du -sh /tmp/claude-0/-home-user-arch002-runs-ARCH-002-PILOT-summa-T1-sonnet-r1-B-repo/* 2>/dev/null\"}",
+                "tool": "Bash"
+              }
+            ],
+            "matches": 1,
+            "signal": "tmp-claude-root"
+          }
+        ],
+        "contaminated": true,
+        "hits": [
+          {
+            "examples": [
+              {
+                "input": "{\"command\": \"cd /home/user/arch002-runs/ARCH-002-PILOT-summa-T1-sonnet-r1-B/repo; git check-ignore -v src/Summa.Storage/obj | head -2; du -sh --total $(find . -type d \\\\( -name bin -o -name obj \\\\) -prune) | tail -1; du -sh /tmp/claude-0 2>/dev/null\"}",
+                "tool": "Bash"
+              },
+              {
+                "input": "{\"command\": \"du -sh /tmp/claude-0/* 2>/dev/null | sort -h | tail -5; du -sh /tmp/claude-0/-home-user-arch002-runs-ARCH-002-PILOT-summa-T1-sonnet-r1-B-repo/* 2>/dev/null\"}",
+                "tool": "Bash"
+              }
+            ],
+            "matches": 2,
+            "signal": "tmp-claude"
+          }
+        ]
+      },
+      "costSource": "recomputed from stream (no result event)",
+      "costUsd": 0.182088,
+      "crossCheck": {
+        "agrees": false,
+        "basis": "stream usage deduplicated by message id, priced with the harness price table, vs the result event's modelUsage",
+        "mainModelCostRelativeGap": null,
+        "tokensTotalRelativeGap": null,
+        "totalCostVsModelUsageSumGap": null
+      },
+      "endHead": null,
+      "exit": 0,
+      "finalLine": {
+        "gitHead": null,
+        "present": false,
+        "presentNotLast": false
+      },
+      "finalMessageSha256": null,
+      "integrity": {
+        "changed": [],
+        "tampered": false
+      },
+      "lastEventAt": "2026-10-22T19:01:00.856000Z",
+      "nonce": "c585fc7c7b17f25d267d1587a14fa58a",
+      "otherModels": {},
+      "recomputedMainModelUsd": 0.182088,
+      "reportedMainModelUsd": null,
+      "requests": 12,
+      "requestsOtherModels": 0,
+      "resultEvent": null,
+      "sessionId": "0e00214e-60cc-4224-97e4-0276c163e278",
+      "startCommit": "395414e78faa649956d19f12fdaca13209d87166",
+      "startedAt": "2026-10-22T18:59:04.084Z",
+      "streamOutputTokensLowerBound": 154,
+      "submit": {
+        "attempts": 0,
+        "firstCommit": null,
+        "firstVerdict": null,
+        "lastCommit": null,
+        "passed": false,
+        "records": [],
+        "refused": 0,
+        "verdicts": []
+      },
+      "testExecutions": 0,
+      "timedOut": false,
+      "tokens": {
+        "cacheRead": 302356,
+        "cacheWrite": 37566,
+        "cacheWrite1h": 37566,
+        "cacheWrite5m": 0,
+        "input": 24,
+        "output": 154,
+        "total": 340100
+      },
+      "toolCalls": 12,
+      "usageSource": "stream (output tokens are a lower bound)",
+      "verificationExecutions": {
+        "archcheck": 0,
+        "ordo": 0,
+        "submit": 0
+      },
+      "wallMs": 116772
+    }
+  },
+  "provenance": {
+    "cohortCommit": "c8f76dc8577841f72a2cbf68b9a2a2924673ae4f",
+    "digests": {
+      "agentConfig": "9c1758b27c29105b5e5d3806f62d5d0f0d0797af05a6e9a04592b4d1b35e3e34",
+      "archcheckDist": "9d87aef89adc7d3939ce986cd41fe039f2536bb3711f85cdbb8545dbaccba5d8",
+      "baselineGate": "23883bac450e7c6158ce803bab793f923d8c454759688441f5e183558d0bd43c",
+      "baselineScoring": "b94a93d936e26500c81c8d40b2d5a48288d573429a3e19f11b8d17204e81d92c",
+      "fixtureRepoTree": "92be059f7df23dd64ea286c3e48d1c479ec87ba7afaabf7c7bca2cfe90695f18",
+      "ordo": null,
+      "packTree": "49fd71ba6eb2a55df1711892ea78bd629fac518740c2dcd90deb56cab6ef4667",
+      "policy": "c68e370a6eca64d9a02e630599e5810f11292fa5e9442c1a118bd4efb7c820a5",
+      "priceTable": "c49f889f3bd0af37bde1eaf62b2c13320b37e4b55ce03386ea895b9dcf0492fc",
+      "probes": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "taskTree": "3859f41e7b9d0bae844d76d6476e767dc093b26a9f9155601f4d5941e0838fb2"
+    },
+    "integritySetup": {
+      "harness": "a505a8cd7b0f6f1089cc2f7fb81ae870d9c85b620932dc3f225c0b1b7b230b1c",
+      "ordo": null,
+      "policySource": "c68e370a6eca64d9a02e630599e5810f11292fa5e9442c1a118bd4efb7c820a5",
+      "pristine": "136f40099951758632c6facb78a8ba004627c68520a7d4ce4bdd6c0d5249d5b7",
+      "sealed": "e6c2249beda33dc909ffa77c5437b9b2addd4385d72582629373a2c5bae657f7",
+      "tools": "68345c5a923364cd3a825311d2436a3c355062173f8ef933979706a0127cd689",
+      "verifierDist": "9d87aef89adc7d3939ce986cd41fe039f2536bb3711f85cdbb8545dbaccba5d8"
+    },
+    "tools": {
+      "claudeCode": "2.1.308 (Claude Code)",
+      "dotnet": "10.0.402",
+      "ordo": null
+    }
+  },
+  "regression": null,
+  "replicate": 1,
+  "requirements": [
+    {
+      "accepted": false,
+      "archAccept": false,
+      "archEvaluable": false,
+      "commit": null,
+      "functionalPass": false,
+      "id": "R1",
+      "phase": 1
+    },
+    {
+      "accepted": false,
+      "archAccept": false,
+      "archEvaluable": false,
+      "commit": null,
+      "functionalPass": false,
+      "id": "R2",
+      "phase": 2
+    }
+  ],
+  "review": null,
+  "runId": "ARCH-002-PILOT-summa-T1-sonnet-r1-B",
+  "schema": "arch002.observation/1",
+  "status": "excluded",
+  "task": "T1",
+  "taskKey": "summa/T1",
+  "taskMeta": {
+    "categories": [
+      2,
+      9
+    ],
+    "conflict": false,
+    "control": false,
+    "crossTierCount": 4,
+    "standIn": false,
+    "trap": true,
+    "trapRules": [
+      "ARC-SYM-01"
+    ]
+  },
+  "visibleTests": {
+    "p1": null,
+    "p2": null,
+    "preexistingBroken": null
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:cfc4858635664718f0c7df804556fa0e3f9264f854d52daac42e97e3045d38dc",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T2-followup.md#SUMMA-T2-F1",
+        "originalId": "SUMMA-T2-F1",
+        "document": "requirements/T2-followup.md",
+        "location": "L9",
+        "revision": "sha256:cfc4858635664718f0c7df804556fa0e3f9264f854d52daac42e97e3045d38dc",
+        "contentDigest": "sha256:18b3b084e152c935882d97e5240644f195c78a2fe77be85a3b69bfd4d616de28"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0009",
+        "VERIFY-T2F-F1",
+        "COHORT-T2F"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2-followup.md#SUMMA-T2-F2",
+        "originalId": "SUMMA-T2-F2",
+        "document": "requirements/T2-followup.md",
+        "location": "L21",
+        "revision": "sha256:cfc4858635664718f0c7df804556fa0e3f9264f854d52daac42e97e3045d38dc",
+        "contentDigest": "sha256:c3d169c45ac32653e13701d3ca7220e523b1ba7be7925fd960d308d1b517bc8a"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0009",
+        "VERIFY-T2F-F2",
+        "COHORT-T2F"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DF-SUMMA-2026-0009",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T2-followup.md#SUMMA-T2-F1",
+        "requirements/T2-followup.md#SUMMA-T2-F2"
+      ],
+      "dependsOn": [],
+      "justification": "local books are a browser snapshot of the manifest and every record as canonical text; reading them back runs every record and invariant check, and books that fail are refused, never used"
+    },
+    {
+      "id": "VERIFY-T2F-F1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2-followup.md#SUMMA-T2-F1"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0009"
+      ]
+    },
+    {
+      "id": "VERIFY-T2F-F2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2-followup.md#SUMMA-T2-F2"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0009"
+      ]
+    },
+    {
+      "id": "COHORT-T2F",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T2-followup.md#SUMMA-T2-F1",
+        "requirements/T2-followup.md#SUMMA-T2-F2"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0009"
+      ]
+    }
+  ]
+}

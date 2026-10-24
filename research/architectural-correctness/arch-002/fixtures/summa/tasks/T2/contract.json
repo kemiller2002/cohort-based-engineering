@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:25654ed80d658f7af9d58c9e306191453658c41f3bc35df1cd219abb6afc78fa",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T2.md#SUMMA-T2-R1",
+        "originalId": "SUMMA-T2-R1",
+        "document": "requirements/T2.md",
+        "location": "L12",
+        "revision": "sha256:25654ed80d658f7af9d58c9e306191453658c41f3bc35df1cd219abb6afc78fa",
+        "contentDigest": "sha256:4cf7d201806b0540b4235ecdcd6a54d4d176381ea9fe2e5d1acfdb4589b0a3e1"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0041",
+        "VERIFY-T2-R1",
+        "COHORT-T2"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2.md#SUMMA-T2-R2",
+        "originalId": "SUMMA-T2-R2",
+        "document": "requirements/T2.md",
+        "location": "L30",
+        "revision": "sha256:25654ed80d658f7af9d58c9e306191453658c41f3bc35df1cd219abb6afc78fa",
+        "contentDigest": "sha256:29c2460bb2d0978a3183ab7a45fa5e1db65b364999fa50802d8cd9d5f50fced4"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0009",
+        "VERIFY-T2-R2",
+        "COHORT-T2"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2.md#SUMMA-T2-R3",
+        "originalId": "SUMMA-T2-R3",
+        "document": "requirements/T2.md",
+        "location": "L47",
+        "revision": "sha256:25654ed80d658f7af9d58c9e306191453658c41f3bc35df1cd219abb6afc78fa",
+        "contentDigest": "sha256:ba707509f79d85e83989db20fa4ea82b6075b0e44459aab8c6ec61aef11fdc57"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DF-SUMMA-2026-0009",
+        "DF-SUMMA-2026-0041",
+        "VERIFY-T2-R3",
+        "COHORT-T2"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DF-SUMMA-2026-0009",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T2.md#SUMMA-T2-R2",
+        "requirements/T2.md#SUMMA-T2-R3"
+      ],
+      "dependsOn": [],
+      "justification": "local books are a browser snapshot of the manifest and every record as canonical text; reading them back runs every record and invariant check, and books that fail are refused, never used"
+    },
+    {
+      "id": "DF-SUMMA-2026-0041",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T2.md#SUMMA-T2-R1",
+        "requirements/T2.md#SUMMA-T2-R3"
+      ],
+      "dependsOn": [],
+      "justification": "financial exports are sensitive files: each says it is confidential financial data, the download is its only effect, and on books on GitHub it needs the ExportData capability"
+    },
+    {
+      "id": "VERIFY-T2-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#SUMMA-T2-R1"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0041"
+      ]
+    },
+    {
+      "id": "VERIFY-T2-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#SUMMA-T2-R2"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0009"
+      ]
+    },
+    {
+      "id": "VERIFY-T2-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#SUMMA-T2-R3"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0009",
+        "DF-SUMMA-2026-0041"
+      ]
+    },
+    {
+      "id": "COHORT-T2",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T2.md#SUMMA-T2-R1",
+        "requirements/T2.md#SUMMA-T2-R2",
+        "requirements/T2.md#SUMMA-T2-R3"
+      ],
+      "dependsOn": [
+        "DF-SUMMA-2026-0009",
+        "DF-SUMMA-2026-0041"
+      ]
+    }
+  ]
+}

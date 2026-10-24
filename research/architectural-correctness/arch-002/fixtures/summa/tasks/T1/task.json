@@ -1,0 +1,124 @@
+{
+  "schema": "arch002.task/1",
+  "fixture": "summa",
+  "id": "T1",
+  "workItem": "SUMMA-T1",
+  "title": "T1: Customer statements",
+  "categories": [
+    2,
+    9
+  ],
+  "categoryNames": [
+    "domain depending on persistence",
+    "integration across tiers"
+  ],
+  "control": false,
+  "initial": {
+    "requirementIds": [
+      "SUMMA-T1-R1",
+      "SUMMA-T1-R2",
+      "SUMMA-T1-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T1.md#SUMMA-T1-R1",
+      "requirements/T1.md#SUMMA-T1-R2",
+      "requirements/T1.md#SUMMA-T1-R3"
+    ],
+    "decisionIds": [
+      "DF-SUMMA-2026-0028",
+      "DF-SUMMA-2026-0041"
+    ],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T1 follow-up: Statement aging and a CSV statement",
+    "requirementIds": [
+      "SUMMA-T1-F1",
+      "SUMMA-T1-F2"
+    ],
+    "requirementKeys": [
+      "requirements/T1-followup.md#SUMMA-T1-F1",
+      "requirements/T1-followup.md#SUMMA-T1-F2"
+    ],
+    "decisionIds": [
+      "DF-SUMMA-2026-0020",
+      "DF-SUMMA-2026-0041"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T1/requirement.md",
+      "target": "requirements/T1.md",
+      "sha256": "40dbb519d49f36c78f6b3d0986020298030ee25322344b21822e5638f61e6f06"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T1/acceptance/T1AcceptanceTests.fs",
+        "target": "tests/Summa.Acceptance.Tests/Acceptance/T1AcceptanceTests.fs",
+        "sha256": "41fc8f34f4c8318fa09e12478a1159800b58e67b15d4fd40d159304464167556"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T1/followup.md",
+      "target": "requirements/T1-followup.md",
+      "sha256": "be66b17b8400ed509a04489b6a307e2a6d1c02f34136c72028680a805c5fdfe9"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T1/followup-acceptance/T1FollowupAcceptanceTests.fs",
+        "target": "tests/Summa.Acceptance.Tests/Acceptance/T1FollowupAcceptanceTests.fs",
+        "sha256": "d18a6271ecae9d347bba235dbab78ce62d7c1935bd1bccb42f7793eba36f4346"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T1/InitialOracleTests.fs",
+        "sha256": "b8309c94450dae91d692c2e9d26319fd60d6b13b55881b6777ac7f7e0393ea06"
+      },
+      "followup": {
+        "path": "sealed:oracle/T1/FollowupOracleTests.fs",
+        "sha256": "6c8f344193f34b4e55a4133c8e036825ef202a81df202bb27ba9f66ada738229"
+      },
+      "manifest": {
+        "path": "sealed:oracle/T1/oracle.json",
+        "sha256": "092f54930238581e4dc5ce3e34b8f34ae952a01b925f381a2304b697e6e4bc26"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T1/probes.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "baseline": {
+      "path": "sealed:baseline/start.report.json",
+      "sha256": "c136381a92c220f6ed00c23d9e1229fe7cae13fd0aead8325661ffa76a222559"
+    },
+    "reference": {
+      "good": "sealed:reference/T1/good",
+      "followup-good": "sealed:reference/T1/followup-good"
+    }
+  },
+  "contract": {
+    "path": "tasks/T1/contract.json",
+    "sha256": "bb7e0fcc52fe84d81cf648218e4c72a0e8550c468f68c6d635ccca93f0bcf1f2",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:f8ed7113cfc2f52f26799668a779c541a89d538a525116984a9f1a5a83bc7957",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T1/followup-contract.json",
+    "sha256": "ff571b47eb056563b0d0e734c8462f39a14822e7eb4e6d5996dff62c3d9aceec",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:dcce93cd95ab69eba2057f21f491451a031ab9fadeb12f6ad9c4ac3bc544c2c5",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 4,
+  "privateMetadata": "sealed:task-private/T1.json"
+}

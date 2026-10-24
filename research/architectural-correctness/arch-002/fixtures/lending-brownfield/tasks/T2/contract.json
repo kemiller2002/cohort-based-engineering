@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "ecir/1",
+  "sourceManifestDigest": "sha256:1ae032c4e1aa4a6d49093420223881d9962a575ee3727a66fbced64ef428834b",
+  "requirements": [
+    {
+      "source": {
+        "key": "requirements/T2.md#LEND2-T2-R1",
+        "originalId": "LEND2-T2-R1",
+        "document": "requirements/T2.md",
+        "location": "L13",
+        "revision": "sha256:1ae032c4e1aa4a6d49093420223881d9962a575ee3727a66fbced64ef428834b",
+        "contentDigest": "sha256:4e8f0f532e0f2bc70775d96222825ce1c3f705bc1549416accc3f6a3704c0e97"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-009",
+        "VERIFY-T2-R1",
+        "COHORT-T2"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2.md#LEND2-T2-R2",
+        "originalId": "LEND2-T2-R2",
+        "document": "requirements/T2.md",
+        "location": "L26",
+        "revision": "sha256:1ae032c4e1aa4a6d49093420223881d9962a575ee3727a66fbced64ef428834b",
+        "contentDigest": "sha256:db664eeb0b6581efa1ef278c69f68854a010f2e1bccbd33f0846e7a76ca7dd31"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-009",
+        "VERIFY-T2-R2",
+        "COHORT-T2"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2.md#LEND2-T2-R3",
+        "originalId": "LEND2-T2-R3",
+        "document": "requirements/T2.md",
+        "location": "L35",
+        "revision": "sha256:1ae032c4e1aa4a6d49093420223881d9962a575ee3727a66fbced64ef428834b",
+        "contentDigest": "sha256:d4669ec0fb299ad44a7d375f5f36f4e143e494f0af160237cf19b3917baa46dc"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-009",
+        "VERIFY-T2-R3",
+        "COHORT-T2"
+      ]
+    },
+    {
+      "source": {
+        "key": "requirements/T2.md#LEND2-T2-R4",
+        "originalId": "LEND2-T2-R4",
+        "document": "requirements/T2.md",
+        "location": "L46",
+        "revision": "sha256:1ae032c4e1aa4a6d49093420223881d9962a575ee3727a66fbced64ef428834b",
+        "contentDigest": "sha256:056909b11f49ea33d6a90a61a730d9ae4f81a49ef393a7ce585d80cc59c46909"
+      },
+      "disposition": {
+        "kind": "modeled"
+      },
+      "nodeIds": [
+        "DEC-009",
+        "VERIFY-T2-R4",
+        "COHORT-T2"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "DEC-009",
+      "kind": "decision",
+      "requirementKeys": [
+        "requirements/T2.md#LEND2-T2-R1",
+        "requirements/T2.md#LEND2-T2-R2",
+        "requirements/T2.md#LEND2-T2-R3",
+        "requirements/T2.md#LEND2-T2-R4"
+      ],
+      "dependsOn": [],
+      "justification": "a member who owes 5.00 or more may not borrow, place holds or renew; no member type is exempt; returning and paying are never blocked"
+    },
+    {
+      "id": "VERIFY-T2-R1",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#LEND2-T2-R1"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    },
+    {
+      "id": "VERIFY-T2-R2",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#LEND2-T2-R2"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    },
+    {
+      "id": "VERIFY-T2-R3",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#LEND2-T2-R3"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    },
+    {
+      "id": "VERIFY-T2-R4",
+      "kind": "verificationObligation",
+      "requirementKeys": [
+        "requirements/T2.md#LEND2-T2-R4"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    },
+    {
+      "id": "COHORT-T2",
+      "kind": "cohort",
+      "requirementKeys": [
+        "requirements/T2.md#LEND2-T2-R1",
+        "requirements/T2.md#LEND2-T2-R2",
+        "requirements/T2.md#LEND2-T2-R3",
+        "requirements/T2.md#LEND2-T2-R4"
+      ],
+      "dependsOn": [
+        "DEC-009"
+      ]
+    }
+  ]
+}

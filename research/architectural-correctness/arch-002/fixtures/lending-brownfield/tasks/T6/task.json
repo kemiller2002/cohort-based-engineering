@@ -1,0 +1,108 @@
+{
+  "schema": "arch002.task/1",
+  "fixture": "lending-brownfield",
+  "id": "T6",
+  "workItem": "LEND2-T6",
+  "title": "T6: Finding books and copies",
+  "categories": [],
+  "categoryNames": [],
+  "control": true,
+  "initial": {
+    "requirementIds": [
+      "LEND2-T6-R1",
+      "LEND2-T6-R2",
+      "LEND2-T6-R3"
+    ],
+    "requirementKeys": [
+      "requirements/T6.md#LEND2-T6-R1",
+      "requirements/T6.md#LEND2-T6-R2",
+      "requirements/T6.md#LEND2-T6-R3"
+    ],
+    "decisionIds": [
+      "DEC-011"
+    ],
+    "conflictIds": []
+  },
+  "followup": {
+    "title": "T6 follow-up: Searching one branch",
+    "requirementIds": [
+      "LEND2-T6-F1",
+      "LEND2-T6-F2"
+    ],
+    "requirementKeys": [
+      "requirements/T6-followup.md#LEND2-T6-F1",
+      "requirements/T6-followup.md#LEND2-T6-F2"
+    ],
+    "decisionIds": [
+      "DEC-011"
+    ],
+    "conflictIds": []
+  },
+  "conflict": false,
+  "files": {
+    "requirement": {
+      "source": "tasks/T6/requirement.md",
+      "target": "requirements/T6.md",
+      "sha256": "f27d61dee8ba5d40147cfd812e87d89630b72372032b80172767c7c7b9806884"
+    },
+    "visibleTests": [
+      {
+        "source": "tasks/T6/acceptance/T6AcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T6AcceptanceTests.fs",
+        "sha256": "5cc17f2f440da2654a206a3118d874deb7f5c02a0115716a217ed54ece2e7599"
+      }
+    ],
+    "followup": {
+      "source": "tasks/T6/followup.md",
+      "target": "requirements/T6-followup.md",
+      "sha256": "068109f3860192b05ea4ddc9b4d038be32d3251eeb08d9dbd9673f40d6d772c3"
+    },
+    "followupVisibleTests": [
+      {
+        "source": "tasks/T6/followup-acceptance/T6FollowupAcceptanceTests.fs",
+        "target": "tests/Lending.Tests/Acceptance/T6FollowupAcceptanceTests.fs",
+        "sha256": "35223de1ee6ee5c4479a05c132778dbd1f20e85a304ff801ea6a0dcd8c5ab514"
+      }
+    ],
+    "oracle": {
+      "initial": {
+        "path": "sealed:oracle/T6/InitialOracleTests.fs",
+        "sha256": "e2ec093d817b9dc2b489a6383eb1b1b1f8594bc72e8a05d5a675cdbcc2809165"
+      },
+      "followup": {
+        "path": "sealed:oracle/T6/FollowupOracleTests.fs",
+        "sha256": "7622b8b6b70f6d7a0c4271bc37cc88b5607cecfaba3e7e1f0b4a060db47c492d"
+      },
+      "manifest": {
+        "path": "sealed:oracle/T6/oracle.json",
+        "sha256": "2999760688d3c332e69ca1f4413a22bcca49301410fdc69bb6f2fff55450b30a"
+      }
+    },
+    "probes": {
+      "path": "sealed:oracle/T6/probes.json",
+      "sha256": "c2b3b06c97bae6fb02632bd23ce65bb49859664d77fbe8d58a415a0f288bcea9"
+    }
+  },
+  "contract": {
+    "path": "tasks/T6/contract.json",
+    "sha256": "675909f9a0f3daa4634cf313d3b6f659e42142d6d8fba1c9e95fbd3188a59a28",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:8385d947303e42d8b787495845b13cb3ead3593a249ef912ed44ecf1ea3ffd5b",
+    "ordoDiagnostics": []
+  },
+  "followupContract": {
+    "path": "tasks/T6/followup-contract.json",
+    "sha256": "914a0d32c02ca0509dc1bb4d698b34c0f1a8624a636c61a41a623cadd448c067",
+    "expectedOrdoAdmits": true,
+    "ordoBinarySha256": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+    "ordoAdmits": true,
+    "ordoExit": 0,
+    "ordoContractDigest": "sha256:cbbed33dc4c7a1cfb49a8486c56f4cab59560f19115288450c37c0ac383c63ea",
+    "ordoDiagnostics": []
+  },
+  "crossTierCount": 3,
+  "privateMetadata": "sealed:task-private/T6.json"
+}

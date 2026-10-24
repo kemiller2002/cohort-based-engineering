@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>lending</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Persistence/InMemoryStore.fs" />
+    <Compile Include="Persistence/JsonCodec.fs" />
+    <Compile Include="Persistence/JsonFileStore.fs" />
+    <Compile Include="Persistence/LocalFiles.fs" />
+    <Compile Include="Cli/CommandLine.fs" />
+    <Compile Include="Composition.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Lending.Semantic/Lending.Semantic.fsproj" />
+    <ProjectReference Include="../Lending.Transition/Lending.Transition.fsproj" />
+    <ProjectReference Include="../Lending.Application/Lending.Application.fsproj" />
+  </ItemGroup>
+</Project>

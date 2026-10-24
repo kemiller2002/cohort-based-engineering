@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Tests read JSON through indexers that are nullable by annotation;
+         a missing value fails the assertion that reads it. -->
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Support.fs" />
+    <Compile Include="BacklogEngineTests.fs" />
+    <Compile Include="HubEngineTests.fs" />
+    <Compile Include="BacklogPageTests.fs" />
+    <Compile Include="HubPageTests.fs" />
+    <Compile Include="BoundaryTests.fs" />
+    <Compile Include="FoundationsConformanceTests.fs" />
+    <Compile Include="ArchitectureTests.fs" />
+    <Compile Include="AccountingTests.fs" />
+    <Compile Include="BindingAgreementTests.fs" />
+    <Compile Include="RoutesTests.fs" />
+    <Compile Include="DeepLinkTests.fs" />
+    <Compile Include="ScreensTests.fs" />
+    <Compile Include="BooksTests.fs" />
+    <Compile Include="PdfTests.fs" />
+    <Compile Include="AttentionTests.fs" />
+    <Compile Include="SignInTests.fs" />
+    <Compile Include="StoreTests.fs" />
+    <Compile Include="InterfaceTests.fs" />
+    <Compile Include="DraftEditorTests.fs" />
+    <Compile Include="BookCommandTests.fs" />
+    <Compile Include="ConfirmationTests.fs" />
+    <Compile Include="SmartDefaultsTests.fs" />
+    <Compile Include="ReceivablesAttentionTests.fs" />
+    <Compile Include="SearchPageTests.fs" />
+    <Compile Include="AccountingOnDemandTests.fs" />
+    <Compile Include="ManagementReportTests.fs" />
+    <Compile Include="NotificationTests.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="EchelonFoundry.Aegis.Core" />
+    <PackageReference Include="JsonSchema.Net" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Summa.Web.Engine/Summa.Web.Engine.fsproj" />
+    <ProjectReference Include="../../src/Summa.Web.Application/Summa.Web.Application.fsproj" />
+  </ItemGroup>
+
+</Project>

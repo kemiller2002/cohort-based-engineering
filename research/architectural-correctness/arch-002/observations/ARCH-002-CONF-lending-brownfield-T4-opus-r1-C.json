@@ -1,0 +1,1490 @@
+{
+  "acceptedRequirements": 2,
+  "architecture": {
+    "baseline": {
+      "cacheKey": "998226339748cccf",
+      "commit": "f5ea14a9f1f0a8775374c54ed7b48921a34010e9",
+      "gateFindings": 18,
+      "note": "archcheck on the base commit with the pristine policy (gate) and policy + sealed probes (scoring)",
+      "scoringDetFindings": 14
+    },
+    "measure": "baseline-delta: new = DET finding (ARC-TRC-01 excluded) whose (ruleId, file, symbol, scope) the base commit's scoring report does not hold (multiset)",
+    "newSinceS1": {
+      "count": 0,
+      "keys": []
+    },
+    "p1": {
+      "accept": true,
+      "baseline": {
+        "findings": 18,
+        "id": "baseline-scoring.json",
+        "matched": 16,
+        "sha256": "ae296bbd5210aa15be0f66ded3c4301f0e122123ead26e843ba89abb481e3e54"
+      },
+      "baselineApplied": true,
+      "byRule": {
+        "ARC-BND-02": 1,
+        "ARC-BND-03": 7,
+        "ARC-SYM-02": 2,
+        "ARC-SYM-03": 2
+      },
+      "commit": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+      "det": 12,
+      "detFixed": 2,
+      "detNew": 0,
+      "detNewSev2plus": 0,
+      "detNewSeverityWeighted": 0,
+      "detPreexisting": 12,
+      "detSev2plus": 12,
+      "detSeverityWeighted": 24,
+      "errors": [],
+      "evaluable": true,
+      "exit": "0",
+      "findings": [
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File.WriteAllLines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/UseCases.fs",
+          "line": 128,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Application.UseCases",
+          "severity": 2,
+          "symbol": "System.DateTime.UtcNow"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 166,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Fines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 166,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 166,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 167,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Payments"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 167,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 167,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 177,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-02",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Transition.Loans.renew"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 180,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Loan.DueDate"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Transition/Payments.fs",
+          "line": 24,
+          "preexisting": true,
+          "project": "src/Lending.Transition/Lending.Transition.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Transition.Payments",
+          "severity": 2,
+          "symbol": "System.DateTime.Today"
+        }
+      ],
+      "fixedByRule": {
+        "ARC-BND-01": 2
+      },
+      "fixedKeys": [
+        {
+          "context": "(JsonFileStore.create path).Save(ports.Store.Load())",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Host.Persistence.JsonFileStore"
+        },
+        {
+          "context": "(JsonFileStore.create path).Save(ports.Store.Load())",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Host.Persistence.JsonFileStore.create"
+        }
+      ],
+      "heu": 4,
+      "heuNew": 0,
+      "label": "p1",
+      "newByRule": {},
+      "newFindings": [],
+      "policy": {
+        "id": "lending-brownfield/0.1",
+        "sha256": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067"
+      },
+      "probesApplied": true,
+      "trc": 0,
+      "verifier": {
+        "dotnetSdk": "10.0.402",
+        "fcs": "43.12.402-servicing.26505.111",
+        "sha256": "f85fa0a93014274e907932eb9ddebdca688d516f021b6ba8f69c0962da853144",
+        "version": "0.2.0"
+      }
+    },
+    "p2": {
+      "accept": true,
+      "baseline": {
+        "findings": 18,
+        "id": "baseline-scoring.json",
+        "matched": 16,
+        "sha256": "ae296bbd5210aa15be0f66ded3c4301f0e122123ead26e843ba89abb481e3e54"
+      },
+      "baselineApplied": true,
+      "byRule": {
+        "ARC-BND-02": 1,
+        "ARC-BND-03": 7,
+        "ARC-SYM-02": 2,
+        "ARC-SYM-03": 2
+      },
+      "commit": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+      "det": 12,
+      "detFixed": 2,
+      "detNew": 0,
+      "detNewSev2plus": 0,
+      "detNewSeverityWeighted": 0,
+      "detPreexisting": 12,
+      "detSev2plus": 12,
+      "detSeverityWeighted": 24,
+      "errors": [],
+      "evaluable": true,
+      "exit": "0",
+      "findings": [
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File.WriteAllLines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/UseCases.fs",
+          "line": 128,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Application.UseCases",
+          "severity": 2,
+          "symbol": "System.DateTime.UtcNow"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Fines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 171,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Payments"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 171,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 171,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 181,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-02",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Transition.Loans.renew"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 184,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Loan.DueDate"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Transition/Payments.fs",
+          "line": 24,
+          "preexisting": true,
+          "project": "src/Lending.Transition/Lending.Transition.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Transition.Payments",
+          "severity": 2,
+          "symbol": "System.DateTime.Today"
+        }
+      ],
+      "fixedByRule": {
+        "ARC-BND-01": 2
+      },
+      "fixedKeys": [
+        {
+          "context": "(JsonFileStore.create path).Save(ports.Store.Load())",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Host.Persistence.JsonFileStore"
+        },
+        {
+          "context": "(JsonFileStore.create path).Save(ports.Store.Load())",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Host.Persistence.JsonFileStore.create"
+        }
+      ],
+      "heu": 4,
+      "heuNew": 0,
+      "label": "p2",
+      "newByRule": {},
+      "newFindings": [],
+      "policy": {
+        "id": "lending-brownfield/0.1",
+        "sha256": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067"
+      },
+      "probesApplied": true,
+      "trc": 0,
+      "verifier": {
+        "dotnetSdk": "10.0.402",
+        "fcs": "43.12.402-servicing.26505.111",
+        "sha256": "f85fa0a93014274e907932eb9ddebdca688d516f021b6ba8f69c0962da853144",
+        "version": "0.2.0"
+      }
+    },
+    "p2-initial-contract": {
+      "accept": true,
+      "baseline": {
+        "findings": 18,
+        "id": "baseline-scoring.json",
+        "matched": 16,
+        "sha256": "ae296bbd5210aa15be0f66ded3c4301f0e122123ead26e843ba89abb481e3e54"
+      },
+      "baselineApplied": true,
+      "byRule": {
+        "ARC-BND-02": 1,
+        "ARC-BND-03": 7,
+        "ARC-SYM-02": 2,
+        "ARC-SYM-03": 2
+      },
+      "commit": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+      "det": 12,
+      "detFixed": 2,
+      "detNew": 0,
+      "detNewSev2plus": 0,
+      "detNewSeverityWeighted": 0,
+      "detPreexisting": 12,
+      "detSev2plus": 12,
+      "detSeverityWeighted": 24,
+      "errors": [],
+      "evaluable": true,
+      "exit": "0",
+      "findings": [
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/Reports.fs",
+          "line": 18,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-03",
+          "scope": "Lending.Application.Reports",
+          "severity": 2,
+          "symbol": "System.IO.File.WriteAllLines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Application/UseCases.fs",
+          "line": 128,
+          "preexisting": true,
+          "project": "src/Lending.Application/Lending.Application.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Application.UseCases",
+          "severity": 2,
+          "symbol": "System.DateTime.UtcNow"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Fines"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 170,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Fine.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 171,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Library.Payments"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 171,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Member"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 171,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Payment.Amount"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 181,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-02",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Transition.Loans.renew"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "line": 184,
+          "preexisting": true,
+          "project": "src/Lending.Host/Lending.Host.fsproj",
+          "ruleId": "ARC-BND-03",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "severity": 2,
+          "symbol": "Lending.Semantic.Loan.DueDate"
+        },
+        {
+          "class": "DET",
+          "file": "src/Lending.Transition/Payments.fs",
+          "line": 24,
+          "preexisting": true,
+          "project": "src/Lending.Transition/Lending.Transition.fsproj",
+          "ruleId": "ARC-SYM-02",
+          "scope": "Lending.Transition.Payments",
+          "severity": 2,
+          "symbol": "System.DateTime.Today"
+        }
+      ],
+      "fixedByRule": {
+        "ARC-BND-01": 2
+      },
+      "fixedKeys": [
+        {
+          "context": "(JsonFileStore.create path).Save(ports.Store.Load())",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Host.Persistence.JsonFileStore"
+        },
+        {
+          "context": "(JsonFileStore.create path).Save(ports.Store.Load())",
+          "file": "src/Lending.Host/Cli/CommandLine.fs",
+          "ruleId": "ARC-BND-01",
+          "scope": "Lending.Host.Cli.CommandLine",
+          "symbol": "Lending.Host.Persistence.JsonFileStore.create"
+        }
+      ],
+      "heu": 4,
+      "heuNew": 0,
+      "label": "p2-initial-contract",
+      "newByRule": {},
+      "newFindings": [],
+      "policy": {
+        "id": "lending-brownfield/0.1",
+        "sha256": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067"
+      },
+      "probesApplied": true,
+      "trc": 0,
+      "verifier": {
+        "dotnetSdk": "10.0.402",
+        "fcs": "43.12.402-servicing.26505.111",
+        "sha256": "f85fa0a93014274e907932eb9ddebdca688d516f021b6ba8f69c0962da853144",
+        "version": "0.2.0"
+      }
+    }
+  },
+  "arm": "C",
+  "block": "lending-brownfield/T4/opus/r1",
+  "commits": {
+    "F1": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+    "F2": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+    "S1": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+    "S2": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+    "base": "f5ea14a9f1f0a8775374c54ed7b48921a34010e9",
+    "followup": "f645c38f4c0f2f8890fa96e682e5a52c457e0911",
+    "start": "01fe963f5a24e3a081f96a53073b081973478c60"
+  },
+  "completed": true,
+  "cost": {
+    "agrees": true,
+    "byPhase": {
+      "1": 0.4851561,
+      "2": 0.42215349999999996
+    },
+    "priceTableSha256": "c49f889f3bd0af37bde1eaf62b2c13320b37e4b55ce03386ea895b9dcf0492fc",
+    "totalUsd": 0.90731
+  },
+  "decisionFidelity": {
+    "conflict": {
+      "applicable": false,
+      "correct": null,
+      "passed": 0,
+      "tests": 0
+    },
+    "decisionTests": {
+      "passed": 0,
+      "total": 0
+    },
+    "trc": {
+      "definedForArm": true,
+      "p1": 0,
+      "p2": 0,
+      "p2InitialContract": 0
+    }
+  },
+  "diff": {
+    "phase1": {
+      "all": {
+        "filesAdded": 3,
+        "filesDeleted": 0,
+        "filesModified": 6,
+        "linesAdded": 531,
+        "linesDeleted": 5,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 132
+      },
+      "from": "f5ea14a9f1f0a8775374c54ed7b48921a34010e9",
+      "src": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 4,
+        "linesAdded": 75,
+        "linesDeleted": 4,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 79
+      },
+      "tests": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 2,
+        "linesAdded": 52,
+        "linesDeleted": 1,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 53
+      },
+      "to": "c0ddc2d9f60137161b29d80e718b71308ddc27dd"
+    },
+    "phase2": {
+      "all": {
+        "filesAdded": 1,
+        "filesDeleted": 0,
+        "filesModified": 4,
+        "linesAdded": 89,
+        "linesDeleted": 0,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 50
+      },
+      "from": "f645c38f4c0f2f8890fa96e682e5a52c457e0911",
+      "src": {
+        "filesAdded": 0,
+        "filesDeleted": 0,
+        "filesModified": 4,
+        "linesAdded": 50,
+        "linesDeleted": 0,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 50
+      },
+      "tests": {
+        "filesAdded": 1,
+        "filesDeleted": 0,
+        "filesModified": 0,
+        "linesAdded": 39,
+        "linesDeleted": 0,
+        "preexistingRewritten": 0,
+        "preexistingRewrittenFiles": [],
+        "rework": 0
+      },
+      "to": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf"
+    }
+  },
+  "excluded": false,
+  "exclusionReasons": [],
+  "exclusions": {
+    "x4": {
+      "contaminated": false
+    },
+    "x5": {
+      "phases": {
+        "1": false,
+        "2": false
+      },
+      "scoredAs": "as is (not excluded)",
+      "timedOut": false
+    },
+    "xIntegrity": {
+      "tampered": false
+    }
+  },
+  "experimentId": "ARCH-002",
+  "firstPassCorrect": {
+    "p1": true,
+    "p2": true
+  },
+  "fixture": "lending-brownfield",
+  "label": "confirmatory",
+  "model": {
+    "budgetMinutes": 60,
+    "configured": "claude-opus-5-5",
+    "key": "opus",
+    "maxSubmits": 3
+  },
+  "modelKey": "opus",
+  "oracle": {
+    "p1": {
+      "allPass": true,
+      "built": true,
+      "commit": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+      "exit": 0,
+      "failed": 0,
+      "kind": "initial",
+      "label": "p1",
+      "missingOracle": false,
+      "passed": 9,
+      "perTest": [
+        {
+          "name": "OracleT4Initial.LEND2-T4-R1 restore into an empty library",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R1 restore replaces the whole state",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R1 restoring a missing backup changes nothing",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R2 backup-info changes nothing and needs a backup",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R2 backup-info counts holds and what is owed",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R2 backup-info sums what every member owes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R3 a backup round-trips through restore",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R3 backup reports what it wrote and never overwrites",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R3 usage and help",
+          "outcome": "Passed"
+        }
+      ],
+      "ran": true,
+      "total": 9
+    },
+    "p1-first": null,
+    "p2": {
+      "allPass": true,
+      "built": true,
+      "commit": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+      "exit": 0,
+      "failed": 0,
+      "kind": "followup",
+      "label": "p2",
+      "missingOracle": false,
+      "passed": 4,
+      "perTest": [
+        {
+          "name": "OracleT4Followup.LEND2-T4-F1 another member's fines stay behind",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Followup.LEND2-T4-F1 loans and holds are not restored and nothing else changes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Followup.LEND2-T4-F1 refusals",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Followup.LEND2-T4-F1 restore-member adds the member with fines and payments",
+          "outcome": "Passed"
+        }
+      ],
+      "ran": true,
+      "total": 4
+    },
+    "p2-first": null,
+    "p2-regression": {
+      "allPass": true,
+      "built": true,
+      "commit": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+      "exit": 0,
+      "failed": 0,
+      "kind": "initial",
+      "label": "p2-regression",
+      "missingOracle": false,
+      "passed": 9,
+      "perTest": [
+        {
+          "name": "OracleT4Initial.LEND2-T4-R1 restore into an empty library",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R1 restore replaces the whole state",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R1 restoring a missing backup changes nothing",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R2 backup-info changes nothing and needs a backup",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R2 backup-info counts holds and what is owed",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R2 backup-info sums what every member owes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R3 a backup round-trips through restore",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R3 backup reports what it wrote and never overwrites",
+          "outcome": "Passed"
+        },
+        {
+          "name": "OracleT4Initial.LEND2-T4-R3 usage and help",
+          "outcome": "Passed"
+        }
+      ],
+      "ran": true,
+      "total": 9
+    }
+  },
+  "phases": {
+    "1": {
+      "brief": {
+        "path": "/home/user/arch002-runs/ARCH-002-CONF-lending-brownfield-T4-opus-r1-C/brief/AGENT_BRIEF-phase1.md",
+        "sha256": "808a8da7112be56f8f04c6fe1b934c27feb15d8858009a4a58387d3446d10ea6",
+        "templates": [
+          {
+            "sha256": "d3d0d6f579b53bac9220e5abfafa31e0967c9b2ab717590e98e3238c42adc7fa",
+            "template": "briefs/core.md"
+          },
+          {
+            "sha256": "af581707085ca1ca0a54efc435510a650940ecd11a692a41891120360e3c1722",
+            "template": "briefs/arm-b-architecture.md"
+          },
+          {
+            "sha256": "c5944ac87e7ce5cb67c34fd32fa49d9f44441bbcb1aeb4c864c3e7f7cc760499",
+            "template": "briefs/arm-c-contract.md"
+          }
+        ],
+        "valuesSha256": "0cdd0753d57e627b26e128716fd62b91db19360614e25c3473695270dd456c8a"
+      },
+      "buildExecutions": 1,
+      "byTool": {
+        "Bash": 9
+      },
+      "cache": {
+        "cacheReadShare": 0.848036,
+        "firstRequestCacheRead": 3430,
+        "firstRequestCacheWrite": 2276,
+        "firstRequestCold": false
+      },
+      "coldEquivalentUsd": 1.304372,
+      "contamination": {
+        "advisory": [],
+        "contaminated": false,
+        "hits": []
+      },
+      "costSource": "result.total_cost_usd",
+      "costUsd": 0.4851561,
+      "crossCheck": {
+        "agrees": true,
+        "basis": "stream usage deduplicated by message id, priced with the harness price table, vs the result event's modelUsage",
+        "mainModelCostRelativeGap": 0.0,
+        "tokensTotalRelativeGap": 0.0,
+        "totalCostVsModelUsageSumGap": 0.0
+      },
+      "endHead": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+      "exit": 0,
+      "finalLine": {
+        "gitHead": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+        "present": true,
+        "presentNotLast": false
+      },
+      "finalMessageSha256": "c836463349740b17144ab44b6369e68cb26d14dbe253ca9b813b381d252f3407",
+      "integrity": {
+        "changed": [],
+        "tampered": false
+      },
+      "lastEventAt": "2026-10-23T13:14:34.631000Z",
+      "nonce": "1d866b2d6532d6f5c28b4d13809155ae",
+      "otherModels": {
+        "claude-haiku-5-5": {
+          "costUsd": 0.00014010000000000002,
+          "input": 1286,
+          "output": 23
+        }
+      },
+      "recomputedMainModelUsd": 0.485016,
+      "reportedMainModelUsd": 0.485016,
+      "requests": 9,
+      "requestsOtherModels": 0,
+      "resultEvent": {
+        "duration_api_ms": 62520,
+        "duration_ms": 212151,
+        "is_error": false,
+        "num_turns": 10,
+        "stop_reason": "end_turn",
+        "subtype": "success",
+        "terminal_reason": "completed"
+      },
+      "sessionId": "e4053eda-2860-474d-bdbb-6e1e7bfb82ef",
+      "startCommit": "01fe963f5a24e3a081f96a53073b081973478c60",
+      "startedAt": "2026-10-23T13:11:06.004Z",
+      "streamOutputTokensLowerBound": 778,
+      "submit": {
+        "attempts": 1,
+        "firstCommit": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+        "firstVerdict": "PASS",
+        "lastCommit": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+        "passed": true,
+        "records": [
+          {
+            "at": "2026-10-23T13:14:24.553Z",
+            "attempt": 1,
+            "checks": {
+              "build": {
+                "exit": 0,
+                "pass": true
+              },
+              "clean": {
+                "pass": true
+              },
+              "ordo": {
+                "contracts": [
+                  {
+                    "contract": "T4.contract.json",
+                    "exit": 0,
+                    "expectedExit": 0,
+                    "unchanged": true
+                  }
+                ],
+                "pass": true
+              },
+              "tests": {
+                "exit": 0,
+                "pass": true
+              }
+            },
+            "gitHead": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+            "ms": 67748,
+            "phase": 1,
+            "schema": "arch002.submit/1",
+            "treeHash": "60679310eba8ef38e3862260f0b1924c8e03666f",
+            "verdict": "PASS"
+          }
+        ],
+        "refused": 0,
+        "verdicts": [
+          "PASS"
+        ]
+      },
+      "testExecutions": 1,
+      "timedOut": false,
+      "tokens": {
+        "cacheRead": 215620,
+        "cacheWrite": 38620,
+        "cacheWrite1h": 38620,
+        "cacheWrite5m": 0,
+        "input": 18,
+        "output": 6643,
+        "total": 260901
+      },
+      "toolCalls": 9,
+      "usageSource": "session transcript",
+      "verificationExecutions": {
+        "archcheck": 0,
+        "ordo": 1,
+        "submit": 1
+      },
+      "wallMs": 208627
+    },
+    "2": {
+      "brief": {
+        "path": "/home/user/arch002-runs/ARCH-002-CONF-lending-brownfield-T4-opus-r1-C/brief/AGENT_BRIEF-phase2.md",
+        "sha256": "2acb95e7b0f6cf3ee1165d0622c76c35a689e7b2cfb10a534c053d389e3770c9",
+        "templates": [
+          {
+            "sha256": "d3d0d6f579b53bac9220e5abfafa31e0967c9b2ab717590e98e3238c42adc7fa",
+            "template": "briefs/core.md"
+          },
+          {
+            "sha256": "af581707085ca1ca0a54efc435510a650940ecd11a692a41891120360e3c1722",
+            "template": "briefs/arm-b-architecture.md"
+          },
+          {
+            "sha256": "c5944ac87e7ce5cb67c34fd32fa49d9f44441bbcb1aeb4c864c3e7f7cc760499",
+            "template": "briefs/arm-c-contract.md"
+          }
+        ],
+        "valuesSha256": "ff0b7bb12685f15be5106869271e184d4fd468cba6ebf02e08d0d6faaf46e01b"
+      },
+      "buildExecutions": 1,
+      "byTool": {
+        "Bash": 11
+      },
+      "cache": {
+        "cacheReadShare": 0.869892,
+        "firstRequestCacheRead": 3430,
+        "firstRequestCacheWrite": 2272,
+        "firstRequestCold": false
+      },
+      "coldEquivalentUsd": 1.278996,
+      "contamination": {
+        "advisory": [],
+        "contaminated": false,
+        "hits": []
+      },
+      "costSource": "result.total_cost_usd",
+      "costUsd": 0.42215349999999996,
+      "crossCheck": {
+        "agrees": true,
+        "basis": "stream usage deduplicated by message id, priced with the harness price table, vs the result event's modelUsage",
+        "mainModelCostRelativeGap": 1e-06,
+        "tokensTotalRelativeGap": 0.0,
+        "totalCostVsModelUsageSumGap": 0.0
+      },
+      "endHead": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+      "exit": 0,
+      "finalLine": {
+        "gitHead": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+        "present": true,
+        "presentNotLast": false
+      },
+      "finalMessageSha256": "ab079a7629c69b3d68dc5781d10efd52aafe0a4762807de3dd9bcab3eaacc9e7",
+      "integrity": {
+        "changed": [],
+        "tampered": false
+      },
+      "lastEventAt": "2026-10-23T13:19:06.138000Z",
+      "nonce": "7152f1cfeccc6a18a8341c037206057c",
+      "otherModels": {
+        "claude-haiku-5-5": {
+          "costUsd": 0.00014110000000000001,
+          "input": 1286,
+          "output": 25
+        }
+      },
+      "recomputedMainModelUsd": 0.422012,
+      "reportedMainModelUsd": 0.42201239999999995,
+      "requests": 10,
+      "requestsOtherModels": 0,
+      "resultEvent": {
+        "duration_api_ms": 70022,
+        "duration_ms": 256904,
+        "is_error": false,
+        "num_turns": 12,
+        "stop_reason": "end_turn",
+        "subtype": "success",
+        "terminal_reason": "completed"
+      },
+      "sessionId": "e48108cc-3c8d-430d-9b82-bf39d28e5731",
+      "startCommit": "f645c38f4c0f2f8890fa96e682e5a52c457e0911",
+      "startedAt": "2026-10-23T13:14:46.854Z",
+      "streamOutputTokensLowerBound": 182,
+      "submit": {
+        "attempts": 1,
+        "firstCommit": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+        "firstVerdict": "PASS",
+        "lastCommit": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+        "passed": true,
+        "records": [
+          {
+            "at": "2026-10-23T13:18:56.997Z",
+            "attempt": 1,
+            "checks": {
+              "build": {
+                "exit": 0,
+                "pass": true
+              },
+              "clean": {
+                "pass": true
+              },
+              "ordo": {
+                "contracts": [
+                  {
+                    "contract": "T4-followup.contract.json",
+                    "exit": 0,
+                    "expectedExit": 0,
+                    "unchanged": true
+                  },
+                  {
+                    "contract": "T4.contract.json",
+                    "exit": 0,
+                    "expectedExit": 0,
+                    "unchanged": true
+                  }
+                ],
+                "pass": true
+              },
+              "tests": {
+                "exit": 0,
+                "pass": true
+              }
+            },
+            "gitHead": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+            "ms": 48435,
+            "phase": 2,
+            "schema": "arch002.submit/1",
+            "treeHash": "5231363078044551a01c0d8688d6739d6bd1e930",
+            "verdict": "PASS"
+          }
+        ],
+        "refused": 0,
+        "verdicts": [
+          "PASS"
+        ]
+      },
+      "testExecutions": 3,
+      "timedOut": false,
+      "tokens": {
+        "cacheRead": 225522,
+        "cacheWrite": 33711,
+        "cacheWrite1h": 33711,
+        "cacheWrite5m": 0,
+        "input": 20,
+        "output": 5357,
+        "total": 264610
+      },
+      "toolCalls": 11,
+      "usageSource": "session transcript",
+      "verificationExecutions": {
+        "archcheck": 0,
+        "ordo": 1,
+        "submit": 1
+      },
+      "wallMs": 259284
+    }
+  },
+  "provenance": {
+    "cohortCommit": "48434ffdd5699e8098a43b4247a26a91ae055bff",
+    "digests": {
+      "agentConfig": "9c1758b27c29105b5e5d3806f62d5d0f0d0797af05a6e9a04592b4d1b35e3e34",
+      "archcheckDist": "9d87aef89adc7d3939ce986cd41fe039f2536bb3711f85cdbb8545dbaccba5d8",
+      "baselineGate": "ea17efee7706bd89aa7971f27370ede617ac0d6d2d34a346c6a9068ce3bae3e4",
+      "baselineScoring": "ae296bbd5210aa15be0f66ded3c4301f0e122123ead26e843ba89abb481e3e54",
+      "fixtureRepoTree": "b46cb7c1cf5d3146f50cdd944fc799068f79674761b86bc33e70b63daf2fc826",
+      "ordo": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+      "packTree": "12eb6b5582a85266da83ef1cf2c34c4fa249daa0e414613202e9f117809f6870",
+      "policy": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067",
+      "priceTable": "c49f889f3bd0af37bde1eaf62b2c13320b37e4b55ce03386ea895b9dcf0492fc",
+      "probes": "0d63f37b911c174868cc95721e6d3fcdd05a516f3e5761f1ab465dc8d07bb03f",
+      "taskTree": "f2c11829d0c05d53823367da2afa05f2cf2047dca92c8c94a5a780ef75101c45"
+    },
+    "integritySetup": {
+      "harness": "a3205365d92846e0ecb70f2f26bcbecb3ca5a69a2eafdc7aa96b1713b3767f89",
+      "ordo": "33a37628439f32a2dbe2b465d3623b80cd0a2bd24a23b1317507047640780bb1",
+      "policySource": "8adb0f02801d8ec32e28c6b188f3332fe9bb2ec827ef5868e512e2ea384bf067",
+      "pristine": "8087f9b8a5345f9d22bce7db0dbdb873af24045d22582bfcc054121a2de54df9",
+      "sealed": "c742a07acf7d4b1192035903747d4a7d9eb8c0fb168899d69a6d2107ead371c5",
+      "tools": "3a2cff4a313eab64bebab70dd49c3a3af4ccbc74feb76d2c82fa485e339fbab2",
+      "verifierDist": "9d87aef89adc7d3939ce986cd41fe039f2536bb3711f85cdbb8545dbaccba5d8"
+    },
+    "tools": {
+      "claudeCode": "2.1.309 (Claude Code)",
+      "dotnet": "10.0.402",
+      "ordo": "1.17.0"
+    }
+  },
+  "regression": {
+    "allPass": true,
+    "basis": "oracle.json regression list",
+    "built": true,
+    "failed": 0,
+    "passed": 9,
+    "ran": true,
+    "tests": [
+      "OracleT4Initial.LEND2-T4-R1 restore into an empty library",
+      "OracleT4Initial.LEND2-T4-R1 restore replaces the whole state",
+      "OracleT4Initial.LEND2-T4-R1 restoring a missing backup changes nothing",
+      "OracleT4Initial.LEND2-T4-R2 backup-info changes nothing and needs a backup",
+      "OracleT4Initial.LEND2-T4-R2 backup-info counts holds and what is owed",
+      "OracleT4Initial.LEND2-T4-R2 backup-info sums what every member owes",
+      "OracleT4Initial.LEND2-T4-R3 a backup round-trips through restore",
+      "OracleT4Initial.LEND2-T4-R3 backup reports what it wrote and never overwrites",
+      "OracleT4Initial.LEND2-T4-R3 usage and help"
+    ],
+    "total": 9
+  },
+  "replicate": 1,
+  "requirements": [
+    {
+      "accepted": true,
+      "archAccept": true,
+      "archEvaluable": true,
+      "commit": "c0ddc2d9f60137161b29d80e718b71308ddc27dd",
+      "functionalPass": true,
+      "id": "R1",
+      "phase": 1
+    },
+    {
+      "accepted": true,
+      "archAccept": true,
+      "archEvaluable": true,
+      "commit": "77027acd7fa7bfd179cf6ca581ebe03acf42c7bf",
+      "functionalPass": true,
+      "id": "R2",
+      "phase": 2
+    }
+  ],
+  "review": {
+    "endedAt": "2026-10-24T00:51:56.193Z",
+    "evaluationCost": {
+      "modelUsage": {
+        "claude-haiku-5-5": {
+          "cacheCreationInputTokens": 0,
+          "cacheReadInputTokens": 0,
+          "canonicalModel": "claude-haiku-5-5",
+          "contextWindow": 1000000,
+          "costBasis": "list",
+          "costUSD": 0.00013350000000000002,
+          "inputTokens": 1245,
+          "maxOutputTokens": 128000,
+          "outputTokens": 18,
+          "provider": "firstParty",
+          "thinkingTokens": 0,
+          "webSearchRequests": 0
+        },
+        "claude-opus-5-5": {
+          "cacheCreationInputTokens": 20968,
+          "cacheReadInputTokens": 47435,
+          "canonicalModel": "claude-opus-5-5",
+          "contextWindow": 1000000,
+          "costBasis": "list",
+          "costUSD": 0.23373100000000002,
+          "inputTokens": 10,
+          "maxOutputTokens": 128000,
+          "outputTokens": 2823,
+          "provider": "firstParty",
+          "thinkingTokens": 669,
+          "webSearchRequests": 0
+        }
+      },
+      "note": "evaluation cost; never added to arm cost",
+      "totalUsd": 0.23386450000000003
+    },
+    "exit": 0,
+    "nonce": "ef5b1efadb62f1e73352e098c29a44cb",
+    "reply": {
+      "changeSets": {
+        "1": {
+          "ARC-REV-01": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Accounts.fs",
+                "line": 134,
+                "quote": "let totalOwed (library: Library) ="
+              },
+              {
+                "file": "src/Lending.Application/Views.fs",
+                "line": 76,
+                "quote": "Owed = money (Accounts.totalOwed library) }"
+              },
+              {
+                "file": "src/Lending.Host/Cli/CommandLine.fs",
+                "line": 120,
+                "quote": "| Ok [ \"backup\"; path ] -> UseCases.backup ports path |> render showBackup"
+              }
+            ],
+            "rationale": "The one new domain rule, the total all members owe, is added to Tier 2 (Accounts.totalOwed) and built on the existing Accounts.owed. Tier 3 Views only calls it and formats the result. The summary and holds counts are plain projections of library collections, and the 'already exists' / 'no backup' refusals are input and effect checks, not lending rules. The CLI renders Tier 3 views and decides nothing.",
+            "score": 2
+          },
+          "ARC-REV-02": {
+            "evidence": [
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 14,
+                "quote": "match ports.Files.ReadLines path with"
+              },
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 18,
+                "quote": "ports.Archive.Save path library"
+              },
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 23,
+                "quote": "match ports.Archive.Load path with"
+              },
+              {
+                "file": "src/Lending.Host/Cli/CommandLine.fs",
+                "line": 84,
+                "quote": "-open Lending.Host.Persistence"
+              }
+            ],
+            "rationale": "All new I/O goes through the existing Files and Archive ports in Tier 3 use cases. Nothing in Tier 1/2 performs or reads an effect: totalOwed is pure. The change also removes a direct persistence call from the CLI that was already there ('(JsonFileStore.create path).Save(...)') and sends backup through a use case and the Archive port instead, so the CLI no longer bypasses Tier 3.",
+            "score": 2
+          },
+          "ARC-REV-03": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Accounts.fs",
+                "line": 138,
+                "quote": "|> List.sumBy (fun memberId -> owed memberId library)"
+              },
+              {
+                "file": "src/Lending.Application/Views.fs",
+                "line": 74,
+                "quote": "Summary = summary library"
+              }
+            ],
+            "rationale": "The total owed is derived from the single existing per-member definition, Accounts.owed. The library summary has one definition (Views.summary), which backup, restore and backup-info all reuse, and noBackup is shared by both use cases that need it. No literal or predicate is copied.",
+            "score": 2
+          }
+        },
+        "2": {
+          "ARC-REV-01": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Accounts.fs",
+                "line": 85,
+                "quote": "let restoreMember memberId (backup: Library) (library: Library) : Result<Library * Member * Fine list * Payment list, LendingError> ="
+              },
+              {
+                "file": "src/Lending.Transition/Accounts.fs",
+                "line": 92,
+                "quote": "let! added = Catalog.addMember restored library"
+              },
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 16,
+                "quote": "Accounts.restoreMember (MemberId memberId) backup library"
+              }
+            ],
+            "rationale": "The rule is decided in Tier 2: which member records come back, the refusal when the backup lacks the member, and the refusal when the member already exists (through the existing Catalog.addMember). Fines and payments come back, and loans, holds and reminders stay behind. Tier 3 only loads the backup, calls Tier 2 and projects a view, and the CLI only renders it.",
+            "score": 2
+          },
+          "ARC-REV-02": {
+            "evidence": [
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 12,
+                "quote": "match ports.Archive.Load path with"
+              },
+              {
+                "file": "src/Lending.Application/UseCases.fs",
+                "line": 15,
+                "quote": "commit ports (fun _ library ->"
+              }
+            ],
+            "rationale": "The backup is read through the existing Archive port and saved through the existing commit/Store path. The Tier 2 function is pure: it takes both libraries as values. Tier 4 presentation calls only the use case.",
+            "score": 2
+          },
+          "ARC-REV-03": {
+            "evidence": [
+              {
+                "file": "src/Lending.Transition/Accounts.fs",
+                "line": 93,
+                "quote": "let fines = finesOf memberId backup"
+              },
+              {
+                "file": "src/Lending.Transition/Accounts.fs",
+                "line": 92,
+                "quote": "let! added = Catalog.addMember restored library"
+              }
+            ],
+            "rationale": "The change reuses the existing definitions: finesOf and paymentsOf select a member's records, Catalog.addMember holds the 'already exists' rule, and noBackup is the existing missing-backup error. Nothing is restated.",
+            "score": 2
+          }
+        }
+      },
+      "schema": "arch002.review/1"
+    },
+    "reviewId": "45ae374ec57db9e4",
+    "schema": "arch002.review-result/1",
+    "scores": {
+      "1": {
+        "ARC-REV-01": 2,
+        "ARC-REV-02": 2,
+        "ARC-REV-03": 2
+      },
+      "2": {
+        "ARC-REV-01": 2,
+        "ARC-REV-02": 2,
+        "ARC-REV-03": 2
+      }
+    },
+    "sessionId": "93bd7548-8eb7-4dd8-a1d3-e1dc83abaa9c",
+    "startedAt": "2026-10-24T00:51:21.254Z",
+    "unblindingAccess": [],
+    "valid": true,
+    "writeAttempts": 0
+  },
+  "runId": "ARCH-002-CONF-lending-brownfield-T4-opus-r1-C",
+  "schema": "arch002.observation/1",
+  "status": "scored",
+  "task": "T4",
+  "taskKey": "lending-brownfield/T4",
+  "taskMeta": {
+    "categories": [
+      4,
+      8
+    ],
+    "conflict": false,
+    "control": false,
+    "crossTierCount": 3,
+    "standIn": false,
+    "trap": true,
+    "trapRules": [
+      "ARC-BND-01",
+      "ARC-BND-03"
+    ]
+  },
+  "visibleTests": {
+    "p1": {
+      "allPass": true,
+      "failed": 0,
+      "passed": 28,
+      "total": 28
+    },
+    "p2": {
+      "allPass": true,
+      "failed": 0,
+      "passed": 32,
+      "total": 32
+    },
+    "preexistingBroken": {
+      "count": 0,
+      "missingAtS2": [],
+      "names": []
+    }
+  }
+}
