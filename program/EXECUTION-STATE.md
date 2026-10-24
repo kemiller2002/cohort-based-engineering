@@ -45,7 +45,7 @@ the pre-existing runner drift that is also red on main.
 | dokimos#54 (audit v2, experimental) | `fc9b31f` |
 
 **Open:**
-- praxis#288 (EP-A3-R2/R3): CI pending. Merge when green.
+- (praxis#288 merged `24841bb`: CI runs 2363 tests with 0 SKIP, real Dokimos 0.7.0 cases and CLI idempotence contract tests pass. A3 now waits only on R1 (release) and R4 (OD-9 pilot enablement).)
 - cohort-based-engineering#23: the living program record, merged when the owner wants a snapshot on main.
 
 **Opened earlier** (the table below is the state at opening; see the merges above):
