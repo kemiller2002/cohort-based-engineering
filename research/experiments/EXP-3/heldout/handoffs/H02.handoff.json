@@ -1,0 +1,174 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H02",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLM-12-R1",
+      "statement": "A daily referral list shows each open claim that must go to Special Investigations under the referral decision in force, oldest report first, with the date its review is due.",
+      "status": "accepted",
+      "owner": "Claims Operations; Special Investigations",
+      "source": {
+        "path": "requirements/CLM-12.md",
+        "locator": "## CLM-12-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:cf3aeae416141efecabc1ab0364073d0698f6616aec96f626e77620924e9ee34"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLM-12-R2",
+      "statement": "Each newly reported claim gets an acknowledgement deadline under the acknowledgement decision in force. The list flags every claim whose deadline has passed.",
+      "status": "accepted",
+      "owner": "Claims Operations; Special Investigations",
+      "source": {
+        "path": "requirements/CLM-12.md",
+        "locator": "## CLM-12-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:cf3aeae416141efecabc1ab0364073d0698f6616aec96f626e77620924e9ee34"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLM-12-R3",
+      "statement": "A claim reported after the reporting window has closed is declined as a late report. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Claims Operations; Special Investigations",
+      "source": {
+        "path": "requirements/CLM-12.md",
+        "locator": "## CLM-12-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:cf3aeae416141efecabc1ab0364073d0698f6616aec96f626e77620924e9ee34"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-CL04",
+      "statement": "Every claim reported at more than 12000.00 is referred to Special Investigations, whatever the peril and whether or not it belongs to a declared event. The review is due 6 days after referral.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Special Investigations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Special Investigations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-20T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL04-special-investigations-referral.md",
+        "locator": "# DEC-CL04",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2b927edd9559107a48c1c5800e9bb8e95f7ca0040f1a77461b4051cba5d84021"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "12000.00",
+        "p2": "6"
+      }
+    },
+    {
+      "id": "DEC-CL06",
+      "statement": "A newly reported claim is acknowledged within 36 hours of being reported.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Customer Care",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL06-acknowledgement-time.md",
+        "locator": "# DEC-CL06",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:bcbaa7fe2d0451d085d4b5b5374f428d9fc1bf66c44dd3d28fbba3bafec171fa"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-CL09",
+      "parameters": {
+        "p1": "36"
+      }
+    },
+    {
+      "id": "DEC-CL08",
+      "statement": "A claim must be reported within 45 days of the loss date. A later report is declined as late.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Underwriting",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Underwriting",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-14T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL08-reporting-window.md",
+        "locator": "# DEC-CL08",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:36d5297bc59e888ae42f74a946d453a0db99967deef4fb0b3b8029229ee74ab9"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "45"
+      }
+    },
+    {
+      "id": "DEC-CL09",
+      "statement": "A newly reported claim is acknowledged within 20 hours of being reported, including weekends.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Customer Care",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Customer Care",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-05-11T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL09-acknowledgement-time-revised.md",
+        "locator": "# DEC-CL09",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:623821653fddb474a8a6a5589dcc3db277d7fc66506ca86abbfd46f9b397b614"
+      },
+      "supersedes": [
+        "DEC-CL06"
+      ],
+      "parameters": {
+        "p1": "20"
+      }
+    },
+    {
+      "id": "DEC-CL11",
+      "statement": "During a declared catastrophe event, claims tagged with the event code would skip the Special Investigations referral so that adjusters can clear the volume.",
+      "status": "proposed",
+      "kind": "business-rule",
+      "owner": "Claims Governance",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-CL11-catastrophe-handling.md",
+        "locator": "# DEC-CL11",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:8f904a4507a4d6fcd28cd589fc47e7a36a210a6c8bad3ddaab5d4350a84527c8"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

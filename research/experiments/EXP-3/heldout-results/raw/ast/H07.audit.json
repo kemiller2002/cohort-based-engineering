@@ -1,0 +1,45 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Freight/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:f49642048a8adfa9499ea1cc0514cf1ad3ac6a696d23a066e3875212beae9ed8",
+    "handoffDigest": "sha256:c8c30959a5ee425ce1a403bf6ca3c1ad1eab9363e6f5be74ac1705afa3a63a13",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:39b6272151bc92b12fed414f663a6261da362fe7fdd58e39635e00ab397bce14",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Freight/Rules.fs",
+        "line": 6,
+        "symbol": "Freight.Rules.dimensionalDivisor"
+      },
+      "authorityRefs": [
+        "DEC-FR01",
+        "DEC-FR04"
+      ],
+      "message": "Rule-bearing legacy code in Freight.Rules.dimensionalDivisor matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). Superseded authority: numeric literal 5000 (line 6): value 5000 = DEC-FR01.p1 (superseded by DEC-FR04, value only) and no accepted parameter. The code still carries a superseded decision's value. Question for Network Operations: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Network Operations"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 1
+  }
+}

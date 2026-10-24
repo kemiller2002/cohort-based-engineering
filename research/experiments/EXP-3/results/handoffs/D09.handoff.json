@@ -1,0 +1,132 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-D09",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLIN-21-R1",
+      "statement": "`prescribe` accepts an optional priority after the dose, `urgent`: `prescribe rx1 p1 amoxicillin 500 urgent` prints `rx1 prescribed: amoxicillin 500 mg for p1 (urgent)`. Without a priority, prescribing prints as before.",
+      "status": "accepted",
+      "owner": "Urgent Care",
+      "source": {
+        "path": "requirements/CLIN-21.md",
+        "locator": "## CLIN-21-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:593821dd8dd6afd84c58928197cafe57f12314b7e026fe1a71cd51767299403d"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLIN-21-R2",
+      "statement": "`queue` lists urgent prescriptions first, then the others; within each group, prescriptions are listed in the order they were written. Urgent prescriptions are marked: `queue: rx2 (urgent, unchecked), rx1 (unchecked)`.",
+      "status": "accepted",
+      "owner": "Urgent Care",
+      "source": {
+        "path": "requirements/CLIN-21.md",
+        "locator": "## CLIN-21-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:593821dd8dd6afd84c58928197cafe57f12314b7e026fe1a71cd51767299403d"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLIN-21-R3",
+      "statement": "Urgent prescriptions must reach the patient without delay. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged; `dotnet test Clinic.slnx` passes.",
+      "status": "accepted",
+      "owner": "Urgent Care",
+      "source": {
+        "path": "requirements/CLIN-21.md",
+        "locator": "## CLIN-21-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:593821dd8dd6afd84c58928197cafe57f12314b7e026fe1a71cd51767299403d"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-C01",
+      "statement": "Appointments of every kind are booked for a day from tomorrow up to 90 days ahead. Clinicians' rotas are not published further ahead than that, so a booking beyond 90 days cannot be honoured.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C01-booking-horizon.md",
+        "locator": "# DEC-C01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:49bdedf79d800f1c8a6c04c94c155ac9f3a1a126be938a18531889c91d1b7013"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "90",
+        "p2": "90"
+      }
+    },
+    {
+      "id": "DEC-C02",
+      "statement": "A clinician has at most one appointment at a given date and time.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C02-one-appointment-per-slot.md",
+        "locator": "# DEC-C02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6450e83cbf5e1da7831c45763d90d3514a8876eb8cadce4de941bdc97177c1ac"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-C03",
+      "statement": "Every prescription is checked by a pharmacist before it is dispensed. Dispensing an unchecked prescription is refused.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Pharmacy",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Pharmacy",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C03-pharmacist-check.md",
+        "locator": "# DEC-C03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5949ac776a665ef1cb4483551bc57a487c79b6bc0ebe50b2513d00aa6ab623c9"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

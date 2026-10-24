@@ -1,0 +1,236 @@
+{
+  "schema": "praxis.verification-map/0.1",
+  "repository": "kemiller2002/praxis",
+  "derived_from_commit": "9704841925ab8d2540bdc752f2aca7b3f3907cfd",
+  "derivation": "Experimenter-authored for EXP-2 phase 1 from repository structure only: Praxis.slnx, the ProjectReference graph (Domain <- Contracts <- Application <- Infrastructure <- Cli <- Praxis.Tests; SiteTools <- Site.Tests), the EmbeddedResource items of Praxis.Infrastructure.fsproj and Directory.Build.props (release.json read at build), tests that resolve the repository root at run time, and the push/paths filters of .github/workflows/*.yml. No CI outcome was consulted.",
+  "glob_semantics": "Paths are repository-relative. '**' matches any sequence of characters including '/'; '*' matches any sequence without '/'; a pattern without a wildcard matches exactly that path.",
+  "unmapped_policy": "full",
+  "unmapped_policy_note": "A changed path that matches no path class selects every job (conservative). Deletions and renames are evaluated on both old and new paths.",
+  "path_classes": {
+    "cli_closure": {
+      "description": "Inputs of src/Praxis.Cli and its transitive project closure, including every embedded resource and build-wide file.",
+      "globs": [
+        "src/**",
+        "Directory.Build.props",
+        "NuGet.config",
+        "Praxis.slnx",
+        "global.json",
+        ".editorconfig",
+        "release.json",
+        "AGENTS.md",
+        "BOOTSTRAP.md",
+        "CLAUDE.md",
+        "GEMINI.md",
+        ".github/copilot-instructions.md",
+        "telemetry/metrics.json",
+        "docs/development-telemetry.md",
+        "docs/fallback-reconciliation.md",
+        "docs/ordo-observation.md",
+        "docs/remote-protocol.md",
+        "docs/remote-agent-contract.md",
+        "docs/project-administration-hub.md",
+        "docs/web-interface.md",
+        "docs/work-adapter-contract.md",
+        "docs/work-backlog-guide.md",
+        "docs/work-protocol.md",
+        "docs/agent-provenance.md",
+        "docs/00-governance/**",
+        "framework/**",
+        "schemas/**",
+        "templates/**",
+        "web/**",
+        "web-hub/**",
+        "vendor/**",
+        "starter/**"
+      ]
+    },
+    "test_closure": {
+      "description": "Praxis.Tests inputs beyond the CLI closure: the test project, its fixtures, and repository files the tests read at run time (wrappers, scripts, identity and boundary configuration, toolchain pins, CI composite actions).",
+      "globs": [
+        "tests/Praxis.Tests/**",
+        "bin/**",
+        "praxis",
+        "ros",
+        "praxis.cmd",
+        "ros.cmd",
+        "praxis.ps1",
+        "ros.ps1",
+        "scripts/**",
+        "aegis-boundaries.json",
+        "ros.json",
+        ".echelon/**",
+        ".github/actions/**",
+        ".github/workflows/praxis-validation.yml",
+        ".gitattributes",
+        ".gitignore"
+      ]
+    },
+    "site": {
+      "description": "Public site inputs, taken verbatim from the push.paths filter of site.yml.",
+      "globs": [
+        "site/**",
+        "site-tools/**",
+        "tests/Site.Tests/**",
+        "docs/public-site.md",
+        "docs/site/**",
+        ".ros/**",
+        ".github/workflows/site.yml",
+        ".github/workflows/deploy-pages.yml"
+      ]
+    },
+    "release_tooling": {
+      "description": "Native release inputs, from the push.paths filter of native-release.yml.",
+      "globs": [
+        ".github/workflows/native-release.yml",
+        ".github/workflows/release.yml",
+        ".github/workflows/ros-fs-assets.yml",
+        ".github/workflows/foundations-verify.yml"
+      ]
+    },
+    "other_workflows": {
+      "description": "Workflows that never run on push to main (dispatch, PR-only, inbox branches). Changing them affects no push-to-main job.",
+      "globs": [
+        ".github/workflows/containment-qualification.yml",
+        ".github/workflows/praxis-reconcile.yml",
+        ".github/workflows/praxis-reconcile-apply.yml",
+        ".github/workflows/praxis-remote.yml",
+        ".github/workflows/praxis-remote-inbox.yml"
+      ]
+    },
+    "governance_and_docs": {
+      "description": "Repository governance state and prose that no build or filtered test suite consumes. They are checked by `praxis validate`, `praxis registry check` and the pinned-release suite, which are mandatory jobs here and so always run.",
+      "globs": [
+        "docs/**",
+        "requirements/**",
+        "research/**",
+        "input-documents/**",
+        ".praxis/**",
+        ".sde/**",
+        ".claude/**",
+        "missions/**",
+        "context/**",
+        "work/**",
+        "logs/**",
+        "archive/**",
+        "quality/**",
+        "registries/**",
+        "protocol/**",
+        "prompts/**",
+        "generated/**",
+        "telemetry/**",
+        "README.md",
+        "LICENSE",
+        "NOTICE",
+        "SDE-MAP.md",
+        "PACKAGE-USAGE.md"
+      ]
+    }
+  },
+  "jobs": [
+    {
+      "id": "validate",
+      "workflow": "^Praxis validation$",
+      "job": "^validate$",
+      "risk": "security",
+      "mandatory": true,
+      "mandatory_reason": "Carries the RELEASE-GATES \u00a72 checks Praxis has: `praxis validate` (telemetry credential and secret-field rejection: \u00a72.1; Aegis authorization boundaries: \u00a72.2-2.3; frozen-state and registry integrity: \u00a72.4), `praxis architecture check`, `praxis registry check`, and the 'tests leave the checkout unchanged' data-integrity step. Selection is job-level, so the unfiltered F# and browser suites in this job also always run.",
+      "select_when": "always"
+    },
+    {
+      "id": "pinned-release-validate",
+      "workflow": "^Praxis validation$",
+      "job": "^pinned-release-validate$",
+      "risk": "contract",
+      "mandatory": true,
+      "mandatory_reason": "Producer/consumer contract: the pinned release (.echelon/toolchain.json) must accept this repository (\u00a72.5). Its suite validates the whole repository, so every path selects it anyway.",
+      "select_when": "always"
+    },
+    {
+      "id": "worker-checklists",
+      "workflow": "^Praxis validation$",
+      "job": "^worker-checklists( \\(.*\\))?$",
+      "risk": "functional",
+      "mandatory": false,
+      "select_when": [
+        "cli_closure",
+        "test_closure"
+      ]
+    },
+    {
+      "id": "local-worker-portability",
+      "workflow": "^Praxis validation$",
+      "job": "^local-worker-portability( \\(.*\\))?$",
+      "risk": "functional",
+      "mandatory": false,
+      "select_when": [
+        "cli_closure",
+        "test_closure"
+      ]
+    },
+    {
+      "id": "lifecycle",
+      "workflow": "^Praxis validation$",
+      "job": "^lifecycle( \\(.*\\))?$",
+      "risk": "functional",
+      "mandatory": false,
+      "select_when": [
+        "cli_closure",
+        ".github/workflows/praxis-validation.yml"
+      ]
+    },
+    {
+      "id": "site-check",
+      "workflow": "^Public site$",
+      "job": "^check$",
+      "risk": "presentation",
+      "mandatory": false,
+      "select_when": [
+        "site"
+      ]
+    },
+    {
+      "id": "deploy-site-build",
+      "workflow": "^Deploy Site$",
+      "job": "^build$",
+      "risk": "deployment",
+      "mandatory": false,
+      "note": "A deployment, not a verification. Its build step repeats the site verify of site-check. Redeploying unchanged inputs is redundant.",
+      "select_when": [
+        "site"
+      ]
+    },
+    {
+      "id": "deploy-site-deploy",
+      "workflow": "^Deploy Site$",
+      "job": "^deploy$",
+      "risk": "deployment",
+      "mandatory": false,
+      "follows": "deploy-site-build",
+      "select_when": [
+        "site"
+      ]
+    },
+    {
+      "id": "native-release",
+      "workflow": "^Native Praxis release$",
+      "job": ".*",
+      "risk": "release",
+      "mandatory": true,
+      "mandatory_reason": "Release acceptance (\u00a72.6): builds, attests and publishes release assets. It runs only when its own path filter fires, and the replay never deselects it.",
+      "select_when": "always"
+    }
+  ],
+  "unknown_job_policy": "A historical job that matches no entry is treated as mandatory (always selected) and listed in the results.",
+  "checks": {
+    "description": "Check equivalence for cross-job detection: a failing step in a skipped job counts as detected at a commit when an executed job there fails at a step running the same check.",
+    "praxis-validate": [
+      "^Run \\./praxis validate$",
+      "^Run \\./praxis registry check$"
+    ],
+    "site-verify": [
+      "^Structure, references, accessibility rules, boundary, evidence, tests$",
+      "^Build site$"
+    ]
+  },
+  "select_when_semantics": "Each select_when entry is a path-class id, or a glob when it is not a class id. 'always' selects the job on every push. A job with 'follows' is selected only when the named job is selected."
+}

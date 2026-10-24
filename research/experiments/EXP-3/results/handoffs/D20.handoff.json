@@ -1,0 +1,141 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-D20",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "CLIN-41-R1",
+      "statement": "A new command `next-free <clinician> <time>` finds the first day, from tomorrow, on which the clinician has no appointment at that time and an appointment can be booked under the booking-horizon decision in force, and prints `k1 free at 09:00 on 2026-03-03`. If there is no such day it prints `k1 has no free day at 09:00`. It books nothing. An unknown clinician prints `error: unknown clinician k9`.",
+      "status": "accepted",
+      "owner": "Clinical Operations",
+      "source": {
+        "path": "requirements/CLIN-41.md",
+        "locator": "## CLIN-41-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:76ff0c3fafbd1f34f99f085ca4e4151a478856a73d838412ca84407403e8b945"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "CLIN-41-R2",
+      "statement": "`help` lists `next-free <clinician> <time>` directly after `schedule <clinician> <date>`. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged except as these requirements say; `dotnet test Clinic.slnx` passes.",
+      "status": "accepted",
+      "owner": "Clinical Operations",
+      "source": {
+        "path": "requirements/CLIN-41.md",
+        "locator": "## CLIN-41-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:76ff0c3fafbd1f34f99f085ca4e4151a478856a73d838412ca84407403e8b945"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-C01",
+      "statement": "Appointments of every kind are booked for a day from tomorrow up to 90 days ahead. Clinicians' rotas are not published further ahead than that, so a booking beyond 90 days cannot be honoured.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C01-booking-horizon.md",
+        "locator": "# DEC-C01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6346f198a3fa14bd471df6c0161cb1fdced5f29f928b37d60f338b4e6816be26"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-C05",
+      "parameters": {
+        "p1": "90",
+        "p2": "90"
+      }
+    },
+    {
+      "id": "DEC-C02",
+      "statement": "A clinician has at most one appointment at a given date and time.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C02-one-appointment-per-slot.md",
+        "locator": "# DEC-C02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6450e83cbf5e1da7831c45763d90d3514a8876eb8cadce4de941bdc97177c1ac"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-C03",
+      "statement": "Every prescription is checked by a pharmacist before it is dispensed. Dispensing an unchecked prescription is refused.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Pharmacy",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Pharmacy",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-08T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C03-pharmacist-check.md",
+        "locator": "# DEC-C03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5949ac776a665ef1cb4483551bc57a487c79b6bc0ebe50b2513d00aa6ab623c9"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-C05",
+      "statement": "Appointments of every kind are booked for a day from tomorrow up to 60 days ahead. Rotas are now published 60 days ahead, so a booking beyond that cannot be honoured.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Clinical Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Clinical Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-01T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-C05-booking-horizon-revised.md",
+        "locator": "# DEC-C05",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:20fc8d4a3d5d13d152be0796de59ad4e350ec448792fa92493502751ddcf2fdf"
+      },
+      "supersedes": [
+        "DEC-C01"
+      ],
+      "parameters": {
+        "p1": "60",
+        "p2": "60"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

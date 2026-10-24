@@ -131,6 +131,23 @@ implement or report the extension as settled.
 
 So the rule must be followed by the agent, and checked by review (§2).
 
+### Refusing the uncovered case is an authorized outcome (VAC-002-P3-02-R1)
+
+**Rule.** When no requirement or accepted decision covers a case, an agent may refuse that case with a recorded open
+question that names the owner. This outcome needs no further authority source. No admission check, gate or reviewer
+may reject it, or reject it for citing the agent's own question.
+
+**What it is not.** It is not a business rule. The question stays open until its owner answers it, and the refusal is
+replaced when they do.
+
+**Status.** Accepted by the owner, kemiller2002, on 2026-10-24.
+
+**Evidence.**
+- In VAC-002-P3, executable authorization rejected recorded questions and correct refusals 5 times.
+- Those rejections led to three unauthorized defaults and one crash (`research/experiments/VAC-002/P3/CONFIRMATORY-RESULTS.md` §5).
+- Where this is implemented: `program/CONTRACTS.md` C1 (`permittedOutcome: refuse-and-record`) and the Ordo slice's
+  handoff admission.
+
 ## 6. Controls in proportion to evidence
 
 - **Do not add the full Echelon protocol to simple, well-specified chains purely for reliability.** Measure it

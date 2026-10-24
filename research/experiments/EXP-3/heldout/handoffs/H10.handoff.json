@@ -1,0 +1,137 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H10",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "SUB-04-R1",
+      "statement": "At renewal a subscription is charged its plan's monthly price per seat under the pricing decision in force.",
+      "status": "accepted",
+      "owner": "Revenue Operations",
+      "source": {
+        "path": "requirements/SUB-04.md",
+        "locator": "## SUB-04-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6162996ead391b7be5f83f0fef2077927a631095af0cb907a8788028eee62550"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "SUB-04-R2",
+      "statement": "After a failed renewal payment the subscription stays active through the grace period in force and is then suspended. A later successful payment ends the suspension.",
+      "status": "accepted",
+      "owner": "Revenue Operations",
+      "source": {
+        "path": "requirements/SUB-04.md",
+        "locator": "## SUB-04-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6162996ead391b7be5f83f0fef2077927a631095af0cb907a8788028eee62550"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "SUB-04-R3",
+      "statement": "The plan page shows each plan's annual price under the pricing decision in force. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Revenue Operations",
+      "source": {
+        "path": "requirements/SUB-04.md",
+        "locator": "## SUB-04-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6162996ead391b7be5f83f0fef2077927a631095af0cb907a8788028eee62550"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-SB01",
+      "statement": "After a failed renewal payment, the subscription stays active for 7 days before it is suspended.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Revenue Operations",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-SB01-grace-period.md",
+        "locator": "# DEC-SB01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:d433053cb4cd34e7eba5937d54b3583caf20803a8894835214b0c2327a9f5d30"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-SB05",
+      "parameters": {
+        "p1": "7"
+      }
+    },
+    {
+      "id": "DEC-SB02",
+      "statement": "Each plan is charged per seat per month at the price listed in `docs/plan-prices.md`. The annual price of a plan is 10 times its monthly price. A plan that is not listed is not for sale.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Revenue Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Revenue Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-SB02-plan-prices.md",
+        "locator": "# DEC-SB02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:aeed5b6c97666c5e1d5d4b88f65ac9c712fa3e6ed5879532fee13694286216af"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "10",
+        "plan-prices.STARTER": "8.00",
+        "plan-prices.TEAM": "19.00",
+        "plan-prices.SCALE": "42.00"
+      }
+    },
+    {
+      "id": "DEC-SB05",
+      "statement": "After a failed renewal payment, the subscription stays active for 3 days before it is suspended.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Revenue Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Revenue Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-04-20T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-SB05-grace-period-revised.md",
+        "locator": "# DEC-SB05",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:93009bda70f6b4c6076bc2d7dc767fb770545567f3196fbd3fe175cc649f826b"
+      },
+      "supersedes": [
+        "DEC-SB01"
+      ],
+      "parameters": {
+        "p1": "3"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

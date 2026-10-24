@@ -1,0 +1,136 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H14",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "PRC-08-R1",
+      "statement": "Every purchase needs a purchase order before it is paid, whatever its amount.",
+      "status": "accepted",
+      "owner": "Accounts Payable",
+      "source": {
+        "path": "requirements/PRC-08.md",
+        "locator": "## PRC-08-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f763fb9ab08f72f298c556635a41fa06d2b3c4b297bace5219bebd8bf47f5f08"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PRC-08-R2",
+      "statement": "An invoice is approved for payment when every line matches its purchase order line: same item, same quantity, and a unit price within the price tolerance in force.",
+      "status": "accepted",
+      "owner": "Accounts Payable",
+      "source": {
+        "path": "requirements/PRC-08.md",
+        "locator": "## PRC-08-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f763fb9ab08f72f298c556635a41fa06d2b3c4b297bace5219bebd8bf47f5f08"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PRC-08-R3",
+      "statement": "An approved invoice is scheduled for payment on the date its vendor's payment terms give, under the terms decision in force. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Accounts Payable",
+      "source": {
+        "path": "requirements/PRC-08.md",
+        "locator": "## PRC-08-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f763fb9ab08f72f298c556635a41fa06d2b3c4b297bace5219bebd8bf47f5f08"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-PR03",
+      "statement": "Invoices are paid the number of days after receipt listed for the vendor's tier in `docs/vendor-terms.md`. Treasury maintains the table; a vendor whose tier is not listed is not set up for payment.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Treasury",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Treasury",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-14T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR03-vendor-terms.md",
+        "locator": "# DEC-PR03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ffac93451961d28633116e4af5154e82bf16f84178f27c7703d0101622ada3e2"
+      },
+      "supersedes": [],
+      "parameters": {
+        "vendor-terms.STRATEGIC": "75",
+        "vendor-terms.PREFERRED": "45",
+        "vendor-terms.STANDARD": "35"
+      }
+    },
+    {
+      "id": "DEC-PR05",
+      "statement": "An invoice line may be up to 4% above the purchase order unit price and still match.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Accounts Payable",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR05-price-tolerance.md",
+        "locator": "# DEC-PR05",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:bdf4efbed8df2d482ebf26a89795b72ff79799ce4e6e7d0209e5a11709712e7e"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-PR07",
+      "parameters": {
+        "p1": "0.04"
+      }
+    },
+    {
+      "id": "DEC-PR07",
+      "statement": "An invoice line may be up to 2.5% above the purchase order unit price and still match. Quantities must match exactly.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Accounts Payable",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Accounts Payable",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-04-27T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR07-price-tolerance-revised.md",
+        "locator": "# DEC-PR07",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:49e867f59a1a8235c45bb956f36ef603ea6dd6da9e55714dda27d38401aefc5f"
+      },
+      "supersedes": [
+        "DEC-PR05"
+      ],
+      "parameters": {
+        "p1": "0.025"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

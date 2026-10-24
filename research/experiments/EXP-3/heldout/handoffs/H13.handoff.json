@@ -1,0 +1,145 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H13",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "PRC-03-R1",
+      "statement": "Each requisition is routed to the lowest approver whose limit, under the approval-limit decision in force, covers its total. A requisition above the director's limit goes to the CFO.",
+      "status": "accepted",
+      "owner": "Procurement Office",
+      "source": {
+        "path": "requirements/PRC-03.md",
+        "locator": "## PRC-03-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:90f2ef1672cc4d7c90dd92919f468a5e1bc72e1fc75425bc367a8f2fe005ae35"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PRC-03-R2",
+      "statement": "Each requisition shows how many competitive bids it needs under the bidding decision in force and any granted approval. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Procurement Office",
+      "source": {
+        "path": "requirements/PRC-03.md",
+        "locator": "## PRC-03-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:90f2ef1672cc4d7c90dd92919f468a5e1bc72e1fc75425bc367a8f2fe005ae35"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-PR01",
+      "statement": "A manager may approve requisitions up to 7500.00 and a director up to 40000.00. Anything larger needs the CFO.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Finance Controller",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR01-approval-limits.md",
+        "locator": "# DEC-PR01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:fd9652d5eb1db980ec9797c33206affd899f05ac827397c58e930f9e038199f0"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-PR04",
+      "parameters": {
+        "p1": "7500.00",
+        "p2": "40000.00"
+      }
+    },
+    {
+      "id": "DEC-PR02",
+      "statement": "A requisition over 15000.00 needs 3 competitive bids, including contract renewals. A smaller requisition needs one quote.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Procurement Office",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Procurement Office",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-14T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR02-competitive-bids.md",
+        "locator": "# DEC-PR02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ca66b12359d207f06639b5195b3e1fe84a2318037c1695dd6221a9b6b1ef95af"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "15000.00",
+        "p2": "3"
+      }
+    },
+    {
+      "id": "DEC-PR04",
+      "statement": "A manager may approve requisitions up to 4000.00 and a director up to 40000.00. Anything larger needs the CFO.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance Controller",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance Controller",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-23T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR04-approval-limits-revised.md",
+        "locator": "# DEC-PR04",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:d1027adf2ca9bf9510885b2045c232e4ae4958a544b8e47904bc831d2f0196ff"
+      },
+      "supersedes": [
+        "DEC-PR01"
+      ],
+      "parameters": {
+        "p1": "4000.00",
+        "p2": "40000.00"
+      }
+    },
+    {
+      "id": "APR-PR01",
+      "statement": "Lab reagent requisitions from Helix Biosupply (vendor `V-3302`) need only one quote. This is an exception to DEC-PR02 for that vendor and category only.",
+      "status": "accepted",
+      "kind": "exception",
+      "owner": "Dana Whitlock, Chief Procurement Officer",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Dana Whitlock, Chief Procurement Officer",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-03T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/approvals/APR-PR01-helix-reagents.md",
+        "locator": "# APR-PR01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:40683544d38c1bba143e9c7d7a7b2859fa9b8295ee1668238ca6004a4810716f"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

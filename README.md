@@ -44,9 +44,11 @@ These observations motivate CBE but do not prove that every cohort size or workl
 ## Repository map
 
 - [Operating model](docs/operating-model.md): lifecycle, human roles, agent roles and boundaries, agent continuity and scope rules.
-- [Cohort planner](docs/cohort-planner.md): proposed typed inputs, constraints and scheduling.
-- [Experiment plan](research/experiment-plan.md): falsifiable hypotheses, benchmark design and measurements.
-- [Adoption roadmap](docs/roadmap.md): phased integration with Ordo, Praxis, Conditor, Signal and Dokimos.
+- [Echelon engineering program](program/PROGRAM.md): the coordinated cross-system program, with its
+  [current state](program/CURRENT-STATE.md), [implementation plan](program/IMPLEMENTATION-PLAN.md),
+  [contracts](program/CONTRACTS.md), [experiments](program/EXPERIMENTS.md), [release gates](program/RELEASE-GATES.md)
+  and [execution state](program/EXECUTION-STATE.md). It replaces the cohort-planner, experiment-plan and roadmap
+  documents this list used to link; those were never written.
 
 ## Related repositories
 

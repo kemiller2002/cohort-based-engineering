@@ -1,0 +1,162 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H17",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "FRT-21-R1",
+      "statement": "A shipment may carry transit cover. The premium for each parcel follows the transit cover decision in force.",
+      "status": "accepted",
+      "owner": "Risk and Pricing",
+      "source": {
+        "path": "requirements/FRT-21.md",
+        "locator": "## FRT-21-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:7b8717a68412f9ac6a7e9c9ab2d903e891214dbaffbfb5f21ded8f263692f4ed"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "FRT-21-R2",
+      "statement": "The shipment summary shows our liability for each parcel without transit cover, and the number of parcels.",
+      "status": "accepted",
+      "owner": "Risk and Pricing",
+      "source": {
+        "path": "requirements/FRT-21.md",
+        "locator": "## FRT-21-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:7b8717a68412f9ac6a7e9c9ab2d903e891214dbaffbfb5f21ded8f263692f4ed"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "FRT-21-R3",
+      "statement": "An oversize parcel pays the oversize handling fee for its delivery zone under the oversize decision in force. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Risk and Pricing",
+      "source": {
+        "path": "requirements/FRT-21.md",
+        "locator": "## FRT-21-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:7b8717a68412f9ac6a7e9c9ab2d903e891214dbaffbfb5f21ded8f263692f4ed"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-FR11",
+      "statement": "Transit cover costs 0.9% of declared value per parcel, rounded to the cent, with a minimum premium of 3.20 per parcel. A parcel declared at 100.00 or less is covered free of charge.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Risk",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Risk",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-02T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR11-transit-cover-revised.md",
+        "locator": "# DEC-FR11",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:c67d04bbfddf6f60aa34ce1023b45b5e0bdcde5578ff784607c9cf72a6c025a5"
+      },
+      "supersedes": [
+        "DEC-FR14"
+      ],
+      "parameters": {
+        "p1": "0.009",
+        "p2": "3.20",
+        "p3": "100.00"
+      }
+    },
+    {
+      "id": "DEC-FR12",
+      "statement": "Without transit cover, liability for a parcel is limited to 4.50 per kilogram of actual weight.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Risk",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Risk",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-02T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR12-liability-limit.md",
+        "locator": "# DEC-FR12",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:40324dec5aa5245763ffebb0a244280eabdd32dcc393b7e31c3370d472681cd1"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "4.50"
+      }
+    },
+    {
+      "id": "DEC-FR13",
+      "statement": "A parcel longer than 150 cm on any side is oversize and pays the handling fee listed for its delivery zone in `docs/oversize-fees.md`. In every other zone there is no oversize fee.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Network Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Network Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-09T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR13-oversize-fee.md",
+        "locator": "# DEC-FR13",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:8d4e6424cb3d7820cba249f7c19e9ffa9d044373c76fe7d2d59217f51b38a60d"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "150",
+        "oversize-fees.REMOTE": "42.00",
+        "oversize-fees.RURAL": "17.50"
+      }
+    },
+    {
+      "id": "DEC-FR14",
+      "statement": "Transit cover costs 1.2% of declared value per parcel.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Risk",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR14-transit-cover.md",
+        "locator": "# DEC-FR14",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ebb179c0537494c3024913e5a98555fa8dcde3d0b3f7a5609c964737f3d49cef"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-FR11",
+      "parameters": {
+        "p1": "0.012"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

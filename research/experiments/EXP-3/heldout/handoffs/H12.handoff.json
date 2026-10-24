@@ -1,0 +1,123 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H12",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "SUB-13-R1",
+      "statement": "Cancelling a subscription refunds what the refund decision in force allows, and nothing else.",
+      "status": "accepted",
+      "owner": "Customer Success",
+      "source": {
+        "path": "requirements/SUB-13.md",
+        "locator": "## SUB-13-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:865d5acd3a7c7e63501d096fdfcf9ac66df10e57b79a55072654169b2dcc6684"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "SUB-13-R2",
+      "statement": "Adding seats that would take a subscription past its plan's seat limit under the seat decision in force is refused. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Customer Success",
+      "source": {
+        "path": "requirements/SUB-13.md",
+        "locator": "## SUB-13-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:865d5acd3a7c7e63501d096fdfcf9ac66df10e57b79a55072654169b2dcc6684"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-SB08",
+      "statement": "A subscription cancelled within 28 days of its first charge is refunded its last charge in full. After that, nothing is refunded, whatever the plan or size of the account.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Customer Success",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Customer Success",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-16T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-SB08-cancellation-refunds.md",
+        "locator": "# DEC-SB08",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:91d1bab56c8251ea0c17a97714924294a15ca0d0c582c1917f7b7483ab9a1f8e"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "28"
+      }
+    },
+    {
+      "id": "DEC-SB09",
+      "statement": "A subscription may have at most the seats listed for its plan in `docs/seat-limits.md`. Product maintains the list.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Product",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Product",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-16T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-SB09-seat-limits.md",
+        "locator": "# DEC-SB09",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:eac84a432bee2d7b8363f461b4b8dc1ed385fde932bcb317e0456282e9d22c89"
+      },
+      "supersedes": [],
+      "parameters": {
+        "seat-limits.STARTER": "3",
+        "seat-limits.TEAM": "25",
+        "seat-limits.SCALE": "200"
+      }
+    },
+    {
+      "id": "APR-SB01",
+      "statement": "Northwind Schools (customer `cu-4410`) may cancel with a full refund of its last charge until 2026-12-31. This is an exception to DEC-SB08 for that customer only.",
+      "status": "accepted",
+      "kind": "exception",
+      "owner": "Elena Brandt, VP Customer Success",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Elena Brandt, VP Customer Success",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-02T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/approvals/APR-SB01-northwind-refund.md",
+        "locator": "# APR-SB01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5bac882bd880361510aea996f35a94eddcfd5167635e872e6e2022031ebb46db"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

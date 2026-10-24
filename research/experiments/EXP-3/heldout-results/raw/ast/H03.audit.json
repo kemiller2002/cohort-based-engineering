@@ -1,0 +1,45 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Claims/Coverage.fs",
+      "src/Claims/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:32127b019b84988cdd4ee9c9b9c44794ba880f725b5ce752f898214103810347",
+    "handoffDigest": "sha256:26bb08d7d1dfe478dea8e8176a6d4624abde53514afbfb5fa973c77afff3500b",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:39b6272151bc92b12fed414f663a6261da362fe7fdd58e39635e00ab397bce14",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Claims/Rules.fs",
+        "line": 16,
+        "symbol": "Claims.Rules.depreciationRate"
+      },
+      "authorityRefs": [
+        "DEC-CL12"
+      ],
+      "message": "Rule-bearing legacy code in Claims.Rules.depreciationRate matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: exemption shape 'if' on \"Electronics\" (line 17): no cited record and no accepted exception record names \"Electronics\"; exemption shape 'if' on \"Furniture\" (line 18): no cited record and no accepted exception record names \"Furniture\"; exemption shape 'if' on \"Clothing\" (line 19): no cited record and no accepted exception record names \"Clothing\"; numeric literal 0 (line 20): value 0 equals no declared parameter of an accepted or superseded record. Supported (matching rule): category test '= \"Electronics\"' (line 17): (b) parameter, \"Electronics\" is named by accepted DEC-CL12; numeric literal 0.18 (line 17): (b) parameter, value 0.18 = DEC-CL12.depreciation.Electronics (accepted, same form); category test '= \"Furniture\"' (line 18): (b) parameter, \"Furniture\" is named by accepted DEC-CL12; numeric literal 0.07 (line 18): (b) parameter, value 0.07 = DEC-CL12.depreciation.Furniture (accepted, same form); category test '= \"Clothing\"' (line 19): (b) parameter, \"Clothing\" is named by accepted DEC-CL12; numeric literal 0.22 (line 19): (b) parameter, value 0.22 = DEC-CL12.depreciation.Clothing (accepted, same form). A category exemption sits inside the symbol that carries accepted DEC-CL12: an exemption from DEC-CL12 needs its own decision record, whatever the code comments call it. Question for Actuarial: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Actuarial"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 1
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Clinic/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:1ef0a9d8ab6bad6eae69628f72b7de597c2b55e5ab0fcea9caa7c10041bb478c",
+    "handoffDigest": "sha256:89ce16b34c5ed4362e014968f7c65111cc0afcd4458dcee04c28ff7fd3a8aeb5",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.1.0-experimental",
+    "configDigest": "sha256:213547e197d7035436cb649c6e5d706282034327a4b93175e6ed71a3b82cee40",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Clinic/Rules.fs",
+        "line": 19,
+        "symbol": "Clinic.Rules.visitFee"
+      },
+      "authorityRefs": [
+        "DEC-C09"
+      ],
+      "message": "Rule-bearing legacy code in Clinic.Rules.visitFee matches no observation and cites no authority: 'match' branch (line 20); case pattern \"k1\" (line 21); decimal literal 60.00 (line 21); wildcard default returning 0m for unlisted cases (line 22). Value 60.00 equals DEC-C09.visit-fees.k1 (accepted). A wildcard default silently decides every unlisted case; no record authorizes that default. Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 1
+  }
+}

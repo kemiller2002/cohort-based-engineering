@@ -1,0 +1,122 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H08",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "FRT-11-R1",
+      "statement": "The driver manifest marks each parcel that needs a signature on delivery under the signature decision in force.",
+      "status": "accepted",
+      "owner": "Last Mile Operations",
+      "source": {
+        "path": "requirements/FRT-11.md",
+        "locator": "## FRT-11-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:097370277ef0fb5d39d3eec3043b8125e2a9e00b35468bc716b436a19ea012c3"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "FRT-11-R2",
+      "statement": "After a failed delivery attempt the manifest schedules the next attempt, or, once the attempts in force are used up, returns the shipment to the depot with the date until which the depot holds it. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Last Mile Operations",
+      "source": {
+        "path": "requirements/FRT-11.md",
+        "locator": "## FRT-11-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:097370277ef0fb5d39d3eec3043b8125e2a9e00b35468bc716b436a19ea012c3"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-FR05",
+      "statement": "A parcel carrying a UN number is dangerous goods and always needs a signature. Any other parcel needs a signature when its declared value is over 400.00.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Last Mile Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Last Mile Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-26T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR05-signature-on-delivery.md",
+        "locator": "# DEC-FR05",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:4c2ec91408ce739316ccfbb04c8424fd03162afc746f25ffa9487fef5ac68189"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "400.00"
+      }
+    },
+    {
+      "id": "DEC-FR06",
+      "statement": "A shipment gets 3 delivery attempts before it goes back to the depot.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Last Mile Operations",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR06-delivery-attempts.md",
+        "locator": "# DEC-FR06",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6e74979aab9f11334dc4cb95a089148f02d93784ec3d3e9b35dfd38ec5699ca0"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-FR08",
+      "parameters": {
+        "p1": "3"
+      }
+    },
+    {
+      "id": "DEC-FR08",
+      "statement": "A shipment gets 2 delivery attempts before it goes back to the depot, where it is held for 9 days for collection after the last failed attempt.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Last Mile Operations",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Last Mile Operations",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-04-13T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-FR08-delivery-attempts-revised.md",
+        "locator": "# DEC-FR08",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:4730414c343adf2a29e43d5c07bd204ac33c9d887e78ed75074712ba27f93f10"
+      },
+      "supersedes": [
+        "DEC-FR06"
+      ],
+      "parameters": {
+        "p1": "2",
+        "p2": "9"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

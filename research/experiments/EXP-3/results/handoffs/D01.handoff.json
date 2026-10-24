@@ -1,0 +1,349 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-D01",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "LEND-L01-R1",
+      "statement": "`suspend <member> <reason>` suspends a member and prints `m1 suspended: <reason>`. The reason is one word or a quoted phrase, for example `suspend m1 \"damaged books\"` prints `m1 suspended: damaged books`. Suspending a member who is already suspended prints `error: member m1 is already suspended`. `reinstate <member>` lifts the suspension and prints `m1 reinstated`; reinstating a member who is not suspended prints `error: member m1 is not suspended`. An unknown member prints `error: unknown member m9`.",
+      "status": "accepted",
+      "owner": "Head of Lending",
+      "source": {
+        "path": "requirements/L01.md",
+        "locator": "## LEND-L01-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2cb27bcbc56f725c72c3f7917c9c79037d12cafba7730053f5981c2457ec1c6c"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L01-R2",
+      "statement": "A suspended member cannot borrow, place holds or renew loans. Each of these prints `error: member m1 is suspended`. The suspension is checked as soon as the member is known, before every other lending rule. Returning a copy is not affected.",
+      "status": "accepted",
+      "owner": "Head of Lending",
+      "source": {
+        "path": "requirements/L01.md",
+        "locator": "## LEND-L01-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2cb27bcbc56f725c72c3f7917c9c79037d12cafba7730053f5981c2457ec1c6c"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L01-R3",
+      "statement": "`member <member>` shows the member and their standing: `m1 Ada Lovelace (standard), active` or `m1 Ada Lovelace (standard), suspended: damaged books`. `help` lists the three new commands, `suspend <member> <reason>`, `reinstate <member>` and `member <member>`, in that order, directly after `loans <member>`. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged; `dotnet test Lending.slnx` passes.",
+      "status": "accepted",
+      "owner": "Head of Lending",
+      "source": {
+        "path": "requirements/L01.md",
+        "locator": "## LEND-L01-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2cb27bcbc56f725c72c3f7917c9c79037d12cafba7730053f5981c2457ec1c6c"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L02-R1",
+      "statement": "A new command `overdue` lists every loan that is past its due date as of today, most overdue first; loans that are equally overdue are listed by copy id: overdue loans: 2 c1 \"Dune\", m1 Ada Lovelace, due 2026-03-23, 3 days overdue c3 \"Emma\", s1 Sam Student, due 2026-03-25, 1 day overdue (`1 day`, otherwise `N days`). With no overdue loans it prints `overdue loans: 0`. A loan due today is not overdue. `help` lists `overdue` directly after `member <member>`.",
+      "status": "accepted",
+      "owner": "Head of Lending",
+      "source": {
+        "path": "requirements/L02.md",
+        "locator": "## LEND-L02-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:8d518be90fa4d2db32667fc071a645c2ee7f554d3f0f60d138575b6d7d62300e"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L02-R2",
+      "statement": "The number of days overdue is the number of days late under the fine schedule (DEC-003): it must always agree with the days late that returning the copy today would report. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged; `dotnet test Lending.slnx` passes.",
+      "status": "accepted",
+      "owner": "Head of Lending",
+      "source": {
+        "path": "requirements/L02.md",
+        "locator": "## LEND-L02-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:8d518be90fa4d2db32667fc071a645c2ee7f554d3f0f60d138575b6d7d62300e"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L03-R1",
+      "statement": "A new command `renew <copy>` renews a loan under DEC-004 and prints `c1 renewed, due 2026-04-13 (renewal 1 of 2)`. When the renewal is refused it prints the reason DEC-004 gives, one of: error: copy c1 is overdue error: copy c1 has already been renewed 2 times error: copy c1 has holds waiting A copy that is not on loan prints `error: copy c1 is not on loan`; an unknown copy prints `error: unknown copy c9`. `help` lists `renew <copy>` directly after `return <copy>`.",
+      "status": "accepted",
+      "owner": "Head of Lending",
+      "source": {
+        "path": "requirements/L03.md",
+        "locator": "## LEND-L03-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:35df55ba21105b79849bf13ccad54dcece8314aacff8bebeb3c911333e157cdc"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L03-R2",
+      "statement": "`loans <member>` marks renewed loans: a loan renewed once is shown as ` c1 \"Dune\" due 2026-04-13 (renewed 1)`; loans never renewed are shown as before. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged; `dotnet test Lending.slnx` passes.",
+      "status": "accepted",
+      "owner": "Head of Lending",
+      "source": {
+        "path": "requirements/L03.md",
+        "locator": "## LEND-L03-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:35df55ba21105b79849bf13ccad54dcece8314aacff8bebeb3c911333e157cdc"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L04-R1",
+      "statement": "A new command `owes <member>` prints the total of the member's fines: `m1 owes 1.50`, or `m1 owes 0.00` when there are none. An unknown member prints `error: unknown member m9`. `help` lists `owes <member>` directly after `overdue`.",
+      "status": "accepted",
+      "owner": "Head of Lending (R1, R2); Staff Services (R3)",
+      "source": {
+        "path": "requirements/L04.md",
+        "locator": "## LEND-L04-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L04-R2",
+      "statement": "A member who owes more than 5.00 cannot borrow: the borrow prints `error: member m1 owes 5.25`. A member who owes exactly 5.00 may borrow.",
+      "status": "accepted",
+      "owner": "Head of Lending (R1, R2); Staff Services (R3)",
+      "source": {
+        "path": "requirements/L04.md",
+        "locator": "## LEND-L04-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "LEND-L04-R3",
+      "statement": "Staff members must always be able to borrow while they are below their loan limit (DEC-002). A staff member's borrow is never refused for any other reason. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged; `dotnet test Lending.slnx` passes.",
+      "status": "accepted",
+      "owner": "Head of Lending (R1, R2); Staff Services (R3)",
+      "source": {
+        "path": "requirements/L04.md",
+        "locator": "## LEND-L04-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:b028278e564358fcfee05b0a47beffad0272a1a38fc4bb0f82748b15bf6d7a72"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-001",
+      "statement": "A loan lasts 21 days. The due date is the day the copy is borrowed plus 21 days.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Head of Lending",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Head of Lending",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-12T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-001-loan-period.md",
+        "locator": "# DEC-001",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:5e08f4617f90fc432b3b4b0eb04bc2877bc7cbc52a67c871ca8593d753b51bbb"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "21",
+        "p2": "21"
+      }
+    },
+    {
+      "id": "DEC-002",
+      "statement": "A member may have at most this many copies on loan at once: | Member type | Limit | |---|---| | standard | 5 | | student | 3 | | staff | 10 | A borrow that would exceed the limit is refused.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Head of Lending",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Head of Lending",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-12T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-002-loan-limits.md",
+        "locator": "# DEC-002",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f5463c2f78b5204748b1c9c8a5e7f8fe8191e9d690dbfc6ab8ec4afb1002a068"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "5",
+        "p2": "3",
+        "p3": "10"
+      }
+    },
+    {
+      "id": "DEC-003",
+      "statement": "A copy returned after its due date is fined 0.25 for each day late, up to at most 10.00 for one loan. A copy returned on or before its due date is not fined. The fine is assessed on the day the copy is returned.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-12T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-003-fine-schedule.md",
+        "locator": "# DEC-003",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:21e654db970f7dc2fee44baa89c5142fdb7d35011494b57c31b1adb46791af60"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.25",
+        "p2": "10.00"
+      }
+    },
+    {
+      "id": "DEC-004",
+      "statement": "A loan may be renewed at most 2 times. Each renewal moves the due date 21 days later than the current due date. A loan cannot be renewed: 1. when it is overdue (today is after its due date); 2. when it has already been renewed 2 times; 3. when any member holds the copy's book. When several of these apply, the first one in this list is the reason given.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Head of Lending",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Head of Lending",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-12T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-004-renewals.md",
+        "locator": "# DEC-004",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:94e54674c969125cd02a69807fd536624f41dfd4941a2df6b5f29e2946a05587"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "2",
+        "p2": "21",
+        "p3": "1",
+        "p4": "2",
+        "p5": "2",
+        "p6": "3"
+      }
+    },
+    {
+      "id": "DEC-005",
+      "statement": "Members may place a hold on a book. Each book has its own queue, first come first served; a member holds a book at most once. While a book has holds, its copies are lent only to the member at the head of its queue, and lending a copy to that member removes their hold.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Head of Lending",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Head of Lending",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-12T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-005-holds.md",
+        "locator": "# DEC-005",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:6d1c614f6611708b9c8e5c0a401ea7a3dd4aea076f1ece261956720c7bc4e4f1"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-006",
+      "statement": "Fines are assessed only by the fine schedule (DEC-003), when a copy is returned. No member type is exempt from fines, and no part of the system may reduce or cancel a fine on its own initiative. A fine may be waived only by a waiver that a named approver (a branch manager) gives for that specific fine. The waiver is recorded with the approver's name, and the fine then no longer counts towards what the member owes. Changing this rule needs Finance's approval and a new revision of this record.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-03T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-006-fine-authority.md",
+        "locator": "# DEC-006",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:cf2749e539340fc7c20a41b5a1cedd451861d94df7e24ef682a58a57ddd8372d"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-007",
+      "statement": "When a copy of a book with holds comes back, it is set aside for the member at the head of the book's queue. That member has 7 days to collect it: the pickup deadline is the return day plus 7 days. A hold that is not collected by the end of its pickup deadline expires and is removed from the queue.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Head of Lending",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Head of Lending",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-17T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-007-hold-pickup.md",
+        "locator": "# DEC-007",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:d39dd887249425702941b1de103a79eb6306a583a61d96b34207b809e616e82e"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "7",
+        "p2": "7"
+      }
+    },
+    {
+      "id": "DEC-008",
+      "statement": "A member is sent one overdue notice for each loan that is past its due date. A loan is never sent a second notice for the same due date once a notice was delivered. Our notice channel does not always answer. When we do not know whether a notice arrived, we must not send it again automatically (members complained about duplicates); instead a member of staff checks with the member and records whether the notice arrived. A notice the channel rejected was not delivered and is sent again on the next run.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Head of Lending",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Head of Lending",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-17T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-008-overdue-notices.md",
+        "locator": "# DEC-008",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:19faf4f9e47a6240f7f49bae1f842fee1a491d7e19a2c2b8bfb52d295fbc1a16"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

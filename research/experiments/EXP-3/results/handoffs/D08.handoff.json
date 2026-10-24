@@ -1,0 +1,162 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-D08",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "BILL-15-R1",
+      "statement": "An invoice that is still unpaid more than 30 days after its due date is charged a reminder fee of 5.00, in addition to its late fee. The reminder fee is charged once per invoice, when late fees are run, and then forms part of what is outstanding. `run-late-fees` reports both counts: `late fees applied: 1, reminder fees applied: 0`.",
+      "status": "accepted",
+      "owner": "Finance",
+      "source": {
+        "path": "requirements/BILL-15.md",
+        "locator": "## BILL-15-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2860469f04bd7ecea844a705d0c0a7dc60fbe969d1d679f05de82710799c1328"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "BILL-15-R2",
+      "statement": "`show <invoice>` shows the reminder fee after the late fee: `i1 c1 amount 100.00, late fee 2.00, reminder fee 5.00, paid 0.00, outstanding 107.00, due 2026-04-01`. Acceptance criteria: each statement above holds; the standing requirements in `README.md` hold; existing behaviour is unchanged except as these requirements say; `dotnet test Billing.slnx` passes.",
+      "status": "accepted",
+      "owner": "Finance",
+      "source": {
+        "path": "requirements/BILL-15.md",
+        "locator": "## BILL-15-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:2860469f04bd7ecea844a705d0c0a7dc60fbe969d1d679f05de82710799c1328"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-B01",
+      "statement": "An invoice is due 30 days after the day it is issued.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B01-payment-terms.md",
+        "locator": "# DEC-B01",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ea9e27fd223cf0bc1907d3ffe98cae688ef77b42975ae4edb45494764af5508f"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "30"
+      }
+    },
+    {
+      "id": "DEC-B02",
+      "statement": "A customer's balance is what they owe: the sum of what is outstanding on their invoices. A balance never goes below zero. Money a customer is owed back (for example from a credit larger than their balance) is held as a refundable credit; only Finance releases a refundable credit, either as a refund or by applying it to a named invoice.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B02-balances.md",
+        "locator": "# DEC-B02",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:7ecd10cb2915e00af54f5b11777b01d84580d814c4570eae1a5576450e1c0f74"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-B03",
+      "statement": "An invoice that is still unpaid after its due date is charged a late fee of 2% of the invoice amount, rounded to the cent (half away from zero). The fee is charged once per invoice, when late fees are run, and then forms part of what is outstanding on the invoice.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-05T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B03-late-fees.md",
+        "locator": "# DEC-B03",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:402ec760fc5769594e93c2ac46f8c3dc02a4d093a16b5146c5dd1da9a69d8376"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "0.02"
+      }
+    },
+    {
+      "id": "DEC-B04",
+      "statement": "Each invoice adds sales tax on its amount at the rate of the customer's region, as listed in `docs/tax-rates.md` (rounded to the cent, half away from zero). The late fee is charged on the amount before tax.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-10T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B04-sales-tax.md",
+        "locator": "# DEC-B04",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:63955c5e9538daa56324319e1e29012e8966084f301ce1e1074aae538c42b016"
+      },
+      "supersedes": [],
+      "parameters": {
+        "tax-rates.ON": "0.13",
+        "tax-rates.BC": "0.12",
+        "tax-rates.AB": "0.05"
+      }
+    },
+    {
+      "id": "DEC-B05",
+      "statement": "Customers on the premium plan pay for priority service and are not charged late fees.",
+      "status": "proposed",
+      "kind": "business-rule",
+      "owner": "unknown",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-B05-premium-late-fees.md",
+        "locator": "# DEC-B05",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:a770c82c2b1c7f8a9fc2947455f1256cef705a91c742876af54c6e6c942b1085"
+      },
+      "supersedes": []
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

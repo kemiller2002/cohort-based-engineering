@@ -1,0 +1,78 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Payroll/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:4a0d5ed9a5692ff5e0da255685eda9cdba925df84bd232184f45d16d8dc3a33b",
+    "handoffDigest": "sha256:4707c41719c51ece00c843e3db6a80b4a04e28a369005b13b9b2f716bbc9b309",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:39b6272151bc92b12fed414f663a6261da362fe7fdd58e39635e00ab397bce14",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 7,
+        "symbol": "Payroll.Rules.expensePolicy"
+      },
+      "authorityRefs": [
+        "DEC-PY07",
+        "DEC-PY08",
+        "DEC-PY09"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.expensePolicy matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). Superseded authority: numeric literal 0.58 (line 8): value 0.58 = DEC-PY07.p1 (superseded by DEC-PY09, same form) and no accepted parameter has the same form. Supported (matching rule): numeric literal 55.00 (line 9): (b) parameter, value 55.00 = DEC-PY08.p1 (accepted, same form). The code still carries a superseded decision's value. Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 17,
+        "symbol": "Payroll.Rules.reimbursable"
+      },
+      "authorityRefs": [
+        "DEC-PY09"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.reimbursable matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: case keyed on \"Meals\" (line 20): no accepted record names \"Meals\". Supported (matching rule): case keyed on \"Mileage\" (line 19): (b) parameter, \"Mileage\" is named by accepted DEC-PY09. A category test treats one category differently (a possible exemption); a record that names the category must authorize it. Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 23,
+        "symbol": "Payroll.Rules.payableClaims"
+      },
+      "authorityRefs": [
+        "DEC-PY09"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.payableClaims matches no observation and has rule-bearing constructs without accepted authority (ast analyzer). No accepted authority: exemption shape '||' on \"Mileage\" (line 25): no cited record and no accepted exception record names \"Mileage\"; exemption shape '||' on \"Mileage\" (line 26): no cited record and no accepted exception record names \"Mileage\"; numeric literal 8 (line 26): value 8 equals no declared parameter of an accepted or superseded record. Supported (matching rule): category test '= \"Mileage\"' (line 25): (b) parameter, \"Mileage\" is named by accepted DEC-PY09; category test '= \"Mileage\"' (line 26): (b) parameter, \"Mileage\" is named by accepted DEC-PY09. A category exemption sits inside the symbol that carries accepted DEC-PY09: an exemption from DEC-PY09 needs its own decision record, whatever the code comments call it. Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 3
+  }
+}

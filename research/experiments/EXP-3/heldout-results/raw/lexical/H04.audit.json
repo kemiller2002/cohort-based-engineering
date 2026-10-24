@@ -1,0 +1,93 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Payroll/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:fb5fccb911496639db4a38bc9f9d66e8674ee47b1636a102addb298f522b826c",
+    "handoffDigest": "sha256:83f3047959bdfc343f7d0a9847266c989d5d5510eb5899ba6e212becd5da165a",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.2.0-experimental",
+    "configDigest": "sha256:7c9e3b4eeb3ab69d8ed30eceb74c82b96f5b660595b05957db5f661141f241b8",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "superseded-authority",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 8,
+        "symbol": "Payroll.Rules.overtimeRule"
+      },
+      "authorityRefs": [
+        "DEC-PY01",
+        "DEC-PY06"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.overtimeRule matches no observation and cites no authority: decimal literal 44.0 (line 8); decimal literal 1.5 (line 8). Value 44 equals DEC-PY01.p1 (superseded by DEC-PY06). Value 1.5 equals DEC-PY01.p2 (superseded by DEC-PY06). Value 1.5 equals DEC-PY06.p2 (accepted). The code still carries a superseded decision's value. Question for People Operations: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "People Operations"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 17,
+        "symbol": "Payroll.Rules.holidayMultiplier"
+      },
+      "authorityRefs": [
+        "DEC-PY02"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.holidayMultiplier matches no observation and cites no authority: decimal literal 2.0 (line 17). Value 2 equals DEC-PY02.p1 (accepted). Question for Payroll: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Payroll"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 20,
+        "symbol": "Payroll.Rules.payPeriodLength"
+      },
+      "authorityRefs": [
+        "DEC-PY03"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.payPeriodLength matches no observation and cites no authority: decimal literal 14.0 (line 20). Value 14 equals DEC-PY03.p1 (accepted). Question for Payroll: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Payroll"
+    },
+    {
+      "id": "RPA-004",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Payroll/Rules.fs",
+        "line": 22,
+        "symbol": "Payroll.Rules.periodsPerYear"
+      },
+      "authorityRefs": [
+        "DEC-PY03"
+      ],
+      "message": "Rule-bearing legacy code in Payroll.Rules.periodsPerYear matches no observation and cites no authority: decimal literal 26 (line 22). Value 26 equals DEC-PY03.p2 (accepted). Question for Payroll: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Payroll"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 4
+  }
+}

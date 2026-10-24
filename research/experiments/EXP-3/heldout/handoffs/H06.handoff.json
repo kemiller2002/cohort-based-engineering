@@ -1,0 +1,121 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H06",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "PAY-22-R1",
+      "statement": "The weekly reimbursement batch pays each submitted expense claim. Every claim needs an itemized receipt, except a mileage claim, which is paid from the kilometres logged. A claim of nothing is not paid.",
+      "status": "accepted",
+      "owner": "Finance Operations",
+      "source": {
+        "path": "requirements/PAY-22.md",
+        "locator": "## PAY-22-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:159a8aa2a05e474262903c105c0eaa6a234a93b50f30469afc83efd590089004"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PAY-22-R2",
+      "statement": "Mileage is paid at the per-kilometre rate in force, rounded to the cent. Meal claims are paid up to the daily meal cap in force for each day claimed. Any other claim is paid at its receipted amount. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Finance Operations",
+      "source": {
+        "path": "requirements/PAY-22.md",
+        "locator": "## PAY-22-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:159a8aa2a05e474262903c105c0eaa6a234a93b50f30469afc83efd590089004"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-PY07",
+      "statement": "Mileage is reimbursed at 0.58 per kilometre.",
+      "status": "superseded",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY07-mileage-rate.md",
+        "locator": "# DEC-PY07",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f8cdd7495df2d51e5e07efeb5515dbea8c89905e9e9caf275719fa0be4697083"
+      },
+      "supersedes": [],
+      "supersededBy": "DEC-PY09",
+      "parameters": {
+        "p1": "0.58"
+      }
+    },
+    {
+      "id": "DEC-PY08",
+      "statement": "Meal claims are reimbursed up to 55.00 per day claimed.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-26T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY08-meal-cap.md",
+        "locator": "# DEC-PY08",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:ddae1865f5e5bb1256c27f97b7cd16c5101f89010957e77fbfc2487beb72a526"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "55.00"
+      }
+    },
+    {
+      "id": "DEC-PY09",
+      "statement": "Mileage is reimbursed at 0.64 per kilometre.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Finance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Finance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-03-16T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PY09-mileage-rate-revised.md",
+        "locator": "# DEC-PY09",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:f358b229f04638b324d2164958e1a442700820b0dcd67bda716818d18081d5d8"
+      },
+      "supersedes": [
+        "DEC-PY07"
+      ],
+      "parameters": {
+        "p1": "0.64"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

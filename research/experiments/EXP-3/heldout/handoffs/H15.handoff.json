@@ -1,0 +1,137 @@
+{
+  "schema": "echelon.authority-handoff",
+  "schemaVersion": "0.1",
+  "handoffId": "HND-EXP3-H15",
+  "produced": {
+    "by": {
+      "kind": "automation",
+      "id": "exp3-harness",
+      "role": "experimenter"
+    },
+    "at": "2026-10-23T00:00:00Z",
+    "repository": "kemiller2002/cohort-based-engineering",
+    "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12"
+  },
+  "authorityContract": {
+    "id": "VAC-002-P3-AUTHORITY-CONTRACT",
+    "sha256": "977cb0dddcf13d2da93be0de94a5db8dc5c91cbc918f9b992657b2e3b2343abe"
+  },
+  "requirements": [
+    {
+      "id": "PRC-12-R1",
+      "statement": "A purchase order is issued only to a vendor the debarment decision in force allows.",
+      "status": "accepted",
+      "owner": "Procurement Office; Treasury",
+      "source": {
+        "path": "requirements/PRC-12.md",
+        "locator": "## PRC-12-R1",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:94eb0b5aeb3007fadf9dc139b4b2d8409c531ec8cc0749fe30837d5aaa061719"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PRC-12-R2",
+      "statement": "Each requisition shows its landed-cost estimate: the total plus the freight allowance for its incoterm under the freight decision in force.",
+      "status": "accepted",
+      "owner": "Procurement Office; Treasury",
+      "source": {
+        "path": "requirements/PRC-12.md",
+        "locator": "## PRC-12-R2",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:94eb0b5aeb3007fadf9dc139b4b2d8409c531ec8cc0749fe30837d5aaa061719"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "PRC-12-R3",
+      "statement": "A paid invoice records the early-payment discount it earned under the discount decision in force. Acceptance criteria: each statement above holds; existing behaviour is unchanged except as these requirements say.",
+      "status": "accepted",
+      "owner": "Procurement Office; Treasury",
+      "source": {
+        "path": "requirements/PRC-12.md",
+        "locator": "## PRC-12-R3",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:94eb0b5aeb3007fadf9dc139b4b2d8409c531ec8cc0749fe30837d5aaa061719"
+      },
+      "supersedes": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-PR06",
+      "statement": "An invoice paid within 12 days of receipt takes a 1.25% early-payment discount, rounded to the cent. Our vendor agreements all include it.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Treasury",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Treasury",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-01-14T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR06-early-payment.md",
+        "locator": "# DEC-PR06",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:40051d6eb5f3570712ff914491012bb77c54c2602a35c3d149ca7f4077e621c7"
+      },
+      "supersedes": [],
+      "parameters": {
+        "p1": "12",
+        "p2": "0.0125"
+      }
+    },
+    {
+      "id": "DEC-PR08",
+      "statement": "No purchase order may be issued to a vendor on the debarred list in `docs/debarred-vendors.md`. There are no exceptions; a vendor leaves the list only when Compliance removes it.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Compliance",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Compliance",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-09T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR08-debarred-vendors.md",
+        "locator": "# DEC-PR08",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:190f1326e919f801decd716e70ba352dc2ea97d67488d1567730288dddd682b6"
+      },
+      "supersedes": []
+    },
+    {
+      "id": "DEC-PR09",
+      "statement": "A landed-cost estimate adds a freight allowance, as a share of the requisition total, listed for the requisition's incoterm in `docs/incoterm-allowances.md`. Supply Chain maintains the table.",
+      "status": "accepted",
+      "kind": "business-rule",
+      "owner": "Supply Chain",
+      "authorizedBy": {
+        "kind": "human",
+        "id": "Supply Chain",
+        "role": "decision-owner"
+      },
+      "authorizedAt": "2026-02-09T00:00:00Z",
+      "requirementIds": [],
+      "source": {
+        "path": "docs/decisions/DEC-PR09-freight-allowance.md",
+        "locator": "# DEC-PR09",
+        "revision": "ea36618648f8a329021ed4c27dd5a6053d6bbb12",
+        "sha256": "sha256:719debc761e4a5a2ee9b6b395098453edf0d5d1475f32ea5bf5f23231fd270c1"
+      },
+      "supersedes": [],
+      "parameters": {
+        "incoterm-allowances.EXW": "0.075",
+        "incoterm-allowances.FOB": "0.045",
+        "incoterm-allowances.DDP": "0"
+      }
+    }
+  ],
+  "policyQuestions": [],
+  "observations": [],
+  "invariants": []
+}

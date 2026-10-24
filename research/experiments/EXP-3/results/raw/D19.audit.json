@@ -1,0 +1,86 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Billing/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:95aa455dbefa25062354f0b9db78a4aa578470afc9fbfb59d06462a0a03127c1",
+    "handoffDigest": "sha256:46109566a3132ec1a61dd5305bd3e92452559d7986e50bdb2b6f1de5d84258ee",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.1.0-experimental",
+    "configDigest": "sha256:213547e197d7035436cb649c6e5d706282034327a4b93175e6ed71a3b82cee40",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 16,
+        "symbol": "Billing.Rules.lateFeeRate"
+      },
+      "authorityRefs": [
+        "DEC-B03"
+      ],
+      "message": "Rule-bearing legacy code in Billing.Rules.lateFeeRate matches no observation and cites no authority: decimal literal 0.02 (line 16). Value 0.02 equals DEC-B03.p1 (accepted). Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 21,
+        "symbol": "Billing.Rules.taxRate"
+      },
+      "authorityRefs": [
+        "DEC-B04"
+      ],
+      "message": "Rule-bearing legacy code in Billing.Rules.taxRate matches no observation and cites no authority: 'match' branch (line 22); case pattern \"ON\" (line 23); decimal literal 0.13 (line 23); case pattern \"BC\" (line 24); decimal literal 0.12 (line 24); case pattern \"AB\" (line 25); decimal literal 0.05 (line 25); wildcard default returning 0m for unlisted cases (line 26). Value 0.05 equals DEC-B04.tax-rates.AB (accepted). Value 0.12 equals DEC-B04.tax-rates.BC (accepted). Value 0.13 equals DEC-B04.tax-rates.ON (accepted). A wildcard default silently decides every unlisted case; no record authorizes that default. Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 31,
+        "symbol": "Billing.Rules.isOverdue"
+      },
+      "message": "Rule-bearing legacy code in Billing.Rules.isOverdue matches no observation and cites no authority: comparison '> 0m' (line 31). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-004",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 34,
+        "symbol": "Billing.Rules.owesLateFee"
+      },
+      "message": "Rule-bearing legacy code in Billing.Rules.owesLateFee matches no observation and cites no authority: comparison '= 0m' (line 34). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 4
+  }
+}

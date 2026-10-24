@@ -1,0 +1,203 @@
+{
+  "schema": "echelon.provenance-audit",
+  "schemaVersion": "0.1",
+  "subject": {
+    "repository": "unspecified",
+    "revision": "unspecified",
+    "paths": [
+      "src/Billing/Cli.fs",
+      "src/Billing/Commands.fs",
+      "src/Billing/Domain.fs",
+      "src/Billing/Rules.fs"
+    ]
+  },
+  "validity": {
+    "sourceDigest": "sha256:80e6787ced0dc7aec3bfc284671bca0c95bf515c56c8cf5a965696850dda7301",
+    "handoffDigest": "sha256:d52fee51a34c32a88030c8228b9ad7b56720ac6228f1c82a9220892b7c43cbfa",
+    "traceDigest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "toolName": "dokimos-rule-provenance-experiment",
+    "toolVersion": "0.1.0-experimental",
+    "configDigest": "sha256:213547e197d7035436cb649c6e5d706282034327a4b93175e6ed71a3b82cee40",
+    "sdkVersion": "10.0.402"
+  },
+  "invariants": [],
+  "findings": [
+    {
+      "id": "RPA-001",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Cli.fs",
+        "line": 21,
+        "symbol": "Billing.Cli.tokenize"
+      },
+      "message": "Rule-bearing legacy code in Billing.Cli.tokenize matches no observation and cites no authority: 'match' branch (line 24); 'match' branch (line 28); refusal \"unterminated quote\" (line 29); 'when' branch (line 33). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-002",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Cli.fs",
+        "line": 49,
+        "symbol": "Billing.Cli.dispatch"
+      },
+      "message": "Rule-bearing legacy code in Billing.Cli.dispatch matches no observation and cites no authority: 'match' branch (line 52); 'match' branch (line 67); refusal \"usage: {u}\" (line 68); refusal \"unknown command {command}\" (line 69); refusal \"empty command\" (line 70). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-003",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Cli.fs",
+        "line": 73,
+        "symbol": "Billing.Cli.run"
+      },
+      "message": "Rule-bearing legacy code in Billing.Cli.run matches no observation and cites no authority: 'match' branch (line 74). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-004",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Commands.fs",
+        "line": 13,
+        "symbol": "Billing.Commands.found"
+      },
+      "message": "Rule-bearing legacy code in Billing.Commands.found matches no observation and cites no authority: 'match' branch (line 14). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-005",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Commands.fs",
+        "line": 24,
+        "symbol": "Billing.Commands.parseAmount"
+      },
+      "message": "Rule-bearing legacy code in Billing.Commands.parseAmount matches no observation and cites no authority: 'match' branch (line 25); 'when' branch (line 26); comparison '> 0m' (line 26). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-006",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Commands.fs",
+        "line": 29,
+        "symbol": "Billing.Commands.addCustomer"
+      },
+      "message": "Rule-bearing legacy code in Billing.Commands.addCustomer matches no observation and cites no authority: 'if' branch (line 30). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-007",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Commands.fs",
+        "line": 45,
+        "symbol": "Billing.Commands.issueInvoice"
+      },
+      "message": "Rule-bearing legacy code in Billing.Commands.issueInvoice matches no observation and cites no authority: 'if' branch (line 48). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-008",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Commands.fs",
+        "line": 89,
+        "symbol": "Billing.Commands.describeError"
+      },
+      "message": "Rule-bearing legacy code in Billing.Commands.describeError matches no observation and cites no authority: 'match' branch (line 90). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-009",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Domain.fs",
+        "line": 6,
+        "symbol": "Billing.Domain.Plan"
+      },
+      "message": "Rule-bearing legacy code in Billing.Domain.Plan matches no observation and cites no authority: 'match' branch (line 62); case pattern \"standard\" (line 63); case pattern \"premium\" (line 64); 'match' branch (line 68). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-010",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Domain.fs",
+        "line": 10,
+        "symbol": "Billing.Domain.CustomerKind"
+      },
+      "message": "Rule-bearing legacy code in Billing.Domain.CustomerKind matches no observation and cites no authority: 'match' branch (line 76); case pattern \"business\" (line 77); case pattern \"nonprofit\" (line 78); 'match' branch (line 82). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-011",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 16,
+        "symbol": "Billing.Rules.lateFeeRate"
+      },
+      "authorityRefs": [
+        "DEC-B03"
+      ],
+      "message": "Rule-bearing legacy code in Billing.Rules.lateFeeRate matches no observation and cites no authority: decimal literal 0.02 (line 16). Value 0.02 equals DEC-B03.p1 (accepted). Question for Finance: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "Finance"
+    },
+    {
+      "id": "RPA-012",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 23,
+        "symbol": "Billing.Rules.isOverdue"
+      },
+      "message": "Rule-bearing legacy code in Billing.Rules.isOverdue matches no observation and cites no authority: comparison '> 0m' (line 23). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    },
+    {
+      "id": "RPA-013",
+      "class": "unverified-inherited-rule",
+      "certainty": "uncertain-authority",
+      "blocking": false,
+      "location": {
+        "path": "src/Billing/Rules.fs",
+        "line": 26,
+        "symbol": "Billing.Rules.owesLateFee"
+      },
+      "message": "Rule-bearing legacy code in Billing.Rules.owesLateFee matches no observation and cites no authority: comparison '= 0m' (line 26). Question for praxis-intake: which accepted record, if any, authorizes it? New work must not reuse it until answered; the legacy code is left unchanged.",
+      "owner": "praxis-intake"
+    }
+  ],
+  "summary": {
+    "verdict": "pass-with-owner-questions",
+    "proven": 0,
+    "ownerQuestions": 13
+  }
+}
