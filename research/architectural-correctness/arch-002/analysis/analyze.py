@@ -399,7 +399,9 @@ def with_lifecycle(runs, table):
         per = [(n, remediation_lines(table, r["fixture"], rule)) for rule, n in sorted(by_rule.items())]
         if any(l is None for _, l in per):
             return {**r, "remediationLines": None, "remediationUsd": None, "lifecycle": None}
-        lines = sum(n * l for n, l in per)
+        # Amendment A8: a reference good-vs-trap diff removes ALL of a rule's findings in that change, so each rule
+        # with new findings costs its diff size once per trial (not once per finding, which overcounted ~30x).
+        lines = sum(l for n, l in per if n > 0)
         return {**r, "remediationLines": lines, "remediationUsd": unit * lines, "lifecycle": r["cost"] + unit * lines}
     return [one(r) for r in runs], units
 

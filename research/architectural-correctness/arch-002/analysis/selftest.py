@@ -19,7 +19,7 @@ Checks:
       H8 Supported with estimate < 0 (opus effect larger); per-model D-A: opus < 0, sonnet ~ 0;
   T6  brownfield: per-arm new-violation means equal the planted NEW values (not the pre-existing-dominated totals);
   T7  pilot, calibration and smoke observations are ignored by the confirmatory analysis; --label pilot reads the pilot;
-  T8  lifecycle model: remediation lines = new violations x table lines; arm A's remediation exceeds arm D's.
+  T8  lifecycle model: remediation lines = table lines per rule with new findings (A8); arm A's remediation exceeds arm D's.
 """
 import importlib.util
 import json
@@ -112,7 +112,8 @@ def main():
     bm = r["byModel"]
     lc = r["lifecycle"]["byArm"]
     def lines(arm):
-        return sum((NEW[t["model"]][arm] + (t["seq"] % 2 if NEW[t["model"]][arm] else 0)) * (30 if t["fixture"] == "summa" else 12)
+        # A8: each rule with new findings costs its table lines once per trial (one planted rule per trial here).
+        return sum((1 if NEW[t["model"]][arm] + (t["seq"] % 2 if NEW[t["model"]][arm] else 0) else 0) * (30 if t["fixture"] == "summa" else 12)
                    for t in included if t["arm"] == arm and "noarch" not in planted.get(t["runId"], set()))
     a_lines = lines("A")
     checks = [
@@ -133,7 +134,7 @@ def main():
         ("T6 pre-existing/fixed findings do not enter: D opus mean is 0 despite 60 pre-existing", bm["opus"]["D"]["newViolationsPerTrialS2"] == 0),
         ("T7 confirmatory analysed 144 (pilot, calibration, smoke ignored); pilot analysed 16",
          r["input"]["analysed"] == len(trials) == 144 and pr["input"]["analysed"] == len(pilot["trials"]) == 16),
-        ("T8 lifecycle: remediation lines = new x table lines (A and D); A's remediation exceeds D's",
+        ("T8 lifecycle: remediation lines = table lines per violated rule (A and D); A's remediation exceeds D's",
          lc["A"]["remediationLines"] == a_lines and lc["D"]["remediationLines"] == lines("D") and lc["A"]["remediationUsd"] > lc["D"]["remediationUsd"]),
     ]
     for name, ok in checks:
