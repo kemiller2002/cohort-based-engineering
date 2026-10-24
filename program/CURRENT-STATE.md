@@ -30,7 +30,7 @@ A status describes what exists **on main**. Work this program has started is lis
 | cohort-based-engineering | Proposed method plus cross-system experiments (VAC, ARCH, REL) | n/a | no runtime; plain-file intake lifecycle | `.praxis/inbox/documents/` (11 pending, plus VC-001 merged today) | no CI |
 | research-documents (private) | Frozen experiments and raw evidence | n/a | n/a | n/a | n/a |
 | conditor | Installation and environment governance; refuses versions outside the authority [supporting §Conditor] | 0.10.8 | 3.7.2 (pins 3.1.4 in `conditor.json`) | **none** | Green |
-| echelon-registry | Discovery and compatibility catalog: profiles, snapshots, channels. Records no installations [supporting §Registry] | channel echelon-current 1.25.0 | 3.7.2 | **none** | Green |
+| echelon-registry | Discovery and compatibility catalog: profiles, snapshots, channels. Records no installations [supporting §Registry] | channel echelon-current 1.26.0 | 3.7.2 | **none** | Green |
 | percepta | UI semantic contracts and rendered evidence [supporting §Percepta] | 0.1.0 | 3.7.2 | `.praxis/processed/` only | Green |
 | forma | Zero-runtime HTML/CSS, tokens, accessibility | 0.9.1 in source; Registry knows 0.9.0 | 3.7.2 | 4 unclaimed, already-implemented inputs | Green |
 | limen | Browser and WASM boundary | 0.9.1 in source; Registry knows 0.9.0 | 3.7.2 | legacy `input-document/` (kept as an evidence trail) plus 1 unclaimed implemented input | Green |
@@ -164,11 +164,12 @@ A status describes what exists **on main**. Work this program has started is lis
 
 ## 5. Release set state
 
-- **Newest approved compatible release set:** Registry profile echelon-current **1.25.0**: praxis 3.16.0, ordo 1.17.0,
-  dokimos 0.6.0, percepta 0.1.0, aegis 1.0.0, limen 0.9.0, forma 0.9.0, folio 0.4.0, and others.
-  Conditor 0.10.8 qualifies all of them [supporting §5]. Rehearsal 2 ran on it.
+- **Newest approved compatible release set:** Registry profile echelon-current **1.26.0** (2026-10-24, owner-approved,
+  echelon-registry#92 `3cb34b9`). It equals 1.25.0 except Praxis 3.16.0 → **3.20.0**: ordo 1.17.0, dokimos 0.6.0,
+  percepta 0.1.0, aegis 1.0.0, limen 0.9.0, forma 0.9.0, folio 0.4.0, and others. Released Conditor 0.10.9 qualifies
+  all of them (REG-RU-007 green). 1.25.0 (Praxis 3.16.0, qualified by Conditor 0.10.8) was the set before it [supporting §5].
 - **Newer releases exist but are not approved:**
-  - recorded but outside the snapshot: Praxis 3.17–3.19, which carry the REL-GATE-003 and -004 completion-gate fixes;
+  - recorded but outside the snapshot: Praxis 3.17–3.19 (their changes ship in the selected 3.20.0);
   - Dokimos 0.7.0;
   - never registered: Forma 0.9.1, Limen 0.9.1, Aegis 2.0.0.
 - **Repositories pin an older set.** Registry, Percepta, Forma, Limen and Aegis pin **echelon-current 1.2.0**
@@ -186,5 +187,5 @@ still stands.
 | B3a/B3b/B3c | 5 / 2 / 3 | **4 Experimental** | dokimos#53 (`5988bf0`) and #54 (`fc9b31f`): provenance audit v1/v2 and bounded invariant oracle. **Held-out accuracy fails its thresholds** (recall 80%, false-question rate 25%; EXPERIMENTS.md §4) |
 | B4 | 5 | **4 Experimental** | `integration/b4/B4-RESULT.md`: five frozen outcomes PASS; the Praxis completion step NOT_RUN |
 | A2 (Dokimos side) | 2 | 2, plus an experimental `isReusable` prototype | dokimos `experiments/rule-provenance` |
-| A3 | 2 | **2: released in Praxis v3.20.0 (`work finish`, real-Dokimos CI path, idempotence tests); waits only on approval of a release set and pilot enablement (OD-9)** | praxis#288 runs the real-Dokimos completion cases in CI (0 SKIP) and adds CLI idempotence contract tests. Still unreleased and not enabled |
+| A3 | 2 | **2: released in Praxis v3.20.0 (`work finish`, real-Dokimos CI path, idempotence tests); selected by approved echelon-current 1.26.0; waits only on pilot enablement (OD-9), which needs the owner-held verifier key and the rollout-gate evidence** | praxis#288 runs the real-Dokimos completion cases in CI (0 SKIP) and adds CLI idempotence contract tests. Released and approved; not enabled in any repository |
 

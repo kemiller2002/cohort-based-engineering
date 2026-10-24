@@ -77,10 +77,10 @@ Rehearsal 3 is a time-bounded application-delivery exercise. Its approved plan g
 (`Indy-init/docs/REHEARSAL-003-DEFERRED-VERIFICATION-EXPERIMENT.md`). This program adds only these protections:
 
 1. **No unverified engineering-system change enters its baseline.** Its stack is the newest **approved** compatible
-   release set at kickoff (DEP-CURRENT-002/006). Today that is Registry echelon-current **1.25.0**, unless the owner
-   approves a newer set first (OD-2).
-   - Newer releases are not approved. Praxis 3.19.0 is newer and carries completion-gate fixes, but it is *not*
-     approved.
+   release set at kickoff (DEP-CURRENT-002/006). Today that is Registry echelon-current **1.26.0** (Praxis 3.20.0), which the
+   owner approved on 2026-10-24, before kickoff (OD-2).
+   - Praxis 3.17.0–3.19.0 are not approved; their changes reach the set only through 3.20.0. Verified completion is in
+     3.20.0 but stays off by default, so the set adds no required behavior to the rehearsal.
    - None of the program's experimental work is in that set: the wave B slices, the A1 shadow, or the contracts.
 2. **The 420-minute ceiling is a ceiling, not a target** (R3-DV-002). Phases exit on events (R3-DV-013), and the run
    stops on success (R3-DV-015).

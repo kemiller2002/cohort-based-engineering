@@ -43,6 +43,10 @@ the pre-existing runner drift that is also red on main.
 | praxis#287 (EP-00, wave A intake) | `638b2e7` |
 | ordo#106 (VC-002 and VAC-002-P3-02 intake completed) | `2df928a` |
 | dokimos#54 (audit v2, experimental) | `fc9b31f` |
+| echelon-registry#91 (Praxis 3.20.0 registered, not selected) | `83d81ed` |
+| conditor#107 (qualify Praxis 3.20.0; released Conditor 0.10.9 from `620f951c`) | `d7e95e6` |
+| echelon-registry#92 (echelon-current 1.26.0, owner-approved; Conditor 0.10.9 record) | `3cb34b9` |
+| cohort-based-engineering#23 (this record) | merged with this update |
 
 **Open:**
 - (praxis#288 merged `24841bb`: CI runs 2363 tests with 0 SKIP, real Dokimos 0.7.0 cases and CLI idempotence contract tests pass. A3 now waits only on R1 (release) and R4 (OD-9 pilot enablement).)
@@ -91,13 +95,13 @@ The owner accepted every recommendation below on 2026-10-24. What each decision 
 | Decision | Action | State |
 |---|---|---|
 | OD-1 | Zero-cost experiment phases only; no paid run is authorized | In force |
-| OD-2 | Rehearsal 3 uses Registry echelon-current 1.25.0, unless a newer set is approved and qualified before kickoff | In force; nothing approved since |
+| OD-2 | Rehearsal 3 uses Registry echelon-current 1.25.0, unless a newer set is approved and qualified before kickoff | **Superseded by the newer set, before kickoff:** the owner approved echelon-current **1.26.0** (Praxis 3.20.0) on 2026-10-24 (kemiller2002: "I approve all"). It is qualified by released Conditor 0.10.9 (REG-RU-007 green) and merged as echelon-registry#92 (`3cb34b9`). Rehearsal 3 has not kicked off, so under DEP-CURRENT-002/006 it freezes on 1.26.0 at kickoff. The Conditor `indy-init` preset already pins Praxis 3.20.0 (conditor#107, `d7e95e6`) |
 | OD-3 | Refuse-and-record is an authorized outcome; written into `docs/operating-model.md` §5 | Done |
 | OD-4 | Amend Rehearsal 3 so live-provider tests run at the first persistence/authorization checkpoint; amendment goes to Indy-init | **Done:** indy-init#11 (`fc5df1c`), R3-DV-017 |
 | OD-5 | Pin release-gating jobs to an explicit runner image; other jobs track latest | **Done:** dokimos#55 (`003204d`), praxis#290 (`1ee496b`). The pinned `ubuntu-26.04` release jobs ran green on #290 |
 | OD-6 | Add the four-sentence authority contract to the Praxis implementation brief, labelled policy, with its version in telemetry | **Done:** praxis#290 (`1ee496b`): AGENTS.md `## Authority`, construction handoff brief, `authorityContract` on every execution record. Ships in the next release |
 | OD-7, OD-8, OD-10, OD-11 | Recorded; no code change (C1 at 1.0 goes to Praxis `schemas/`; trace only for generated code; B2 interpretations confirmed; audit v2 not used for triage yet) | Done |
-| OD-9 | The verified-completion pilot is Dokimos. It needs a Praxis release with `work finish` **and** a Registry-approved set that includes it | **Release done:** Praxis **v3.20.0**, published 2026-10-24 from commit `ee6430af`, with 14 assets. It contains `work finish`, the authority contract, the runner pins, and the archive-race fix (praxis#291, `3988d55`). **Registered, not approved:** echelon-registry#91 (`83d81ed`); echelon-current still resolves to Praxis 3.16.0. **Owner action needed:** approve a set that includes 3.20.0. The coordinator does not create human approval records |
+| OD-9 | The verified-completion pilot is Dokimos. It needs a Praxis release with `work finish` **and** a Registry-approved set that includes it | **Release and approval done:** Praxis v3.20.0 (`ee6430af`); Conditor 0.10.9 qualifies it (conditor#107, released from `620f951c`); echelon-current 1.26.0 selects it (echelon-registry#92, `3cb34b9`), owner-approved 2026-10-24. **Pilot not enabled yet.** Praxis `docs/verified-completion-rollout.md` gates enablement on seven conditions. Their state for Dokimos: (1) F1, (2) F2 and (3) F3 have test evidence in Praxis and Dokimos, but REL-001 experiment C has not been re-run on the 3.20.0 binaries; (4) REL-001 A–C on released 3.20.0: not run; (5) representative application: the pilot itself would supply it; (6) run-02 reviewed: the report exists (`research/experiments/REL-001/`), and its recommendation must be quoted in the enabling change; (7) trust root: **owner action**, below. **Owner action:** generate a P-256 verifier key on your own machine and store it as an Actions secret in a Dokimos environment restricted to `main`. Send only the public `keyId`. The coordinator then adds the CI `verifier run` workflow and the `ros.json` pin (`requireVerifiedCompletion` and `trustedVerifierKeyIds`) in one reviewed change. The coordinator never holds the key |
 
 ## Next executable actions (in order)
 
@@ -117,7 +121,7 @@ The owner accepted every recommendation below on 2026-10-24. What each decision 
 
    Develop it against the P3 development set only. Then preregister a confirmation on a **held-out** corpus.
    EXP-3 phase 1 showed the lexical audit misses every exemption (`research/experiments/EXP-3/RESULTS.md`).
-4. **EP-04:** add secret-scan jobs; EXP-2 found none in either repository. Also propose splitting Praxis's
+4. **EP-04 (decided 2026-10-24, owner approved the recommendation):** use GitHub's built-in secret scanning with push protection. It is a repository setting; the coordinator has no tool to change it, so the owner enables it per repository (Settings → Code security). No workflow job is added. Earlier text, kept: add secret-scan jobs; EXP-2 found none in either repository. Also propose splitting Praxis's
    mandatory `validate` steps from the full F# suite, so selection can save more (EXP-2 exploratory estimate:
    29.7%).
 5. **EP-02 intake hygiene:**
