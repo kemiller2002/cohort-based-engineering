@@ -31,7 +31,7 @@ the same commit, and would a computed verdict have caught each one?
 - **Failure classification.** Unsupported claim caught; unsupported claim missed (gate gap); supported claim wrongly
   refused (false refusal).
 - **Hypotheses.** H1: the computed verdict catches ≥ 90% of unsupported acceptance claims. H2: false refusals = 0 on
-  R2's accepted candidate `45644a7`.
+  R2's self-accepted candidate `45644a7`. (Already known: R2's ledger computes INVALID under the Indy-init contract, so H2 is restated as no false refusal on a synthetic valid ledger.)
 - **Stopping criteria.** Complete when every in-scope commit is labelled; abandon if κ between labellers < 0.6 after
   adjudication rules are fixed once.
 - **Why first.** It decides whether priority item 1 is sufficient before anyone builds it into Praxis.

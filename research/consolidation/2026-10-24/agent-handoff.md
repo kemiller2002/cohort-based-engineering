@@ -7,7 +7,7 @@ Read this first. It is enough to continue without repeating the investigation.
 1. **Rehearsal 3 ran and is NOT ACCEPTED; its remediation is BLOCKED.** It used the read-only scope on echelon-current
    1.25.0 (Praxis 3.16.0). The candidate was deployed and verified at T+118.9 min. What blocks acceptance is owner
    decisions, Percepta and preservation, not code. (R3 `docs/REHEARSAL-003-REPORT.md`, `docs/REHEARSAL-003-REMEDIATION-REPORT.md`)
-2. **Rehearsal 2 was accepted**, at 721.2 min, with writes. `program/CURRENT-STATE.md` §3 still says otherwise.
+2. **Rehearsal 2 declared itself accepted**, at 721.2 min, with writes, using its own tool. Under Indy-init's ledger contract the computed verdict is **not** ACCEPTED: the ledger is INVALID and P0 ADRP-016 is NOT_RUN (Indy-init PR #13).
 3. **The read-only scope was the lead agent's own decision,** marked `accepted` (DF-CAUSA-2026-0001, actor
    `claude-code-lead`), against P0 write requirements EXT-DATA-006 and -009.
 4. **The approved set 1.26.0 cannot attest completion.** It has Praxis 3.20.0 and no Dokimos 0.7.0.
@@ -95,4 +95,4 @@ waiting, implement the computed verdict in `Indy-init/tools/validate-acceptance-
 - fail CI when the report's verdict line differs.
 
 Test it against a ledger encoding R3's original results, which must yield BLOCKED, and R2's accepted candidate
-`45644a7`, which must yield ACCEPTED.
+`45644a7`. **Done in Indy-init PR #13:** R3 yields BLOCKED. R2 yields INVALID, not ACCEPTED, so a synthetic ledger is the positive control.

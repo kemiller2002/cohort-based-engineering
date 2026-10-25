@@ -51,7 +51,7 @@ rows in §2 below cannot be stated.
 These facts on `main` contradict `program/CURRENT-STATE.md` (as of 2026-10-23):
 
 1. **Rehearsal 2 was accepted.** CURRENT-STATE §3 says "Not accepted: G7 BLOCKED". R2's final report says accepted at
-   2026-10-24 00:15:24Z, G0–G9 PASS on `45644a7`, with six defect classes closed (R2 `docs/REHEARSAL-002-REPORT.md`).
+   2026-10-24 00:15:24Z, G0–G9 PASS on `45644a7`, with six defect classes closed (R2 `docs/REHEARSAL-002-REPORT.md`). **Correction (same day):** that acceptance is R2's own predicate. Under Indy-init's ledger contract its ledger is INVALID and P0 ADRP-016 is NOT_RUN, so the computed verdict is not ACCEPTED (Indy-init `tools/test-acceptance-verdict.py`, PR #13).
    The accepted release came **721.2 min** after start (R3 report §8), far past a 420-minute ceiling.
 2. **ARCH-002 is complete,** not an open PR (`arch-002/REPORT.md`, dated 2026-10-24).
 3. **Rehearsal 3 has run.** CURRENT-STATE says "NOT EXECUTED". It ran on 2026-10-24 on echelon-current **1.25.0**
