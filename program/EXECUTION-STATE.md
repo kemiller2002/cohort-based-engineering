@@ -141,3 +141,15 @@ Read-only evidence consolidation; no production code changed, no paid runs. Outp
 `.praxis/inbox/documents/` of praxis (REQ-PRES-001, R3-PRX-001), echelon-registry (REG-PAIR-001), conditor (SD-1-REL;
 creates the canonical intake directory), limen (LIM-HTTP-001) and dokimos (DOK-SDK-001). Delivery of each commit is
 recorded in the session's final summary and in the commit messages on branch `claude/engineering-consolidation-2026-10-24`.
+
+| Repository | Commit | Delivery |
+|---|---|---|
+| cohort-based-engineering | `2957cc2` | fast-forwarded to main (owner: "I approve all merges") |
+| praxis | `bf7bf04` | fast-forwarded to main |
+| dokimos | `bf6a62b` | fast-forwarded to main |
+| echelon-registry | `f14994f` | fast-forwarded to main |
+| conditor | `ce40e51` | fast-forwarded to main |
+| limen | `c586461` | **branch only** (`claude/engineering-consolidation-2026-10-24`). Not merged: Limen's `validate` rejects changes without a ROS work item and scope manifest. Merge through a work item |
+
+No pull requests were opened: the session's `gh` token was invalid, so merges were direct fast-forwards. CI on those
+main commits was not observed from this session.
