@@ -133,3 +133,11 @@ The owner accepted every recommendation below on 2026-10-24. What each decision 
    Praxis agent at a time: DEPENDENCIES.md lane L1.
 8. **A2a in Dokimos:** promote the slice's validity block and `isReusable` into the released result formats. Then A2b
    in Praxis, then A1 in shadow mode.
+
+## Consolidation session 2026-10-24
+
+Read-only evidence consolidation; no production code changed, no paid runs. Outputs in
+`research/consolidation/2026-10-24/` (start with `agent-handoff.md`). New intake, one file each, in
+`.praxis/inbox/documents/` of praxis (REQ-PRES-001, R3-PRX-001), echelon-registry (REG-PAIR-001), conditor (SD-1-REL;
+creates the canonical intake directory), limen (LIM-HTTP-001) and dokimos (DOK-SDK-001). Delivery of each commit is
+recorded in the session's final summary and in the commit messages on branch `claude/engineering-consolidation-2026-10-24`.

@@ -189,3 +189,15 @@ still stands.
 | A2 (Dokimos side) | 2 | 2, plus an experimental `isReusable` prototype | dokimos `experiments/rule-provenance` |
 | A3 | 2 | **2: released in Praxis v3.20.0 (`work finish`, real-Dokimos CI path, idempotence tests); selected by approved echelon-current 1.26.0; waits only on pilot enablement (OD-9), which needs the owner-held verifier key and the rollout-gate evidence** | praxis#288 runs the real-Dokimos completion cases in CI (0 SKIP) and adds CLI idempotence contract tests. Released and approved; not enabled in any repository |
 
+
+## 7. Corrections from the 2026-10-24 consolidation
+
+Found while consolidating evidence on main (`research/consolidation/2026-10-24/engineering-findings.md` §1). These
+supersede the rows above where they conflict.
+
+| Row | Was | Now | Evidence |
+|---|---|---|---|
+| §3 Rehearsal 2 | Not accepted: G7 BLOCKED | **Accepted** 2026-10-24 00:15:24Z, G0–G9 PASS on `45644a7`, at 721.2 min | indy-init-rehearsal-002 `docs/REHEARSAL-002-REPORT.md` |
+| §3 Rehearsal 3 | Approved design, not executed | **Executed** 2026-10-24 on echelon-current 1.25.0 (Praxis 3.16.0), read-only scope. **NOT ACCEPTED (blocked)**; remediation **BLOCKED** | indy-init-rehearsal-003 `docs/REHEARSAL-003-REPORT.md`, `docs/REHEARSAL-003-REMEDIATION-REPORT.md` |
+| §3 ARCH-002 | Open PR CBE#17 | **Complete**: guidance Supported (violations 29/68 → 0/71); contracts and enforcement no measurable addition | `research/architectural-correctness/arch-002/REPORT.md` |
+| §5 release set | 1.26.0 approved | 1.26.0 selects Praxis 3.20.0 but its catalog has **no Dokimos 0.7.0**; attested completion needs both (R3 hardening §7: `VERIFIER_ATTESTATION_UNSUPPORTED`). The OD-9 pilot cannot be enabled on 1.26.0 as approved | echelon-registry `snapshots/echelon-current.catalog.json` |
