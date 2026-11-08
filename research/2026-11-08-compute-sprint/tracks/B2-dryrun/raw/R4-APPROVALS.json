@@ -1,0 +1,67 @@
+{
+  "key": "R4-APPROVALS",
+  "rehearsal": "R4",
+  "blocker": "approvals file in Praxis schema; verifier needs causa.requirements-approvals/1 (found T+60)",
+  "trackBEvent": "B-E-044",
+  "t0": "2026-10-27T06:04:39Z",
+  "preT0": {
+    "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+    "rev": "ad2f1af",
+    "sha": "ad2f1af2a15bc7e2365ea78308a144b5d5b2b4af",
+    "committerTime": "2026-10-27T02:04:14-04:00",
+    "subject": "Freeze the Rehearsal 4 preflight record before the timed run"
+  },
+  "preT0IsBeforeT0": true,
+  "toolsRun": [
+    "tools/compute-acceptance-verdict.py @ad2f1af (stub ledger, stub evidence)",
+    "harness schema-id check"
+  ],
+  "check": {
+    "verifier": {
+      "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+      "rev": "ad2f1af",
+      "sha": "ad2f1af2a15bc7e2365ea78308a144b5d5b2b4af",
+      "committerTime": "2026-10-27T02:04:14-04:00",
+      "subject": "Freeze the Rehearsal 4 preflight record before the timed run"
+    },
+    "approvalsFile": "kickoff/rehearsal-004/approvals.json",
+    "approvalsAt": {
+      "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+      "rev": "ad2f1af",
+      "sha": "ad2f1af2a15bc7e2365ea78308a144b5d5b2b4af",
+      "committerTime": "2026-10-27T02:04:14-04:00",
+      "subject": "Freeze the Rehearsal 4 preflight record before the timed run"
+    },
+    "approvalsSha256": "f893adea3d38b19ee310a31a91624fccd17ea7140337a9bec7b33b1a869ddf56",
+    "approvalsSchema": "praxis.requirements-approvals/1",
+    "schemaProblems": [
+      "approvals schema is 'praxis.requirements-approvals/1', the verifier reads 'causa.requirements-approvals/1'"
+    ],
+    "exit": 3,
+    "verdict": "INVALID",
+    "approvalProblems": [
+      "trusted approvals file has unsupported schema",
+      "trusted approvals file is bound to a different requirements baseline",
+      "trusted approval entry missing id"
+    ],
+    "otherReasonsCount": 19,
+    "seconds": 0.09,
+    "cmd": "python3 -I /home/user/sprint-scratch/B2/approvals/ad2f1af-pre/indy/tools/compute-acceptance-verdict.py /home/user/sprint-scratch/B2/approvals/ad2f1af-pre/ledger.json --repo /home/user/sprint-scratch/B2/approvals/ad2f1af-pre/stub-source --baseline /home/user/sprint-scratch/B2/approvals/ad2f1af-pre/indy/requirements/causa-requirements-baseline.json --baseline-sha256 621e2f960038dcfb0daa2a9fe18a0c1c350faed297ba2856da1236a0360857b9 --baseline-source /home/user/sprint-scratch/B2/indy-init-full --approvals /home/user/sprint-scratch/B2/approvals/ad2f1af-pre/approvals.json --approvals-sha256 f893adea3d38b19ee310a31a91624fccd17ea7140337a9bec7b33b1a869ddf56 --evidence-manifest /home/user/sprint-scratch/B2/approvals/ad2f1af-pre/evidence-manifest.json --evidence-manifest-sha256 0cae23593c591026e00d3904353434edc3667ff73070fa25e5aeff13bec921be --evidence-root /home/user/sprint-scratch/B2/approvals/ad2f1af-pre/evidence --trusted-source-sha 470005e511d60bf2ba1ecebe123fcc061751a278 --trusted-operator-id kemiller2002",
+    "stderr": ""
+  },
+  "falsePositiveCheck": {
+    "approvalsFixedAt": {
+      "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+      "rev": "1ede27f",
+      "sha": "1ede27f76520235d3974a329e325d38101f52e5a",
+      "committerTime": "2026-10-27T03:03:09-04:00",
+      "subject": "Rehearsal 4: verifier-format approvals (causa.requirements-approvals/1, no approvals), owner-authorized RDP-003 deviation"
+    },
+    "approvalProblems": [],
+    "schemaProblems": [],
+    "verdict": "INVALID"
+  },
+  "outcome": "CAUGHT",
+  "matchEvidence": "verifier verdict INVALID (exit 3); approvals problems: ['trusted approvals file has unsupported schema', 'trusted approvals file is bound to a different requirements baseline', 'trusted approval entry missing id']",
+  "dryRunSeconds": 0.09
+}

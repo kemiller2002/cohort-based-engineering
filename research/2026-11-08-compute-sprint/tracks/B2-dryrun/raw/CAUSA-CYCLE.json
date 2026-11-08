@@ -1,0 +1,332 @@
+{
+  "key": "CAUSA-CYCLE",
+  "rehearsal": "Causa",
+  "blocker": "T18<->T20 dependency cycle in the frozen slice plan",
+  "trackBEvent": "B-E-124",
+  "t0": "2026-11-07T16:10:50Z",
+  "preT0": {
+    "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+    "rev": "dae2347d26d0fb7dccc36484033515bbbaa31675",
+    "sha": "dae2347d26d0fb7dccc36484033515bbbaa31675",
+    "committerTime": "2026-11-07T10:52:45-05:00",
+    "subject": "Merge pull request #194 from kemiller2002/claude/indy-init-competition-launch-vtgdcj"
+  },
+  "preT0IsBeforeT0": true,
+  "toolsRun": [
+    "harness D4 cycle check (Tarjan SCC) on slice-execution-manifest + plan + assertion-merge-needs"
+  ],
+  "check": {
+    "inputs": {
+      "lock": "kickoff/competition/toolchain.lock.json",
+      "sliceManifest": "docs/competition-readiness/slice-execution-manifest.json",
+      "plan": "requirements-compiled/v4.1.6/verification-execution-plan.json",
+      "assertionNeeds": "docs/competition-readiness/assertion-merge-needs.json"
+    },
+    "slices": 31,
+    "variants": {
+      "V1-declared": {
+        "edges": 49,
+        "cycles": [],
+        "largestCycle": 0,
+        "cycleWithT18andT20": [],
+        "T18outEdges": [
+          "SL-T10"
+        ],
+        "T18reachesT20directly": false
+      },
+      "V2-test-owner": {
+        "edges": 126,
+        "cycles": [
+          [
+            "SL-T10",
+            "SL-T11",
+            "SL-T12",
+            "SL-T13",
+            "SL-T14",
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T24",
+            "SL-T25",
+            "SL-T26",
+            "SL-T27",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34",
+            "SL-T36",
+            "SL-WI-GEN-VER"
+          ]
+        ],
+        "largestCycle": 27,
+        "cycleWithT18andT20": [
+          [
+            "SL-T10",
+            "SL-T11",
+            "SL-T12",
+            "SL-T13",
+            "SL-T14",
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T24",
+            "SL-T25",
+            "SL-T26",
+            "SL-T27",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34",
+            "SL-T36",
+            "SL-WI-GEN-VER"
+          ]
+        ],
+        "T18outEdges": [
+          "SL-T10",
+          "SL-T21",
+          "SL-T22",
+          "SL-T31",
+          "SL-T34",
+          "SL-T36"
+        ],
+        "T18reachesT20directly": false
+      },
+      "V3-assertion-needs": {
+        "edges": 156,
+        "cycles": [
+          [
+            "SL-T10",
+            "SL-T11",
+            "SL-T12",
+            "SL-T13",
+            "SL-T14",
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T24",
+            "SL-T25",
+            "SL-T26",
+            "SL-T27",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34",
+            "SL-T36",
+            "SL-WI-GEN-VER",
+            "SL-WI-INV-LIST",
+            "SL-WI-INV-START",
+            "SL-WI-INV-WORKSPACE"
+          ]
+        ],
+        "largestCycle": 30,
+        "cycleWithT18andT20": [
+          [
+            "SL-T10",
+            "SL-T11",
+            "SL-T12",
+            "SL-T13",
+            "SL-T14",
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T24",
+            "SL-T25",
+            "SL-T26",
+            "SL-T27",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34",
+            "SL-T36",
+            "SL-WI-GEN-VER",
+            "SL-WI-INV-LIST",
+            "SL-WI-INV-START",
+            "SL-WI-INV-WORKSPACE"
+          ]
+        ],
+        "T18outEdges": [
+          "SL-T10",
+          "SL-T21",
+          "SL-T22",
+          "SL-T31",
+          "SL-T34",
+          "SL-T36"
+        ],
+        "T18reachesT20directly": false
+      },
+      "V2x-executable-tests-only (post hoc)": {
+        "edges": 59,
+        "cycles": [
+          [
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T25",
+            "SL-T26",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34"
+          ]
+        ],
+        "largestCycle": 18,
+        "cycleWithT18andT20": [
+          [
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T25",
+            "SL-T26",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34"
+          ]
+        ],
+        "T18outEdges": [
+          "SL-T10",
+          "SL-T21",
+          "SL-T31",
+          "SL-T34"
+        ],
+        "T18reachesT20directly": false
+      },
+      "V3x-executable-plus-needs (post hoc)": {
+        "edges": 90,
+        "cycles": [
+          [
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T25",
+            "SL-T26",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34",
+            "SL-WI-INV-LIST",
+            "SL-WI-INV-START",
+            "SL-WI-INV-WORKSPACE"
+          ]
+        ],
+        "largestCycle": 21,
+        "cycleWithT18andT20": [
+          [
+            "SL-T15",
+            "SL-T16",
+            "SL-T17",
+            "SL-T18",
+            "SL-T19",
+            "SL-T20",
+            "SL-T21",
+            "SL-T22",
+            "SL-T23",
+            "SL-T25",
+            "SL-T26",
+            "SL-T28",
+            "SL-T29",
+            "SL-T30",
+            "SL-T31",
+            "SL-T32",
+            "SL-T33",
+            "SL-T34",
+            "SL-WI-INV-LIST",
+            "SL-WI-INV-START",
+            "SL-WI-INV-WORKSPACE"
+          ]
+        ],
+        "T18outEdges": [
+          "SL-T10",
+          "SL-T21",
+          "SL-T31",
+          "SL-T34"
+        ],
+        "T18reachesT20directly": false
+      }
+    },
+    "T18": {
+      "dependsOn": [
+        "SL-T10"
+      ],
+      "nonDotnetAcceptanceTests": [
+        "playwright:invariants/INV-21.spec.js > no credential in storage, URL or artifact [chromium]",
+        "praxis:independent-review",
+        "praxis:test-result"
+      ],
+      "testOwnerEdges": [
+        "SL-T21",
+        "SL-T22",
+        "SL-T31",
+        "SL-T34",
+        "SL-T36"
+      ]
+    },
+    "seconds": 0.03
+  },
+  "outcome": "NOT CAUGHT",
+  "matchEvidence": "no variant has an SL-T18->SL-T20 edge (T18's only non-dotnet acceptance test, INV-21.spec.js, binds obligations of slices other than T20, and its dependence on T20's Connect is not in any pre-T0 artefact); V1-declared: largest cycle 0 slices, T18 out-edges ['SL-T10']; V2-test-owner: largest cycle 27 slices, T18 out-edges ['SL-T10', 'SL-T21', 'SL-T22', 'SL-T31', 'SL-T34', 'SL-T36']; V3-assertion-needs: largest cycle 30 slices, T18 out-edges ['SL-T10', 'SL-T21', 'SL-T22', 'SL-T31', 'SL-T34', 'SL-T36']; V2x-executable-tests-only (post hoc): largest cycle 18 slices, T18 out-edges ['SL-T10', 'SL-T21', 'SL-T31', 'SL-T34']; V3x-executable-plus-needs (post hoc): largest cycle 21 slices, T18 out-edges ['SL-T10', 'SL-T21', 'SL-T31', 'SL-T34']",
+  "dryRunSeconds": 0.03
+}
