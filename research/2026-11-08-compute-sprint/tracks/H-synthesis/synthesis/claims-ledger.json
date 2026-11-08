@@ -2,7 +2,7 @@
  "schema": "track-h.claims-ledger/1",
  "track": "H-synthesis",
  "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
- "asOf": "2026-11-08T16:06:10-05:00",
+ "asOf": "2026-11-08T16:32:21-05:00",
  "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D, A2, C2, B3, B4, D2, F whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
  "verificationSources": {
   "V1": "/home/user/sprint-wt/V1-verification/research/2026-11-08-compute-sprint/tracks/V1-verification/verdicts.json",
@@ -3038,35 +3038,61 @@
    "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-01/RESULT.md",
    "independentVerification": {
     "by": "V4",
-    "status": "in progress"
+    "status": "done",
+    "verdict": "VERIFIED"
    },
    "usedIn": "outline-2",
    "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
+    "DESCRIPTIVE_ONLY_N1_PER_CELL"
    ]
   },
   {
    "claimId": "SPR-X-02",
    "track": "D2-agent-experiment (RD-000 runs)",
-   "classification": "per D-037 (adopted); preregistered at 82b3c36",
-   "title": "Governance prompt reduces Haiku policy violations (2.17/run, p=0.00028; undocumented 21->0) at +6-8% tokens, +38-55% wall",
+   "classification": "adopted D-037; preregistered at 82b3c36",
+   "title": "Governance prompt reduces Haiku policy violations (2.17/run, p=0.00028; undocumented 21->0, or 20 under the broader rule) at +7.6% tokens, +40.1% wall",
    "consequence": "high",
    "consequenceIfWrong": "First positive governance-benefit evidence; reverses 'no measured gain' framing for small models.",
-   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-02/results/results.json; spr-x-02/REPORT.md",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-02/results/results.json; spr-x-02/REPORT.md (corrections appended per D-045)",
    "caveats": [
     "D-041: governance block delivered before 'Task:' line (frozen G.txt has it after)",
     "single model (Haiku), two short fixtures",
-    "D-039: run s11 made a failed empty send_message; kept"
+    "D-039: run s11 made a failed empty send_message; kept",
+    "V4: followed_planted means are M 1.00 vs G 0.17 (not 0.83 vs 0); T4 inventions were opposite to the plant; wall +40.1% not +38%"
    ],
    "independentVerification": {
     "by": "V4",
-    "status": "in progress"
+    "status": "done",
+    "verdict": "VERIFIED (primary, 112/112 trap cells); PARTIALLY VERIFIED (descriptives, followed_planted, cost wording)"
    },
    "usedIn": "outline-2",
    "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
+    "VERIFICATION_FOUND_DISCREPANCY"
+   ]
+  },
+  {
+   "claimId": "SPR-X-03",
+   "track": "D2-agent-experiment (RD-000 runs)",
+   "classification": "adopted D-046; preregistered at 90f85c1",
+   "title": "Ablation (Haiku): the one-paragraph Authority contract carries the benefit (C vs K violations stat 11/3, p=0.000459); the checklist alone does not and costs +7-9% tokens, +36-46% wall",
+   "consequence": "high",
+   "consequenceIfWrong": "Decides what Echelon keeps: the contract, not the question-listing checklist.",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-03/results/results.json; spr-x-03/REPORT.md (corrections appended per D-049)",
+   "caveats": [
+    "V5: robust to excluding T5, to fixture x batch stratification (p=2/729) and to dropping SO-01 runs",
+    "C's T5 'undocumented' only under the QUESTIONS.md rule; C runs state the reading in code comments",
+    "'K worse than M' is descriptive only (p=0.10) and reverses on D2-03",
+    "D2-03 alone p=0.061",
+    "single model, two fixtures; SPR-X-04 new-domain replication pending"
+   ],
+   "independentVerification": {
+    "by": "V5",
+    "status": "done",
+    "verdict": "VERIFIED (primary and secondaries); PARTIALLY VERIFIED (descriptive and X-F-08 wording)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY"
    ]
   }
  ],

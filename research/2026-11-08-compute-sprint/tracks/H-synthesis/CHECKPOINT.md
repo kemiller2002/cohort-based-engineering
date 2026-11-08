@@ -53,3 +53,7 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 - X-11 agreement changed to contradict: cost corroborated everywhere; benefit appears for Haiku (SPR-X-02) but not for capable models. X-28 partly reconciled by model dependence (over-claiming still not reproduced in any model).
 - E2 integrated into X-04/X-05/X-26 and ADR-S03; new X-29 (permission-layer containment, SO-01). IM-13 (per-model governance calibration).
 - Ledger: 110 claims plus supplementary SPR-X-01/X-02 entries (V4 verifying).
+
+## CP-H-12 (16:32 EST): V4, V5, SPR-X-03, SO-01
+- SPR-X-02 primary VERIFIED by V4; SPR-X-03 (authority contract carries the benefit; checklist does not) VERIFIED by V5. Ledger supplementary entries updated.
+- New X-30 (artefact-producing procedures are not controls; 4 tracks). X-29 raised to moderate (5 SO-01 incidents). IM-13 refined; IM-14 (subagent tool allowlist); FX-16.
