@@ -16,4 +16,4 @@
 - All 11 replays done and reproduced by a clean end-to-end rerun (raw/full-rerun-timing.txt, ~199 s total incl. fixed-version controls).
 - Catch rate: brief list 4/8 (0.50); with R4 5/9; extended 7/11. Robust catches: R4/R8 approvals, R8/R9 MSB1008+webkit, R10-AUTH (55/55). Caveated: CAUSA-RULES (preregistered check non-discriminating), R10-JOBCAP (estimator-sensitive). Not caught: R8 command body, R8 INV-04, Causa cycle, R10 gate.
 - By-product: FSharp.Core assembly skip reproduced on R8, R9 and R10 bootstraps.
-- experiments.json, findings.json (11), results.csv, protocol addendum (deviations) written; 16 tests pass.
+- experiments.json, findings.json (11), results.csv, protocol addendum (deviations) written; 14 tests pass.
