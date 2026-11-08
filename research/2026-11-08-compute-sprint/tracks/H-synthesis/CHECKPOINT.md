@@ -16,3 +16,6 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 
 ## CP-H-04 (15:10 EST): datasets
 - `synthesis/datasets.json`: 8 candidate datasets (B events, B summary, Actions A+B, A tokens, A controlled, C graph, E bypass matrix, merge replays). Global caveats: private-source data inside a public repo branch; no LICENSE in source repos; model column in A data vs MANIFEST rule; E bypass matrix is security-sensitive.
+
+## CP-H-05 (15:25 EST): future experiments
+- `synthesis/future-experiments.json`: 8 implementation items (IM-01..08, evidence sufficient) and 13 research items (FX-01..13, evidence gaps). All costs ESTIMATE.
