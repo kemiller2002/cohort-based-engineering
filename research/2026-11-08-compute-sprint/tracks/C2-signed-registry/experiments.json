@@ -1,0 +1,77 @@
+{
+  "schema": "sprint.experiments/1",
+  "experiments": [
+    {
+      "id": "SPR-C2-01",
+      "question": "Does CR-01 (sign Registry release data and enable Conditor's existing attested range qualification) qualify component versions absent from Conditor's built-in catalog, refuse bad signatures, keep the suite green, end lockstep Conditor releases, and need no new infrastructure?",
+      "hypothesis": "H1 positive path works through the production trust path with only a trust-file change; H2 tampered/untrusted/revoked/replayed/out-of-range inputs are refused; H2b unsigned fields are not covered; H2c no expiry; H3 exactly one existing check (the empty-trust guard) fails; H4 fewer than half of v0.10.9..v0.10.21 avoidable; H5 Registry-side infrastructure missing.",
+      "independentVars": [
+        "trust file contents (empty vs one TEST-ONLY P-256 key)",
+        "built-in forma qualifiedVersions (stock v0.10.21 vs 0.13.0 removed)",
+        "attestation variant (valid, tampered signed field, tampered signature, untrusted key, unknown keyId, revoked key, replayed statement, wrong contract, out of range, host-tool entry, tampered unsigned field, expiresAt)"
+      ],
+      "dependentVars": [
+        "ReleaseAttestation.verify outcome and reason",
+        "attestedSelections membership",
+        "Compatibility.validateIn errors",
+        "conditor doctor --json COND-DOC-COMPAT findings",
+        "CurrentUpgrade.preview refusals / qualification string; apply result",
+        "Conditor test-suite PASS/FAIL counts",
+        "release classification avoidable/required/no-catalog",
+        "REG-RU-007 conformance outcome"
+      ],
+      "comparison": "Each positive case paired with the same set unsigned (or signed by an untrusted key); R1 vs R0 baseline suite on the same commit; H4 per-release catalog diffs.",
+      "startRevision": {
+        "conditor": "528ef45 (v0.10.21)",
+        "echelon-registry": "5752402"
+      },
+      "tools": [
+        ".NET SDK 10.0.402 (/root/.dotnet)",
+        "F# harness harness/C2Harness (references scratch Conditor.Core)",
+        "python3 unittest (harness/test_release_history.py)",
+        "openssl (throwaway key generation)",
+        "dotnet fsi (Registry conformance script)"
+      ],
+      "environment": "Linux sandbox, scratch clones under /home/user/sprint-scratch/C2 (conditor-base, conditor-c2 = trust + test patch, conditor-c2-rb = conditor-c2 + forma 0.13.0 removed, registry). One build at a time.",
+      "procedure": [
+        "Read the attestation path (ReleaseAttestation, Registry, WebPackageBinding, Planner, Compatibility, CurrentUpgrade, CLI Program.fs) and preregistered protocols/SPR-C2-01.md (commit 6f564d8).",
+        "git clone conditor to scratch; build tests; run full suite (R0).",
+        "Generate two throwaway P-256 keys with openssl in scratch; put the 'trusted' SPKI (keyId test-only-c2-001-2026-11-08) in the scratch trust file (patches/01).",
+        "Add an embedded-trust scenario to the scratch suite (patches/02) calling production CurrentUpgrade.preview/apply; run suite without (R1) and with C2_TEST_SIGNING_KEY (R1k).",
+        "Build harness/C2Harness against conditor-c2 and run with synthetic forma 0.14.0 derived from the real 1.37.0 linux-x64 resolved set.",
+        "Remove 0.13.0 from forma qualifiedVersions in a second scratch copy (patches/03), rebuild, run the harness on the unmodified real forma 0.13.0 entry.",
+        "Classify the catalog diffs of v0.10.9..v0.10.21 (harness/release_history.py, unittest).",
+        "Run the Registry's REG-RU-007 conformance script in a scratch Registry clone with forma moved to 0.14.0."
+      ],
+      "rawResults": {
+        "R0": "raw/regression/R0.*: 1552 PASS, 0 FAIL, exit 0",
+        "R1": "raw/regression/R1.*: 1552 PASS, 1 FAIL ('this build pins no Registry release key yet, so contract qualification is inert until the Registry signs'), exit 1",
+        "R1k": "raw/regression/R1k.*: 1557 PASS, 1 FAIL (same guard), exit 1; A4 preview qualification 'attested:>=0.2.0 <1.0.0:test-only-c2-001-2026-11-08', apply lands Forma 0.7.0; rogue key refused",
+        "harness-stock": "raw/harness-stock-synthetic-0.14.0/results.json: 17/17 pass",
+        "harness-rollback": "raw/harness-rollback-real-0.13.0/results.json: 17/17 pass",
+        "H4": "raw/release-history-H4.json: {\"avoidable\": 2, \"required\": 9, \"no-catalog\": 2}",
+        "REG-RU-007": "raw/reg-ru-007-baseline.txt PASS; raw/reg-ru-007-forma-0.14.0.txt refuses forma 0.14.0 on all 5 platforms",
+        "unittest": "raw/unittest-release-history.txt: 9 tests OK"
+      },
+      "verification": "Every positive case has a paired negative control that differs only in the signature/trust; production entry points (ReleaseAttestation.embedded, Compatibility.validateIn, CLI doctor, CurrentUpgrade.preview/apply) used, not the *Trusting test seams, except N5 which builds a revoked trust list via the production parser. Results were not re-run to change outcomes.",
+      "limitations": [
+        "Synthetic forma 0.14.0 uses a stand-in releaseManifest digest; the real-data case uses forma 0.13.0 with a rolled-back catalog instead of an unreleased version.",
+        "A4 (full upgrade --current apply) uses the existing test fixture repository (Forma 0.6.1 -> 0.7.0, fake npm), not the 1.37.0 set; A1-A3 use 1.37.0 data but stop at qualification/doctor.",
+        "N6 replays a statement for version 0.12.0 with a stand-in digest, not a real historical attestation (none exist).",
+        "Doctor exited 12 in both signed and unsigned runs for unrelated lifecycle findings; only COND-DOC-COMPAT findings were compared.",
+        "Only linux-x64 set used for harness cases; the five platform sets share the forma entry.",
+        "Key custody, signing workflow and rotation were analysed from the spec, not exercised."
+      ],
+      "conclusion": "The Conditor half of CR-01 works as built: with only a trust-file change, signed in-range project-binding versions absent from the catalog are qualified on the production doctor/verify/upgrade --current paths, and every negative is refused with a clear reason. But CR-01 as stated is overclaimed: signatures are per release (not per set), cover only systemId/version/manifest digest/contracts, apply only to 3 of 17 1.37.0 components (forma, limen, folio), and would have avoided 2 of the 13 Conditor releases; host tools (Praxis, Ordo) keep exact qualification by design (CON-343). The Registry side (key custody, signing workflow, resolver copy, conformance, REG-RU-007 change) does not exist, so it is not 'no new infrastructure'.",
+      "reproduction": [
+        "export PATH=/root/.dotnet:$PATH; git clone /home/user/ext/conditor S/conditor-c2; cd S/conditor-c2; git apply TRACK/patches/01-*.diff TRACK/patches/02-*.diff (01 must embed your own throwaway public key)",
+        "openssl ecparam -name prime256v1 -genkey -noout -out k.pem; openssl pkcs8 -topk8 -nocrypt -in k.pem -out k.pk8.pem; openssl ec -in k.pem -pubout -outform DER | base64 -w0",
+        "dotnet build tests/Conditor.Tests -c Release -m:1; C2_TEST_SIGNING_KEY=k.pk8.pem dotnet tests/Conditor.Tests/bin/Release/net10.0/Conditor.Tests.dll",
+        "dotnet build src/Conditor.Cli -c Release -m:1; cp -r TRACK/harness/C2Harness H; dotnet build H -c Release -p:ConditorRoot=S/conditor-c2",
+        "dotnet H/bin/Release/net10.0/C2Harness.dll --set /home/user/ext/echelon-registry/channels/echelon-current/linux-x64.json --key-id test-only-c2-001-2026-11-08 --target-version 0.14.0 --synthetic --trusted k.pk8.pem --untrusted k2.pk8.pem --cli S/conditor-c2/src/Conditor.Cli/bin/Release/net10.0/conditor.dll --out OUT",
+        "For the real 0.13.0 case also git apply patches/03 in a copy and pass --target-version 0.13.0 without --synthetic.",
+        "python3 -I -m unittest discover -s TRACK/harness -p 'test_*.py'; python3 -I TRACK/harness/release_history.py /home/user/ext/conditor"
+      ]
+    }
+  ]
+}
