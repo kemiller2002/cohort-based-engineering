@@ -81,8 +81,9 @@ def bfs(transitions, start, goal, allowed=lambda t: True):
     return None
 
 
-def check(machines, bounds, variant):
-    """variant in {'loop', 'cycle'} x delegation flag: e.g. ('loop', False). Returns alarm dicts."""
+def check(machines, bounds, variant, emits=emits, repeatable=repeatable):
+    """variant in {'loop', 'cycle'} x delegation flag: e.g. ('loop', False). Returns alarm dicts.
+    emits/repeatable are injectable only for the post-hoc ablation (ablation.py); defaults are the preregistered rules."""
     kind, delegation = variant
     alarms = []
     for b in bounds:
