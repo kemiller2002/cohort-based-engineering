@@ -24,8 +24,9 @@ let run (argv: string list) =
             1
         | Some merge ->
             match merge (File.ReadAllText baseF) (File.ReadAllText ours) (File.ReadAllText theirs) with
-            | Ok text ->
+            | Ok(text, mode) ->
                 File.WriteAllText(ours, text)
+                if mode <> "Strict" then eprintfn "ros-merge: %s %s" mode path
                 0
             | Error why ->
                 eprintfn "ros-merge: REFUSED %s: %s" path why

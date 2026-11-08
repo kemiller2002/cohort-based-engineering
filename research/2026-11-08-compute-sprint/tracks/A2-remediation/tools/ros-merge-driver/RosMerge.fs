@@ -110,27 +110,41 @@ let private parseEvents (text: string) : Result<Event list, string> =
         |> Ok
     with ex -> Error("events: unparseable (" + ex.Message + ")")
 
-let mergeEvents (baseText: string) (oursText: string) (theirsText: string) : MergeResult =
+/// How an events merge was achieved. Strict = Praxis's rule (base order preserved on both sides).
+/// RelaxedOrder = (v2, Amendment 1) all base events present and byte-identical in content but reordered
+/// on at least one side; output is ours' order then theirs-only events in theirs' order.
+type EventsMode =
+    | Strict
+    | RelaxedOrder
+
+let mergeEventsDetailed (baseText: string) (oursText: string) (theirsText: string) : Result<string * EventsMode, string> =
     match parseEvents baseText, parseEvents oursText, parseEvents theirsText with
     | Ok b, Ok l, Ok r ->
         let ids (es: Event list) = es |> List.map (fun e -> e.Id)
         match [ b; l; r ] |> List.collect (ids >> duplicates) with
         | d :: _ -> Error("events: duplicate eventId " + d)
         | [] ->
-            let baseSet = b |> List.map (fun e -> e.Id) |> Set.ofList
-            let baseSeq = b |> List.map (fun e -> e.Id, e.Canon)
-            let keepBase (es: Event list) = es |> List.filter (fun e -> baseSet.Contains e.Id) |> List.map (fun e -> e.Id, e.Canon)
-            if keepBase l <> baseSeq || keepBase r <> baseSeq then
-                Error "events: base history removed, rewritten or reordered"
+            let baseCanon = b |> List.map (fun e -> e.Id, e.Canon) |> Map.ofList
+            let removed (es: Event list) = let s = es |> ids |> Set.ofList in b |> List.exists (fun e -> not (s.Contains e.Id))
+            let rewritten (es: Event list) = es |> List.exists (fun e -> match Map.tryFind e.Id baseCanon with Some c -> c <> e.Canon | None -> false)
+            let baseOrderKept (es: Event list) = (es |> ids |> List.filter baseCanon.ContainsKey) = ids b
+            if removed l || removed r then Error "events: base history removed"
+            elif rewritten l || rewritten r then Error "events: base history rewritten"
             else
                 let pairs (es: Event list) = es |> List.map (fun e -> e.Id, e.Canon)
+                let lineOf = (r @ l) |> List.map (fun e -> e.Id, e.Line) |> Map.ofList
+                let render order = (order |> List.map (fun id -> lineOf[id]) |> String.concat "\n") + "\n"
                 mergeKeyed "event" [] (pairs l) (pairs r)
-                |> Result.bind (fun _ -> topoOrder (ids l) (ids r))
-                |> Result.map (fun order ->
-                    // Original bytes: prefer ours' line, else theirs'.
-                    let lineOf = (r @ l) |> List.map (fun e -> e.Id, e.Line) |> Map.ofList
-                    (order |> List.map (fun id -> lineOf[id]) |> String.concat "\n") + "\n")
+                |> Result.bind (fun _ ->
+                    if baseOrderKept l && baseOrderKept r then
+                        topoOrder (ids l) (ids r) |> Result.map (fun o -> render o, Strict)
+                    else
+                        let seen = ids l |> Set.ofList
+                        Ok(render (ids l @ (ids r |> List.filter (seen.Contains >> not))), RelaxedOrder))
     | Error e, _, _ | _, Error e, _ | _, _, Error e -> Error e
+
+let mergeEvents (baseText: string) (oursText: string) (theirsText: string) : MergeResult =
+    mergeEventsDetailed baseText oursText theirsText |> Result.map fst
 
 // ---------------------------------------------------------------- context/current.json
 
@@ -207,6 +221,8 @@ let mergeContext (baseText: string) (oursText: string) (theirsText: string) : Me
 /// Dispatch by repository-relative path (%P).
 let mergeByPath (path: string) =
     let p = path.Replace('\\', '/')
-    if p.EndsWith ".ros/events/events.jsonl" then Some mergeEvents
-    elif p.EndsWith ".ros/context/current.json" then Some mergeContext
+    if p.EndsWith ".ros/events/events.jsonl" then
+        Some(fun b o t -> mergeEventsDetailed b o t |> Result.map (fun (text, mode) -> text, sprintf "%A" mode))
+    elif p.EndsWith ".ros/context/current.json" then
+        Some(fun b o t -> mergeContext b o t |> Result.map (fun text -> text, "Strict"))
     else None

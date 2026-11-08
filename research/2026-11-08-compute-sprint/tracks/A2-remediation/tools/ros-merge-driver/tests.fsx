@@ -26,7 +26,11 @@ check "events: deterministic (swap sides keeps set)" (eventIds (okText (RosMerge
 check "events: shared append kept once" (eventIds (okText (RosMerge.mergeEvents b (lines [ ev "e1" "a"; ev "e2" "a"; ev "s" "z" ]) (lines [ ev "e1" "a"; ev "e2" "a"; ev "s" "z" ]))) = [ "e1"; "e2"; "s" ])
 check "events: same id different content refuses" (not (isOk (RosMerge.mergeEvents b (lines [ ev "e1" "a"; ev "e2" "a"; ev "x" "p" ]) (lines [ ev "e1" "a"; ev "e2" "a"; ev "x" "q" ]))))
 check "events: base removal refuses" (not (isOk (RosMerge.mergeEvents b (lines [ ev "e1" "a" ]) r)))
-check "events: base reorder refuses" (not (isOk (RosMerge.mergeEvents b (lines [ ev "e2" "a"; ev "e1" "a" ]) r)))
+let reordered = RosMerge.mergeEventsDetailed b (lines [ ev "e2" "a"; ev "e1" "a"; ev "l1" "x" ]) r
+check "events: base reorder merges in relaxed mode (v2), ours then theirs-new" (match reordered with Ok(text, RosMerge.RelaxedOrder) -> eventIds text = [ "e2"; "e1"; "l1"; "r1" ] | _ -> false)
+check "events: strict mode reported when base order kept" (match RosMerge.mergeEventsDetailed b l r with Ok(_, RosMerge.Strict) -> true | _ -> false)
+check "events: base rewrite refuses" (not (isOk (RosMerge.mergeEvents b (lines [ ev "e1" "CHANGED"; ev "e2" "a" ]) r)))
+check "events: reorder plus divergent new id still refuses" (not (isOk (RosMerge.mergeEvents b (lines [ ev "e2" "a"; ev "e1" "a"; ev "x" "p" ]) (lines [ ev "e1" "a"; ev "e2" "a"; ev "x" "q" ]))))
 check "events: duplicate id refuses" (not (isOk (RosMerge.mergeEvents b (lines [ ev "e1" "a"; ev "e2" "a"; ev "e2" "a" ]) r)))
 check "events: original line bytes preserved" ((okText m).Contains(ev "l1" "x"))
 check "topo: cycle refuses" (not (isOk (RosMerge.topoOrder [ "a"; "b" ] [ "b"; "a" ])))
@@ -63,6 +67,7 @@ check "context: identical additions kept once" (ids (okText (RosMerge.mergeConte
 check "context: output is indented JSON with trailing newline" ((okText cm).EndsWith "}\n" && (okText cm).Contains "\n  \"workItems\"")
 check "canonical: key order insensitive" (RosMerge.canonical (JsonNode.Parse """{"b":1,"a":[1,{"d":2,"c":3}]}""") = RosMerge.canonical (JsonNode.Parse """{"a":[1,{"c":3,"d":2}],"b":1}"""))
 check "dispatch by path" ((RosMerge.mergeByPath ".ros/events/events.jsonl").IsSome && (RosMerge.mergeByPath "src/x.fs").IsNone)
+check "dispatch: context path yields Strict mode" (match (RosMerge.mergeByPath ".ros/context/current.json").Value cb cl cr with Ok(_, "Strict") -> true | _ -> false)
 
 printfn "%d failure(s)" failures
 exit failures
