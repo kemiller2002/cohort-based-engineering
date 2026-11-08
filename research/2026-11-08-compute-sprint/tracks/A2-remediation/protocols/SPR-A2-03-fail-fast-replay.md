@@ -1,6 +1,6 @@
 # SPR-A2-03 — Retrospective counterfactual: fail-fast ordering of CI gates
 
-Status: PREREGISTERED before computation. Registered 2026-11-08 ~15:00 America/Indiana/Indianapolis.
+Status: PREREGISTERED before computation. Registered 2026-11-08 14:08 EST, commit fad75d3 (time corrected from an earlier mistyped estimate).
 Nature: counterfactual ESTIMATE from historical step timings; nothing is re-run.
 
 ## Data
@@ -29,3 +29,10 @@ A4 Cancelled jobs/runs (superseded or timeout) are excluded from savings; failur
 ## Metrics
 Per repo: failed-run job-minutes (baseline), within-job savings, across-job savings (V1, V2), and
 savings as % of failed-run minutes and of all job-minutes. Success = H1 >= 10% (V1) in aggregate.
+
+## Amendment 1 (post-computation, disclosed)
+Attribution of the across-job savings showed most came from failing steps that Track A's categorizer
+labels `test` but that are not cheap unit gates (e.g. "Live .NET acceptance tests", "Deterministic .NET
+acceptance tests", an aggregate "Fail when a test of this run's evidence failed"). A sensitivity variant
+re-labels failing steps matching `live|acceptance|evidence failed|provider|mutation|conformance` as not cheap.
+Both variants are reported; the preregistered (broad) one is primary.

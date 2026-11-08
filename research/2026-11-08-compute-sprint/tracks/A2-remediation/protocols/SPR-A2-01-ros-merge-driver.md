@@ -1,7 +1,7 @@
 # SPR-A2-01 — Can a semantic Git merge driver eliminate `.ros/` state conflicts?
 
 Status: PREREGISTERED (written and committed before any replay was run).
-Registered: 2026-11-08 ~14:10 America/Indiana/Indianapolis. Worker A2-001.
+Registered: 2026-11-08 13:58 EST (America/Indiana/Indianapolis), commit 3e11073. Worker A2-001.
 
 ## Background (observed before registration)
 - R8 `evidence/telemetry/merges.jsonl`: 49 PR merges, 26 flagged `conflict: true`; every conflict

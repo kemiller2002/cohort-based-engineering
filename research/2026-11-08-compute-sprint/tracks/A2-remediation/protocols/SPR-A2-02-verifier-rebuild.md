@@ -1,6 +1,6 @@
 # SPR-A2-02 — What does rebuilding the pinned Praxis verifier cost, and can it be cached safely?
 
-Status: PREREGISTERED before any timing run. Registered 2026-11-08 ~14:35 America/Indiana/Indianapolis.
+Status: PREREGISTERED before any timing run. Registered 2026-11-08 14:04 EST, commit 300ccae (time corrected from an earlier mistyped estimate).
 
 ## Observed before registration
 - R2–R10 `.github/workflows/echelon-foundations.yml` call the reusable workflow
