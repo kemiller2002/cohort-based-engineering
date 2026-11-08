@@ -62,3 +62,8 @@ Mean tokens per run:
 - The injected session CLAUDE.md pointer was present in both arms, as in D2-01.
 - Two G runs (s10 and t05) wrote, then deleted, a scratch file in /tmp outside the workspace. That is not contamination by the protocol's definition (no oracle, other-workspace or sprint-wt access); it is recorded here for completeness.
 - Run order was batched and counterbalanced, but runs within a batch were concurrent on a shared host, so wall-clock time is noisy.
+
+## Deviation discovered after analysis (disclosed 2026-11-08 ~16:05 EST, RD-000)
+- The G prompts actually delivered in X-02, and in D2-01, placed the governance block immediately **before** the "Task:" line. The frozen G.txt places it **after** that line. The block content was byte-identical.
+- `../spr-x-03/arm-prompts/G_as_delivered.txt` records the exact delivered text.
+- The results apply to the as-delivered placement. Whether placement matters was not tested.
