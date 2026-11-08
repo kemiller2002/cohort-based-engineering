@@ -67,7 +67,7 @@ Make `.ros` history files merge-safe by construction, in order of preference. Th
 |---|---|---|
 | A-F-07 | VERIFIED (A) | V1 PARTIALLY VERIFIED: the `.ros` part reproduced, the no-app-code part contradicted |
 | B-F-09 | VERIFIED (B) | V2 pending; per-run counts differ from A2's pre-scan (theme X-03) |
-| A2-F-01..F-06 | VERIFIED (A2, replay) | V3 pending |
+| A2-F-01..F-06 | VERIFIED (A2, replay) | V3 VERIFIED A2-F-01/02 on an 18-merge sample; A2-F-03 PARTIALLY VERIFIED (the substance holds; WI-0003 was in one parent only, as A2 stated) |
 | C-F-12 | SUPPORTED (C): direct readers of `.ros` files exist | — |
 
 Files: `A-economics/findings.json#A-F-07`, `B-forensics/findings.json#B-F-09`, `B-forensics/data/merge-conflicts.json`, `V1-verification/verdicts.json#A-F-07`, `A2-remediation/protocols/SPR-A2-01-ros-merge-driver.md`. Matrix themes X-01, X-02, X-03.

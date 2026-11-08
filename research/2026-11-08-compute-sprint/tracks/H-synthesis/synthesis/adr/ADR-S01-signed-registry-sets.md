@@ -62,8 +62,9 @@
 | C-F-03, C-F-18 | VERIFIED (C) | not independently verified |
 | C-F-04 | VERIFIED (C) | V2 VERIFIED |
 | C2-F-02, C2-F-03, C2-F-04, C2-F-06 | VERIFIED (C2, scratch prototype) | V3 pending |
-| C2-F-05, C2-F-08 | VERIFIED (C2) | V3 pending |
-| C2-F-07 | CONTRADICTED (CR-01's claim) | V3 pending |
+| C2-F-05 | VERIFIED (C2) | V3 VERIFIED |
+| C2-F-08 | VERIFIED (C2) | not independently verified |
+| C2-F-07 | CONTRADICTED (CR-01's claim) | V3 VERIFIED: exact match |
 | C-F-09; B-F-13 | VERIFIED; SUPPORTED | — |
 | E-F-07 | SUPPORTED with VERIFIED parts | V2 VERIFIED (protection parts) |
 

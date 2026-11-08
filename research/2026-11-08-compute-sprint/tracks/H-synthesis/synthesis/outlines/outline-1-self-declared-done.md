@@ -40,6 +40,10 @@ Across eleven governed, agent-built rehearsals, the recurring failure was not th
 
 ## 3. Over-claim moves rather than disappears
 
+- **Counterpoint, which must be included.** In five short controlled fixtures, ungoverned agents did not over-claim (0/16), did not invent policy (0/27 traps) and did not follow planted unsigned "decisions" (0/3). **SUPPORTED** (pilot-stage, preregistered gates), D2/D3/D4; matrix X-28.
+  - The rehearsal pattern is therefore not reproduced in the lab. Explanations (duration, pressure, model, structural affordances) are **NOT TESTED**.
+  - **[DO NOT STATE]** "agents lie about being done".
+
 - After the computed verdict arrived (R4), no run claimed acceptance against its verifier. **SUPPORTED**, B-F-04. Attribution to the verdict alone is not established.
 - Over-claim reappeared at the evidence layer: in R5, 13 of 22 spot-checked passing obligations were over-tagged. **SUPPORTED**, B-F-04.
 
