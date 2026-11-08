@@ -1,0 +1,8983 @@
+{
+ "summary": {
+  "workflows": 155,
+  "missing_permissions": 2,
+  "risky_trigger_workflows": [
+   "praxis/.github/workflows/praxis-reconcile-apply.yml",
+   "indy-init-rehearsal-003/.github/workflows/deploy-pages.yml",
+   "indy-init-rehearsal-004/.github/workflows/deploy-pages.yml"
+  ],
+  "unpinned_refs": 821,
+  "pinned_refs": 38,
+  "unpinned_by_kind": {
+   "first-party-github": 817,
+   "third-party": 4
+  },
+  "untrusted_in_run": [
+   [
+    "Indy-init/.github/workflows/live-provider-preflight.yml",
+    {
+     "job": "live",
+     "step": 7,
+     "name": "Journeys J1-J3 against the real provider (Chromium and WebKit)",
+     "expressions": [
+      "inputs.lock"
+     ]
+    }
+   ],
+   [
+    "indy-init-rehearsal-006/.github/workflows/acceptance-final.yml",
+    {
+     "job": "final",
+     "step": 7,
+     "name": "Build the candidate and the plan verifier",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    }
+   ],
+   [
+    "indy-init-rehearsal-006/.github/workflows/acceptance-final.yml",
+    {
+     "job": "final",
+     "step": 10,
+     "name": "Producers and deployed SHA of the candidate's run",
+     "expressions": [
+      "inputs.run_id"
+     ]
+    }
+   ],
+   [
+    "indy-init-rehearsal-006/.github/workflows/acceptance-final.yml",
+    {
+     "job": "final",
+     "step": 11,
+     "name": "Owner and reviewer attestations observed by this run",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    }
+   ],
+   [
+    "indy-init-rehearsal-006/.github/workflows/acceptance-process.yml",
+    {
+     "job": "process-evidence",
+     "step": 0,
+     "name": "Refuse an unpinned run",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    }
+   ],
+   [
+    "indy-init-rehearsal-006/.github/workflows/acceptance-process.yml",
+    {
+     "job": "process-evidence",
+     "step": 6,
+     "name": "Attestations observed by this run",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    }
+   ],
+   [
+    "indy-init-rehearsal-006/.github/workflows/acceptance-process.yml",
+    {
+     "job": "process-evidence",
+     "step": 7,
+     "name": "Verify process, owner and review evidence",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    }
+   ],
+   [
+    "ext/conditor/.github/workflows/remote-bootstrap.yml",
+    {
+     "job": "establish",
+     "step": 7,
+     "name": "Commit and push governed repository",
+     "expressions": [
+      "inputs.preset"
+     ]
+    }
+   ],
+   [
+    "ext/conditor/.github/workflows/remote-bootstrap.yml",
+    {
+     "job": "establish",
+     "step": 8,
+     "name": "Summary",
+     "expressions": [
+      "inputs.branch",
+      "inputs.preset",
+      "inputs.target_repository"
+     ]
+    }
+   ],
+   [
+    "ext/conditor/.github/workflows/remote-execute-codex.yml",
+    {
+     "job": "execute",
+     "step": 9,
+     "name": "Execute governed Codex mission",
+     "expressions": [
+      "inputs.target_repository"
+     ]
+    }
+   ],
+   [
+    "ext/conditor/.github/workflows/remote-execute-codex.yml",
+    {
+     "job": "execute",
+     "step": 11,
+     "name": "Summary",
+     "expressions": [
+      "inputs.branch",
+      "inputs.mode",
+      "inputs.target_repository"
+     ]
+    }
+   ]
+  ],
+  "write_scope_workflows": {
+   "praxis/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "praxis/.github/workflows/native-release.yml": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "praxis/.github/workflows/praxis-reconcile-apply.yml": [
+    "contents"
+   ],
+   "praxis/.github/workflows/praxis-remote-inbox.yml": [
+    "actions"
+   ],
+   "praxis/.github/workflows/praxis-remote.yml": [
+    "contents",
+    "pull-requests"
+   ],
+   "praxis/.github/workflows/release.yml": [
+    "actions",
+    "contents"
+   ],
+   "praxis/.github/workflows/ros-fs-assets.yml": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "ordo/.github/workflows/native-release.yml": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "ordo/.github/workflows/pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "ordo/.github/workflows/publish.yml": [
+    "id-token"
+   ],
+   "ordo/.github/workflows/release.yml": [
+    "actions",
+    "contents"
+   ],
+   "signal/.github/workflows/pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "signal/.github/workflows/readiness-work.yml": [
+    "contents"
+   ],
+   "indy-init-rehearsal-001/.github/workflows/causa-live-persistence.yml": [
+    "contents"
+   ],
+   "indy-init-rehearsal-001/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-002/.github/workflows/build-and-test.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-003/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-003/.github/workflows/dokimos.yml": [
+    "contents"
+   ],
+   "indy-init-rehearsal-004/.github/workflows/deploy-pages.yml": [
+    "contents",
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-004/.github/workflows/wasm-diagnostics.yml": [
+    "contents"
+   ],
+   "indy-init-rehearsal-005/.github/workflows/build-and-test.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-006/.github/workflows/build-and-test.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-006/.github/workflows/cancel-superseded.yml": [
+    "actions"
+   ],
+   "indy-init-rehearsal-006/.github/workflows/open-decision-pr.yml": [
+    "pull-requests"
+   ],
+   "indy-init-rehearsal-007/.github/workflows/causa-ci.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-008/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-008/.github/workflows/deploy.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-009/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "indy-init-rehearsal-009/.github/workflows/requirement-verification.yml": [
+    "contents"
+   ],
+   "indy-init-rehearsal-010/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "ext/dokimos/.github/workflows/ci.yml": [
+    "contents"
+   ],
+   "ext/dokimos/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "ext/dokimos/.github/workflows/reconcile-icon-audit.yml": [
+    "contents"
+   ],
+   "ext/dokimos/.github/workflows/release.yml": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "ext/conditor/.github/workflows/release-orchestrator.yml": [
+    "actions",
+    "contents"
+   ],
+   "ext/conditor/.github/workflows/release.yml": [
+    "artifact-metadata",
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "ext/conditor/.github/workflows/remote-execute-codex.yml": [
+    "id-token"
+   ],
+   "ext/aegis/.github/workflows/dokimos.yml": [
+    "contents"
+   ],
+   "ext/aegis/.github/workflows/publish-nuget.yml": [
+    "id-token"
+   ],
+   "ext/fides/.github/workflows/dokimos.yml": [
+    "contents"
+   ],
+   "ext/fides/.github/workflows/release.yml": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "ext/causa/.github/workflows/deploy-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "ext/limen/.github/workflows/pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "ext/limen/.github/workflows/publish.yml": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "ext/tutela/.github/workflows/release.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/complete-forma-physics-motion-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/complete-forma-physics-site-examples-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/complete-forma-surface-physics-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/deploy-forma-pages.yml": [
+    "id-token",
+    "pages"
+   ],
+   "ext/forma/.github/workflows/forma-cross-app-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/forma-css-alignment-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/forma-physics-motion-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/forma-physics-site-examples-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/forma-site-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/forma-surface-physics-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/publish.yml": [
+    "id-token"
+   ],
+   "ext/forma/.github/workflows/readiness-work.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/reconcile-active-nav.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/reconcile-forma-release-notes.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/reconcile-icon-expansion.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/reconcile-icon-pages.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/reconcile-release-triggers.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/reconcile-safari-layout.yml": [
+    "contents"
+   ],
+   "ext/forma/.github/workflows/release-forma.yml": [
+    "contents",
+    "id-token"
+   ]
+  }
+ },
+ "results": [
+  {
+   "path": "praxis/.github/workflows/containment-qualification.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "qualify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "qualify",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "qualify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "qualify",
+     "step": 5,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pages": "write",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 3,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 4,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/foundations-verify.yml",
+   "triggers": [
+    "workflow_call"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "verify-foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "verify-foundations",
+     "step": 0,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify-foundations",
+     "step": 1,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify-foundations",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify-foundations",
+     "step": 5,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/native-release.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "id-token": "write",
+    "attestations": "write"
+   },
+   "job_permissions": {
+    "release": null,
+    "ros-fs-assets": null,
+    "windows-powershell-syntax": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 13,
+     "uses": "NuGet/login@v1",
+     "kind": "third-party"
+    },
+    {
+     "job": "windows-powershell-syntax",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/praxis-reconcile-apply.yml",
+   "triggers": [
+    "pull_request_target"
+   ],
+   "risky_triggers": [
+    "pull_request_target"
+   ],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "apply": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "apply",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "apply",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "apply",
+     "step": 3,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/praxis-reconcile.yml",
+   "triggers": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "reconcile": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "reconcile",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reconcile",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/praxis-remote-inbox.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {},
+   "job_permissions": {
+    "relay": {
+     "contents": "read",
+     "actions": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "actions"
+   ],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/praxis-remote.yml",
+   "triggers": [
+    "workflow_dispatch",
+    "workflow_call"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {},
+   "job_permissions": {
+    "read": {
+     "contents": "read",
+     "attestations": "read"
+    },
+    "write": {
+     "contents": "write",
+     "attestations": "read"
+    },
+    "write-pull-request": {
+     "contents": "write",
+     "attestations": "read",
+     "pull-requests": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents",
+    "pull-requests"
+   ],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+    "actions/checkout@11d5960a326750d5838078e36cf38b85af677262"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": null,
+   "job_permissions": {
+    "validate": null,
+    "pinned-release-validate": null,
+    "worker-checklists": null,
+    "local-worker-portability": null,
+    "lifecycle": null
+   },
+   "missing_permissions": true,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "pinned-release-validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "pinned-release-validate",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "worker-checklists",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "worker-checklists",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "local-worker-portability",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "local-worker-portability",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lifecycle",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lifecycle",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/release.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "actions": "write"
+   },
+   "job_permissions": {
+    "release": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "actions",
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/ros-fs-assets.yml",
+   "triggers": [
+    "workflow_call",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "id-token": "write",
+    "attestations": "write"
+   },
+   "job_permissions": {
+    "assets": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "assets",
+     "step": 1,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "assets",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "assets",
+     "step": 3,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "praxis/.github/workflows/site.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "check": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "check",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "check",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "check",
+     "step": 4,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ordo/.github/workflows/native-release.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "id-token": "write",
+    "attestations": "write"
+   },
+   "job_permissions": {
+    "release": null,
+    "windows-powershell-syntax": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "windows-powershell-syntax",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/echelon-registry/actions/release-contract@73d1e87fe40c703eb1cd5e7cf7caf9d852f788b9",
+    "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ordo/.github/workflows/pages.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "contents": "read",
+     "pages": "write",
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 3,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 4,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 5,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ordo/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ordo/.github/workflows/publish.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "validate": null,
+    "publish": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ordo/.github/workflows/release-trigger-guard.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "default-branch-is-a-release-trigger": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "default-branch-is-a-release-trigger",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ordo/.github/workflows/release.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "actions": "write"
+   },
+   "job_permissions": {
+    "release": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "actions",
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ordo/.github/workflows/sde-distribution.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "unit-tests": null,
+    "pack": null,
+    "package-tests": null,
+    "quick-start": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "unit-tests",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "unit-tests",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "pack",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "pack",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "pack",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "pack",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "package-tests",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "package-tests",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "package-tests",
+     "step": 2,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "quick-start",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "quick-start",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "quick-start",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "Indy-init/.github/workflows/live-provider-preflight.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "live": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "live",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 9,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510",
+    "actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510"
+   ],
+   "untrusted_in_run": [
+    {
+     "job": "live",
+     "step": 7,
+     "name": "Journeys J1-J3 against the real provider (Chromium and WebKit)",
+     "expressions": [
+      "inputs.lock"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "Indy-init/.github/workflows/offline-factory-rehearsal.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "offline-factory": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "offline-factory",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "offline-factory",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "offline-factory",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "offline-factory",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "offline-factory",
+     "step": 11,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "Indy-init/.github/workflows/preflight-tooling.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": null,
+   "job_permissions": {
+    "offline-contract-tests": null,
+    "frozen-v4": null,
+    "fsharp-tooling": null,
+    "release-gate-repair": null,
+    "r9-readiness-gates": null,
+    "suite-commands": null,
+    "r10-adversarial-cases": null,
+    "r10-adversarial": null
+   },
+   "missing_permissions": true,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "offline-contract-tests",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "offline-contract-tests",
+     "step": 1,
+     "uses": "actions/setup-python@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "frozen-v4",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "frozen-v4",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "frozen-v4",
+     "step": 5,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fsharp-tooling",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fsharp-tooling",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fsharp-tooling",
+     "step": 29,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fsharp-tooling",
+     "step": 31,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-gate-repair",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-gate-repair",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-gate-repair",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-gate-repair",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r9-readiness-gates",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r9-readiness-gates",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r9-readiness-gates",
+     "step": 5,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "suite-commands",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "suite-commands",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "suite-commands",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial-cases",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial-cases",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial-cases",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial-cases",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial",
+     "step": 2,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial",
+     "step": 4,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial",
+     "step": 5,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial",
+     "step": 6,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "r10-adversarial",
+     "step": 19,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "mercatus/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@a95dbf238e561eaac4b38ca7011efc1a496cf1c6"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "mercatus/.github/workflows/limen-verify.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "limen-verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "limen-verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "limen-verify",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "mercatus/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "mercatus/.github/workflows/repository-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "debounce": null,
+    "validate": null,
+    "modernization-gate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "modernization-gate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "modernization-gate",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/build.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 10,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/cross-browser.yml",
+   "triggers": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "cross-browser": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "cross-browser",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "cross-browser",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "cross-browser",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "cross-browser",
+     "step": 8,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@a95dbf238e561eaac4b38ca7011efc1a496cf1c6"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/echelon-verification.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/limen-verify.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "limen-verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "limen-verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "limen-verify",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/pages.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "contents": "read",
+     "pages": "write",
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 8,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 2,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "signal/.github/workflows/readiness-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "begin": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "begin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "begin",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-001/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 18,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-001/.github/workflows/causa-live-persistence.yml",
+   "triggers": [
+    "workflow_dispatch",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "live": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "live",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-001/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "verify-and-build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "accept": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "verify-and-build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify-and-build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify-and-build",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify-and-build",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify-and-build",
+     "step": 11,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "accept",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "accept",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "accept",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-001/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-001/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-002/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null,
+    "build-and-test": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "deployed-acceptance": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 12,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 13,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 5,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 8,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-002/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-002/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-003/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null,
+    "provider-observations": null,
+    "live-github": null,
+    "percepta-semantic": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 14,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 18,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 19,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "provider-observations",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live-github",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live-github",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live-github",
+     "step": 3,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live-github",
+     "step": 5,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 3,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 6,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 8,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 10,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta-semantic",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-003/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "workflow_run",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [
+    "workflow_run"
+   ],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "deployed-acceptance": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 7,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 8,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-003/.github/workflows/dokimos.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "quality": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "quality",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "quality",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/dokimos/actions/quality-gate@828208f46b7d1073534bd02873d6298b62ad1de2"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-003/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-003/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-004/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 11,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 17,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 20,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-004/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "workflow_run",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [
+    "workflow_run"
+   ],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "verify": null,
+    "release-candidate": {
+     "contents": "write",
+     "actions": "read"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents",
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 5,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 6,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-candidate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-candidate",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-candidate",
+     "step": 5,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-004/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-004/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-004/.github/workflows/wasm-diagnostics.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "observe": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "observe",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "observe",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "observe",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "observe",
+     "step": 8,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-005/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "reuse": null,
+    "core": null,
+    "lock-gate": null,
+    "site": {
+     "contents": "read",
+     "actions": "read"
+    },
+    "browser": null,
+    "live": null,
+    "wasm-smoke": null,
+    "preservation-gate": null,
+    "preservation-adversarial": null,
+    "percepta": null,
+    "provider-conformance": {
+     "contents": "read"
+    },
+    "build-and-test": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "deployed-smoke": null,
+    "acceptance": {
+     "contents": "read",
+     "actions": "read"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reuse",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 4,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 5,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 6,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 7,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 4,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 8,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 10,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 9,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 10,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 12,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 5,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 6,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 11,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 12,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 5,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 6,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 12,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 14,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 16,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 4,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 5,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 9,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 4,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 8,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 2,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 3,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "provider-conformance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "provider-conformance",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "provider-conformance",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 1,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 2,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 3,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 4,
+     "uses": "actions/setup-python@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 6,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 11,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-005/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "fingerprint": null,
+    "foundations": null,
+    "record-pass": null,
+    "gate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "fingerprint",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fingerprint",
+     "step": 2,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "record-pass",
+     "step": 1,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-005/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "fingerprint": null,
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "fingerprint",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fingerprint",
+     "step": 2,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 4,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-006/.github/workflows/acceptance-final.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pull-requests": "read",
+    "actions": "read"
+   },
+   "job_permissions": {
+    "final": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "final",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "final",
+     "step": 3,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "final",
+     "step": 4,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "final",
+     "step": 5,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "final",
+     "step": 6,
+     "uses": "actions/setup-python@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "final",
+     "step": 8,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "final",
+     "step": 13,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "final",
+     "step": 16,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": [
+    {
+     "job": "final",
+     "step": 7,
+     "name": "Build the candidate and the plan verifier",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    },
+    {
+     "job": "final",
+     "step": 10,
+     "name": "Producers and deployed SHA of the candidate's run",
+     "expressions": [
+      "inputs.run_id"
+     ]
+    },
+    {
+     "job": "final",
+     "step": 11,
+     "name": "Owner and reviewer attestations observed by this run",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "indy-init-rehearsal-006/.github/workflows/acceptance-process.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pull-requests": "read"
+   },
+   "job_permissions": {
+    "process-evidence": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "process-evidence",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "process-evidence",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "process-evidence",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "process-evidence",
+     "step": 8,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": [
+    {
+     "job": "process-evidence",
+     "step": 0,
+     "name": "Refuse an unpinned run",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    },
+    {
+     "job": "process-evidence",
+     "step": 6,
+     "name": "Attestations observed by this run",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    },
+    {
+     "job": "process-evidence",
+     "step": 7,
+     "name": "Verify process, owner and review evidence",
+     "expressions": [
+      "inputs.candidate"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "indy-init-rehearsal-006/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "reuse": null,
+    "core": null,
+    "lock-gate": null,
+    "site": {
+     "contents": "read",
+     "actions": "read"
+    },
+    "browser": null,
+    "live": null,
+    "wasm-smoke": null,
+    "preservation-gate": null,
+    "preservation-adversarial": null,
+    "bindings-coverage": null,
+    "percepta": null,
+    "provider-conformance": {
+     "contents": "read"
+    },
+    "acceptance-deterministic": null,
+    "build-and-test": null,
+    "start-smoke": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "deployed-smoke": null,
+    "acceptance": {
+     "contents": "read",
+     "actions": "read",
+     "pull-requests": "read"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reuse",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 4,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 5,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 6,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 7,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reuse",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 4,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 8,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 10,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 9,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 10,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "lock-gate",
+     "step": 12,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 5,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 6,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 12,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "site",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 5,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 6,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 16,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "browser",
+     "step": 18,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 5,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 6,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 7,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 8,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 4,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm-smoke",
+     "step": 8,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-gate",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "preservation-adversarial",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "bindings-coverage",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "bindings-coverage",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "bindings-coverage",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "bindings-coverage",
+     "step": 4,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "bindings-coverage",
+     "step": 5,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "bindings-coverage",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 2,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 3,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "percepta",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "provider-conformance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "provider-conformance",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "provider-conformance",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 5,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 8,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance-deterministic",
+     "step": 11,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "start-smoke",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "start-smoke",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "start-smoke",
+     "step": 3,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "start-smoke",
+     "step": 4,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "start-smoke",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 2,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 3,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 4,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 3,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-smoke",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 2,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 4,
+     "uses": "actions/setup-python@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 6,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 12,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "acceptance",
+     "step": 16,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-006/.github/workflows/cancel-superseded.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "actions": "write"
+   },
+   "job_permissions": {
+    "cancel": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "actions"
+   ],
+   "unpinned_uses": [],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-006/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "fingerprint": null,
+    "foundations": null,
+    "record-pass": null,
+    "gate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "fingerprint",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fingerprint",
+     "step": 2,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "record-pass",
+     "step": 1,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@398af6dd1509afc93d0f3aa2612ba2d2f5c9c32e"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-006/.github/workflows/open-decision-pr.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pull-requests": "write"
+   },
+   "job_permissions": {
+    "open": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "pull-requests"
+   ],
+   "unpinned_uses": [],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-006/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "fingerprint": null,
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "fingerprint",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fingerprint",
+     "step": 2,
+     "uses": "actions/cache/restore@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 4,
+     "uses": "actions/cache/save@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-007/.github/workflows/causa-ci.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "core": null,
+    "live": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "deployed-acceptance": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "core",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 12,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "core",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live",
+     "step": 4,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 1,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 2,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 3,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deployed-acceptance",
+     "step": 5,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-007/.github/workflows/praxis-autonomy.yml",
+   "triggers": [
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null,
+    "independent-review": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "independent-review",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "independent-review",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "independent-review",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "independent-review",
+     "step": 5,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null,
+    "webkit": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 8,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 12,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "webkit",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "webkit",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "webkit",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "webkit",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/candidate-acceptance.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "pin": null,
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "pin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/ci.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "causa": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "causa",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "causa",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "causa",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "causa",
+     "step": 4,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "causa",
+     "step": 9,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 6,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/deploy.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    },
+    "deployed-acceptance": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 6,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/live.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "live-provider": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "live-provider",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live-provider",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live-provider",
+     "step": 5,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "live-provider",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-008/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-009/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 8,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 12,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-009/.github/workflows/candidate-acceptance.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "pin": null,
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "pin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-009/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 6,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-009/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-009/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-009/.github/workflows/requirement-verification.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-009/.github/workflows/verification-gate.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pull-requests": "read"
+   },
+   "job_permissions": {
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 11,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-010/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 8,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-010/.github/workflows/candidate-acceptance.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "pin": null,
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "pin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-010/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 6,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-010/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-010/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "indy-init-rehearsal-010/.github/workflows/verification-gate.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pull-requests": "read"
+   },
+   "job_permissions": {
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 23,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/dokimos/.github/workflows/ci.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "debounce": null,
+    "action-install": null,
+    "build-test-gate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "action-install",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "action-install",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-test-gate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-test-gate",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-test-gate",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-test-gate",
+     "step": 11,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-test-gate",
+     "step": 13,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/dokimos/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pages": "write",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/checkout@v7",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v7",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 4,
+     "uses": "actions/configure-pages@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 5,
+     "uses": "actions/upload-pages-artifact@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v5",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/dokimos/.github/workflows/ecir-fast-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-test": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/dokimos/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "debounce": null,
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/dokimos/.github/workflows/reconcile-icon-audit.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "reconcile": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reconcile",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/dokimos/.github/workflows/release.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "authorize": null,
+    "build": {
+     "contents": "read"
+    },
+    "publish-github": {
+     "contents": "write",
+     "id-token": "write",
+     "attestations": "write"
+    },
+    "publish-nuget": {
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "authorize",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 11,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish-github",
+     "step": 0,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish-github",
+     "step": 1,
+     "uses": "actions/attest-build-provenance@v2",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish-nuget",
+     "step": 0,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish-nuget",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish-nuget",
+     "step": 2,
+     "uses": "NuGet/login@v1",
+     "kind": "third-party"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/echelon-registry/actions/release-contract@c174b8937b9ad3f543a020f737db4eca5fad6317"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/dokimos/.github/workflows/site-validation.yml",
+   "triggers": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/checkout@v7",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 2,
+     "uses": "actions/setup-node@v7",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 4,
+     "uses": "actions/upload-artifact@v7",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/conditor/.github/workflows/ci.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-test": null,
+    "ordo-integrity-gate-qualification": null,
+    "chrona-praxis-lifecycle-qualification": null,
+    "echelon-current-sweep-qualification": null,
+    "echelon-current-1-27-0-kickoff-set-qualification": null,
+    "echelon-current-1-28-0-kickoff-set-qualification": null,
+    "echelon-current-1-29-0-kickoff-set-qualification": null,
+    "echelon-current-1-31-0-kickoff-set-qualification": null,
+    "echelon-current-1-33-0-kickoff-set-qualification": null,
+    "echelon-current-1-34-0-kickoff-set-qualification": null,
+    "echelon-current-1-35-0-kickoff-set-qualification": null,
+    "echelon-current-1-36-0-kickoff-set-qualification": null,
+    "echelon-current-1-37-0-kickoff-set-qualification": null,
+    "host-tool-upgrade-boundary": null,
+    "current-lifecycle-qualification": null,
+    "empty-repository-smoke": null,
+    "native-cli-smoke": null,
+    "indy-init-offline-freeze": null,
+    "factory-rehearsal-smoke": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ordo-integrity-gate-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ordo-integrity-gate-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "chrona-praxis-lifecycle-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "chrona-praxis-lifecycle-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "chrona-praxis-lifecycle-qualification",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-sweep-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-sweep-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-sweep-qualification",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-27-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-27-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-28-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-28-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-29-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-29-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-31-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-31-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-33-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-33-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-34-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-34-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-35-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-35-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-36-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-36-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-37-0-kickoff-set-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "echelon-current-1-37-0-kickoff-set-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "host-tool-upgrade-boundary",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "host-tool-upgrade-boundary",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "current-lifecycle-qualification",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "current-lifecycle-qualification",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "empty-repository-smoke",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "empty-repository-smoke",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "native-cli-smoke",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "native-cli-smoke",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "indy-init-offline-freeze",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "indy-init-offline-freeze",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "indy-init-offline-freeze",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "factory-rehearsal-smoke",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "factory-rehearsal-smoke",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/conditor/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/conditor/.github/workflows/registry-lifecycle-proof.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "clean-host-proof": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "clean-host-proof",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "clean-host-proof",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "clean-host-proof",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "clean-host-proof",
+     "step": 10,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/conditor/.github/workflows/release-orchestrator.yml",
+   "triggers": [
+    "workflow_dispatch",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "actions": "write"
+   },
+   "job_permissions": {
+    "release": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "actions",
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/conditor/.github/workflows/release.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "id-token": "write",
+    "attestations": "write",
+    "artifact-metadata": "write"
+   },
+   "job_permissions": {
+    "validate": null,
+    "publish": null,
+    "release": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "artifact-metadata",
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 4,
+     "uses": "actions/attest@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 5,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/echelon-registry/actions/release-contract@73d1e87fe40c703eb1cd5e7cf7caf9d852f788b9"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/conditor/.github/workflows/remote-bootstrap.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "establish": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "establish",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "establish",
+     "step": 2,
+     "uses": "actions/create-github-app-token@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "establish",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": [
+    {
+     "job": "establish",
+     "step": 7,
+     "name": "Commit and push governed repository",
+     "expressions": [
+      "inputs.preset"
+     ]
+    },
+    {
+     "job": "establish",
+     "step": 8,
+     "name": "Summary",
+     "expressions": [
+      "inputs.branch",
+      "inputs.preset",
+      "inputs.target_repository"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "ext/conditor/.github/workflows/remote-execute-codex.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "execute": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "execute",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "execute",
+     "step": 2,
+     "uses": "actions/create-github-app-token@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "execute",
+     "step": 4,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "execute",
+     "step": 5,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": [
+    {
+     "job": "execute",
+     "step": 9,
+     "name": "Execute governed Codex mission",
+     "expressions": [
+      "inputs.target_repository"
+     ]
+    },
+    {
+     "job": "execute",
+     "step": 11,
+     "name": "Summary",
+     "expressions": [
+      "inputs.branch",
+      "inputs.mode",
+      "inputs.target_repository"
+     ]
+    }
+   ]
+  },
+  {
+   "path": "ext/aegis/.github/workflows/build.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "dotnet": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "dotnet",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "dotnet",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/aegis/.github/workflows/dokimos.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "quality": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "quality",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "quality",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/dokimos/actions/quality-gate@2923d18917ed06601d996febd1793ab7a1fcd8e8"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/aegis/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/aegis/.github/workflows/publish-nuget.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "build": null,
+    "publish": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 7,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 1,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 3,
+     "uses": "NuGet/login@v1",
+     "kind": "third-party"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/vigila/.github/workflows/build.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "ui-conformance": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 11,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 6,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/vigila/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@a95dbf238e561eaac4b38ca7011efc1a496cf1c6"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/vigila/.github/workflows/limen-verify.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "limen-verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "limen-verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "limen-verify",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/vigila/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/fides/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null,
+    "wasm": null,
+    "infrastructure": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "wasm",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "infrastructure",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "infrastructure",
+     "step": 1,
+     "uses": "actions/setup-python@v5",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/fides/.github/workflows/dokimos.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "quality": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "quality",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "quality",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/dokimos/actions/quality-gate@2be0cf4e8cbba482ab481614f99c7c88b49354ec"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/fides/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@a95dbf238e561eaac4b38ca7011efc1a496cf1c6"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/fides/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/fides/.github/workflows/release.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "version": null,
+    "build": null,
+    "publish": {
+     "contents": "write",
+     "id-token": "write",
+     "attestations": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "version",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 8,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 0,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 6,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 7,
+     "uses": "NuGet/login@v1",
+     "kind": "third-party"
+    }
+   ],
+   "pinned_uses": [
+    "kemiller2002/echelon-registry/actions/release-contract@abb470a2bf3cf838e4f4324c3b5c4f6fdfcfea0a",
+    "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/echelon-registry/.github/workflows/distribution-conformance.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "distribution-conformance": null,
+    "release-set-approval": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "distribution-conformance",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "distribution-conformance",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "distribution-conformance",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-set-approval",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release-set-approval",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/echelon-registry/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/causa/.github/workflows/build-and-test.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 9,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 10,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 13,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 18,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/causa/.github/workflows/candidate-acceptance.yml",
+   "triggers": [
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "pin": null,
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "pin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 9,
+     "uses": "actions/cache@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 15,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/causa/.github/workflows/ci.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "causa": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+    "actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9",
+    "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/causa/.github/workflows/deploy-pages.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": {
+     "pages": "write",
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 7,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/causa/.github/workflows/echelon-foundations.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundations": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [],
+   "pinned_uses": [
+    "kemiller2002/praxis/.github/workflows/foundations-verify.yml@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/causa/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 4,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/causa/.github/workflows/verification-gate.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pull-requests": "read"
+   },
+   "job_permissions": {
+    "verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "verify",
+     "step": 24,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510",
+    "actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/limen/.github/workflows/ci.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build-and-test": null,
+    "work-item-scope": null,
+    "guest-bindings": null,
+    "guest-engines-browser": null,
+    "store-webkit": null,
+    "fsharp-packages": null,
+    "packaged-cli": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "build-and-test",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build-and-test",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "work-item-scope",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "work-item-scope",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "guest-bindings",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "guest-bindings",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "guest-bindings",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "guest-engines-browser",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "guest-engines-browser",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "guest-engines-browser",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "store-webkit",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "store-webkit",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fsharp-packages",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fsharp-packages",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "fsharp-packages",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "packaged-cli",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "packaged-cli",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "packaged-cli",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/limen/.github/workflows/limen-verify.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "limen-verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "limen-verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "limen-verify",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "limen-verify",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/limen/.github/workflows/pages.yml",
+   "triggers": [
+    "push",
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "build": {
+     "contents": "read"
+    },
+    "deploy": {
+     "contents": "read",
+     "pages": "write",
+     "id-token": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 7,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 8,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/limen/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/limen/.github/workflows/publish.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {},
+   "job_permissions": {
+    "tag": {
+     "contents": "write",
+     "actions": "read",
+     "checks": "read"
+    },
+    "publish": {
+     "contents": "read",
+     "id-token": "write",
+     "attestations": "write"
+    },
+    "release": {
+     "contents": "write",
+     "attestations": "read"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "attestations",
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "tag",
+     "step": 1,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 0,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 1,
+     "uses": "actions/setup-node@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 14,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/download-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [
+    "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
+   ],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/tutela/.github/workflows/limen-verify.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "limen-verify": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "limen-verify",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "limen-verify",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/tutela/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/tutela/.github/workflows/release.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {},
+   "job_permissions": {
+    "tag": {
+     "contents": "write",
+     "actions": "read",
+     "checks": "read"
+    },
+    "publish": {
+     "contents": "write"
+    }
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "tag",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/tutela/.github/workflows/tutela-foundation.yml",
+   "triggers": [
+    "push",
+    "pull_request"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "foundation": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "foundation",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "foundation",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "foundation",
+     "step": 12,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "foundation",
+     "step": 19,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/complete-forma-physics-motion-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "complete": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "complete",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/complete-forma-physics-site-examples-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "complete": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "complete",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/complete-forma-surface-physics-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "complete": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "complete",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/conformance.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "conformance": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "conformance",
+     "step": 1,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "conformance",
+     "step": 2,
+     "uses": "actions/setup-node@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "conformance",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/deploy-forma-pages.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "pages": "write",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "build": null,
+    "deploy": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token",
+    "pages"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "build",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 9,
+     "uses": "actions/configure-pages@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "build",
+     "step": 10,
+     "uses": "actions/upload-pages-artifact@v3",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "deploy",
+     "step": 0,
+     "uses": "actions/deploy-pages@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/design-system-pilot-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate-design-system": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate-design-system",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate-design-system",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate-design-system",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/forma-cross-app-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "complete": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "complete",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/forma-css-alignment-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "complete": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "complete",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/forma-physics-motion-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "begin": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "begin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "begin",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/forma-physics-site-examples-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "begin": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "begin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "begin",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/forma-site-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate": null,
+    "ui-conformance": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "ui-conformance",
+     "step": 8,
+     "uses": "actions/upload-artifact@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/forma-site-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "complete": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "complete",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "complete",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/forma-surface-physics-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "begin": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "begin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "begin",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/praxis-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "debounce": null,
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/publish.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "debounce": null,
+    "publish": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "publish",
+     "step": 0,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 1,
+     "uses": "actions/setup-node@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "publish",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/readiness-work.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "begin": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "begin",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "begin",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/reconcile-active-nav.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "validate": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "validate",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/reconcile-forma-release-notes.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "reconcile": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reconcile",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/reconcile-icon-expansion.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "reconcile": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reconcile",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/reconcile-icon-pages.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "reconcile": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reconcile",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/reconcile-release-triggers.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "reconcile": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reconcile",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reconcile",
+     "step": 1,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reconcile",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/reconcile-safari-layout.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write"
+   },
+   "job_permissions": {
+    "reconcile": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "reconcile",
+     "step": 0,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reconcile",
+     "step": 1,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "reconcile",
+     "step": 2,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/release-forma.yml",
+   "triggers": [
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "write",
+    "id-token": "write"
+   },
+   "job_permissions": {
+    "debounce": null,
+    "release": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [
+    "contents",
+    "id-token"
+   ],
+   "unpinned_uses": [
+    {
+     "job": "release",
+     "step": 0,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 1,
+     "uses": "actions/setup-node@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "release",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/validate-forma-feature.yml",
+   "triggers": [
+    "push"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "validate-forma": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "validate-forma",
+     "step": 1,
+     "uses": "actions/checkout@v4",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate-forma",
+     "step": 2,
+     "uses": "actions/setup-dotnet@v5",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "validate-forma",
+     "step": 3,
+     "uses": "actions/setup-node@v4",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  },
+  {
+   "path": "ext/forma/.github/workflows/workflow-validation.yml",
+   "triggers": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "risky_triggers": [],
+   "top_permissions": {
+    "contents": "read"
+   },
+   "job_permissions": {
+    "workflow": null
+   },
+   "missing_permissions": false,
+   "write_scopes": [],
+   "unpinned_uses": [
+    {
+     "job": "workflow",
+     "step": 1,
+     "uses": "actions/checkout@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "workflow",
+     "step": 2,
+     "uses": "actions/setup-node@v6",
+     "kind": "first-party-github"
+    },
+    {
+     "job": "workflow",
+     "step": 3,
+     "uses": "actions/setup-dotnet@v6",
+     "kind": "first-party-github"
+    }
+   ],
+   "pinned_uses": [],
+   "untrusted_in_run": []
+  }
+ ]
+}
