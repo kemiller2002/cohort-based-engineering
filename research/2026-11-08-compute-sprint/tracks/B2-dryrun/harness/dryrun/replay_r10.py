@@ -47,6 +47,12 @@ def authorize(indy_rev, label, relocate=True):
             "step3": sum(1 for x in causes if "REFUSED 3 " in x), "step4": sum(1 for x in causes if "REFUSED 4 " in x)}
 
 
+def _praxis_build_seconds():
+    t = core.SCRATCH / "build" / "praxis-build.time"
+    m = re.search(r"seconds=([\d.]+)", t.read_text()) if t.exists() else None
+    return round(float(m.group(1)), 1) if m else None
+
+
 def historical(lines):
     return [l.strip() for l in lines if l.strip().startswith("REFUSED")]
 
@@ -124,7 +130,9 @@ def replay():
         "outcome": c.outcome(a["run"]["exit"] not in ("TIMEOUT",), a["run"]["exit"] == 4 and (a["step3"] + a["step4"]) > 0),
         "matchEvidence": f"exit {a['run']['exit']}; {a['causeCount']} causes (step3 {a['step3']}, step4 {a['step4']}); "
                          f"historical 55; identical cause set: {same}",
-        "dryRunSeconds": a["run"]["seconds"]}
+        "dryRunSeconds": a["run"]["seconds"],
+        "buildSeconds": _praxis_build_seconds(),
+        "buildNote": "Praxis 3.25.0 CLI built from praxis@v3.25.0 (r9.fsx is compiled by dotnet fsi inside the timed run)"}
     b = budgets()
     bt, gate = b["buildAndTest"], b["gate"]
     jobcap = {
