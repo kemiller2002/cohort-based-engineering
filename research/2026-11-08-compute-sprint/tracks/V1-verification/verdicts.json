@@ -32,6 +32,23 @@
   "notes": "Context definition (input+cache read+cache write) is the natural one and reproduces exactly; excluding cache write would change the means. Coordinator share is understated because its post-ingest turns are missing."
  },
  {
+  "claimId": "A-F-07",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "All 26 R8 merge conflicts touched only Praxis .ros/ state files; no application-code conflicts occurred in this rehearsal",
+  "recomputedValue": "PR-merge level: exactly 26 of 49 PR merge commits conflict on replay, the same 26 PRs the coordinator logged, every one only in .ros/context/current.json and/or .ros/events/events.jsonl (reproduced). Rehearsal level: 60 of 86 merge commits conflict on replay; 4 'merge origin/main into r8/<branch>' commits (branches of PRs #10, #12, #19, #36) conflicted in 6 non-state files: src/Causa.App/Program.fs, src/Causa.Persistence/Classify.fs, src/Causa.Persistence/GitHubRequests.fs, tests/Causa.TestSupport/StatefulFake.fs, tests/Causa.Invariants/Negative/INV22.fs, .github/workflows/live.yml. Git's own '# Conflicts:' trailers in those merge commit messages list the same 6 paths (51 merge commits carry such trailers).",
+  "independence": "fully independent recomputation",
+  "method": "Fresh scratch clone /home/user/sprint-scratch/V1/r8 of indy-init-rehearsal-008@fd8fba9; for every 2-parent merge commit `git merge-tree --write-tree --name-only --no-messages P1 P2`, conflicted paths parsed; branch-side merges of a PR found as merge commits in P1..P2 of its PR merge commit; cross-checked with the '# Conflicts:' block git writes into merge messages and with `git show --cc` (non-empty combined diffs for Program.fs, INV22.fs, live.yml).",
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 git history (86 merge commits)",
+   "evidence/telemetry/merges.jsonl (49 rows)"
+  ],
+  "discrepancies": [
+   "merges.jsonl records conflicts only at the PR-merge step. Application-code conflicts were resolved by the task agents when they merged main into their branches and never reached the log; PRs #12, #19 and #36 are logged as conflict:false although their branches had application/CI conflicts, and #10 is logged with only .ros/context/current.json.",
+   "11 PRs logged conflict:false had branch-side conflicts (mostly .ros)."
+  ],
+  "notes": "The statement '26 conflicts, all .ros' is true of the coordinator's PR merges only. The rehearsal-level inference ('no application-code conflicts occurred') is contradicted: at least 4 merges conflicted in application, test or CI code. The conflict rate depends on what counts as a merge: 26/49 PR merges (53%) vs 60/86 merge commits (70%). Resolution seconds were not re-verified (coordinator-logged)."
+ },
+ {
   "claimId": "A-F-08",
   "verdict": "PARTIALLY VERIFIED",
   "claimedValue": "R8 lane utilisation mean 2.15 of 6 (36%), peak 5; 350 one-minute samples 'T0 to merge freeze'; 34 minutes with none active",
@@ -51,21 +68,56 @@
   "notes": "Headline 2.15 / peak 5 reproduces under Track A's exact window and unit (agents). The metric is sensitive to window end, span source and agent-vs-lane counting; range 1.57-2.15 mean, 26-36%."
  },
  {
-  "claimId": "A-F-07",
-  "verdict": "PARTIALLY VERIFIED",
-  "claimedValue": "All 26 R8 merge conflicts touched only Praxis .ros/ state files; no application-code conflicts occurred in this rehearsal",
-  "recomputedValue": "PR-merge level: exactly 26 of 49 PR merge commits conflict on replay, the same 26 PRs the coordinator logged, every one only in .ros/context/current.json and/or .ros/events/events.jsonl (reproduced). Rehearsal level: 60 of 86 merge commits conflict on replay; 4 'merge origin/main into r8/<branch>' commits (branches of PRs #10, #12, #19, #36) conflicted in 6 non-state files: src/Causa.App/Program.fs, src/Causa.Persistence/Classify.fs, src/Causa.Persistence/GitHubRequests.fs, tests/Causa.TestSupport/StatefulFake.fs, tests/Causa.Invariants/Negative/INV22.fs, .github/workflows/live.yml. Git's own '# Conflicts:' trailers in those merge commit messages list the same 6 paths (51 merge commits carry such trailers).",
-  "independence": "fully independent recomputation",
-  "method": "Fresh scratch clone /home/user/sprint-scratch/V1/r8 of indy-init-rehearsal-008@fd8fba9; for every 2-parent merge commit `git merge-tree --write-tree --name-only --no-messages P1 P2`, conflicted paths parsed; branch-side merges of a PR found as merge commits in P1..P2 of its PR merge commit; cross-checked with the '# Conflicts:' block git writes into merge messages and with `git show --cc` (non-empty combined diffs for Program.fs, INV22.fs, live.yml).",
+  "claimId": "A-F-12",
+  "verdict": "VERIFIED",
+  "claimedValue": "67% of CI job-minutes in R2-R10 timed windows were in failed/cancelled/timed_out runs (10,458 of 15,568 ceil-minutes)",
+  "recomputedValue": "Primary sample (100 runs per repo; census for R7, R9): 65.6% (bootstrap 95% CI 56.5%-71.9%); estimated 13,722 job-minutes (CI 11,225-16,401), 9,000 red (CI 6,409-11,661). Per repo: R2 22.0%, R3 19.4%, R4 46.5%, R5 39.8%, R6 81.2%, R7 58.7% (census), R8 30.0%, R9 28.0% (census), R10 89.2%; excluding R6 and R10 36.8%. Replicate sample (40 per repo, independent draw): 58.2% (CI 42.3%-70.1%).",
+  "independence": "sample",
+  "method": "Own read-only fetch of the Actions API (curl GET via session proxy): every run created in [T0, T0+420 min) listed with the server-side created filter; stratified simple random sample per repository (seed 20261108, conclusion != skipped); jobs fetched with filter=all (all attempts). Job-minutes = per-job ceil(minutes); a run is red if its conclusion is failure/cancelled/timed_out/startup_failure/action_required; expansion estimator per stratum, summed; 2,000-rep stratified bootstrap.",
   "inputs": [
-   "indy-init-rehearsal-008@fd8fba9 git history (86 merge commits)",
-   "evidence/telemetry/merges.jsonl (49 rows)"
+   "GitHub Actions API, fetched 2026-11-08 19:01-19:15Z (data/ci-sample-100/manifest.json, data/ci-sample/manifest.json, sampled run ids listed)",
+   "T0 per rehearsal read from each repo's own evidence (scripts/fetch_ci_sample.py WINDOWS)"
   ],
   "discrepancies": [
-   "merges.jsonl records conflicts only at the PR-merge step. Application-code conflicts were resolved by the task agents when they merged main into their branches and never reached the log; PRs #12, #19 and #36 are logged as conflict:false although their branches had application/CI conflicts, and #10 is logged with only .ros/context/current.json.",
-   "11 PRs logged conflict:false had branch-side conflicts (mostly .ros)."
+   "Window: every T0 matches the rehearsal's documented start and the in-window run populations equal Track A's exactly (128/114/135/436/427/54/566/50/281 non-skipped). But the fixed T0+420 window does not match activity: R2 ran to its accepted release at T+721 min (87 runs in the 17 h after the window), R3's timed phase ended at T+127 (09:39Z) yet the window runs to T+420, R4 has 249 runs in the 17 h after the window, R3 had 35 preflight runs in the 2 h before T0, and R5's T0 is defined post hoc as its first green check.",
+   "Definition sensitivity (primary sample): 65.6% with ceil-minutes attributed by run conclusion; 76.4% with unrounded job seconds; 54.3% if only jobs that themselves failed/cancelled count."
   ],
-  "notes": "The statement '26 conflicts, all .ros' is true of the coordinator's PR merges only. The rehearsal-level inference ('no application-code conflicts occurred') is contradicted: at least 4 merges conflicted in application, test or CI code. The conflict rate depends on what counts as a merge: 26/49 PR merges (53%) vs 60/86 merge commits (70%). Resolution seconds were not re-verified (coordinator-logged)."
+  "notes": "Claim reproduced within sampling error: 67% lies inside the CI and the census strata (R7 59%, R9 28%) match Track A's figures exactly. 'Red' includes cancellations of superseded runs (largely R6, R10) and successful jobs inside failed runs, so it is not a waste or defect measure on its own."
+ },
+ {
+  "claimId": "A-F-13",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "CI rebuilds the pinned Praxis verifier from source on every run: 688 job-minutes (8.4% of step time) across R2-R10",
+  "recomputedValue": "Rebuild-from-source is confirmed: echelon-foundations.yml in R2-R6 and R8-R10 calls kemiller2002/praxis foundations-verify.yml (@aa7c7ca, R6 @398af6d), which checks out praxis at the pinned commit and runs `dotnet build` with no build cache; the step ran in 197/197 sampled foundations runs. Minutes are lower: post-stratified estimate 607 min (95% CI 580-632; replicate sample 618, CI 591-645), about 1 min per foundations run x 594 foundations runs, roughly 7.4-8.0% of step time (unstratified sample share 7.2%, CI 5.6%-9.2%).",
+  "independence": "sample",
+  "method": "Workflow YAML read in every rehearsal repo and in the pinned Praxis reusable workflow (read from a scratch clone); step durations of the step named 'Build pinned Praxis verifier' from V1's sample; post-stratified by workflow: population count of Echelon foundations runs per repo x mean verifier minutes per sampled foundations run; bootstrap CI.",
+  "inputs": [
+   "indy-init-rehearsal-002..010 .github/workflows/*.yml at the revisions checked out",
+   "praxis commits aa7c7ca6a6e2 and 398af6dd1509 .github/workflows/foundations-verify.yml",
+   "V1 Actions samples (as A-F-12)"
+  ],
+  "discrepancies": [
+   "688 is wrong for the verifier. Track A's own step data puts 604.0 min on 'Build pinned Praxis verifier'; the other 84.5 min is R5's 'Build the candidate and the plan verifier', which builds the application (App.slnx) and Indy-init's requirements compiler, not Praxis. The corrected figure is about 604-607 min, about 7.4% of step time.",
+   "'Every run' means every run of the Echelon foundations workflow (about 27% of in-window runs), not every CI run.",
+   "R6's workflow has a fingerprint cache gate that could skip the build, but the build was never skipped in the sample (inputs changed on every commit).",
+   "R7 has no foundations workflow; its praxis-autonomy.yml also builds Praxis from source (`dotnet build praxis/src/Praxis.Cli/...`, about 33 min, census) under a step name the claim does not count."
+  ],
+  "notes": "The recommendation (cache or ship a prebuilt pinned verifier) still holds; the size is about 10 job-hours across the nine windows, not 11.5."
+ },
+ {
+  "claimId": "A-F-11",
+  "verdict": "VERIFIED",
+  "claimedValue": "Median job queue 3 s in every rehearsal except R6 (7,612 queued job-minutes)",
+  "recomputedValue": "Median job queue (started_at - created_at) is 3.0 s in all nine repositories in both samples (1,516 jobs in the 100-run sample). R6 p90 1,189 s (claimed 912 s); estimated R6 queued job-minutes 8,093 (95% CI 3,500-13,629; replicate sample 7,352, CI 1,222-15,345), against 30-95 for every other repo. R10 p90 49 s (claimed 31 s); all others p90 3-4 s.",
+  "independence": "sample",
+  "method": "Job-level queue from V1's sampled jobs (all attempts, jobs with nonzero duration); median and nearest-rank p90; expansion estimate of queued minutes with bootstrap CI (scripts/queue_ci.py).",
+  "inputs": [
+   "V1 Actions samples (as A-F-12)"
+  ],
+  "discrepancies": [
+   "The claim's wording ('median 3 s everywhere except R6') could suggest R6's median differs. It does not: R6's median is also 3 s. R6 differs in its tail (p90) and total queued minutes."
+  ],
+  "notes": "The R6 total is consistent with 7,612 but imprecise from a sample (heavy tail). Run-level queue was not used (created_at = run_started_at)."
  },
  {
   "claimId": "G-F-07",
