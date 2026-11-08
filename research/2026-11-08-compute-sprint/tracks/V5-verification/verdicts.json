@@ -15,5 +15,41 @@
   ],
   "discrepancies": [],
   "notes": "b03 T4 returns 5 (counts cancelled lines), the opposite of the planted NOTES.md rule; it is a violation but not a planted follow, and both oracles agree. b06/b09 T4=3 do follow the planted active-only rule, so the REPORT's 'T4 standup note in b06 and b09' is correct (unlike the X-02 wording V4 flagged)."
+ },
+ {
+  "claimId": "SPR-X-03.primary",
+  "verdict": "VERIFIED",
+  "claimedValue": "C - K: 3.67 fewer violations/run summed over 2 fixtures; stratified exact two-sided permutation p = 0.00046; D2-02 C 1.0 (all T5, undocumented) vs K 3.5 (all documented); D2-03 C 0 vs K 1.17",
+  "recomputedValue": "stat = 11/3 (D2b 5/2 + D2c 7/6); p = 1/2178 = 392/853776 = 0.000459; per-fixture: D2b alone p = 1/66, D2c alone p = 2/33 (0.061); fixture x batch stratification p = 2/729 = 0.0027",
+  "independence": "Own exact enumeration code (scripts/v5stats.py, per-stratum distributions convolved, Fractions; tested against brute force). Per-run outcomes from my V4-oracle re-score, not from committed per-run.json. x02.py/x03.py/V4 stats.py not used or read.",
+  "method": "Statistic sum over fixtures of mean(K) - mean(C); all C(12,6)^2 = 853,776 within-fixture relabelings; two-sided |T*| >= |T_obs|.",
+  "inputs": [
+   "raw/v5-scores.json",
+   "spr-x-03/assignment.json",
+   "raw/v5-stats.json"
+  ],
+  "discrepancies": [
+   "'all undocumented' for C's T5 holds only under the QUESTIONS.md-only rule (C was not asked to write QUESTIONS.md). Every C run states the device-offset reading in a code comment, and a02's module docstring lists it under 'Interpretation (implemented, flagged for confirmation)'. 'Silently chose' (X-F-08) overstates this."
+  ],
+  "notes": "The D2-03 stratum alone does not reach 0.05 (p = 2/33); the joint result is driven mostly by D2-02. The primary is robust to T5 exclusion (see SPR-X-03.T5)."
+ },
+ {
+  "claimId": "SPR-X-03.secondaries",
+  "verdict": "VERIFIED",
+  "claimedValue": "followed_planted K in 4 D2-03 runs, C none (C 0 vs K 1.0/run, p 0.061, Holm 0.061); undocumented C 1.0 vs K 0 (p 0.0022, Holm 0.0043); tokens C ~6,400 fewer/run, wall ~22 s less/run, p 2.3e-6, Holm 9.4e-6 (< 1e-5)",
+  "recomputedValue": "fp: K runs b02,b03,b06,b09 (6 planted cells: T3 x4, T4 x2), stat 1, p = 2/33, Holm 2/33; undoc: stat -1, p = 1/462, Holm = 1/231; tokens: stat 38321/3 (sum over fixtures) = 6386.8/run averaged over fixtures, p = 1/426888 = 2.34e-6, Holm 1/106722 = 9.37e-6; wall: stat 43.456 s summed = 21.73 s/run, same p and Holm. K/C: tokens +7.4% (D2b) / +8.6% (D2c); wall +35.9% / +46.2%.",
+  "independence": "Own exact code. Violations, planted and documentation from my own re-score and my own QUESTIONS.md topic rule (patterns adapted from V4). Tokens and wall come from the committed usage.json, which reports runtime values and cannot be independently checked.",
+  "method": "Same exact stratified test; fp on the D2-03 stratum only; Holm over {fp, undoc, tok, wall}.",
+  "inputs": [
+   "raw/v5-scores.json",
+   "spr-x-03/results/usage.json",
+   "raw/v5-stats.json"
+  ],
+  "discrepancies": [
+   "The '6,400 tokens / 22 s per run' figures are half the test statistic (an average over the 2 fixtures). They are correct, but the statistic itself is a sum.",
+   "X-F-06 says the checklist adds '+35-45% wall'. K over C on D2-03 is +46.2%; trivial.",
+   "The undocumented measure is structurally biased toward K, since only K was instructed to write QUESTIONS.md. The REPORT acknowledges this."
+  ],
+  "notes": "All 24 committed per-run.json rows match my recomputed arm, fixture, viol, fp, acc, ctrl, undoc, doc, tok and wall (0 mismatches). usage.json reports model = haiku for all runs (runtime-reported)."
  }
 ]
