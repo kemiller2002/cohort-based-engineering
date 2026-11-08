@@ -151,16 +151,23 @@ def has_body(expr, env, seen=frozenset()):
     return any(r[1] for r in rs), "%s {%s}" % (name, "; ".join("%s: %s" % (r[0], r[2]) for r in rs))
 
 
+METADATA_NAME = re.compile(r"(Id|Ids|Key|Version|At|Count|Time|Kind)$")
+
+
 def candidates(defs, word):
+    """Deviation D1: case/field names that are metadata by name (CommandId, ...) and single-case wrappers named like
+    their union (the type itself is already a candidate) are not separate candidates."""
     pat = re.compile(word, re.I)
     out = []
     for d in defs:
         if pat.search(d.name) and d.kind in ("record", "union", "abbrev"):
             out.append(("type " + d.name, d.name, d.file))
         if d.kind == "union":
-            out += [("case %s.%s" % (d.name, c), p, d.file) for c, p in d.parts if pat.search(c) and p]
+            out += [("case %s.%s" % (d.name, c), p, d.file) for c, p in d.parts
+                    if pat.search(c) and p and not METADATA_NAME.search(c) and not (c == d.name and pat.search(d.name))]
         if d.kind == "record":
-            out += [("field %s.%s" % (d.name, f), t, d.file) for f, t in d.parts if pat.search(f) and "->" not in t]
+            out += [("field %s.%s" % (d.name, f), t, d.file) for f, t in d.parts
+                    if pat.search(f) and "->" not in t and not METADATA_NAME.search(f)]
     return out
 
 

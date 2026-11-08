@@ -1,0 +1,557 @@
+{
+ "label": "R8-corrected=R9-frozen",
+ "role": "control",
+ "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+ "rev": "bc3c381df2840187a46799ea59f425ffe1b1ceed",
+ "committerTime": "2026-11-03T19:24:34-05:00",
+ "package": "requirements-compiled/v4.1.2",
+ "inputsSha256": {
+  "requirements-compiled/v4.1.2/state-machine-contracts.json": "9dc917dd815fdb2da30e2c2bce3baee9ce197357d5756a1c552b41fa6fc221d1",
+  "requirements-compiled/v4/invariants.json": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad",
+  "requirements-compiled/v4.1.2/contracts/00-DOMAIN-STUBS.fs": "178b6e3f6902f656f9a1c092792707452cf4dbff976d7603b5c75671e2c6e258",
+  "requirements-compiled/v4.1.2/contracts/01-IF41-DOMAIN.fs": "815aec410e3dba0f7d8d8232ed8476515f0ab2d237c96170f5aaedb64e286e00",
+  "requirements-compiled/v4.1.2/contracts/02-IF41-STORAGE.fs": "bdf4ef23a006c3280ee67c94145fcecad01286bd2da0da1afd803f2edd064e9d",
+  "requirements-compiled/v4.1.2/contracts/03-IF41-WIRE.fs": "48f227960704c4e5b165e227b44d53a2da03c1d1347ab43ee0d9c6bcd3a21116",
+  "requirements-compiled/v4.1.2/contracts/04-IF41-ERRORS.fs": "fa16ee821c411dcbfac32cef4d064e560a00976edea41177fa132f8fb51e9eab",
+  "requirements-compiled/v4.1.2/contracts/05-IF41-SAVE.fs": "904465d9f47f05c12b17b544e8b379842b2ace0915b4516a785a28dd648d980f",
+  "requirements-compiled/v4.1.2/contracts/06-IF41-APP.fs": "d62e594865a59afb7fc75c22676010a6fc3214bffdb1e73c3085d86eb3e28805",
+  "requirements-compiled/v4.1.2/contracts/07-IF41-VIEW.fs": "80f948ef32d466b2d204c96cbc7297411bfa32660b30adf87d640a1373508d2c",
+  "requirements-compiled/v4.1.2/contracts/08-IF41-REPORT.fs": "ab62fa82f92d140dfe64dc3fa225ff547118a481faaf3ccb13445291d9a7e33c",
+  "requirements-compiled/v4.1.2/contracts/99-Usage.fs": "2ee688af9aac273b778788625c3a27821ebb2916e1e8596d1c5576ff67981096"
+ },
+ "parsed": {
+  "machines": {
+   "SM-SAVE": 65,
+   "SM-CONFLICT": 15,
+   "SM-CONNECTION": 9,
+   "SM-LOAD": 10,
+   "SM-NETWORK": 2
+  },
+  "bounds": [
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "mutations",
+    "head": "mutations",
+    "window_s": null,
+    "clause": "per save request at most four mutations and at most three automatic reconciliation reads at least 2, 4 and 8 seconds apart (plus one per offline-to-online change)",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 3,
+    "phrase": "automatic reconciliation reads",
+    "head": "reads",
+    "window_s": null,
+    "clause": "per save request at most four mutations and at most three automatic reconciliation reads at least 2, 4 and 8 seconds apart (plus one per offline-to-online change)",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "mutations",
+    "head": "mutations",
+    "window_s": 60.0,
+    "clause": "under total network failure at most four mutations and four reconciliation reads in 60 seconds",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "reconciliation reads",
+    "head": "reads",
+    "window_s": 60.0,
+    "clause": "under total network failure at most four mutations and four reconciliation reads in 60 seconds",
+    "machines": [
+     "SM-SAVE"
+    ]
+   }
+  ],
+  "fsTypes": 126
+ },
+ "results": {
+  "C1-loop": [],
+  "C1-loop-deleg": [],
+  "C1-cycle": [
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   }
+  ],
+  "C1-cycle-deleg": [
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   }
+  ],
+  "C2": [],
+  "C2-examined": [
+   {
+    "candidate": "type CoreCommand",
+    "type": "CoreCommand",
+    "hasBody": true,
+    "reason": "CoreCommand (union, 29 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "type Command",
+    "type": "Command",
+    "hasBody": true,
+    "reason": "Command (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "type CommandEnvelope",
+    "type": "CommandEnvelope",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "field CommandEnvelope.Command",
+    "type": "Command",
+    "hasBody": true,
+    "reason": "Command (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "type RefusedCommand",
+    "type": "RefusedCommand",
+    "hasBody": true,
+    "reason": "RefusedCommand {Command: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}; Reason: string (scalar)}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "field RefusedCommand.Command",
+    "type": "CommandEnvelope",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "case SaveEffect.ExportCommands",
+    "type": "CommandEnvelope list",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "case Msg.DomainCommand",
+    "type": "CommandEnvelope",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "06-IF41-APP.fs"
+   }
+  ],
+  "C2b": [],
+  "C2b-examined": [
+   {
+    "candidate": "type EventPayload",
+    "type": "EventPayload",
+    "hasBody": true,
+    "reason": "EventPayload (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "field EventEnvelope.Payload",
+    "type": "EventPayload",
+    "hasBody": true,
+    "reason": "EventPayload (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   }
+  ],
+  "C3": []
+ },
+ "timing": {
+  "loadSeconds": 0.0478,
+  "C1-loop": 0.0007,
+  "C1-loop-deleg": 0.0007,
+  "C1-cycle": 0.0013,
+  "C1-cycle-deleg": 0.0012,
+  "C2": 0.0003,
+  "C2b": 0.0001,
+  "C3": 0.0003
+ }
+}

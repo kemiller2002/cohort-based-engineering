@@ -117,4 +117,12 @@ python3 -m semcheck.summarize      # writes ../results.csv  (added after the run
 
 ## Deviations addendum
 
-(empty at preregistration)
+- **D1 (before any package run; found by the synthetic unit tests).** C2 candidate selection treated record fields
+  and union cases whose *name* contains "Command" but which are metadata by name (`CommandId`) as carriers, so every
+  command record alarmed on its own id field; and a single-case wrapper `EventPayload of ...` was counted twice (type
+  and case). Fix in `carrier.candidates`: case/field names ending in Id/Ids/Key/Version/At/Count/Time/Kind are not
+  candidates, and a single-case case named like its union is not a separate candidate. Committed with the first run.
+  No package had been read by the checks at that point.
+- **D2 (post-run, additive).** `summarize.py` (results.csv), `ablation.py` (post-hoc sensitivity of C1 to its
+  answer-informed rules) and `probe.py` (post-hoc C2 out-of-sample probe on other Echelon F# code) were added after the
+  preregistered run. They do not change any preregistered result; their outputs are labelled post hoc.
