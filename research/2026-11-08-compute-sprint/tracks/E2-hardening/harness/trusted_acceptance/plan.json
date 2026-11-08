@@ -1,0 +1,7 @@
+{"schema": "e2.acceptance-plan/1",
+ "requirements": [
+  {"id": "R-ADD", "check_id": "add-2-3", "argv": ["python3", "-I", "{src}/calc.py", "add", "2", "3"], "expect": {"exit_code": 0, "stdout": "5"}},
+  {"id": "R-MUL", "check_id": "mul-4-5", "argv": ["python3", "-I", "{src}/calc.py", "mul", "4", "5"], "expect": {"exit_code": 0, "stdout": "20"}},
+  {"id": "R-REV", "check_id": "rev-abc", "argv": ["python3", "-I", "{src}/calc.py", "rev", "abc"], "expect": {"exit_code": 0, "stdout": "cba"}},
+  {"id": "R-ERR", "check_id": "bad-int", "argv": ["python3", "-I", "{src}/calc.py", "add", "x", "1"], "expect": {"exit_code": 2}}
+ ]}
