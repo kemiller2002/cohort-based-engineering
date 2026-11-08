@@ -4,3 +4,5 @@
 - Next: scratch clone, baseline build + suite (R0), throwaway key, trust patch, cases.
 - ~15:15 EST: R0 baseline 1552 PASS / 0 FAIL. Throwaway TEST-ONLY keys generated (scratch only; public keys + SHA-256 fingerprints in raw/). Trust patch (patches/01). R1 trust populated: 1552 PASS / 1 FAIL (the predicted "pins no Registry release key yet" guard). R1k with embedded-trust scenario (patches/02): 1557 PASS / 1 FAIL; A4 production preview/apply qualifies Forma 0.7.0 via attested:>=0.2.0 <1.0.0:test-only-c2-001-2026-11-08; rogue key refused.
 - Next: harness/ with real echelon-current 1.37.0 data (A1-A3, N1-N8, S1-S2), release-history analysis (H4).
+- ~15:00 EST (clock): harness/C2Harness (F#) built against scratch builds. Stock catalog + synthetic forma 0.14.0: 17/17 cases pass (raw/harness-stock-synthetic-0.14.0). Rolled-back catalog (forma 0.13.0 removed, patches/03) + real 1.37.0 linux-x64 forma 0.13.0: 17/17 pass (raw/harness-rollback-real-0.13.0). Only 3 of 17 entries in 1.37.0 (limen, forma, folio) are range-eligible.
+- Next: release-history analysis (H4), experiments.json, findings.json.
