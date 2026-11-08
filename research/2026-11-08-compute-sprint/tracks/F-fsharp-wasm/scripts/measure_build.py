@@ -31,15 +31,15 @@ def plan(modes: list[str], reps: int) -> list[tuple[str, int]]:
     return [(m, r) for m in modes for r in range(1, reps + 1)]
 
 
-def mode_spec(mode: str, publish_project: str, solution: str, out: str) -> dict:
+def mode_spec(mode: str, publish_project: str, solution: str, out: str, roots: tuple[str, ...] = ("src", "tests")) -> dict:
     """What to clean, what to touch, which command to time, for one mode."""
     publish = ["dotnet", "publish", publish_project, "-c", "Release", "-o", out]
     build = ["dotnet", "build", solution, "-c", "Debug"]
     table = {
-        "publish-cold": {"clean": ("src",), "touch": False, "cmd": publish},
+        "publish-cold": {"clean": roots[:1] if roots == ("src", "tests") else roots, "touch": False, "cmd": publish},
         "publish-noop": {"clean": (), "touch": False, "cmd": publish},
         "publish-incr": {"clean": (), "touch": True, "cmd": publish},
-        "sln-cold": {"clean": ("src", "tests"), "touch": False, "cmd": build},
+        "sln-cold": {"clean": roots, "touch": False, "cmd": build},
         "sln-noop": {"clean": (), "touch": False, "cmd": build},
         "sln-incr": {"clean": (), "touch": True, "cmd": build},
     }
@@ -70,6 +70,7 @@ def main() -> None:
     ap.add_argument("--publish-project", default="src/Causa.Host")
     ap.add_argument("--solution", default="Causa.slnx")
     ap.add_argument("--touch-file", default="src/Causa.App/View.fs")
+    ap.add_argument("--clean-roots", default="src,tests", help="top-level dirs whose bin/obj a cold mode removes")
     a = ap.parse_args()
     repo = Path(a.repo).resolve()
     pub_out = str(Path("/home/user/sprint-scratch/F/pub") / a.label)
@@ -79,7 +80,7 @@ def main() -> None:
         if new:
             w.writeheader()
         for mode, rep in plan(a.modes.split(","), a.reps):
-            row = run_one(repo, a.label, mode, rep, mode_spec(mode, a.publish_project, a.solution, pub_out), a.touch_file)
+            row = run_one(repo, a.label, mode, rep, mode_spec(mode, a.publish_project, a.solution, pub_out, tuple(a.clean_roots.split(","))), a.touch_file)
             w.writerow(row); f.flush()
             print(row["label"], row["mode"], row["rep"], row["seconds"], row["exitCode"], flush=True)
 

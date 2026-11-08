@@ -3,7 +3,7 @@
 //   MARKER_ATTR: the <html> data attribute the app sets when its engine is ready (e.g. data-causa-ready).
 // Each repetition launches a fresh browser context (empty HTTP cache) unless --warm, in which case a context is
 // primed with one untimed load and each timed run is a reload in that context (HTTP cache warm).
-import { appendFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
 export const THROTTLES = {
@@ -18,15 +18,26 @@ export const parseArgs = (argv) => {
   const value = (name, dflt) => (rest.includes(name) ? rest[rest.indexOf(name) + 1] : dflt);
   const throttle = value("--throttle", null);
   if (throttle && !THROTTLES[throttle]) throw new Error(`unknown throttle ${throttle}`);
-  return { out, label, url, marker, reps: Number(value("--reps", 5)), warm: flag("--warm"), throttle, timeoutMs: Number(value("--timeout", 60000)) };
+  return { out, label, url, marker, server: value("--server", "python-http"), reps: Number(value("--reps", 5)), warm: flag("--warm"), throttle, timeoutMs: Number(value("--timeout", 60000)) };
 };
 
-// Injected before any page script: records performance.now() when the marker attribute first appears on <html>.
-export const markerInitScript = (marker) => `(() => {
-  const record = () => { if (document.documentElement && document.documentElement.hasAttribute(${JSON.stringify(marker)}) && !window.__sprintReady)
-    window.__sprintReady = { t: performance.now(), value: document.documentElement.getAttribute(${JSON.stringify(marker)}) }; };
-  new MutationObserver(record).observe(document, { attributes: true, subtree: true, attributeFilter: [${JSON.stringify(marker)}] });
+/** Split "attr" or "attr=value" (pure). */
+export const parseMarker = (marker) => {
+  const i = marker.indexOf("=");
+  return i < 0 ? { attr: marker, value: null } : { attr: marker.slice(0, i), value: marker.slice(i + 1) };
+};
+
+// Injected before any page script: records performance.now() when the marker attribute first appears on <html>
+// (with the expected value, when one is given).
+export const markerInitScript = (marker) => {
+  const { attr, value } = parseMarker(marker);
+  return `(() => {
+  const attr = ${JSON.stringify(attr)}, want = ${JSON.stringify(value)};
+  const record = () => { const el = document.documentElement; if (!el || window.__sprintReady || !el.hasAttribute(attr)) return;
+    const v = el.getAttribute(attr); if (want === null || v === want) window.__sprintReady = { t: performance.now(), value: v }; };
+  new MutationObserver(record).observe(document, { attributes: true, subtree: true, attributeFilter: [attr] });
 })();`;
+};
 
 /** Reduce raw browser metrics to the row we persist (pure). */
 export const toRow = ({ label, rep, mode, throttle, nav, paints, ready, resources, errors }) => {
@@ -91,7 +102,7 @@ const main = async () => {
       const context = warmContext ?? (await browser.newContext());
       if (!warmContext) await context.addInitScript(init);
       const row = await measureOnce(context, args, rep, (page) => page.goto(args.url));
-      const full = { timestampUtc: new Date().toISOString(), chromium: version, url: args.url, marker: args.marker, ...row };
+      const full = { server: args.server, timestampUtc: new Date().toISOString(), loadavg1: Number(readFileSync("/proc/loadavg", "utf8").split(" ")[0]), chromium: version, url: args.url, marker: args.marker, ...row };
       appendFileSync(args.out, JSON.stringify(full) + "\n");
       console.log(args.label, row.mode, row.throttle, rep, "DCL", row.domContentLoadedMs, "ready", row.readyMs, row.readyValue, "errors", row.pageErrors.length);
       if (!warmContext) await context.close();
