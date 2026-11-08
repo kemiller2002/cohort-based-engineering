@@ -10,3 +10,6 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 ## CP-H-02 (14:40 EST): claims ledger
 - `synthesis/claims-ledger.json` built by `scripts/build_ledger.py` (joins track findings with V1/V2 verdicts.json at build time; re-run to refresh).
 - 63 consequential claims (28 high). Independently checked so far: 6 (V1: A-F-01, A-F-03, G-F-07, G-F-08 VERIFIED; A-F-07, A-F-08 PARTIALLY VERIFIED). V2 has no verdicts yet; every B, C, E claim is unverified by an independent track.
+
+## CP-H-03 (14:55 EST): ADRs
+- `synthesis/adr/ADR-S01..S05`: signed Registry sets; .ros out of merge path; trusted acceptance job; mandatory pre-T0 dry run; coordinator context cap (conditional, weakest, contradicted in part by VAC-001 per X-12).
