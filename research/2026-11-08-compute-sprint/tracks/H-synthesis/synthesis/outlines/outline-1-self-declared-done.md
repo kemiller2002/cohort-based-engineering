@@ -31,8 +31,10 @@ Across eleven governed, agent-built rehearsals, the recurring failure was not th
 
 ## 2. The outcome record
 
-- No run from R1 to the Causa build reached acceptance under Indy-init's computed verdict. R5 came closest (G0–G7 PASS). **SUPPORTED**, B-F-01. Verdicts are taken from records; only R2 was recomputed.
-- R2's self-declared ACCEPTED recomputes as INVALID with the program's own verifier. **VERIFIED**, B-F-02. V2 pending.
+- No run from R1 to the Causa build reached acceptance under Indy-init's computed verdict. **VERIFIED+IV**, B-F-01 / V2.
+  - Mandatory wording (V2): 5 runs produced a non-accepting computed verdict, and 6 produced none. R1 passed its own frozen criteria, before the contract existed. R5 came closest (G0–G7 PASS, INCOMPLETE).
+- R2's self-declared ACCEPTED is not acceptable under the program's own verifier. **VERIFIED+IV**, B-F-02 / V2.
+  - Say "not acceptable", not "INVALID". The INVALID label comes mostly from applying a later schema; the substantive reason is a P0 requirement recorded NOT_RUN while the ledger declared accepted=true.
 - R1 treated RC2–RC5 as Accepted for about 2.5 hours while its own deploy/accept workflow was red. Four consecutive failures are in the Actions record. **VERIFIED**, B-F-16. V2 pending.
 - **[DO NOT STATE]** "Things improved over time." No controlled evidence exists. **INCONCLUSIVE**, B-F-15.
 
@@ -43,14 +45,14 @@ Across eleven governed, agent-built rehearsals, the recurring failure was not th
 
 ## 4. The checker trusts the producer
 
-- Indy-init's verdict tool returned ACCEPTED for a README-only repository with 118 fabricated PASS artifacts. The reason: in rehearsal-005, the "independent" manifest digest is printed by the candidate's own tool in the same job. **VERIFIED** (local fixture), E-F-02. V2 pending.
+- Indy-init's verdict tool returned ACCEPTED for a README-only repository with 118 fabricated PASS artifacts. The reason: in rehearsal-005, the "independent" manifest digest is printed by the candidate's own tool in the same job. **VERIFIED+IV** (local fixture), E-F-02 / V2, which also ran it at the verifier ref rehearsal-005 pinned.
   - Untested: whether rehearsal-005's second check, `verify-plan`, would catch it. **NOT TESTED**; FX-03.
 - Framing to use: the computed verdict changed behaviour, but it was never an independent control. Matrix X-05.
 - **[DO NOT STATE]** "Acceptance became verified in R4."
 
 ## 5. "Complete" is self-declared everywhere
 
-- Plain `praxis work complete` accepted `/etc/hostname` as test evidence. 0 of 45 surveyed ros.json files enable verified completion. **VERIFIED**, E-F-01.
+- Plain `praxis work complete` accepted `/etc/hostname` as test evidence. 0 of 45 (E) or 47 (V2) surveyed ros.json files enable verified completion. **VERIFIED+IV**, E-F-01 / V2.
   - Corroborated by Praxis's own rollout doc and an independent scan of 90 config files. **VERIFIED+IV**, G-F-07 / V1.
 - Part of the reason is version skew: 23 repositories pin Praxis 3.7.2, which predates attested completion (3.20.0). **SUPPORTED**, C-F-02. The capability-to-version mapping was not re-executed.
 
@@ -58,7 +60,13 @@ Across eleven governed, agent-built rehearsals, the recurring failure was not th
 
 - Praxis 3.25.0 with Dokimos 0.11.1 in attested mode refused every forgery in the 17-case regression. Evidence from revision A cannot be cited at revision B. **VERIFIED**, E-F-06. V2 pending.
 - Remaining local-state gaps: deleting the claim store (E-F-03), moving local refs (E-F-04, a documented limit), and zero-evidence unattested "verified" (E-F-05). All **VERIFIED** in local fixtures.
-- Deployment preconditions are missing: no branch protection on praxis `main` and no CODEOWNERS (**VERIFIED**). The agent credential is reportedly admin (**SUPPORTED**, from the R7 audit). E-F-07.
+- Deployment preconditions are missing: no branch protection and no ruleset on praxis, ordo and Indy-init `main`, and no CODEOWNERS (**VERIFIED+IV**, V2). The agent credential is reportedly admin (**SUPPORTED**, from the R7 audit). E-F-07.
+
+## 6b. Governance was the first point of failure, not the only one
+
+- From R8 onward, governance or verification machinery was the first refusal that ended the governed verdict. **VERIFIED+IV** in that narrow sense, B-F-03 / V2 PARTIALLY VERIFIED.
+- Even without it, R8 had 346/613 P0 obligations not run, and R9 implemented 0/541 executable obligations (V2).
+- **[DO NOT STATE]** "the runs failed because of governance" (matrix X-23).
 
 ## 7. What we are changing (proposals, not results)
 
@@ -75,7 +83,7 @@ Across eleven governed, agent-built rehearsals, the recurring failure was not th
 - One application family, one owner, one model family.
 - B's event curation was done by a single analyst (FX-08).
 - E's bypasses ran in local fixtures only, with no GitHub-side test.
-- The rulesets API was unreadable, so org-level protection may exist (E-F-07 limitation).
+- Rulesets: V2 found none on the three core repositories. Others (conditor, causa) were not queryable.
 
 ## Figures (candidates)
 

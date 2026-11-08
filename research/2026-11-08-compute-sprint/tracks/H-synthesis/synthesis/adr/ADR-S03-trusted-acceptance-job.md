@@ -67,10 +67,11 @@ The acceptance tooling that lacks this property lives in Indy-init's 39k-line pa
 
 | Finding | Class | Independent check |
 |---|---|---|
-| E-F-02 | VERIFIED (E, local fixture) | V2 pending — highest-priority verification item |
+| E-F-02 | VERIFIED (E, local fixture) | **V2 VERIFIED** with its own fabrication script, at dae2347 and at 459f65a (the ref rehearsal-005 pinned), with a tamper negative control |
 | E-F-06 | VERIFIED (E) | V2 pending |
-| E-F-07 | SUPPORTED with VERIFIED parts (E) | V2 pending; rulesets not readable |
-| E-F-04 | VERIFIED (E; documented limit) | V2 pending |
+| E-F-07 | SUPPORTED with VERIFIED parts (E) | V2 VERIFIED the VERIFIED parts; `rules/branches/main` returns [] for praxis, ordo and Indy-init, so no ruleset applies. Agent admin scope not re-verified |
+| E-F-04 | VERIFIED (E; documented limit) | not yet independently verified |
+| E-F-03 | VERIFIED (E) | V2 VERIFIED |
 | B-F-04, B-F-15 | SUPPORTED (B) | none |
 | C-F-12 | SUPPORTED (C) | none |
 
@@ -79,7 +80,7 @@ Files: `E-security/findings.json`, `E-security/data/E-X10-indy-fabricated-accept
 ## Open questions
 
 1. Does `requirements-compiler verify-plan`, the second check in rehearsal-005 that E did not test, catch the fabricated bundle? If it does, E-F-02's severity drops for R5. Its inputs are also candidate-produced.
-2. Do org-level rulesets protect these branches in a way the branches API does not show (E-F-07 limitation)?
+2. Rulesets: V2 found none for praxis, ordo and Indy-init `main`. Conditor and causa were not queryable. Are those protected?
 3. Can a Dokimos attested receipt express the obligation-level detail Indy-init's ledger carries (108 P0 requirements, G0–G9 gates)?
 4. How much time does the trusted re-run add to a 420-minute window? This is NOT TESTED.
 5. How should the verifier key be isolated from the agent's OS user? E-F-06 ran the verifier daemon as the same user.

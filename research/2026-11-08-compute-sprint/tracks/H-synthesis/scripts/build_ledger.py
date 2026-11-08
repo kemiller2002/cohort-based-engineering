@@ -81,6 +81,15 @@ C = {
     "G-F-13": ("low", "Context only; no SAM derived.", [], None),
 }
 
+# H-001 notes where a verifier's verdict covers only part of the claim
+SCOPE_NOTES = {
+    "E-F-07": "V2 verified the VERIFIED parts (protected=false, no rulesets via rules/branches endpoint, no CODEOWNERS). The SUPPORTED part (agent token admin, agent holds signing key) was not re-verified.",
+    "E-F-02": "Ledger verifier only. requirements-compiler verify-plan untested by E and V2 (FX-03).",
+    "B-F-01": "True but vacuous for 6 of 11 runs that never produced a computed verdict (V2 note). Cite as 'no run reached computed acceptance; 5 produced a non-accepting computed verdict, 6 produced none'.",
+    "B-F-02": "Not acceptable is robust; the specific label INVALID is anachronistic (77 of 83 reasons are later-schema absences). Substantive reason ADRP-016 NOT_RUN alone gives INCOMPLETE.",
+    "B-F-03": "Holds as 'first refusal that ended the governed verdict'; does NOT hold as 'dominant blocker' for R8 and is doubtful for R9, R10: product and verification incompleteness would independently have prevented acceptance.",
+}
+
 # Which verification track is assigned to each source track
 ASSIGNED = {"A": "V1", "G": "V1", "B": "V2", "C": "V2", "E": "V2"}
 
@@ -137,7 +146,11 @@ for cid, (rank, cons, support, use) in C.items():
     if cid in vmap:
         v = vmap[cid]
         iv = {"by": vt, "status": "done", "verdict": v.get("verdict"),
-              "discrepancies": v.get("discrepancies", [])}
+              "independence": v.get("independence"),
+              "discrepancies": v.get("discrepancies", []),
+              "verifierNotes": v.get("notes")}
+        if cid in SCOPE_NOTES:
+            iv["scopeNote"] = SCOPE_NOTES[cid]
     elif vt == "V1" and cid in v1_pending:
         iv = {"by": vt, "status": "queued", "verdict": None}
     else:
@@ -188,6 +201,16 @@ summary = {
     "priorityForVerification": [e["claimId"] for e in entries if "PRIORITY_FOR_VERIFICATION" in e["flags"]],
 }
 
+other = []
+for src, vm in (("V1", v1), ("V2", v2)):
+    for k, v in vm.items():
+        if k not in C:
+            other.append({"id": k, "by": src, "verdict": v.get("verdict"),
+                          "trackClassification": findings.get(k, {}).get("classification"),
+                          "claimedValue": v.get("claimedValue"),
+                          "discrepancies": v.get("discrepancies", []),
+                          "verifierNotes": v.get("notes")})
+
 out = {
     "schema": "track-h.claims-ledger/1",
     "track": "H-synthesis",
@@ -198,6 +221,7 @@ out = {
     "summary": summary,
     "claims": entries,
     "omittedLowConsequence": omitted,
+    "verificationsOutsideLedger": other,
     "notes": [
         "consequence is H-001's judgement of decision impact, not a confidence rating.",
         "A V1/V2 verdict of PARTIALLY VERIFIED means the core number reproduced but part of the statement or its inference did not; read discrepancies before citing.",

@@ -23,3 +23,9 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 ## CP-H-06 (14:11 EST): outlines
 - `synthesis/outlines/outline-1..3`: self-declared done (governance); where the compute went (economics); independent verification positioning (commercial, internal first). Each claim carries an evidence class; [DO NOT STATE] items list framings the evidence does not support.
 - Timestamps in earlier CP headings corrected to actual wall clock (first pass completed well before 17:00).
+
+## CP-H-07 (14:16 EST): V1/V2 verdicts integrated
+- V2: B-F-01, B-F-02, B-F-07, C-F-01, C-F-04, C-F-05, C-F-08, E-F-01, E-F-02, E-F-03, E-F-07, R10-gate-deadlock VERIFIED; B-F-03 PARTIALLY VERIFIED (first blocker, not dominant blocker). V1: G-F-10 VERIFIED (G had INCONCLUSIVE).
+- Matrix: new theme X-23 (governance failure masked product incompleteness; contradicts B-F-03's strong reading). Notes added to X-04/05/06/08/09/10/14/15.
+- Ledger: 18 of 63 independently checked (15 clean, 3 partial). Builder now carries verifier notes, scope notes and out-of-ledger verifications.
+- ADR-S01/S03/S04 and outlines 1 and 3 updated; ADR-S04 narrowed to 'removes the first point of failure'.

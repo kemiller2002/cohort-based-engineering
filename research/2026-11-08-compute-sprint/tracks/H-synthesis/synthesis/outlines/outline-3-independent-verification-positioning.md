@@ -50,7 +50,8 @@ Agent orchestration, spec-driven development and AI cost dashboards are already 
 - Verified completion is implemented but enabled nowhere. **VERIFIED+IV**, G-F-07 / V1, and E-F-01.
 - No rehearsal reached governed acceptance. **SUPPORTED**, B-F-01; G-F-11 CONTRADICTED the "ready for outcome delivery" hypothesis.
 - Echelon's process overhead costs 35% or more extra tokens without a measured quality gain on current fixtures. **VERIFIED+IV**, G-F-08 / V1, with ceiling and output-lower-bound caveats.
-- The public site makes outcome claims with no located evidence. **INCONCLUSIVE**, G-F-10.
+- The public site makes outcome claims with no located evidence. Track G rated this **INCONCLUSIVE**; V1 rated it **VERIFIED** as "no evidence located" (G-F-10 / V1).
+  - V1 adds that the 40% figure contradicts the site's own case study, and that both figures are consulting-engagement outcomes, not software measurements. Their truth is NOT TESTED.
 - **[DO NOT STATE]** "production-proven verified completion", or any throughput or cost-reduction figure for clients.
 
 ## 5. Positioning options (inferred; for discussion)
