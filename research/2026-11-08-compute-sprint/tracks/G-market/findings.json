@@ -1,0 +1,179 @@
+{
+ "track": "G-market",
+ "asOf": "2026-11-08",
+ "findings": [
+  {
+   "id": "G-F-01",
+   "title": "Agent orchestration plus baseline governance is bundled into existing seats",
+   "classification": "VERIFIED",
+   "statement": "GitHub includes its cloud coding agent, third-party agents (Anthropic, OpenAI, Google, Cognition, xAI) via Agent HQ, an agent/model access control plane with audit logging, Code Quality and a metrics dashboard in paid Copilot (Business $19, Enterprise $39 per seat/month). AWS Kiro Teams is $20/seat with SSO, pooled credits and usage limits; Microsoft Foundry and AWS AgentCore sell identity, policy, evaluation and observability as consumption primitives. A standalone 'governed agent platform' from Echelon would compete against features buyers already receive at little or no marginal cost.",
+   "documentedOrInferred": "documented",
+   "evidence": [
+    "S-005",
+    "S-012",
+    "S-002",
+    "S-009",
+    "S-032"
+   ],
+   "limitations": "Several GitHub governance features are public preview; enterprise discounts not visible; control-plane depth not hands-on tested."
+  },
+  {
+   "id": "G-F-02",
+   "title": "Requirements-first (spec-driven) agent development is now a mainstream bundled feature",
+   "classification": "VERIFIED",
+   "statement": "Kiro generates requirements.md/design.md/tasks.md, checks requirements for inconsistencies and gaps, executes tasks in dependency waves and offers property-based correctness checks. 'Specs before code' is therefore not a differentiator by itself. What Kiro's docs do not describe is stable requirement IDs carried to a deterministic verification manifest and a tamper-evident preservation gate \u2014 which Praxis shipped in 3.21-3.25 (Oct 26-Nov 3, 2026). Echelon's defensible claim is narrower: preservation and verification of every requirement from intake to completion, not spec authoring.",
+   "documentedOrInferred": "documented (Kiro) + internal repo (Praxis)",
+   "evidence": [
+    "S-029",
+    "S-041"
+   ],
+   "limitations": "Absence of traceability features in Kiro is from one docs page, not a hands-on test; Praxis features are released but not yet shown in a customer setting."
+  },
+  {
+   "id": "G-F-03",
+   "title": "AI adoption, cost and impact measurement is already a priced, crowded category",
+   "classification": "VERIFIED",
+   "statement": "Swarmia sells 'AI adoption & cost' as a $5/dev/month add-on and coding-agent metrics for Copilot, Cursor, Claude Code and Codex; LinearB ($29-$59/user/month) sells an AI-vs-human delivery dashboard and policy-as-code for agentic code; Jellyfish sells token-spend monitoring and audit-ready DevFinOps reports; Atlassian completed its DX acquisition (Nov 2025). Echelon's cost telemetry (Praxis price tables, unavailable-not-zero) is not a product wedge; it is useful as an engagement instrument for cost per accepted requirement, a unit these vendors do not advertise.",
+   "documentedOrInferred": "documented",
+   "evidence": [
+    "S-015",
+    "S-014",
+    "S-017",
+    "S-016",
+    "S-042"
+   ],
+   "limitations": "Vendor marketing pages; 'cost per accepted requirement' absence among vendors is inferred from pages reviewed, not exhaustive."
+  },
+  {
+   "id": "G-F-04",
+   "title": "Developers report a verification/trust gap with AI output",
+   "classification": "SUPPORTED",
+   "statement": "Stack Overflow 2025: 46% distrust vs 33% trust AI accuracy, 3.1% highly trust, 66% cite 'almost right, but not quite'. Stack Overflow 2026: 93% say trusting AI requires source attribution and the most trusted context is project goals and requirements (85%). DORA 2025: AI adoption relates positively to throughput but negatively to delivery stability; 30% report little or no trust in AI code. These document a problem that Echelon's verified-completion and requirement-traceability aim at.",
+   "documentedOrInferred": "documented (developer population); demand for a paid Echelon solution is inferred",
+   "evidence": [
+    "S-018",
+    "S-019",
+    "S-023"
+   ],
+   "limitations": "Self-selected developer surveys (SO recruits via its own channels); DORA ~5,000 respondents, correlational. They show the problem exists among developers, not that budget-holders will pay a third party to solve it."
+  },
+  {
+   "id": "G-F-05",
+   "title": "Executives lack evidence that AI investments pay off; cancellations are forecast",
+   "classification": "SUPPORTED",
+   "statement": "McKinsey State of AI 2025 (secondary coverage): 39% report any enterprise EBIT impact from AI, mostly under 5%; 23% scaling agents anywhere, no more than 10% in any one function. Gartner (June 2025) predicts over 40% of agentic AI projects will be cancelled by end-2027 owing to cost, unclear value or inadequate risk controls. This now gives citations to Mercatus 2026-09-23 finding 1 (AI value measurement) which had none.",
+   "documentedOrInferred": "documented (surveys/analyst prediction); fit to Echelon inferred",
+   "evidence": [
+    "S-035",
+    "S-022",
+    "S-046"
+   ],
+   "limitations": "McKinsey primary page returned 503; Gartner press release 403 (content corroborated across outlets). Gartner figure is a prediction, not a measurement."
+  },
+  {
+   "id": "G-F-06",
+   "title": "Regulation is not a 2026 urgency trigger for coding-agent governance",
+   "classification": "SUPPORTED",
+   "statement": "The Digital Omnibus on AI (Regulation (EU) 2026/1744, in force 27 July 2026) moved stand-alone Annex III high-risk obligations to 2 Dec 2027 and Annex I to 2 Aug 2028; Article 50 transparency applied from 2 Aug 2026; GPAI obligations from 2 Aug 2025; AI literacy from 2 Feb 2025. Internal software-development agents are generally not Annex III systems, so EU compliance pressure on engineering teams is indirect (via products they build for high-risk uses). ISO/IEC 42001 functions as a vendor trust signal (Anthropic certified Jan 2025).",
+   "documentedOrInferred": "documented (dates); applicability to coding agents is inferred",
+   "evidence": [
+    "S-020",
+    "S-021",
+    "S-024"
+   ],
+   "limitations": "Official Journal text not fetched directly; legal applicability to a given client requires counsel. Not legal advice."
+  },
+  {
+   "id": "G-F-07",
+   "title": "Echelon's flagship differentiator is implemented but not in use",
+   "classification": "VERIFIED",
+   "statement": "Praxis main (3.25.0, 2026-11-03) states 'Mandatory verified completion is not enabled across Echelon repositories'; attested completion requires a pinned verifier key (owner decision OD-9 open). As of 2026-10-23 the end-to-end integration intake->Ordo->Dokimos->Praxis was status 5 (not specified/connected) and 287 of 307 execution records carried no tokens. The released approved set 1.26.0 could not attest completion (no Dokimos 0.7.0 in catalog). Verified completion, provenance and cost telemetry therefore cannot honestly be sold as a licensed, production-proven product today.",
+   "documentedOrInferred": "internal repository evidence",
+   "evidence": [
+    "S-040",
+    "S-042",
+    "S-044"
+   ],
+   "limitations": "Status of later releases (Dokimos 0.11.1, Praxis 3.25.0) beyond the rollout doc was not re-inventoried by G; Track C/E may update."
+  },
+  {
+   "id": "G-F-08",
+   "title": "Echelon's own experiments show cost overhead without a measured quality gain on current fixtures",
+   "classification": "VERIFIED",
+   "statement": "REL-001 run-02: every arm 39/39 correct; optimized Echelon cost $0.1555 vs bare agent $0.1147 per correct requirement (+35.5%). Executable authorization was harmful (VAC-002-P3), typed records did not reduce errors. Positive, commercially usable results are method insights: brief-level architecture guidance removed violations (ARCH-002, Supported) and agent continuity cut cost per accepted requirement ~40% (VAC-001). These transfer best as consulting know-how, not as a licensed control product.",
+   "documentedOrInferred": "internal experimental evidence",
+   "evidence": [
+    "S-043",
+    "S-044"
+   ],
+   "limitations": "Ceiling effects on fixtures; one model family; quality benefit on harder, real work is untested (Track D)."
+  },
+  {
+   "id": "G-F-09",
+   "title": "Independent, attested 'definition of done' separated from the agent vendor appears unoccupied",
+   "classification": "INCONCLUSIVE",
+   "statement": "Vendor materials reviewed describe agent self-review (Copilot coding agent), AI code review (CodeRabbit, Qodo), quality gates (Sonar), evaluations (AgentCore, Foundry) and audit logs, but none of the reviewed pages describes a verifier independent of the implementing agent that signs a completion receipt bound to requirement IDs and revision. Echelon's REL-001 C3b/GATE-3 showed self-produced evidence can be forged, which is the argument for independence. This is the most distinctive position available, if it holds up.",
+   "documentedOrInferred": "inferred from absence across reviewed vendor pages",
+   "evidence": [
+    "S-012",
+    "S-027",
+    "S-028",
+    "S-009",
+    "S-032",
+    "S-040"
+   ],
+   "limitations": "Absence of evidence on marketing pages is weak; supply-chain attestation tooling (SLSA/in-toto, artifact attestations) not surveyed; buyers may not value independence enough to pay."
+  },
+  {
+   "id": "G-F-10",
+   "title": "Public Echelon site makes outcome claims without located evidence",
+   "classification": "INCONCLUSIVE",
+   "statement": "echelon-foundry site source claims '40%+ throughput gains' and 'reconciliation times reduced 80%'. No evidence packet for these claims was located in the repositories reviewed. For a brand built on evidence and on 'overclaiming is the most frequent recurring failure' (internal consolidation), unsupported headline numbers are a commercial and credibility risk.",
+   "documentedOrInferred": "internal repository evidence",
+   "evidence": [
+    "S-045",
+    "S-044"
+   ],
+   "limitations": "Evidence may exist privately (e.g. research-documents or client files) \u2014 not searched exhaustively; truth of claims NOT TESTED."
+  },
+  {
+   "id": "G-F-11",
+   "title": "Managed software factory / outcome-based delivery is not ready",
+   "classification": "CONTRADICTED",
+   "statement": "The hypothesis that Echelon can sell outcome-based delivery now is contradicted by its own record: Rehearsal 1 passed but with 25 defects; Rehearsal 2's self-declared acceptance is INVALID under the ledger contract (721 min vs 420-min ceiling); Rehearsal 3 NOT ACCEPTED. Market direction does favour outcome pricing (Deloitte DART accounting guidance June 2026; Deloitte predictions), and model cost is small ($0.11-$0.16 per correct requirement on fixtures), so the binding constraint is delivery predictability and acceptance, not compute.",
+   "documentedOrInferred": "internal evidence (readiness) + documented market direction",
+   "evidence": [
+    "S-044",
+    "S-043",
+    "S-033",
+    "S-034"
+   ],
+   "limitations": "Rehearsal tasks are one application family; future rehearsals may change this."
+  },
+  {
+   "id": "G-F-12",
+   "title": "Coding-agent usage is concentrating on a few platforms that Echelon depends on",
+   "classification": "SUPPORTED",
+   "statement": "Among Stack Overflow 2026 coding-agent users, Claude Code (66%) and GitHub Copilot (59%) lead; Cognition reported a $492M run-rate (May 2026). Echelon should position as an agent-agnostic evidence layer over Claude Code/Copilot/Codex rather than as another agent, and track platform risk if Anthropic or GitHub add independent completion verification.",
+   "documentedOrInferred": "documented (usage) + inferred (positioning)",
+   "evidence": [
+    "S-019",
+    "S-037",
+    "S-004",
+    "S-012"
+   ],
+   "limitations": "SO 2026 published as editorial highlights; full dataset pending; revenue figures company-reported."
+  },
+  {
+   "id": "G-F-13",
+   "title": "Large AI services spend exists, but its size says nothing about Echelon's addressable market",
+   "classification": "SUPPORTED",
+   "statement": "Gartner (Sept 2026) forecasts 2026 AI services spending around $576.5B and AI software around $461.6B within ~$2.67T total AI spending. These figures confirm a large consulting/services budget category but are proprietary forecasts with broad category boundaries; no serviceable-market estimate for Echelon is derived or claimed.",
+   "documentedOrInferred": "documented (analyst forecast)",
+   "evidence": [
+    "S-038"
+   ],
+   "limitations": "Figures via search summary of the release table; methodology proprietary; quoted for context only."
+  }
+ ]
+}
