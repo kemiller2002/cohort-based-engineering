@@ -14,9 +14,10 @@ def med(summary: dict, metric: str, label: str, mode: str, throttle: str, server
     return None
 
 
-def bmed(summary: dict, label: str, mode: str):
-    for g in summary["build"]:
-        if (g["label"], g["mode"]) == (label, mode):
+def bmed(summary: dict, label: str, mode: str, batch: str | None = None):
+    rows = summary["buildByBatch"] if batch else summary["build"]
+    for g in rows:
+        if (g["label"], g["mode"]) == (label, mode) and (batch is None or g["batch"] == batch):
             return g
     return None
 
@@ -66,12 +67,12 @@ def main() -> None:
              measuredOrEstimate="measured", evidence=["measurements/bundles/r010-sat.json", "measurements/startup.jsonl"], limitations="Invariant-globalization apps only."),
         dict(id="F-F-06", title="wasm-tools workload relinking halves the native runtime but is not needed to build",
              classification="SUPPORTED",
-             statement="All publishes succeeded without any workload. With wasm-tools installed (isolated SDK copy), R10 publish relinks dotnet.native.wasm 3.00 -> 1.50 MB (total _framework 10.8 -> 9.4 MB); one publish took 83 s vs 34-42 s without (n=1, contended). Startup effect: see measurements (label r010-wasmtools).",
+             statement=f"All publishes succeeded without any workload. With wasm-tools installed (isolated SDK copy), R10 publish relinks dotnet.native.wasm 3.00 -> 1.50 MB (total _framework 10.8 -> 9.4 MB); one publish took 83 s vs 34-42 s without (n=1, contended). Startup (clean rerun): localhost {fmt(r('r010-wasmtools','cold','none','python-http-rerun'))} vs R10 {fmt(r('r010'))}; 4G gzip {fmt(r('r010-wasmtools','cold','4g','gzip-rerun'))} vs {fmt(r('r010','cold','4g','gzip'))}.",
              measuredOrEstimate="measured", evidence=["measurements/bundles/r010-wasmtools.json", "measurements/startup.jsonl"],
              limitations="Workload manifest band 10.0.114 may pull a newer runtime pack than 10.0.13; n=1 build."),
-        dict(id="F-F-07", title="Build and edit-loop cost of F# WASM apps",
+        dict(id="F-F-07", title="Build and edit-loop cost of F# WASM apps; trimming doubles the edit-publish loop",
              classification="SUPPORTED",
-             statement=f"Release publish of the WASM host (warm NuGet cache): cold R8 {fmts(bmed(s,'r008','publish-cold'))}, R9 {fmts(bmed(s,'r009','publish-cold'))}, R10 {fmts(bmed(s,'r010','publish-cold'))}, fixture {fmts(bmed(s,'fixture','publish-cold'))}; no-op 2.5-3.1 s; one-line F# edit then publish: R8 {fmts(bmed(s,'r008','publish-incr'))}, R9 {fmts(bmed(s,'r009','publish-incr'))}, R10 {fmts(bmed(s,'r010','publish-incr'))}, fixture {fmts(bmed(s,'fixture','publish-incr'))}. About 10 s of every edit-publish is fixed WASM/ILLink pipeline cost (fixture). First-ever publish incl. runtime-pack download: 51.3 s (n=1).",
+             statement=f"Release publish of the WASM host (warm NuGet cache). Batch 2 (interleaved, loadavg ~5): cold R8 {fmts(bmed(s,'r008','publish-cold','batch2'))}, R9 {fmts(bmed(s,'r009','publish-cold','batch2'))}, R10 {fmts(bmed(s,'r010','publish-cold','batch2'))}; edit+publish R8 {fmts(bmed(s,'r008','publish-incr','batch2'))}, R9 {fmts(bmed(s,'r009','publish-incr','batch2'))}, R10 {fmts(bmed(s,'r010','publish-incr','batch2'))}. Batch 1 (sequential, loadavg ~12): cold R8 {fmts(bmed(s,'r008','publish-cold','batch1'))}, R9 {fmts(bmed(s,'r009','publish-cold','batch1'))}, R10 {fmts(bmed(s,'r010','publish-cold','batch1'))}; Debug solution build cold R8 {fmts(bmed(s,'r008','sln-cold'))}, R9 {fmts(bmed(s,'r009','sln-cold'))}, R10 {fmts(bmed(s,'r010','sln-cold'))}. All batches pooled: cold R8 {fmts(bmed(s,'r008','publish-cold'))}, R9 {fmts(bmed(s,'r009','publish-cold'))}, R10 {fmts(bmed(s,'r010','publish-cold'))}, fixture {fmts(bmed(s,'fixture','publish-cold'))}; no-op 2.5-3.1 s; one-line F# edit then publish: R8 {fmts(bmed(s,'r008','publish-incr'))}, R9 {fmts(bmed(s,'r009','publish-incr'))}, R10 {fmts(bmed(s,'r010','publish-incr'))}, fixture {fmts(bmed(s,'fixture','publish-incr'))}. Trimmed apps (R10, fixture: TrimMode=partial) re-run ILLink on every publish, so a one-line edit costs 10.6-16 s versus 5.7-8.2 s for untrimmed R8/R9: the trimming that cuts payload 3-4x (F-F-01) roughly doubles the edit-publish loop; a Debug/no-trim dev loop with Release-only trimming avoids paying both. First-ever publish incl. runtime-pack download: 51.3 s (n=1).",
              measuredOrEstimate="measured", evidence=["measurements/build-times.csv", "measurements/build-times-batch2.csv", "measurements/summary.json"],
              limitations="Heavy contention from concurrent tracks (loadavg median 11.7 on 4 vCPU during batch 1); batch 2 interleaved to reduce order effects; MSBuild node reuse on."),
         dict(id="F-F-08", title="Where agents struggle with F#: type mismatches and unresolved names, fixed quickly",
