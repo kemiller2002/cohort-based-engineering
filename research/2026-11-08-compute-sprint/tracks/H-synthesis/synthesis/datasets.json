@@ -1,0 +1,143 @@
+{
+  "schema": "track-h.datasets/1",
+  "track": "H-synthesis",
+  "asOf": "2026-11-08T14:11:11-05:00",
+  "status": "Candidate reusable datasets and benchmarks. NOT cleared for release: every entry has open licensing/visibility questions listed below. Descriptions come from the producing track's files; H-001 checked row counts and field names, not values.",
+  "globalCaveats": [
+    "VISIBILITY: indy-init-rehearsal-002..010, research-documents, causa-acceptance-r10 and Indy-init-audits are PRIVATE (REPOSITORY-ACCESS.json). Several datasets below are derived from them. The sprint directory lives in cohort-based-engineering, which is PUBLIC. Merging these derived datasets to a pushed branch publishes facts from private repositories (commit SHAs, file paths, defect descriptions, branch names). The owner should decide this before the Director pushes, independent of any later publication decision.",
+    "LICENSE: no LICENSE file in Indy-init, the rehearsal repositories, research-documents, cohort-based-engineering or causa-acceptance-r10 (checked R8, Indy-init, cohort-based-engineering, research-documents, causa-acceptance-r10). Praxis is PolyForm Noncommercial 1.0.0. Absence of a license means no reuse grant; derived-data reuse needs an explicit owner license choice.",
+    "MODEL IDENTIFIERS: MANIFEST.md states model identifiers are kept out of repository artifacts, but A's executions.csv, requests.csv and controlled-usage.csv carry a model column copied from source telemetry, and A's REPORT names the price-table entry. The Director should decide whether this is acceptable (it is source data, not the Director's identity).",
+    "THIRD-PARTY TERMS: GitHub Actions API data (A, B) is the account's own data; redistribution as a dataset is subject to GitHub terms and contains run IDs and branch names.",
+    "COST: every USD column is a list-price ESTIMATE from cohort-based-engineering research/pricing/anthropic.price-table.json tableVersion 2026-10-20.1. No provider bill exists. R3/R7 cache writes are priced at the 5m rate; R8 uses the 5m/1h split (V1: $193.74 vs $190.51 on a 5m-only basis)."
+  ],
+  "datasets": [
+    {
+      "id": "DS-B-EVENTS",
+      "name": "Rehearsal failure-event corpus R1-R10 + Causa",
+      "producer": "B-forensics",
+      "files": ["B-forensics/events.jsonl", "B-forensics/taxonomy.json", "B-forensics/data/event-analysis.json"],
+      "size": "135 records (133 MEASURED, 2 ESTIMATE); 16 root-cause codes",
+      "schema": {
+        "id": "string B-E-NNN",
+        "rehearsal": "R1..R10 | Causa",
+        "timestamp": "ISO-8601 UTC or null (null when the source gives no time)",
+        "eventType": "string (e.g. run-start, requirement-intake-rework)",
+        "description": "free text written by the analyst",
+        "source": "repository@sha path:lines",
+        "rootCause": "code from taxonomy.json or NONE",
+        "contributingFactors": "array of taxonomy codes",
+        "requirementIds": "array of requirement IDs",
+        "humanIntervention": "boolean",
+        "detectedBy": "string or null",
+        "measuredOrEstimate": "MEASURED | ESTIMATE"
+      },
+      "provenance": "Curated by one analyst (B-001) from final reports, deviation logs and results docs at the revisions in B-forensics/data/revisions.tsv; every record cites a source line.",
+      "reproducibility": "PARTIAL. Sources are pinned by SHA and line, so each record can be re-checked, but curation (which events, which root cause) is judgement; B's limitations note minor frictions are under-sampled. No second coder. B's scripts/tests (24 passing) cover aggregation, not curation.",
+      "licensingCaveats": "Derived from private rehearsal repositories and private research-documents; descriptions quote defect detail. Not releasable without owner consent and redaction review.",
+      "benchmarkPotential": "Candidate labelled corpus for 'agentic delivery failure taxonomy' work; needs inter-rater reliability (FX-08) before any external use.",
+      "supportsFindings": ["B-F-03", "B-F-04", "B-F-05", "B-F-12"]
+    },
+    {
+      "id": "DS-B-SUMMARY",
+      "name": "Per-rehearsal outcome summary",
+      "producer": "B-forensics",
+      "files": ["B-forensics/rehearsal-summary.csv"],
+      "size": "11 rows x 24 columns",
+      "schema": "rehearsal, scope, plannedRequirements, completedRequirements, completedBasis, indyInitVerdict, selfReported, acceptedUnderIndyInit, firstGreenAppCiMin, firstGreenBuildWorkflowMin_actions, firstDeployedAppMin, firstVerifiedE2eMin, ciRunsWindow, ciFailuresWindow, ciCancelledWindow, governanceFailureEvents, contractIncompatibilityEvents, integrationFailureEvents, mergesInWindow, conflictedMerges_source, conflictedMerges_recordsOnly, humanInterventionEvents, topology, sources",
+      "provenance": "Mixed: verdicts as recorded by each run; milestone minutes from reports or Actions; merge counts from git merge-tree replay.",
+      "reproducibility": "PARTIAL. Units differ per row (completedBasis column says which); T0 definitions differ (B-F-10). Not a comparable series.",
+      "licensingCaveats": "As DS-B-EVENTS.",
+      "benchmarkPotential": "Low as a benchmark (non-comparable rows). Useful as an index into the runs.",
+      "supportsFindings": ["B-F-01", "B-F-10"]
+    },
+    {
+      "id": "DS-ACTIONS",
+      "name": "GitHub Actions runs/jobs/steps for Indy-init and R1-R10",
+      "producer": "A-economics (runs, jobs, steps) and B-forensics (run lists), fetched independently",
+      "files": ["A-economics/data/ci-runs.csv", "A-economics/data/ci-jobs.csv", "A-economics/data/ci-steps.csv", "A-economics/data/ci-step-categories.csv", "A-economics/data/ci-commit-latency.csv", "A-economics/data/ci-red-then-green.csv", "A-economics/data/raw/ci-fetch-manifest.json", "A-economics/data/raw/ci-runs-*.jsonl", "A-economics/data/raw/ci-jobs-timed.jsonl", "B-forensics/raw/actions/indy-init-rehearsal-0NN.jsonl"],
+      "size": "A: 4,633 runs, 6,013 jobs (timed-window runs only), 58,470 steps; B: 3,222 runs (R1-R10)",
+      "schema": {
+        "ci-runs.csv": "repo,id,workflow,event,status,conclusion,headBranch,headSha,runAttempt,createdAt,runStartedAt,updatedAt,queueSeconds,spanSeconds,inTimedWindow",
+        "ci-jobs.csv": "repo,runId,jobId,job,conclusion,runAttempt,createdAt,startedAt,completedAt,queueSeconds,durationSeconds,steps",
+        "ci-steps.csv": "repo,runId,jobId,job,step,category,conclusion,seconds (category = regex heuristic)"
+      },
+      "provenance": "GitHub Actions REST API, GET only, fetched 2026-11-08 ~18:40-19:30Z (A, see ci-fetch-manifest.json); B fetched separately. 0 fetch errors reported by A. Causa's Actions API was unreachable (B gap); B-forensics/raw/actions/causa.jsonl.tmp is an incomplete partial file and should be excluded or removed.",
+      "reproducibility": "HIGH for the snapshot (raw JSONL kept; scripts fetch_ci_runs.py, build_ci.py, fetch_ci_jobs.py, analyze_ci.py; 18 tests). Re-fetching will drift: runs can be deleted or expire (GitHub log retention), and runs after the fetch will appear. Two independent fetches (A and B) allow a cross-check that no one has run yet (FX-09).",
+      "licensingCaveats": "Most repositories are private. Run IDs, branch names and step names reveal internal process. Public repositories are not billed, so 'billable minutes' is a compute proxy only (A-F-12).",
+      "benchmarkPotential": "Good candidate for a 'CI cost of agentic delivery' dataset after redaction: real runs, step-level timing, labelled timed windows (rehearsal-windows.csv).",
+      "supportsFindings": ["A-F-11", "A-F-12", "A-F-13", "A-F-14", "B-F-08", "B-F-16"]
+    },
+    {
+      "id": "DS-A-TOKENS",
+      "name": "Praxis execution records and per-request token ledger",
+      "producer": "A-economics",
+      "files": ["A-economics/data/executions.csv", "A-economics/data/requests.csv", "A-economics/data/rehearsal-tokens.csv", "A-economics/data/r8-workitem-categories.csv", "A-economics/data/r8-by-category.csv", "A-economics/data/rereads.csv", "A-economics/data/tool-calls.csv", "A-economics/data/README.md"],
+      "size": "626 execution records (14 repositories); 3,654 request rows (R8 + praxis); token totals for R3, R7, R8 only",
+      "schema": "See A-economics/data/README.md (column-level). Empty cell = unavailable; 0 = recorded zero. Columns ending ESTIMATE or LOWERBOUND are not measured.",
+      "provenance": "<repo>/.ros/telemetry/executions/*.json at the revisions in A data/README.md; rehearsal telemetry files for R3/R7/R8.",
+      "reproducibility": "HIGH for totals: V1 independently recomputed R8 533,823,102 tokens and the coordinator share exactly (V1 A-F-01, A-F-03). V1 found 48 ledgers / 3,100 requests for R8 where A's README says 49 executions (totals unaffected). Category assignment in r8-workitem-categories.csv is judgement with a cited basis per row. wall_ms is not a reliable duration (A-F-10).",
+      "licensingCaveats": "Source telemetry in private rehearsal repositories; includes session IDs, agent IDs and a model column (see globalCaveats MODEL IDENTIFIERS).",
+      "benchmarkPotential": "Rare real-world multi-agent token dataset with cache buckets per request. Only one rehearsal (R8) has per-request detail, so it is a case study, not a benchmark.",
+      "supportsFindings": ["A-F-01", "A-F-03", "A-F-04", "A-F-05", "A-F-06", "A-F-09", "A-F-10"]
+    },
+    {
+      "id": "DS-A-CONTROLLED",
+      "name": "Controlled pilot usage (CONSTRUCT-008, time-entry-expanded-01)",
+      "producer": "A-economics",
+      "files": ["A-economics/data/controlled-usage.csv"],
+      "size": "21 run rows over 2 experiments: n=3 per arm, plus 3 CONSTRUCT-008 arm-C rows labelled C-P1..C-P3 (apparently preliminary runs; A-F-16 median 730k matches C1-C3 only, so they are excluded from the headline)",
+      "schema": "experiment,run,arm,model,requests,input,outputLowerBound,outputEstimateChars4,cacheRead,cacheWrite,cumulativeTotal,finalContextTokens,toolCalls,agentWallSeconds,costUsdListPriceLOWERBOUND,costUsdListPriceESTIMATE",
+      "provenance": "research-documents@b372a7f per-run usage (private).",
+      "reproducibility": "MEDIUM: output tokens are lower bounds (streaming start), with a chars/4 estimate alongside; arms differ in repair rounds (A-F-16 limitation).",
+      "licensingCaveats": "Private source.",
+      "benchmarkPotential": "Pilot only; feeds FX-05 power analysis.",
+      "supportsFindings": ["A-F-16"]
+    },
+    {
+      "id": "DS-C-GRAPH",
+      "name": "Echelon ecosystem dependency graph and pin-skew table",
+      "producer": "C-architecture",
+      "files": ["C-architecture/dependency-graph.json", "C-architecture/dependency-graph.dot", "C-architecture/inventory.json", "C-architecture/data/pin-skew.json", "C-architecture/data/repo-facts.json", "C-architecture/data/source-revisions.tsv"],
+      "size": "35 nodes, 380 edges; 375 consumer version pins",
+      "schema": {
+        "nodes": "{id, kind, head (sha), release, approvedInSet}",
+        "edges": "{from, to, type: package-ref|CLI-invocation|contract/schema|doc-only-claim, vias[], versions[], evidence[], count}",
+        "approvedSet": "echelon-current@1.37.0"
+      },
+      "provenance": "Static extraction by C-architecture/tools/archgraph.py and build_inventory.py over checked-out repositories and ext clones at the heads in source-revisions.tsv.",
+      "reproducibility": "HIGH: tools/run.sh regenerates everything; 34 passing tests. Point-in-time: pins on main only (C-F-01 limitation).",
+      "licensingCaveats": "Mostly public repositories plus private Indy-init-related ones; the graph itself reveals little sensitive detail. Praxis-derived facts are under PolyForm Noncommercial for the source, not for facts about it (owner should confirm).",
+      "benchmarkPotential": "Good candidate for a public 'small-ecosystem version skew' case study; lowest release risk of the five.",
+      "supportsFindings": ["C-F-01", "C-F-03", "C-F-06", "C-F-07", "C-F-17"]
+    },
+    {
+      "id": "DS-E-BYPASS",
+      "name": "Governance bypass matrix (Praxis 3.25.0 / Dokimos 0.11.1)",
+      "producer": "E-security",
+      "files": ["E-security/data/E-X01-gate-v319-on-praxis-3.25.0.jsonl", "E-security/data/E-X02-bypass-cases-praxis-3.25.0.jsonl", "E-security/data/E-X03-nx1-installed.txt", "E-security/data/E-X10-indy-fabricated-acceptance.json", "E-security/findings.json#bypass_attempts", "E-security/scripts/bypass-cases.sh", "E-security/scripts/indy_fabricated_acceptance.py"],
+      "size": "17 gate-regression cases (E-X01) + 13 new cases (E-X02) + fabricated-acceptance run; 15 refused / 11 succeeded overall",
+      "schema": {
+        "E-X01": "{case, intent, mode, expected, outcome, exit, codes[], verifierKeyIds, evidence}",
+        "E-X02": "{case, attempt, expected, outcome, exit, codes[], detail, note}"
+      },
+      "provenance": "Executed locally against tools built from source: praxis 12bf995 (3.25.0), dokimos fecbe0c (0.11.1), ordo sde db6d39e, Indy-init dae2347 (E findings.json tested_versions). Fixture repositories under /home/user/sprint-scratch/E/ (not preserved in the repository).",
+      "reproducibility": "MEDIUM-HIGH: scripts are committed with 19 tests; fixtures are regenerated by the scripts, but the scratch fixtures themselves are not committed. Version-specific: results hold only for the listed revisions.",
+      "licensingCaveats": "SECURITY SENSITIVE. Contains working bypass procedures against controls the owner relies on, several not yet fixed (E-F-02, E-F-03, E-F-04, E-F-05). Must not be published before fixes or an explicit disclosure decision. The secret-scan output (secret-scan-redacted.json) holds fingerprints only, by design.",
+      "benchmarkPotential": "Strong candidate as a regression suite for Praxis release CI (E recommends this). As a public benchmark only after fixes ship.",
+      "supportsFindings": ["E-F-01", "E-F-02", "E-F-03", "E-F-04", "E-F-05", "E-F-06", "E-F-11", "E-F-12"]
+    },
+    {
+      "id": "DS-MERGES",
+      "name": "Merge-conflict replay results",
+      "producer": "B-forensics (merge-conflicts.json); V1 and A2 produce independent replays",
+      "files": ["B-forensics/data/merge-conflicts.json", "V1-verification/data/ (pending structure)", "A2-remediation/raw/ (pending)"],
+      "size": "every two-parent merge in R1-R10 and Causa (B); R8 86-87 merge commits",
+      "schema": "per merge: repository, merge sha, parents, conflicted paths (see file)",
+      "provenance": "git merge-tree replay with current git defaults (B-F-09 limitation: squash merges and rebases invisible; not the agents' tools).",
+      "reproducibility": "HIGH for method, but three replays disagree on some per-run counts (matrix X-02, X-03). Window and ref-set definitions must be fixed before reuse.",
+      "licensingCaveats": "Private rehearsal repositories; file paths only.",
+      "benchmarkPotential": "Input fixture for the A2 merge-driver experiment and for any .ros format change (ADR-S02).",
+      "supportsFindings": ["A-F-07", "B-F-09"]
+    }
+  ]
+}

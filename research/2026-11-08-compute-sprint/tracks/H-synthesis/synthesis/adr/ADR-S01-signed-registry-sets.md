@@ -12,7 +12,8 @@
 - **The two catalogs disagree.** forma-workflow is a Conditor built-in with no Registry entry (C-F-09). Dokimos, arca, fides and others are in the Registry with no Conditor descriptor (C-F-03).
   - The forma-workflow gap matches a recurring rehearsal defect: forma-workflow sat outside the approved set in R4, R5, R8 and R10 (B-F-13, SUPPORTED; cross-track theme X-07).
 - **The escape hatch exists but is switched off.** Conditor already implements attested range qualification (`Registry.attestedQualification`), but `trust/registry-release-keys.json` lists no keys (C-F-04, VERIFIED).
-- **Adjacent problem, not solved here:** the wider ecosystem lags the approved set by up to 35 set versions (C-F-01, VERIFIED). That is CR-02 and needs its own decision.
+- **Adjacent problem, not solved here:** the wider ecosystem lags the approved set by up to 35 set versions (C-F-01, VERIFIED; V2 VERIFIED, counting 8 repositories on sets 1.3.0–1.24.0, not 9). That is CR-02 and needs its own decision.
+- V2 also notes that causa locks forma-workflow 1.2.0, which the 1.37.0 set does not name. So the only "approved-set" product repository already sits outside the Registry catalog.
 
 ## Decision (proposed)
 
@@ -39,7 +40,7 @@
 | Finding | Class | Independent check |
 |---|---|---|
 | C-F-03 (dual catalogs, 13 releases in 14 days) | VERIFIED (C) | V2 pending |
-| C-F-04 (range qualification built, keys empty) | VERIFIED (C, code reading) | V2 pending; not executed |
+| C-F-04 (range qualification built, keys empty) | VERIFIED (C, code reading) | V2 VERIFIED: `keys: []`, unchanged since 2026-10-13, and the only trust source. The path itself has still not been executed |
 | C-F-18 (12 sets in 13 days) | VERIFIED (C) | V2 pending |
 | C-F-09 (forma-workflow outside Registry) | VERIFIED (C) | V2 pending |
 | B-F-13 (forma-workflow defect in R4, R5, R8, R10) | SUPPORTED (B) | none |

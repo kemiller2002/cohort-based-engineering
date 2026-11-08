@@ -17,12 +17,19 @@
 | R10 | `authorize-implementation` refused the real approved plan with 55 causes, having been tested only on a synthetic plan; the governed gate then deadlocked (45 of 66 runs cancelled) |
 | Causa | A T18↔T20 cycle in the slice plan; process rules bound to the R10 repository |
 
+**Independent check (V2, PARTIALLY VERIFIED).** V2 confirms that governance machinery was the *first* refusal that ended the governed verdict from R8 onward. It does **not** confirm that it was the dominant blocker:
+- R8: with valid approvals the ledger is still FAILED (G3, G7, G8 FAIL; 346/613 P0 obligations not run).
+- R9: 0/541 executable obligations implemented; the agent stopped at about T+115 by choice.
+- R10: several work items never started, plus browser-suite failures.
+
+B's category is also broad: it includes spec contradictions and an SDK incompatibility, not only approval or process records. See matrix X-23. **This ADR therefore claims only that a dry run removes the first point of failure and returns window time. It does not claim the dry run would have produced acceptance.**
+
 **Prevalence.** B ranks this mechanism first: present in 10 of 11 runs, primary cause in 29 of 116 failure events. Track B curated the events with a single analyst, so the counts are ESTIMATES. From R8 on it was the terminal blocker in every run.
 
 **CI data shows the cost.**
 - R10 had 88% of CI minutes in failed or cancelled runs (A-F-12).
 - R10 commit latency was 2,470 s (A-F-14).
-- R10's verification gate had 45 cancelled runs, 20 failed and 1 success (B-F-08).
+- R10's verification gate had 45 cancelled runs, 20 failed and 1 success (B-F-08; V2 VERIFIED the counts, but 36 of 45 cancellations fit the gate's 40-minute job timeout, so "deadlock" is interpretive).
 
 **Owner readiness is a related gap.** Secrets, Pages, rulesets and approvals were not ready at T0 in 10 of 11 runs (B-F-12, SUPPORTED).
 
@@ -60,7 +67,7 @@ No kickoff unless the dry run is GO (compare R7, which started while its audit v
 
 | Finding | Class | Independent check |
 |---|---|---|
-| B-F-03 | SUPPORTED (B) | V2 pending; B2 replay pending |
+| B-F-03 | SUPPORTED (B) | V2 PARTIALLY VERIFIED (first blocker yes, dominant blocker no); B2 replay pending |
 | B-F-12 | SUPPORTED (B) | V2 pending |
 | B-F-08 | VERIFIED (B) | V2 pending |
 | A-F-12, A-F-14 | VERIFIED (A) | V1 queued for A-F-12 |
@@ -73,4 +80,5 @@ Files: `B-forensics/findings.json#B-F-03`, `B-forensics/data/event-analysis.json
 1. What fraction of the recorded in-window governance defects would a stub dry run have caught? B2 is testing this. Reconsider this ADR when B2 reports.
 2. Does a dry run cost less than the window time it saves? Neither cost nor saving is measured.
 3. Should the dry run be a Praxis/Dokimos-native capability, or remain Indy-init tooling (C-F-12, CR-07)?
-4. B's event curation was done by one analyst. Would a second coder reproduce the "10 of 11 runs" prevalence?
+4. How much acceptance headroom does the dry run buy, given V2's finding that R8–R10 were also far from product-complete (X-23)?
+5. B's event curation was done by one analyst. Would a second coder reproduce the "10 of 11 runs" prevalence?
