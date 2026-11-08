@@ -96,5 +96,22 @@
   ],
   "discrepancies": [],
   "notes": "Partial: token buckets and oracle verdicts are the experiment's own per-trial records; raw transcripts and oracle re-runs were not available/re-executed. Definitional caveat: output tokens are a transcript lower bound in all 80 trials (about 22 tokens per request, streaming-start counts), so output is only 1.3-1.7% of computed cost. True cost per correct requirement is higher in every arm, and the +35.5% gap could move if true output differs between arms; the report discloses the lower bound (REPORT-run-02.md:237) but the headline does not. 39/39 in all arms is a ceiling: the experiment cannot show a quality difference."
+ },
+ {
+  "claimId": "G-F-10",
+  "verdict": "VERIFIED",
+  "claimedValue": "echelon-foundry public site claims '40%+ throughput' and '80% reconciliation reduction' with no evidence packet",
+  "recomputedValue": "Claims exist: kemiller2002/echelon-foundry@8c6b453 (= remote HEAD, 2026-10-13) src/pages/index.html:14 '40%+ throughput gains', :15 'Hours to minutes' (reconciliation); src/data/case-studies.json:41 (status published) 'Reconciliation times reduced 80%'; src/pages/about.html:16 'engineering productivity improvements exceeding 40%'. The live site https://echelonfoundry.com/ (CNAME) served all three strings on 2026-11-08. No supporting evidence found: echelon-foundry research/evidence is empty; a grep of research-documents, cohort-based-engineering, indy-init-audits, Indy-init, praxis and 40 ext/ repos finds the strings only in the site, in copies in ext/forma (hero pattern, facts component, example marketing site) and in sprint G-track files.",
+  "independence": "fully independent recomputation",
+  "method": "Fresh read-only clone to /home/user/sprint-scratch/V1/echelon-foundry, checked against git ls-remote HEAD; GET of the live homepage; repo-wide grep for the claim strings, case-study slugs and related phrases.",
+  "inputs": [
+   "kemiller2002/echelon-foundry@8c6b45358fb1",
+   "https://echelonfoundry.com/ fetched 2026-11-08",
+   "all repositories checked out under /home/user"
+  ],
+  "discrepancies": [
+   "Wording: the site's 80% figure is 'Reconciliation times reduced 80%' (case-study outcome); the homepage stat reads 'Hours to minutes'. The case-study page for organizational throughput gives different numbers ('Deployment frequency doubled; unplanned work reduced 50%'), not 40%, so the 40% claim is inconsistent with its own case study."
+  ],
+  "notes": "These are consulting-engagement outcomes (an unnamed fintech; an unnamed organization), not measurements of Echelon software. Absence of evidence is limited to the repositories available here; client records may exist elsewhere. The truth of the claims was not tested."
  }
 ]
