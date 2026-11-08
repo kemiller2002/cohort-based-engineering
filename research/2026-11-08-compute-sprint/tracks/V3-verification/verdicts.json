@@ -69,6 +69,44 @@
     "The 2 'missing decisions' are kind missing-specification and non-blocking; the exit 3 is caused by the 2 contradictions + 1 missing interface."
    ],
    "notes": "Single run per input (deterministic analysis); timing not re-measured."
+  },
+  {
+   "claimId": "A2-F-01/02",
+   "verdict": "VERIFIED",
+   "claimedValue": "The .ros merge driver resolves all .ros/ conflicts in R8 merges with 0 records lost (A2: 105 conflicted .ros paths in 58 of 86 R8 merges, 0 unmerged; 0 lost, 0 duplicated; IDs and content equal the team merge).",
+   "recomputedValue": "Survey (git merge-tree, no driver) of my own full clone of indy-init-rehearsal-008: 86 two-parent merges reachable from HEAD (87 with --all), 58 with .ros conflicts, 105 conflicted .ros paths (current.json 58, events.jsonl 47); only those two .ros paths ever conflict. Seeded sample (seed 20261108) of 18/58 re-merged with the SUT driver: 18/18 left 0 unmerged paths (no non-.ros conflicts either); 0 work items and 0 events lost vs parents; 0 duplicate IDs; work-item and event ID sets equal the team merge in 36/36 files; 0 per-record content differences; events.jsonl byte-identical to the team merge 18/18; current.json byte-identical 3/18, differing only in top-level updatedAt (9) or actor (6).",
+   "independence": "Own unshallowed clone (github.com/kemiller2002/indy-init-rehearsal-008, full history), own survey and sampling, own record comparator (scripts/merge_replay.py). A2's driver (RosMerge.fs sha256 cb58563..., ros-merge.fsx sha256 74f2e3d..., A2 commit 8629572) run unmodified as system under test via .git/info/attributes in my clone; A2's replay/summary scripts and jsonl not used.",
+   "method": "For each sampled merge M(p1,p2): checkout p1 detached, git merge --no-commit --no-ff p2 with merge.ros-history driver; collect unmerged paths; parse result, base, p1, p2 and M: workItems keyed by id, events keyed by eventId (canonical JSON). lost = (ids(p1)|ids(p2)) - ids deleted by either side vs base - ids(result); duplicates = ids occurring >1; compare id sets and per-id content with M.",
+   "inputs": [
+    "/home/user/sprint-scratch/V3/clones/r008 (HEAD fd8fba9)",
+    "raw/r008-survey.json",
+    "raw/r008-sample-ids.txt",
+    "raw/r008-replay.jsonl"
+   ],
+   "discrepancies": [
+    "A2 attributes current.json byte differences to order and the top-level actor field; in my sample updatedAt differs in 9/18 and actor in 6/18 (no record-level difference).",
+    "praxis validate on the 18 R8 driver results was not re-run (only d8447ed1 was validated)."
+   ],
+   "notes": "Sample of 18 of 58 conflicted merges, not the full population; the 2890d285 case shows the driver also runs (RelaxedOrder) on events.jsonl that git would have merged cleanly, without changing the outcome."
+  },
+  {
+   "claimId": "A2-F-03",
+   "verdict": "PARTIALLY VERIFIED",
+   "claimedValue": "R10 team merge d8447ed1 dropped active WI-0003, which is present in both parents and absent from d8447ed1's current.json; praxis validate fails on d8447ed1; the driver would keep it.",
+   "recomputedValue": "d8447ed1 (parents 160f1c0b = slice/SL-T19, 2a4ae187 = origin/slice/SL-T12; base 1e5896de). WI-0003 is present ONLY in parent 2a4ae187 (state active, semanticState active, updatedAt 2026-11-06T17:17:13Z); it is absent from parent 160f1c0b and from the merge base. d8447ed1's current.json is byte-identical to parent 160f1c0b's (ours side kept) and lacks WI-0003, while its events.jsonl keeps WI-0003's work.started event and .ros/telemetry/executions/EXE-20261106T171713776Z-a5ba0d39.json still links it. WI-0003 was active: no completion event exists, and it is still active at the final HEAD of the repo. My praxis 3.25.0 build: validate on d8447ed1 exits 1: \"linked work item 'WI-0003' is not present in repository context\"; both parents pass; d8447ed1 with the SUT driver's current.json (which keeps WI-0003) passes.",
+   "independence": "Own clone of indy-init-rehearsal-010; WI-0003 checked by git show of each commit's current.json; praxis built by me from /home/user/ext/praxis at tag v3.25.0 (12bf9951); A2's validate jsonl not used.",
+   "method": "git show <rev>:.ros/context/current.json for base, both parents and M; event grep; scripts/praxis_validate.py (worktrees in my scratch clone, praxis --root WT validate).",
+   "inputs": [
+    "/home/user/sprint-scratch/V3/clones/r010",
+    "raw/r010-replay.jsonl",
+    "raw/praxis-validate-d8447ed1.json",
+    "raw/d8447ed1-driver/current.json"
+   ],
+   "discrepancies": [
+    "The brief's premise that WI-0003 is 'present in both parents' is CONTRADICTED: it is present in one parent only (2a4ae187, the SL-T12 side, which added it after the merge base). A2's own finding says the merge 'kept one side', which is consistent with my result.",
+    "praxis was run framework-dependent with DOTNET_ROLL_FORWARD=Major (net10.0 target; no roll-forward actually needed)."
+   ],
+   "notes": "Everything A2-F-03 itself states reproduces: drop, active state, validate failure, driver result keeps the item and validates. Only the 'both parents' wording in the verification brief is wrong. Also: d8447ed1 had 2 non-.ros conflicts (src/Causa.Persistence/Classify.fs, GitHubRequests.fs) that the driver does not address."
   }
  ]
 }
