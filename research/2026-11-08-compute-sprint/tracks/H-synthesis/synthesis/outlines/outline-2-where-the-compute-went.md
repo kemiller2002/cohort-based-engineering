@@ -79,6 +79,10 @@ In the one rehearsal with full telemetry (R8), most tokens were cache reads of a
 - The sprint's own matched agent experiment: a governance block added +6.1% tokens and +55% wall time at 12/12 vs 12/12 acceptance (**SUPPORTED**, n=4 per arm, D2-F-02; Holm-adjusted p=0.086 for tokens).
   - Two harder fixtures could not make the ungoverned baseline fail (DECISION-LOG D-027, D-030).
   - **[DO NOT STATE]** "governance has no benefit". The benefit is untested beyond short tasks.
+- **The benefit depends on the model.** With a smaller model (Haiku), the same governance prompt cut undocumented policy invention from 21 to 0 across 12 runs per arm (2.17 fewer violations per run, p=0.00028), at the same +6–8% token cost.
+  - Evidence class: preregistered SPR-X-02, adopted in D-037. V4 verification is in progress.
+  - Caveat D-041: the block was delivered before the task line.
+  - Candidate framing: "calibrate governance per model". **[DO NOT STATE]** this as general until V4 and the X-03 ablation report.
 
 ## 7. What we cannot measure yet
 

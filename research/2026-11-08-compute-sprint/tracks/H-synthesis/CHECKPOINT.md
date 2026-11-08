@@ -48,3 +48,8 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 ## CP-H-10 (15:39 EST): V3 verdicts; D3/D4 series end
 - Ledger reads V3 (combined ids like A2-F-01/02 expanded; SPR-D2-01 aliased to D2-F-02/03): 29 of 105 independently checked.
 - New X-28: rehearsal over-claiming/authority failures are not reproduced by 5 controlled fixtures (contradict, moderate). Outline 1 gains the counterpoint.
+
+## CP-H-11 (16:06 EST): SPR-X-01/X-02 and E2
+- X-11 agreement changed to contradict: cost corroborated everywhere; benefit appears for Haiku (SPR-X-02) but not for capable models. X-28 partly reconciled by model dependence (over-claiming still not reproduced in any model).
+- E2 integrated into X-04/X-05/X-26 and ADR-S03; new X-29 (permission-layer containment, SO-01). IM-13 (per-model governance calibration).
+- Ledger: 110 claims plus supplementary SPR-X-01/X-02 entries (V4 verifying).

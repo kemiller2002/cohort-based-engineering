@@ -2,7 +2,7 @@
  "schema": "track-h.claims-ledger/1",
  "track": "H-synthesis",
  "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
- "asOf": "2026-11-08T15:39:10-05:00",
+ "asOf": "2026-11-08T16:06:10-05:00",
  "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D, A2, C2, B3, B4, D2, F whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
  "verificationSources": {
   "V1": "/home/user/sprint-wt/V1-verification/research/2026-11-08-compute-sprint/tracks/V1-verification/verdicts.json",
@@ -10,13 +10,13 @@
   "V3": "/home/user/sprint-wt/V3-verification/research/2026-11-08-compute-sprint/tracks/V3-verification/verdicts.json"
  },
  "summary": {
-  "claims": 105,
-  "highConsequence": 40,
+  "claims": 110,
+  "highConsequence": 42,
   "independentlyVerifiedDone": 29,
   "verifiedClean": 24,
   "verificationDiscrepancy": 5,
   "queued": 0,
-  "notYetIndependentlyVerified": 76,
+  "notYetIndependentlyVerified": 81,
   "priorityForVerification": [
    "A-F-16",
    "B-F-04",
@@ -36,7 +36,9 @@
    "C2-F-02",
    "C2-F-08",
    "B4-F-07",
-   "F-F-03"
+   "F-F-03",
+   "E2-F-03",
+   "E2-F-05"
   ]
  },
  "claims": [
@@ -2685,7 +2687,7 @@
    "track": "F-fsharp-wasm",
    "classification": "SUPPORTED",
    "severity": null,
-   "title": "Build and edit-loop cost of F# WASM apps",
+   "title": "Build and edit-loop cost of F# WASM apps; trimming doubles the edit-publish loop",
    "measuredOrEstimate": "measured",
    "consequence": "medium",
    "consequenceIfWrong": "Edit-publish loop ~10 s fixed WASM cost.",
@@ -2865,6 +2867,139 @@
    "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-15"
   },
   {
+   "claimId": "E2-F-01",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Deriving 'claimed' from the tracked event log refuses the E-F-03 claim-store deletion bypass",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Claim-guard fix refuses E-F-03; A1c residual bypass if marker never committed.",
+   "trackLimitations": "A1c: if the marker was never committed, deleting it together with the store still bypasses (exit 0). Anyone who can write the repository can forge or rewrite tracked history; the fix moves the bypass into reviewable tracked state, it does not create a trust root. Changes invariant I8; see E2-F-04.",
+   "crossTrackSupport": [
+    "E-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-01"
+  },
+  {
+   "claimId": "E2-F-02",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "A queue/event cross-check detects hand-edited queue.json completions (E-F-11) with no false positives on local repositories",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Queue/event cross-check detects hand-edited completions; 0 FP on 1,881 rows.",
+   "trackLimitations": "Only 'complete' rows are checked: backlog 'abandoned' writes no event in 3.25.0. A forger who also appends a fake work.completed line passes. `praxis verify` is unchanged and still exits 0.",
+   "crossTrackSupport": [
+    "E-F-11"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-02"
+  },
+  {
+   "claimId": "E2-F-03",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Default repository containment plus digest/commit binding refuses /etc/hostname-style evidence (E-F-01) without breaking in-repo completion",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Evidence containment + digest binding refuses E-F-01-style evidence with no suite impact.",
+   "trackLimitations": "Proves which bytes at which commit were cited, not that tests ran or passed; a fabricated in-repo log is accepted. praxis init git-ignores logs/, so typical logs bind with committedAtHead=false. Opt-out lives in agent-editable ros.json. Binding is written just before (not inside) the completion transaction.",
+   "crossTrackSupport": [
+    "E-F-01"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-03"
+  },
+  {
+   "claimId": "E2-F-04",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Existing-suite impact: the claim marker conflicts with tests that encode 'claiming never touches the tracked tree'",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Claim-marker fix conflicts with Praxis invariant I8 (7 tests): owner decision.",
+   "trackLimitations": "Suites ran on a shared 4-vCPU host; timings are indicative. Fixing the conflict needs a design decision (accept a tracked claim marker and update the I8 tests, or commit the marker at claim time), not done here.",
+   "crossTrackSupport": [
+    "X-26"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-04"
+  },
+  {
+   "claimId": "E2-F-05",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "A verifier-signed evidence flow refuses the E and V2 fabricated bundles that Indy-init's verifier ACCEPTS (local simulation)",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Verifier-signed flow refuses fabricated bundles Indy-init accepts (local uid separation only).",
+   "trackLimitations": "Local uid separation only. GitHub environment protection, rulesets, required reviewers, OIDC/secrets scoping, runner isolation and the adequacy of acceptance checks for the real 108-requirement baseline are NOT TESTED. Root can bypass everything; in production the agent token must not reach the verifier repo (E-F-07: today it can).",
+   "crossTrackSupport": [
+    "E-F-02",
+    "V2:E-F-02"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S03",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-05"
+  },
+  {
    "claimId": "F-F-17",
    "track": "F-fsharp-wasm",
    "classification": "SUPPORTED",
@@ -2890,6 +3025,49 @@
     "SUPPORTED_ONLY"
    ],
    "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-17"
+  }
+ ],
+ "supplementaryClaims": [
+  {
+   "claimId": "SPR-X-01 / X-F-01",
+   "track": "D2-agent-experiment (RD-000 runs)",
+   "classification": "SUPPORTED (exploratory, n=1 per cell)",
+   "title": "Model capability moderates authorization behaviour: Haiku baseline invents/adopts policy 3/8; Sonnet 0/8; session model 0/27",
+   "consequence": "high",
+   "consequenceIfWrong": "The model-dependent governance recommendation (D-037) rests on it.",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-01/RESULT.md",
+   "independentVerification": {
+    "by": "V4",
+    "status": "in progress"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ]
+  },
+  {
+   "claimId": "SPR-X-02",
+   "track": "D2-agent-experiment (RD-000 runs)",
+   "classification": "per D-037 (adopted); preregistered at 82b3c36",
+   "title": "Governance prompt reduces Haiku policy violations (2.17/run, p=0.00028; undocumented 21->0) at +6-8% tokens, +38-55% wall",
+   "consequence": "high",
+   "consequenceIfWrong": "First positive governance-benefit evidence; reverses 'no measured gain' framing for small models.",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-02/results/results.json; spr-x-02/REPORT.md",
+   "caveats": [
+    "D-041: governance block delivered before 'Task:' line (frozen G.txt has it after)",
+    "single model (Haiku), two short fixtures",
+    "D-039: run s11 made a failed empty send_message; kept"
+   ],
+   "independentVerification": {
+    "by": "V4",
+    "status": "in progress"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ]
   }
  ],
  "omittedLowConsequence": [

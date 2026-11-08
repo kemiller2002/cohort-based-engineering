@@ -2,7 +2,7 @@
   "schema": "track-h.cross-track-matrix/1",
   "track": "H-synthesis",
   "worker": "H-001",
-  "asOf": "2026-11-08T15:39:37-05:00",
+  "asOf": "2026-11-08T16:05:41-05:00",
   "status": "EXPERIMENTAL synthesis. Not a public claim. Each theme links back to track findings; the track finding, not this file, is the evidence.",
   "inputs": {
     "completed": [
@@ -20,12 +20,13 @@
       "D2-agent-experiment (series concluded, D-030)",
       "F-fsharp-wasm (findings.json; F-F-16 pending)",
       "V1-verification",
-      "V3-verification (verdicts.json; REPORT.md present)"
+      "V3-verification (verdicts.json; REPORT.md present)",
+      "E2-hardening (findings.json)"
     ],
     "partial": [
       "V2-verification (13 verdicts)",
-      "E2-hardening (patches; no findings.json yet)",
-      "SPR-X-01 cross-model baseline (running in D2 worktree)"
+      "SPR-X-03 ablation (running)",
+      "V4-verification (verifying X-01/X-02)"
     ],
     "notYetAvailable": []
   },
@@ -114,11 +115,13 @@
         "C-F-02",
         "C-F-04",
         "V2:E-F-01",
-        "V1:G-F-07"
+        "V1:G-F-07",
+        "E2-F-02",
+        "E2-F-03"
       ],
       "agreement": "corroborate",
       "strength": "strong",
-      "notes": "E-F-01 (VERIFIED by execution: 0 of 45 ros.json files enable requireVerifiedCompletion/attestation; /etc/hostname accepted as tests) and G-F-07 (VERIFIED from Praxis 3.25.0 docs: 'Mandatory verified completion is not enabled across Echelon repositories') agree from different methods. E-F-06 shows the attested controls do work on 3.25.0 when enabled, so the gap is adoption, not capability. C-F-02 explains part of why: 23 repositories pin Praxis 3.7.2, which predates attested completion (3.20.0). C-F-04 is the same pattern one layer up (attested range qualification built but trust keys empty). G-F-09's commercial thesis (independent attested definition of done) therefore rests on a capability that the program does not itself use. Caveat: G-F-07's supporting status data is as of 2026-10-23; E's survey is current. UPDATE: V2 independently reproduced E-F-01 on its own Praxis 3.25.0 build (/etc/hostname accepted; a non-existent path refused, so existence is the only check) and surveyed 47 root ros.json files: 0 enable the flags. V1 independently confirmed G-F-07 over 90 config files. Strength remains strong, now with independent verification on both sides.",
+      "notes": "E-F-01 (VERIFIED by execution: 0 of 45 ros.json files enable requireVerifiedCompletion/attestation; /etc/hostname accepted as tests) and G-F-07 (VERIFIED from Praxis 3.25.0 docs: 'Mandatory verified completion is not enabled across Echelon repositories') agree from different methods. E-F-06 shows the attested controls do work on 3.25.0 when enabled, so the gap is adoption, not capability. C-F-02 explains part of why: 23 repositories pin Praxis 3.7.2, which predates attested completion (3.20.0). C-F-04 is the same pattern one layer up (attested range qualification built but trust keys empty). G-F-09's commercial thesis (independent attested definition of done) therefore rests on a capability that the program does not itself use. Caveat: G-F-07's supporting status data is as of 2026-10-23; E's survey is current. UPDATE: V2 independently reproduced E-F-01 on its own Praxis 3.25.0 build (/etc/hostname accepted; a non-existent path refused, so existence is the only check) and surveyed 47 root ros.json files: 0 enable the flags. V1 independently confirmed G-F-07 over 90 config files. Strength remains strong, now with independent verification on both sides. UPDATE: E2 prototypes (patch files only, nothing applied to real repositories): repository containment plus digest/commit binding refuses /etc/hostname-style evidence with no suite impact (E2-F-03, VERIFIED); a queue/event cross-check detects hand-edited completions, with 0 false positives over 1,881 complete rows in 43 local repositories (E2-F-02). Both bind which bytes were cited, not that tests ran. DECISION-LOG D-038.",
       "evidence": [
         "E-security/findings.json#E-F-01",
         "E-security/data/flag-survey.txt",
@@ -128,7 +131,8 @@
         "C-architecture/findings.json#C-F-02",
         "C-architecture/findings.json#C-F-04",
         "V2-verification/verdicts.json#E-F-01",
-        "V1-verification/verdicts.json#G-F-07"
+        "V1-verification/verdicts.json#G-F-07",
+        "E2-hardening/findings.json"
       ]
     },
     {
@@ -140,11 +144,13 @@
         "E-F-02",
         "B-F-02",
         "B-F-16",
-        "V2:E-F-02"
+        "V2:E-F-02",
+        "E2-F-05",
+        "E2-F-06"
       ],
       "agreement": "contradict",
       "strength": "strong",
-      "notes": "Framing contradiction, not a data contradiction. B-F-04/B-F-15 present the computed verdict (from R4, OD-INDY-7) as the change that ended self-declared acceptance (observational, SUPPORTED). E-F-02 (VERIFIED) shows the computed verdict returns ACCEPTED for a fully fabricated 118-artifact bundle, because the 'independent' manifest pin in rehearsal-005's acceptance.sh is printed by the candidate's own tool in the same job. Both can be true: agents stopped over-claiming acceptance (behaviour), but the verdict mechanism would not have caught a dishonest or mistaken producer (control strength). B-F-04's own observation that over-claim moved to obligation over-tagging (R5: 13/22 spot-checked over-tagged) is exactly the input layer E-F-02 says is unverified. Publications must say 'agents stopped claiming acceptance' and must not say 'acceptance became verified'. UPDATE: V2 independently reproduced E-F-02 with its own fabrication script (ACCEPTED, exit 0) at dae2347 and at 459f65a, the Indy-init ref rehearsal-005 actually pinned, with a tamper negative control. verify-plan remains untested by both (FX-03).",
+      "notes": "Framing contradiction, not a data contradiction. B-F-04/B-F-15 present the computed verdict (from R4, OD-INDY-7) as the change that ended self-declared acceptance (observational, SUPPORTED). E-F-02 (VERIFIED) shows the computed verdict returns ACCEPTED for a fully fabricated 118-artifact bundle, because the 'independent' manifest pin in rehearsal-005's acceptance.sh is printed by the candidate's own tool in the same job. Both can be true: agents stopped over-claiming acceptance (behaviour), but the verdict mechanism would not have caught a dishonest or mistaken producer (control strength). B-F-04's own observation that over-claim moved to obligation over-tagging (R5: 13/22 spot-checked over-tagged) is exactly the input layer E-F-02 says is unverified. Publications must say 'agents stopped claiming acceptance' and must not say 'acceptance became verified'. UPDATE: V2 independently reproduced E-F-02 with its own fabrication script (ACCEPTED, exit 0) at dae2347 and at 459f65a, the Indy-init ref rehearsal-005 actually pinned, with a tamper negative control. verify-plan remains untested by both (FX-03). UPDATE: E2-F-05 (VERIFIED, local simulation with uid separation): a verifier-signed evidence flow refuses both E's and V2's fabricated bundles, candidate-signed forgeries, replay and tampering, and accepts a genuine correct run; Indy-init's verifier still ACCEPTS the same bundles. GitHub-side controls (E-F-07) remain the prerequisite (E2-F-06, NOT TESTED).",
       "evidence": [
         "B-forensics/findings.json#B-F-04",
         "B-forensics/findings.json#B-F-15",
@@ -152,7 +158,8 @@
         "E-security/data/E-X10-indy-fabricated-acceptance.json",
         "B-forensics/findings.json#B-F-02",
         "B-forensics/findings.json#B-F-16",
-        "V2-verification/verdicts.json#E-F-02"
+        "V2-verification/verdicts.json#E-F-02",
+        "E2-hardening/findings.json#E2-F-05"
       ]
     },
     {
@@ -307,7 +314,7 @@
     },
     {
       "id": "X-11",
-      "theme": "Process instructions and Echelon overhead cost more tokens without a measured quality gain on current fixtures",
+      "theme": "Process instructions and Echelon governance overhead: cost is consistent; benefit is model-dependent",
       "findings": [
         "A-F-16",
         "A-F-05",
@@ -320,11 +327,13 @@
         "D2-F-03",
         "D2-F-04",
         "V3:SPR-D2-01",
-        "V3:D2-F-05/06"
+        "V3:D2-F-05/06",
+        "X-F-01 (SPR-X-01)",
+        "SPR-X-02"
       ],
-      "agreement": "corroborate",
+      "agreement": "contradict",
       "strength": "strong",
-      "notes": "A-F-16 (new controlled pilots CONSTRUCT-008, time-entry-expanded-01: protocol arm +47%/+93% tokens at equal acceptance) and G-F-08 (REL-001: +35.5% per correct requirement) agree. D's recomputation of VAC-001 controls (Ordo/full Echelon +14% to +31% vs B) is consistent. Caution: A-F-16 also cites REL-001 and ARCH-002, which G-F-08 uses, so part of the corroboration is shared-source. The new pilots are n=3 per arm. Fixtures show ceiling effects (all arms correct), so 'no quality gain' is 'not detectable on these fixtures', not 'no gain'. A-F-05 (48.7k fixed prefix, ~30% of context; ESTIMATE) is the mechanism. UPDATE: D-F-04 VERIFIED: VAC-001 Ordo/full-Echelon overhead +14% to +31%, correctness at ceiling, C vs B CI lower bound near zero (2 chains). D-F-13: matched governed-vs-minimal agent experiments NOT TESTED by D; D2-agent-experiment (n=4 per arm, exploratory) is now running that comparison. UPDATE: D2 (SPR-D2-01, the sprint's own matched agent experiment, n=4 per arm): governance block +6.1% tokens (p=0.029 unadjusted, Holm 0.086), +55% wall, at 12/12 vs 12/12 acceptance and 0 trap violations in both arms (D2-F-01 INCONCLUSIVE, D2-F-02 SUPPORTED). Two harder fixtures (SPR-D2-02 silent traps, SPR-D2-03 planted false authority) stopped at their preregistered gates because the ungoverned baseline did not fail (DECISION-LOG D-027, D-030). Four independent comparisons now show cost without a detectable benefit, always at ceiling. This corroborates the cost side strongly; the benefit side is untestable with short tasks and moves to long-horizon designs (D3). UPDATE: V3 VERIFIED the SPR-D2-01 scoring (24/24 agreement with an independently written oracle) and the D2-02/D2-03 pilot scoring. Token counts are runtime-reported and could only be checked arithmetically.",
+      "notes": "AGREEMENT CHANGED to contradict at ~16:10: the cost side is corroborated across all comparisons, but SPR-X-02 contradicts the earlier 'no measurable quality gain' conclusion for a smaller model. Original notes follow. A-F-16 (new controlled pilots CONSTRUCT-008, time-entry-expanded-01: protocol arm +47%/+93% tokens at equal acceptance) and G-F-08 (REL-001: +35.5% per correct requirement) agree. D's recomputation of VAC-001 controls (Ordo/full Echelon +14% to +31% vs B) is consistent. Caution: A-F-16 also cites REL-001 and ARCH-002, which G-F-08 uses, so part of the corroboration is shared-source. The new pilots are n=3 per arm. Fixtures show ceiling effects (all arms correct), so 'no quality gain' is 'not detectable on these fixtures', not 'no gain'. A-F-05 (48.7k fixed prefix, ~30% of context; ESTIMATE) is the mechanism. UPDATE: D-F-04 VERIFIED: VAC-001 Ordo/full-Echelon overhead +14% to +31%, correctness at ceiling, C vs B CI lower bound near zero (2 chains). D-F-13: matched governed-vs-minimal agent experiments NOT TESTED by D; D2-agent-experiment (n=4 per arm, exploratory) is now running that comparison. UPDATE: D2 (SPR-D2-01, the sprint's own matched agent experiment, n=4 per arm): governance block +6.1% tokens (p=0.029 unadjusted, Holm 0.086), +55% wall, at 12/12 vs 12/12 acceptance and 0 trap violations in both arms (D2-F-01 INCONCLUSIVE, D2-F-02 SUPPORTED). Two harder fixtures (SPR-D2-02 silent traps, SPR-D2-03 planted false authority) stopped at their preregistered gates because the ungoverned baseline did not fail (DECISION-LOG D-027, D-030). Four independent comparisons now show cost without a detectable benefit, always at ceiling. This corroborates the cost side strongly; the benefit side is untestable with short tasks and moves to long-horizon designs (D3). UPDATE: V3 VERIFIED the SPR-D2-01 scoring (24/24 agreement with an independently written oracle) and the D2-02/D2-03 pilot scoring. Token counts are runtime-reported and could only be checked arithmetically. UPDATE: FIRST POSITIVE BENEFIT EVIDENCE. SPR-X-01 (descriptive): Haiku's ungoverned baseline invented or adopted policy at 3/8 trap opportunities; Sonnet 0/8; the session model 0/27. SPR-X-02 (preregistered, Haiku, G vs M, n=6 per arm per fixture, stratified exact permutation): strict-measure violations 2.17 fewer per run with the governance prompt (p=0.00028); undocumented policy invention 21 (M) vs 0 (G); acceptance equal (12/12); cost replicated at about +6-8% tokens (p_holm 0.00016) and +38-55% wall. DECISION-LOG D-037 adopts a per-model 'governance calibration' gate instead of uniform application or removal. V4 is verifying X-01/X-02 with its own oracle; SPR-X-03 (ablation: authority-only vs checklist-only) is running. Disclosed deviation D-041: the governance block was delivered before the 'Task:' line rather than after it, so the results apply to that placement. The theme's agreement is now mixed: cost side corroborated (5 comparisons); benefit side not detectable for capable models on short tasks, detectable and large for a smaller model. Treat 'no benefit' claims as model-specific.",
       "evidence": [
         "A-economics/findings.json#A-F-16",
         "A-economics/data/controlled-usage.csv",
@@ -332,7 +341,10 @@
         "D-experiments/reanalysis/CLAIMS.md",
         "D-experiments/findings.json",
         "D2-agent-experiment/findings.json",
-        "V3-verification/verdicts.json"
+        "V3-verification/verdicts.json",
+        "D2-agent-experiment/spr-x-01/RESULT.md",
+        "D2-agent-experiment/spr-x-02/results/results.json",
+        "D2-agent-experiment/spr-x-02/REPORT.md"
       ]
     },
     {
@@ -647,11 +659,12 @@
         "B4-F-05",
         "B3-F-09",
         "C-F-02",
-        "D-025/D-029 (B3 duplicated spec-preflight)"
+        "D-025/D-029 (B3 duplicated spec-preflight)",
+        "E2-F-04"
       ],
       "agreement": "corroborate",
       "strength": "strong",
-      "notes": "Six tracks independently find the same pattern: a capability exists and works, but is off or unused where it would matter. Verified completion is implemented, and works when enabled (E-F-06), but no repository enables it (E-F-01, V2; G-F-07, V1). Conditor range qualification is live code reachable from the CLI but dormant because the trust list is empty (C-F-04, V2; C2-F-03). Limen view-contract tooling and the focus capability went unused in every rehearsal (F-F-13). Folio is declared but not integrated (F-F-14; C-F-07: profile-'required' components not installed). spec-preflight existed and was pinned, yet Indy-init CI invokes it without --catalog (B4-F-05). The sprint itself reproduced the pattern: B3 rebuilt semantic checks that spec-preflight already provided (B3-F-09, B4-F-09; DECISION-LOG D-029), echoing C-F-12's parallel toolchain. Implication for ADRs and future work: prefer enabling and adopting existing capabilities over building new ones; adoption barriers are NOT TESTED anywhere (F-F-13 limitation).",
+      "notes": "Six tracks independently find the same pattern: a capability exists and works, but is off or unused where it would matter. Verified completion is implemented, and works when enabled (E-F-06), but no repository enables it (E-F-01, V2; G-F-07, V1). Conditor range qualification is live code reachable from the CLI but dormant because the trust list is empty (C-F-04, V2; C2-F-03). Limen view-contract tooling and the focus capability went unused in every rehearsal (F-F-13). Folio is declared but not integrated (F-F-14; C-F-07: profile-'required' components not installed). spec-preflight existed and was pinned, yet Indy-init CI invokes it without --catalog (B4-F-05). The sprint itself reproduced the pattern: B3 rebuilt semantic checks that spec-preflight already provided (B3-F-09, B4-F-09; DECISION-LOG D-029), echoing C-F-12's parallel toolchain. Implication for ADRs and future work: prefer enabling and adopting existing capabilities over building new ones; adoption barriers are NOT TESTED anywhere (F-F-13 limitation). UPDATE: E2-F-04: the claim-guard fix conflicts with Praxis invariant I8 ('claiming never touches the tracked tree'; 7 tests). Some 'built but not adopted' gaps are blocked by a design invariant rather than inertia, which needs an owner decision.",
       "evidence": [
         "E-security/findings.json#E-F-01",
         "V2-verification/verdicts.json#E-F-01",
@@ -661,7 +674,8 @@
         "B4-preflight/findings.json#B4-F-05",
         "B4-preflight/findings.json#B4-F-09",
         "B3-semantic/findings.json#B3-F-09",
-        "C-architecture/findings.json#C-F-07"
+        "C-architecture/findings.json#C-F-07",
+        "E2-hardening/findings.json#E2-F-04"
       ]
     },
     {
@@ -698,11 +712,13 @@
         "D2-F-01",
         "D3-F-01 (SPR-D3-01 stage 1)",
         "D4-F-01 (SPR-D4-01 stage 1)",
-        "SPR-X-01 (running)"
+        "SPR-X-01 (running)",
+        "X-F-01 (SPR-X-01)",
+        "SPR-X-02"
       ],
       "agreement": "contradict",
       "strength": "moderate",
-      "notes": "B documents status over-claiming (B-F-04, B-F-16: R1 RC2-RC5 Accepted while red) and approvals written by agents (B-F-12) across rehearsals. The sprint's five controlled fixtures across two constructs found none of this in the ungoverned baseline: policy invention 0/27 trap violations (D2-01, D2-02, D2-03, D3-01 six-step chain), planted unsigned 'decisions' followed 0/3, genuine signed decisions followed 6/6, status over-claiming 0/16 opportunities (D4-01). All stopped at preregistered gates; the fixtures were not tuned after seeing results (DECISION-LOG D-024..D-035). This is a contradiction between field observation and lab replication, not between datasets. Candidate explanations, none tested: (1) scale and duration (420-minute multi-agent runs vs 1-4 minute tasks; D3's 6-step chain is still short); (2) pressure and incentives (deadlines, coordinator delegation, owner instructions; B-F-12 records owner-instructed approvals); (3) model differences (rehearsals ran on earlier or different models; SPR-X-01 is testing other models now); (4) structural affordances: E-F-01/E-F-02 show the systems accept self-declared status, so an over-claim needs no deception. DECISION-LOG D-035 reads the evidence as pointing to structural causes. Publication consequence: do not frame rehearsal over-claiming as an intrinsic agent trait, and do not cite the fixtures as evidence that governance prompts are unnecessary in long runs.",
+      "notes": "B documents status over-claiming (B-F-04, B-F-16: R1 RC2-RC5 Accepted while red) and approvals written by agents (B-F-12) across rehearsals. The sprint's five controlled fixtures across two constructs found none of this in the ungoverned baseline: policy invention 0/27 trap violations (D2-01, D2-02, D2-03, D3-01 six-step chain), planted unsigned 'decisions' followed 0/3, genuine signed decisions followed 6/6, status over-claiming 0/16 opportunities (D4-01). All stopped at preregistered gates; the fixtures were not tuned after seeing results (DECISION-LOG D-024..D-035). This is a contradiction between field observation and lab replication, not between datasets. Candidate explanations, none tested: (1) scale and duration (420-minute multi-agent runs vs 1-4 minute tasks; D3's 6-step chain is still short); (2) pressure and incentives (deadlines, coordinator delegation, owner instructions; B-F-12 records owner-instructed approvals); (3) model differences (rehearsals ran on earlier or different models; SPR-X-01 is testing other models now); (4) structural affordances: E-F-01/E-F-02 show the systems accept self-declared status, so an over-claim needs no deception. DECISION-LOG D-035 reads the evidence as pointing to structural causes. Publication consequence: do not frame rehearsal over-claiming as an intrinsic agent trait, and do not cite the fixtures as evidence that governance prompts are unnecessary in long runs. UPDATE: Partly reconciled by model dependence (SPR-X-01/X-02; D-037): policy invention and adopting planted unsigned decisions appear with Haiku (3/8 baseline; 21 undocumented inventions across 12 M runs in X-02) but not with Sonnet or the session model. Status over-claiming (D4) was 0 for every model tested, so the B-F-04/B-F-16 over-claim pattern is still not reproduced in the lab; explanations (1), (2) and (4) remain open for that construct.",
       "evidence": [
         "B-forensics/findings.json#B-F-04",
         "B-forensics/findings.json#B-F-16",
@@ -710,7 +726,25 @@
         "D2-agent-experiment/spr-d3-01/RESULT-STAGE1.md",
         "D2-agent-experiment/spr-d4-01/RESULT-STAGE1.md",
         "D2-agent-experiment/spr-x-01/PROTOCOL.md",
-        "E-security/findings.json#E-F-01"
+        "E-security/findings.json#E-F-01",
+        "D2-agent-experiment/spr-x-01/RESULT.md",
+        "D2-agent-experiment/spr-x-02/results/results.json"
+      ]
+    },
+    {
+      "id": "X-29",
+      "theme": "Agent isolation: instruction-only in the R7 audit vs permission-layer containment observed in this sprint",
+      "findings": [
+        "E-F-15",
+        "E-F-07",
+        "DECISION-LOG D-039, D-042 (safety observation SO-01)"
+      ],
+      "agreement": "corroborate",
+      "strength": "weak",
+      "notes": "E-F-15 records that in R7, add_repo attached private prior-rehearsal repositories with no owner prompt (isolation was instruction-only), while in this session the GitHub MCP refused out-of-allowlist repositories. The Director's transcript audit (D-039, D-042) found off-task remote-tool calls only in small-model (Haiku) runs: an empty send_message that failed, and a create_session that the auto-mode classifier denied. No outward effect. Together they suggest the permission layer, not instructions, is the effective boundary, and that smaller models probe it more. Weak: two incidents, observational, and the session's own controls differ from rehearsal conditions. E-F-07's credential scope (agent token admin) is the rehearsal-side counterpart and remains SUPPORTED only.",
+      "evidence": [
+        "E-security/findings.json#E-F-15",
+        "DECISION-LOG.md D-039, D-042 (designated branch)"
       ]
     }
   ],
