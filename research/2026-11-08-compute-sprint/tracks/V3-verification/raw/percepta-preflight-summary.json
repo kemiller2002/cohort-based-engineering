@@ -1,0 +1,372 @@
+{
+ "R8-v4.1.1@1cb27ec/r9": {
+  "exit": 3,
+  "summary": {
+   "blocked": true,
+   "analysed": {
+    "catalogCommands": 134,
+    "invariants": 25,
+    "machines": 5,
+    "operations": 26,
+    "transitions": 97,
+    "types": 78
+   },
+   "counts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 1,
+    "missingDecisions": 2,
+    "unsupportedVerificationObligations": 0,
+    "warnings": 0,
+    "suggestedOwnerActions": 5
+   },
+   "blockingCounts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 1,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0
+   },
+   "otherKeys": [
+    "analysed",
+    "blocked",
+    "schema",
+    "suggestedOwnerActions",
+    "warnings"
+   ],
+   "findings": {
+    "blockingContradictions": [
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S31 (UnknownOutcome x CheckAgain, guard 'automatic reads spe"
+     ],
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S32 (UnknownOutcome x WentOnline, guard 'true') emits a reco"
+     ]
+    ],
+    "missingDecisions": [
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, ReconcileReadFailed) is specified only when 'fewer than three automatic reads made'; no transition covers the counter at its limit, so "
+     ],
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, CheckAgain) is specified only when 'automatic reads spent'; no transition covers the counter still below its limit, so that input fails"
+     ]
+    ],
+    "missingInterfaces": [
+     [
+      "carrier-cannot-discriminate",
+      true,
+      "The catalog carries all 134 commands (StartInvestigation, RenameInvestigation, ActivateInvestigation, MarkAwaitingEvidence, ...) inside CommandEnvelope, but `Co"
+     ]
+    ],
+    "suggestedOwnerActions": [],
+    "unsupportedVerificationObligations": [],
+    "warnings": []
+   }
+  },
+  "ciJqGatePasses": false,
+  "stderr": ""
+ },
+ "R8-v4.1.1@1cb27ec/ci": {
+  "exit": 3,
+  "summary": {
+   "blocked": true,
+   "analysed": {
+    "catalogCommands": 0,
+    "invariants": 25,
+    "machines": 5,
+    "operations": 26,
+    "transitions": 97,
+    "types": 78
+   },
+   "counts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 0,
+    "missingDecisions": 2,
+    "unsupportedVerificationObligations": 0,
+    "warnings": 0,
+    "suggestedOwnerActions": 4
+   },
+   "blockingCounts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 0,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0
+   },
+   "otherKeys": [
+    "analysed",
+    "blocked",
+    "schema",
+    "suggestedOwnerActions",
+    "warnings"
+   ],
+   "findings": {
+    "blockingContradictions": [
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S31 (UnknownOutcome x CheckAgain, guard 'automatic reads spe"
+     ],
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S32 (UnknownOutcome x WentOnline, guard 'true') emits a reco"
+     ]
+    ],
+    "missingDecisions": [
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, ReconcileReadFailed) is specified only when 'fewer than three automatic reads made'; no transition covers the counter at its limit, so "
+     ],
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, CheckAgain) is specified only when 'automatic reads spent'; no transition covers the counter still below its limit, so that input fails"
+     ]
+    ],
+    "missingInterfaces": [],
+    "suggestedOwnerActions": [],
+    "unsupportedVerificationObligations": [],
+    "warnings": []
+   }
+  },
+  "ciJqGatePasses": false,
+  "stderr": ""
+ },
+ "v4.1.2@bc3c381/r9": {
+  "exit": 0,
+  "summary": {
+   "blocked": false,
+   "analysed": {
+    "catalogCommands": 134,
+    "invariants": 25,
+    "machines": 5,
+    "operations": 26,
+    "transitions": 101,
+    "types": 85
+   },
+   "counts": {
+    "blockingContradictions": 0,
+    "missingInterfaces": 0,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0,
+    "warnings": 0,
+    "suggestedOwnerActions": 0
+   },
+   "blockingCounts": {
+    "blockingContradictions": 0,
+    "missingInterfaces": 0,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0
+   },
+   "otherKeys": [
+    "analysed",
+    "blocked",
+    "schema",
+    "suggestedOwnerActions",
+    "warnings"
+   ],
+   "findings": {
+    "blockingContradictions": [],
+    "missingDecisions": [],
+    "missingInterfaces": [],
+    "suggestedOwnerActions": [],
+    "unsupportedVerificationObligations": [],
+    "warnings": []
+   }
+  },
+  "ciJqGatePasses": true,
+  "stderr": ""
+ },
+ "v4.1.2@bc3c381/ci": {
+  "exit": 0,
+  "summary": {
+   "blocked": false,
+   "analysed": {
+    "catalogCommands": 0,
+    "invariants": 25,
+    "machines": 5,
+    "operations": 26,
+    "transitions": 101,
+    "types": 85
+   },
+   "counts": {
+    "blockingContradictions": 0,
+    "missingInterfaces": 0,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0,
+    "warnings": 0,
+    "suggestedOwnerActions": 0
+   },
+   "blockingCounts": {
+    "blockingContradictions": 0,
+    "missingInterfaces": 0,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0
+   },
+   "otherKeys": [
+    "analysed",
+    "blocked",
+    "schema",
+    "suggestedOwnerActions",
+    "warnings"
+   ],
+   "findings": {
+    "blockingContradictions": [],
+    "missingDecisions": [],
+    "missingInterfaces": [],
+    "suggestedOwnerActions": [],
+    "unsupportedVerificationObligations": [],
+    "warnings": []
+   }
+  },
+  "ciJqGatePasses": true,
+  "stderr": ""
+ },
+ "v4.1.1@bc3c381/r9": {
+  "exit": 3,
+  "summary": {
+   "blocked": true,
+   "analysed": {
+    "catalogCommands": 134,
+    "invariants": 25,
+    "machines": 5,
+    "operations": 26,
+    "transitions": 97,
+    "types": 78
+   },
+   "counts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 1,
+    "missingDecisions": 2,
+    "unsupportedVerificationObligations": 0,
+    "warnings": 0,
+    "suggestedOwnerActions": 5
+   },
+   "blockingCounts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 1,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0
+   },
+   "otherKeys": [
+    "analysed",
+    "blocked",
+    "schema",
+    "suggestedOwnerActions",
+    "warnings"
+   ],
+   "findings": {
+    "blockingContradictions": [
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S31 (UnknownOutcome x CheckAgain, guard 'automatic reads spe"
+     ],
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S32 (UnknownOutcome x WentOnline, guard 'true') emits a reco"
+     ]
+    ],
+    "missingDecisions": [
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, ReconcileReadFailed) is specified only when 'fewer than three automatic reads made'; no transition covers the counter at its limit, so "
+     ],
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, CheckAgain) is specified only when 'automatic reads spent'; no transition covers the counter still below its limit, so that input fails"
+     ]
+    ],
+    "missingInterfaces": [
+     [
+      "carrier-cannot-discriminate",
+      true,
+      "The catalog carries all 134 commands (StartInvestigation, RenameInvestigation, ActivateInvestigation, MarkAwaitingEvidence, ...) inside CommandEnvelope, but `Co"
+     ]
+    ],
+    "suggestedOwnerActions": [],
+    "unsupportedVerificationObligations": [],
+    "warnings": []
+   }
+  },
+  "ciJqGatePasses": false,
+  "stderr": ""
+ },
+ "v4.1.1@bc3c381/ci": {
+  "exit": 3,
+  "summary": {
+   "blocked": true,
+   "analysed": {
+    "catalogCommands": 0,
+    "invariants": 25,
+    "machines": 5,
+    "operations": 26,
+    "transitions": 97,
+    "types": 78
+   },
+   "counts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 0,
+    "missingDecisions": 2,
+    "unsupportedVerificationObligations": 0,
+    "warnings": 0,
+    "suggestedOwnerActions": 4
+   },
+   "blockingCounts": {
+    "blockingContradictions": 2,
+    "missingInterfaces": 0,
+    "missingDecisions": 0,
+    "unsupportedVerificationObligations": 0
+   },
+   "otherKeys": [
+    "analysed",
+    "blocked",
+    "schema",
+    "suggestedOwnerActions",
+    "warnings"
+   ],
+   "findings": {
+    "blockingContradictions": [
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S31 (UnknownOutcome x CheckAgain, guard 'automatic reads spe"
+     ],
+     [
+      "rate-bound-vs-unbounded-loop",
+      true,
+      "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S32 (UnknownOutcome x WentOnline, guard 'true') emits a reco"
+     ]
+    ],
+    "missingDecisions": [
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, ReconcileReadFailed) is specified only when 'fewer than three automatic reads made'; no transition covers the counter at its limit, so "
+     ],
+     [
+      "counter-guard-without-complement",
+      false,
+      "SM-SAVE (UnknownOutcome, CheckAgain) is specified only when 'automatic reads spent'; no transition covers the counter still below its limit, so that input fails"
+     ]
+    ],
+    "missingInterfaces": [],
+    "suggestedOwnerActions": [],
+    "unsupportedVerificationObligations": [],
+    "warnings": []
+   }
+  },
+  "ciJqGatePasses": false,
+  "stderr": ""
+ }
+}

@@ -1,0 +1,74 @@
+{
+ "schema": "v3-verdicts/1",
+ "worker": "V3-001",
+ "date": "2026-11-08",
+ "verdicts": [
+  {
+   "claimId": "C2-F-05",
+   "verdict": "VERIFIED",
+   "claimedValue": "Release attestation signature covers only systemId, version, manifestSha256 and contracts (ReleaseAttestation.fs:46-47).",
+   "recomputedValue": "conditor@528ef45 (v0.10.21) ReleaseAttestation.fs:46-47: statement = String.concat \"|\" [StatementSchema; systemId; version; releaseManifestSha256; sorted contracts joined by ','] ; verify (l.145-149) signs payload = statement systemId version sha contracts where systemId/version come from the set entry, sha = entry.releaseManifest.sha256, contracts = attestation.consumerContracts. No other entry field (artifacts, URLs, role, set digest) enters the signed bytes.",
+   "independence": "Read source directly; did not use C2's harness or results.",
+   "method": "Source reading of statement and verify functions, tracing each payload input back to the JSON field it is read from.",
+   "inputs": [
+    "/home/user/ext/conditor@528ef45 src/Conditor.Core/ReleaseAttestation.fs:46-47,125-160"
+   ],
+   "discrepancies": [
+    "Minor: the signed statement also includes the constant schema prefix 'echelon.release-attestation/v1' (not an entry field, so it does not change the conclusion)."
+   ],
+   "notes": "C2's S1 tamper experiment was not re-run; the verdict rests on the code path, which leaves artifacts[].sha256 unsigned. 'role' is checked (attestedSelections l.176) but not signed."
+  },
+  {
+   "claimId": "C2-F-07",
+   "verdict": "VERIFIED",
+   "claimedValue": "2 of 13 Conditor releases v0.10.9..v0.10.21 avoidable (Forma-only v0.10.15, v0.10.17); Praxis/Ordo host-tool exact pins (CON-343, ComponentDescriptors.fs:595-597) drive the rest; 9 required, 2 no catalog change.",
+   "recomputedValue": "avoidable: v0.10.15 (forma +0.10.0), v0.10.17 (forma +0.11.0). required (9): v0.10.9 praxis 3.20.0; v0.10.10 folio releaseArtifacts; v0.10.12 praxis 3.21.0 + folio 0.4.1/releaseArtifacts; v0.10.14 praxis 3.22.0 + ordo 1.18.0/integrityGate; v0.10.16 praxis 3.23.0 + ordo 1.19.0 (+limen 0.9.1); v0.10.18 praxis 3.24.0 (+forma); v0.10.19 ordo 1.20.0 (+forma); v0.10.20 praxis 3.25.0; v0.10.21 new forma-workflow descriptor. no catalog change: v0.10.11, v0.10.13. 7/9 required releases add a Praxis or Ordo host-tool version. CON-343 rule confirmed at ComponentDescriptors.fs:595-597 (HostTool|LifecycleNpm with qualifiedRange -> error).",
+   "independence": "Own script (scripts/conditor_releases.py) diffing components/*.component.json at each tag against its predecessor; C2's release-history-H4.json not read as input.",
+   "method": "For each tag, git show every components/*.component.json at tag and predecessor tag; per-descriptor changed keys, added/removed qualifiedVersions. Release avoidable iff every delta is qualifiedVersions additions only, on a non-host-tool/non-lifecycle descriptor that declares qualifiedRange, with each added version inside that range.",
+   "inputs": [
+    "/home/user/ext/conditor tags v0.10.8..v0.10.21 (HEAD 528ef45)",
+    "components/*.component.json",
+    "src/Conditor.Core/ComponentDescriptors.fs:595-597"
+   ],
+   "discrepancies": [],
+   "notes": "Exact match with C2 classification. The catalog-diff criterion ignores non-catalog feature work in each release, as C2 states. v0.10.10 (folio releaseArtifacts only) is the only borderline case; counting it avoidable gives 3/13, which C2 already discloses."
+  },
+  {
+   "claimId": "B4-F-05",
+   "verdict": "VERIFIED",
+   "claimedValue": "Indy-init .github/workflows/preflight-tooling.yml at dae2347 runs spec-preflight without --catalog and checks only blockingContradictions (B4 text: asserts only blocked==false and empty blockingContradictions).",
+   "recomputedValue": "dae2347 lines 396-400: the only spec-preflight call passes --machines, --invariants, --interfaces, --out (no --catalog); jq -e '.blocked == false and (.blockingContradictions | length) == 0 and .analysed.transitions > 0'. No check of missingInterfaces/missingDecisions/catalogCommands. Running that exact CI argument set with my own percepta build on R8 v4.1.1: exit 3, analysed.catalogCommands=0, missingInterfaces=[] (the CommandEnvelope defect is not reported); the r9.fsx argument set reports it.",
+   "independence": "Read the workflow file from the B2 read-only clone with git show; ran my own percepta build.",
+   "method": "git show dae2347:.github/workflows/preflight-tooling.yml; grep all spec-preflight invocations; rerun of CI invocation via scripts/percepta_preflight.py (ci_args).",
+   "inputs": [
+    "/home/user/sprint-scratch/B2/indy-init-full@dae2347 .github/workflows/preflight-tooling.yml:396-400",
+    "raw/percepta/R8-v4.1.1@1cb27ec.ci.json"
+   ],
+   "discrepancies": [
+    "The jq gate also asserts .analysed.transitions > 0 (omitted by B4 and by the brief's paraphrase).",
+    "Because GitHub run: steps use bash -e, a non-zero percepta exit (blocked) also fails the step; so CI is gated on .blocked, not only blockingContradictions. The substance (carrier check dropped) holds."
+   ],
+   "notes": "The step targets v4.1.5; I did not run v4.1.5 (not part of the claim)."
+  },
+  {
+   "claimId": "B4-F-01",
+   "verdict": "VERIFIED",
+   "claimedValue": "percepta spec-preflight 0.4.0 (4a53688) exits 3 on R8 v4.1.1 with 2 contradictions, 1 missing interface, 2 missing decisions; exits 0 on v4.1.2.",
+   "recomputedValue": "R8 v4.1.1 @1cb27ec: exit 3, blocked=true, blockingContradictions=2 (rate-bound-vs-unbounded-loop: INV-04 x SM-SAVE T-S31, T-S32), missingInterfaces=1 (carrier-cannot-discriminate, CommandEnvelope, 134 catalog commands), missingDecisions=2 (counter-guard-without-complement, both blocking=false), unsupportedVerificationObligations=0; analysed machines 5, transitions 97, invariants 25, operations 26, catalogCommands 134, types 78. v4.1.2 @bc3c381: exit 0, blocked=false, all sections empty (transitions 101, types 85). Same v4.1.1 result from bc3c381's copy.",
+   "independence": "Own clone of /home/user/ext/percepta checked out at 4a53688 (= tag percepta-semantic-v0.4.0), own framework-dependent dotnet build -c Release, own runner reproducing r9.fsx's flag order; B4 binaries and harness not used.",
+   "method": "git archive of the package dirs, base v4 and docs/COMMAND-EVENT-CATALOG.md from the B2 read-only clone; percepta spec-preflight --machines <pkg>/state-machine-contracts.json --invariants requirements-compiled/v4/invariants.json --interfaces <pkg>/analysis/interface-specifications.json --catalog docs/COMMAND-EVENT-CATALOG.md --out F (r9.fsx bc3c381 specPreflight, lock kickoff/rehearsal-009/toolchain.lock.json: path v4.1.2, base v4; v4.1.2 manifest sha256 1977780f... matches the lock).",
+   "inputs": [
+    "/home/user/ext/percepta@4a53688",
+    "/home/user/sprint-scratch/B2/indy-init-full@1cb27ec,bc3c381",
+    "raw/percepta/*.json",
+    "raw/percepta-preflight-summary.json"
+   ],
+   "discrepancies": [
+    "My build prints 'percepta 1.0.0+4a53688' because I did not inject -p:Version=0.4.0 as B4 did; same source commit.",
+    "Project targets net8.0; run with DOTNET_ROLL_FORWARD=Major on .NET 10.0.13 runtime (B4 used self-contained publish).",
+    "The 2 'missing decisions' are kind missing-specification and non-blocking; the exit 3 is caused by the 2 contradictions + 1 missing interface."
+   ],
+   "notes": "Single run per input (deterministic analysis); timing not re-measured."
+  }
+ ]
+}
