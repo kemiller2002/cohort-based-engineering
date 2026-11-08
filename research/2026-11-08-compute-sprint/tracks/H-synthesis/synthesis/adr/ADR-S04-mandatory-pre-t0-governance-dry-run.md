@@ -33,6 +33,29 @@ B's category is also broad: it includes spec contradictions and an SDK incompati
 
 **Owner readiness is a related gap.** Secrets, Pages, rulesets and approvals were not ready at T0 in 10 of 11 runs (B-F-12, SUPPORTED).
 
+## B2 replay result (2026-11-08, B2-dryrun)
+
+Track B2 ran the dry run retrospectively on T0-era artefacts for R4, R8, R9, R10 and Causa (`B2-dryrun/findings.json`, `results.csv`).
+
+**Catch rate:**
+- 4/8 of the brief's blockers were caught. Only 2/8 are robust (R9 MSB1008 and R10 authorize-implementation, reproduced exactly with 55/55 causes).
+- On the extended list, 7/11 were caught, 5/11 robustly (B2-F-01, SUPPORTED; small sample, and some matching rules were finalised after first runs).
+
+**Caught:**
+- Approvals format, R4 and R8 (B2-F-03).
+- Frozen-plan suite commands failing on the pinned SDK, R8 and R9 (B2-F-04).
+- R10 authorize-implementation (B2-F-02).
+- As a by-product, the FSharp.Core test-assembly skip that hit R8 and R10 (B2-F-05).
+
+**Not caught:**
+- R8's command-body and INV-04 contradictions. These are semantic and pass the whole pinned pipeline (B2-F-08).
+- The Causa T18↔T20 cycle. It is not present in pre-T0 artefacts (B2-F-07; matrix X-24).
+- The R10 gate deadlock, whose causes need hosted CI (B2-F-11).
+
+**Cost:** seconds of tool time per rehearsal, and about 199 s for a full rerun of all replays (B2-F-10, VERIFIED).
+
+DECISION-LOG D-022 narrows B's recommendation on this basis.
+
 ## Decision (proposed)
 
 Before any timed run, execute the whole governance pipeline end to end:
@@ -53,7 +76,7 @@ No kickoff unless the dry run is GO (compare R7, which started while its audit v
 
 ## Consequences
 
-**Expected:** the governance-artefact failure class is found before T0 instead of inside the window. The benefit is an ESTIMATE; B2 is measuring how many of the recorded defects a dry run would have caught.
+**Expected:** mechanical, format and tool-mismatch defects in governance artefacts are found before T0 instead of inside the window. B2 measured this as 2–4 of 8 brief-list blockers, at negligible cost. Semantic package defects stay uncovered and need a separate check: B3-semantic is testing generic semantic checks.
 
 **Costs:**
 - Pre-T0 compute and wall time: one full CI cycle plus a stub implementation. This is NOT measured.
@@ -67,18 +90,19 @@ No kickoff unless the dry run is GO (compare R7, which started while its audit v
 
 | Finding | Class | Independent check |
 |---|---|---|
-| B-F-03 | SUPPORTED (B) | V2 PARTIALLY VERIFIED (first blocker yes, dominant blocker no); B2 replay pending |
+| B-F-03 | SUPPORTED (B) | V2 PARTIALLY VERIFIED (first blocker yes, dominant blocker no) |
+| B2-F-01..F-11 | VERIFIED/SUPPORTED/INCONCLUSIVE (B2) | none; B2 is itself a direct test of this ADR |
 | B-F-12 | SUPPORTED (B) | V2 pending |
 | B-F-08 | VERIFIED (B) | V2 pending |
-| A-F-12, A-F-14 | VERIFIED (A) | V1 queued for A-F-12 |
+| A-F-12, A-F-14 | VERIFIED (A) | V1 VERIFIED A-F-12 (65.6%, range 54–76% by definition); A-F-14 not independently verified |
 | C-F-12 | SUPPORTED: a bespoke toolchain changed between runs, so gates were new each time | — |
 
 Files: `B-forensics/findings.json#B-F-03`, `B-forensics/data/event-analysis.json`, `B-forensics/REPORT.md` §5, `A-economics/analysis/ci-overhead.json`. Matrix themes X-08, X-09.
 
 ## Open questions
 
-1. What fraction of the recorded in-window governance defects would a stub dry run have caught? B2 is testing this. Reconsider this ADR when B2 reports.
-2. Does a dry run cost less than the window time it saves? Neither cost nor saving is measured.
+1. ~~What fraction would a stub dry run catch?~~ Answered by B2: 4/8 (robust 2/8). Is a semantic check, such as a model check of state machines against invariants, worth adding? See B3-semantic.
+2. The cost is measured as negligible (B2-F-10). The window time saved per caught defect has not been measured. For example, R4's approvals issue was found at T+60 and R8's MSB1008 was fixed at T+94, but downstream effects are not quantified.
 3. Should the dry run be a Praxis/Dokimos-native capability, or remain Indy-init tooling (C-F-12, CR-07)?
 4. How much acceptance headroom does the dry run buy, given V2's finding that R8–R10 were also far from product-complete (X-23)?
 5. B's event curation was done by one analyst. Would a second coder reproduce the "10 of 11 runs" prevalence?

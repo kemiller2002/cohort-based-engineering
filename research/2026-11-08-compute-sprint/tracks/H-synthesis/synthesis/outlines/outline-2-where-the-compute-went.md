@@ -39,13 +39,16 @@ In the one rehearsal with full telemetry (R8), most tokens were cache reads of a
 
 ## 3. CI: two-thirds of minutes in red or cancelled runs
 
-- Across R2–R10, 67% of job-minutes were in failed or cancelled runs (38% excluding R6 and R10). **VERIFIED**, A-F-12. V1 queued.
+- Across R2–R10, about two-thirds of job-minutes were in failed or cancelled runs. **VERIFIED+IV**, A-F-12 / V1 (65.6%, CI 56.5–71.9%).
+  - The figure ranges from 54% to 76% depending on the definition, and is 37–38% excluding R6 and R10.
+  - "Red" includes superseded cancellations and successful jobs inside failed runs. **[DO NOT STATE]** "two-thirds of CI was waste".
 - Two harness mechanisms explain the outliers, with corroboration from separate data:
   - R6: a per-commit concurrency group combined with `if: always()`, giving 116 of 132 runs cancelled.
   - R10: a 20-minute job cap against a roughly 29-minute browser suite.
 
   **VERIFIED**, B-F-08 + A-F-12 + A-F-11; matrix X-08.
-- Browser suites take 28–51% of step time. Rebuilding the Praxis verifier from source took 8.4% (688 min). **VERIFIED**, A-F-13 (step categories are a name-regex heuristic). V1 queued.
+- Browser suites take 28–51% of step time. Rebuilding the pinned Praxis verifier from source took about 604–607 min, 7.4–8.0% of step time. **VERIFIED+IV**, A-F-13 / V1 PARTIALLY VERIFIED: A's 688 included an unrelated R5 step.
+- What reuse would buy, on one F# fixture: a no-op build costs ~4% of a clean build's CPU, and an affected-project test run ~4% of the full suite. **SUPPORTED**, D-F-09, D-F-11. Selection safety is NOT TESTED.
 - The billable-minutes figure is a compute proxy. Public repositories are not billed.
 
 ## 4. Merge friction is tool state

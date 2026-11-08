@@ -79,6 +79,22 @@ C = {
     "G-F-08": ("high", "'Overhead without measured quality gain'; fixture ceiling effects.", ["A-F-16", "D:VAC-001"], "outline-2"),
     "G-F-12": ("medium", "Platform-dependency positioning; SO 2026 editorial highlights only.", [], "outline-3"),
     "G-F-13": ("low", "Context only; no SAM derived.", [], None),
+    # B2 dry-run replay (wave 3)
+    "B2-F-01": ("high", "Sizes ADR-S04's benefit: 4/8 brief (robust 2/8), 7/11 extended; matching rules partly finalised after first runs.", ["X-09", "DECISION-LOG D-022"], "ADR-S04"),
+    "B2-F-02": ("medium", "R10-AUTH reproduces exactly pre-T0 (55/55 causes).", ["B-F-03"], "ADR-S04"),
+    "B2-F-03": ("medium", "Approvals-format blockers catchable pre-T0.", ["B-F-12"], "ADR-S04"),
+    "B2-F-04": ("medium", "Frozen-plan suite commands fail on pinned SDK pre-T0.", ["B-F-03"], "ADR-S04"),
+    "B2-F-05": ("medium", "FSharp.Core skip detectable pre-T0; not preregistered.", ["B-F-13"], "ADR-S04"),
+    "B2-F-08": ("high", "Semantic contract defects pass the whole pinned pipeline: the uncovered class that limits ADR-S04.", ["X-23"], "ADR-S04"),
+    "B2-F-10": ("medium", "Dry-run cost is seconds per rehearsal (loaded host).", [], "ADR-S04"),
+    # D experiments
+    "D-F-03": ("high", "VAC-001 continuity saving is one of the few positive results and bears on ADR-S05; chain-level p=0.25.", ["X-12", "G-F-08"], "ADR-S05"),
+    "D-F-05": ("medium", "Fresh-from-verified +86% (one chain) is the main counter-evidence to a coordinator cap.", ["X-12"], "ADR-S05"),
+    "D-F-07": ("medium", "VAC-002 P3 underpowered; affects how its null result is cited.", ["X-15"], None),
+    "D-F-08": ("medium", "Replicate counts used to size FX experiments; lower bounds.", [], "future-experiments"),
+    "D-F-09": ("medium", "Incremental no-op build ~4% of clean CPU; one fixture.", ["X-25", "A-F-13"], "outline-2"),
+    "D-F-10": ("medium", "Surface edits cost ~a clean build.", ["X-25"], None),
+    "D-F-11": ("medium", "Affected-test run ~4% of full suite CPU; selection safety untested.", ["X-25"], "outline-2"),
 }
 
 # H-001 notes where a verifier's verdict covers only part of the claim
@@ -92,10 +108,17 @@ SCOPE_NOTES = {
 
 # Which verification track is assigned to each source track
 ASSIGNED = {"A": "V1", "G": "V1", "B": "V2", "C": "V2", "E": "V2"}
+TRACKNAME = {"A": "A-economics", "B": "B-forensics", "C": "C-architecture", "E": "E-security", "G": "G-market", "B2": "B2-dryrun", "D": "D-experiments"}
+
+
+def prefix(cid):
+    return cid.split("-F-")[0]
 
 
 def load_findings(track_dir):
     p = os.path.join(TRACKS, track_dir, "findings.json")
+    if not os.path.exists(p):
+        p = f"/home/user/sprint-wt/{track_dir}/research/2026-11-08-compute-sprint/tracks/{track_dir}/findings.json"
     d = json.load(open(p))
     items = d if isinstance(d, list) else d["findings"]
     return {f["id"]: f for f in items}
@@ -128,7 +151,7 @@ def load_v1_pending():
 
 
 findings = {}
-for t in ["A-economics", "B-forensics", "C-architecture", "E-security", "G-market"]:
+for t in TRACKNAME.values():
     findings.update(load_findings(t))
 
 v1, v1src = load_verdicts("V1-verification")
@@ -141,8 +164,8 @@ for cid, (rank, cons, support, use) in C.items():
     cls = f.get("classification")
     if cls not in ("VERIFIED", "SUPPORTED"):
         raise SystemExit(f"{cid} is {cls}, not VERIFIED/SUPPORTED")
-    vt = ASSIGNED[cid[0]]
-    vmap = v1 if vt == "V1" else v2
+    vt = ASSIGNED.get(prefix(cid))
+    vmap = v1 if vt == "V1" else (v2 if vt == "V2" else {})
     if cid in vmap:
         v = vmap[cid]
         iv = {"by": vt, "status": "done", "verdict": v.get("verdict"),
@@ -155,7 +178,8 @@ for cid, (rank, cons, support, use) in C.items():
         iv = {"by": vt, "status": "queued", "verdict": None}
     else:
         iv = {"by": None, "status": "not yet independently verified", "verdict": None,
-              "assignedTrack": vt, "note": f"not in {vt} verdicts.json or queue at time of build"}
+              "assignedTrack": vt,
+              "note": (f"not in {vt} verdicts.json or queue at time of build" if vt else "no verification track assigned (wave-3 track)")}
     flags = []
     if iv["status"] != "done":
         flags.append("NOT_YET_INDEPENDENTLY_VERIFIED")
@@ -170,7 +194,7 @@ for cid, (rank, cons, support, use) in C.items():
         flags.append("PRIORITY_FOR_VERIFICATION")
     entries.append({
         "claimId": cid,
-        "track": {"A": "A-economics", "B": "B-forensics", "C": "C-architecture", "E": "E-security", "G": "G-market"}[cid[0]],
+        "track": TRACKNAME[prefix(cid)],
         "classification": cls,
         "severity": f.get("severity"),
         "title": f["title"],
@@ -182,7 +206,7 @@ for cid, (rank, cons, support, use) in C.items():
         "independentVerification": iv,
         "usedIn": use,
         "flags": flags,
-        "evidence": f"research/2026-11-08-compute-sprint/tracks/{ {'A':'A-economics','B':'B-forensics','C':'C-architecture','E':'E-security','G':'G-market'}[cid[0]] }/findings.json#{cid}",
+        "evidence": f"research/2026-11-08-compute-sprint/tracks/{TRACKNAME[prefix(cid)]}/findings.json#{cid}",
     })
 
 omitted = sorted(
@@ -216,7 +240,7 @@ out = {
     "track": "H-synthesis",
     "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
     "asOf": sys.argv[3] if len(sys.argv) > 3 else None,
-    "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
+    "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
     "verificationSources": {"V1": v1src, "V2": v2src},
     "summary": summary,
     "claims": entries,
