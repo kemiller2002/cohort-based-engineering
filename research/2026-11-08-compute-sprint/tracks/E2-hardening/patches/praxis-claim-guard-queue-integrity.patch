@@ -267,6 +267,49 @@ index 418f4c6..f9d693f 100644
  
      /// The authority input bound to the ready Ordo contract at `contract`
      /// (PRX-REL-008, REL-GATE-002). Without a contract there is no ready
+diff --git a/src/Praxis.Infrastructure/Work/TrustedVerifier.fs b/src/Praxis.Infrastructure/Work/TrustedVerifier.fs
+index d992393..ec8b2f0 100644
+--- a/src/Praxis.Infrastructure/Work/TrustedVerifier.fs
++++ b/src/Praxis.Infrastructure/Work/TrustedVerifier.fs
+@@ -435,10 +435,36 @@ module VerifierSocket =
+ /// `praxis work verify` composition and the receipt half of the I8 store.
+ [<RequireQualifiedAccess>]
+ module FileWorkVerification =
+-    /// `git status --porcelain` entries (untracked files included).
++    /// EXPERIMENTAL (E2 / E-F-03): `work claim` appends a token-free
++    /// `work.claim.recorded` marker to the tracked log. When the tracked
++    /// log's only difference from HEAD is appended markers, the worktree is
++    /// still clean for verification; the completion's metadata commit then
++    /// records the marker together with `work.completion.verified`.
++    let private claimMarkerOnly (root: string) =
++        let path = Path.Combine(root, ".ros", "events", "events.jsonl")
++        let committed = FileWorkClaims.headEventsBlob root () |> Option.defaultValue ""
++        let current = if File.Exists path then File.ReadAllText path else ""
++        let eventsDirectoryHoldsOnlyLog =
++            let directory = Path.GetDirectoryName path
++            Directory.Exists directory && (Directory.GetFileSystemEntries directory |> Array.forall (fun entry -> entry = path))
++
++        eventsDirectoryHoldsOnlyLog
++        && current.StartsWith(committed, StringComparison.Ordinal)
++        && current.Substring(committed.Length).Split('\n', StringSplitOptions.RemoveEmptyEntries)
++           |> Array.forall (fun line -> line.Contains("\"type\":\"work.claim.recorded\"", StringComparison.Ordinal))
++
++    let private markerEntries = set [ " M .ros/events/events.jsonl"; "M  .ros/events/events.jsonl"; "?? .ros/events/events.jsonl"; "?? .ros/events/" ]
++
++    /// `git status --porcelain` entries (untracked files included), less a
++    /// tracked log that differs from HEAD only by claim markers.
+     let worktreeStatus (root: string) () =
+         match ClaimProcess.run "git" root [] None FileWorkClaims.gitTimeout [ "status"; "--porcelain=v1"; "-z" ] with
+-        | Ok result when result.ExitCode = 0 -> Ok(result.Stdout.Split('\000', StringSplitOptions.RemoveEmptyEntries) |> Array.toList)
++        | Ok result when result.ExitCode = 0 ->
++            let entries = result.Stdout.Split('\000', StringSplitOptions.RemoveEmptyEntries) |> Array.toList
++            if entries |> List.exists markerEntries.Contains && claimMarkerOnly root then
++                Ok(entries |> List.filter (markerEntries.Contains >> not))
++            else
++                Ok entries
+         | Ok result -> Error $"cannot inspect the worktree: {result.Stderr.Trim()}"
+         | Error _ -> Error "cannot inspect the worktree: git is unavailable"
+ 
 diff --git a/tests/Praxis.Tests/E2HardeningTests.fs b/tests/Praxis.Tests/E2HardeningTests.fs
 new file mode 100644
 index 0000000..07e4a7f

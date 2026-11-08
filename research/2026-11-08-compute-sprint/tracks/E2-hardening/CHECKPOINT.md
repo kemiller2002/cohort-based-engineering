@@ -8,4 +8,6 @@
   A1c (uncommitted marker) still bypasses as predicted; controls C1–C3 pass; C4 FP scan 0 flagged.
 - SPR-E2-03 prototype: all T1–T8 refused as preregistered, P1 ACCEPTED, N1/N2 FAILED (raw/spr-e2-03.jsonl); 5 unittest pass.
 - SPR-E2-01 deviation: subset "claim" showed 4 attested-completion tests failing with PRX.VALIDATION.DIRTY_WORKTREE (the uncommitted tracked marker); fix in progress (verification cleanliness tolerates a marker-only log diff).
-- Next: rebuild with SPR-E2-01 fix + SPR-E2-02, full patched suite, SPR-E2-02 harness.
+- Build 4 (final): SPR-E2-01 fix (marker-only log diff is clean for verification) + SPR-E2-02 (bindings moved to .ros/work/ after attribution finding); 9 E2 tests pass; harnesses re-run on build 4.
+- Baseline full suite: 2513 tests, 2511 pass, 2 fail (real-Dokimos attested e2e), 2035 s.
+- Next: patched full suite (running), experiments.json, findings.json.

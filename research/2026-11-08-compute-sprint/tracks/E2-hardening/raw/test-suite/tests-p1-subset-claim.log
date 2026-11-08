@@ -1,0 +1,102 @@
+PASS registry build reclaims a stale lease left by a dead owner in the on-disk lock format
+PASS registry lock reclaims an expired dead-owner lease
+PASS reconciliation rejects claimed work-item branch mismatch
+PASS reconciliation rejects a claimed Praxis instance mismatch
+PASS reconciliation rejects a claimed instance the repository does not have or cannot verify (DER-23, 24)
+PASS requirements preservation: L Rehearsal 3 regression: the original package is detected, a claimed mapping to its closest criteria fails, a corrected package passes
+PASS step relationship records evidence as a sourced reference rather than a file claim
+PASS two recorded reconciliations claiming one change for different work items are both invalid
+PASS reconcile: another work item claiming the same change is a conflict and is not recorded
+PASS input inbox: claim IDs are deterministic per path and content
+PASS input inbox: claiming is write-ahead and recovers from a crash at every step without losing the input
+PASS input inbox: a repeated claim returns the existing claim and creates nothing
+PASS input inbox: the claim record round-trips through praxis.inbox-claim/1
+PASS input inbox CLI: claim, derive, complete after commit, with list and recover on a Git repository
+PASS verification plan: an altered plan, a wrong claim digest or a dropped requirement is refused
+PASS verification plan CLI: claim, admit-plan, commit, complete; handoff names Ordo's command and the digest
+PASS remote: telemetry.record values keep their asserted quality and cannot claim executor observation
+PASS autonomy: reconciliation never claims a merge it did not submit
+PASS remote execute: a mutation that cannot finish leaves nothing behind and claims nothing
+PASS process evidence: an agent's statement stays an assertion whatever it claims
+PASS local git candidates: worker result is observed from actual objects and claims cannot replace it
+PASS ownership: a commit another item claimed in full is not this item's
+PASS ownership: a path no covering item claimed stays with this item
+PASS ownership: claims only count from items whose evidence contains the commit
+PASS ownership scope: without evidence, or with only this item's own claims, the raw difference is used
+PASS ownership scope: when no other claim covers the range, behaviour is exactly the raw difference
+PASS CONT-12: completion no longer demands a checkpoint that would claim another item's commits
+PASS abandon: active work with pushed changes needs no checkpoint, and claims no paths
+PASS grouping: compare --groups counts context acquisitions and never claims unmeasured savings
+PASS local handoff: wrong dispatch, attempt, worker and child results cannot claim another assignment
+PASS local handoff: claimed evidence bytes cannot replace independent artifact observation
+PASS local handoff: blocked and failed member results preserve claims but admit no integration
+PASS local handoff: explanation retains proposal identity and never claims controller authority
+PASS portability: current OS selection uses the runtime instead of model-provided OS claims
+PASS worker submission: missing or forged checklist evidence blocks intake despite passing worker acceptance claims
+PASS worker submission: worker claims cannot replace actual commit, artifact or independent acceptance evidence
+PASS identity: reconciliation rejects a claimed instance that differs from the generated local one, end to end (DER-23)
+PASS work claims: first acquisition takes generation 1 and emits work.claim.acquired
+PASS work claims: a second claimant is refused while the lease is valid (PRX.CLAIM.HELD)
+PASS work claims: re-sending the same acquisition returns the original claim without a new event
+PASS work claims: N parallel acquirers on one item: exactly one winner (in-memory store)
+PASS work claims: N parallel acquirers on one item: exactly one winner (local file store)
+PASS work claims: two independent clones racing through a bare origin: exactly one winner (git-ref store)
+PASS work claims: git-ref store rejects a stale compare-and-swap and later renewals of a stale generation
+PASS work claims: a stale expected revision is refused (PRX.CLAIM.STALE_REVISION) and a stale store write conflicts
+PASS work claims: renewal extends the lease, marks running, and is fenced
+PASS work claims: after lease expiry the owner cannot renew, and a new claimant recovers with generation + 1
+PASS work claims: recover refuses a live lease; expire records an expired lease durably
+PASS work claims: release is idempotent and a released item is claimable at the next generation
+PASS work claims: a completed or abandoned queue item is not claimable
+PASS work claims: verified completion binds the receipt and emits work.completion.verified
+PASS work claims: a replayed completion is idempotent: no second verification and one verified event
+PASS work claims: a stale owner cannot complete after another claimant recovered
+PASS work claims: an expired owner cannot publish a late completion
+PASS work claims: a crash between Dokimos and the final CAS recovers without double completion
+PASS work claims: a crashed completion whose lease expired is recovered by a new owner and never completed by the old one
+PASS work claims: missing mandatory evidence is refused before any verifier call
+PASS work claims: a mutable commit or verification revision is refused
+PASS work claims: a forged evidence digest is refused by verification and the holder may resubmit
+PASS work claims: verifier missing fails closed (PRX.COMPLETION.VERIFIER_UNAVAILABLE)
+PASS work claims: a crashing, hanging or garbled verifier process fails closed
+PASS work claims: a fake Dokimos executable: refusal codes are copied verbatim, a receipt for another packet is refused, a bound receipt verifies
+PASS work claims: batched slices keep independent claims and evidence (PRX-REL-011)
+PASS work claims: I1 event payloads carry exactly the frozen members
+PASS work claims: the file event sink appends an identical event once
+PASS work claims: migration: the repository's queue.json loads unchanged with zero lost records beside a claims store
+PASS work claims: cli: claim, conflicting claim and inspection use documented exit codes
+PASS work claims: integration: the real Dokimos CLI verifies a Praxis-built packet and authority
+PASS validation evidence: a result from another work item or an earlier generation is refused (EVIDENCE_FOREIGN_CLAIM)
+PASS reliability pipeline: scenario 10: independent requirements claimed concurrently by separate agents never collide (file store)
+PASS reliability pipeline: plain work complete is refused for claimed items until a verified completion exists
+PASS reliability pipeline: cli: work complete refuses a claimed item with PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED
+PASS E2 hardening: tracked history: a claim marker without a verified completion is Claimed
+PASS E2 hardening: E-F-03: a missing store record with a tracked claim is refused with CLAIM_RECORD_MISSING
+PASS E2 hardening: E-F-03: a store that claims completion without a tracked verified completion is refused
+PASS E2 hardening: controls: unclaimed and verified-complete items keep the 3.25.0 decisions
+PASS E2 hardening: cli E-F-03: deleting the claim directory no longer re-enables plain work complete
+FAIL attested completion: a self-signed receipt, or one claiming a trusted keyid, is refused
+  expected receipts, got Refused
+  { Code = "PRX.VALIDATION.DIRTY_WORKTREE"
+    Detail =
+     "the worktree is not clean (?? .ros/events/); commit or discard changes so the receipts name the revision you will complete" }
+FAIL attested completion: a receipt replayed after re-claim, or from another generation, is refused; the verifier refuses a stale holder
+  expected receipts, got Refused
+  { Code = "PRX.VALIDATION.DIRTY_WORKTREE"
+    Detail =
+     "the worktree is not clean (?? .ros/events/); commit or discard changes so the receipts name the revision you will complete" }
+PASS attested completion: legacy .ros/claims are refused with a stable code until work claims migrate moves them
+FAIL attested completion: git store: a claim on the shared remote is verified and completed from a clone with no local claim
+  expected receipts, got Refused
+  { Code = "PRX.VALIDATION.DIRTY_WORKTREE"
+    Detail =
+     "the worktree is not clean (?? .ros/events/); commit or discard changes so the receipts name the revision you will complete" }
+FAIL attested completion: git store: another clone cannot verify the holder's claim, and a stale generation after remote recovery is refused
+  expected receipts, got Refused
+  { Code = "PRX.VALIDATION.DIRTY_WORKTREE"
+    Detail =
+     "the worktree is not clean (?? .ros/events/); commit or discard changes so the receipts name the revision you will complete" }
+PASS attested completion: REL-GATE-004: editing ros.json in the claimed branch cannot disable requireAttestedEvidence set on the protected branch
+PASS attested completion: EP-A3-R3 cli: work finish with required evidence missing from the policy exits 3, repeats the same codes, and changes no claim or tracked state
+84 test(s); 80 passed; 4 failed
+exit=1 seconds=47 filter='claim'
