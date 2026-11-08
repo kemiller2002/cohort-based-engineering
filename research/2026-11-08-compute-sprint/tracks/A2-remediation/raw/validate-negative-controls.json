@@ -1,0 +1,7 @@
+{"experiment":"SPR-A2-01","purpose":"Does the pinned `praxis validate` (native 3.24.0 release, sha256-verified) detect damaged .ros history? Applied to R8 merge commit a4b5c49e (PR3) in scratch clone r8c, PRAXIS_BASE_REF=538eab03.",
+ "baseline":{"mutation":"none","result":"validation passed"},
+ "controls":[
+  {"mutation":"remove work item WI-R8-CR2 from current.json","result":"validation failed with 2 error(s): linked work item 'WI-R8-CR2' is not present in repository context","detected":true},
+  {"mutation":"remove last 2 lines of events.jsonl","result":"validation failed with 1 error(s): latestCheckpoint ... has no work.checkpointed event in history","detected":true},
+  {"mutation":"duplicate the last line of events.jsonl","result":"validation passed","detected":false}],
+ "conclusion":"validate detects lost records of these kinds but NOT a duplicated event line, so the harness's own duplicate count is the only duplicate check","classification":"MEASURED"}
