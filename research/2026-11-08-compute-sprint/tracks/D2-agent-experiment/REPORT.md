@@ -77,3 +77,7 @@ The minimum attainable two-sided p at n=4/4 is 0.029. Every separable secondary 
 3. Launch each arm with `arm-prompts/{M,G}.txt`, substituting `{WS}`, in the batches given in `assignment.json`.
 4. Score each run with `python3 -I score.py <ws>`.
 5. Run `python3 -I harness/analyze.py assignment.json results/usage.json results/scores/r*.json`.
+
+## Deviation discovered later (2026-11-08 ~16:05 EST, RD-000)
+- The SPR-D2-01 G prompts as delivered placed the governance block before the "Task:" line, not after it as in the frozen G.txt. The content was identical.
+- See `spr-x-03/PROTOCOL.md` and `spr-x-03/arm-prompts/G_as_delivered.txt`.
