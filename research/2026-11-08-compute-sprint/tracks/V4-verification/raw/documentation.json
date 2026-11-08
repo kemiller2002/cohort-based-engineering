@@ -1,0 +1,463 @@
+[
+ {
+  "run": "s01",
+  "trap": "D2b:T4",
+  "value": 3,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s01",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s03",
+  "trap": "D2b:T3",
+  "value": {
+   "discount": 100,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1404
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": true,
+  "questions_evidence": null,
+  "other_evidence": [
+   "test_pricing.py:62: # Rounding is not specified; this implementation uses floor (integer division)."
+  ]
+ },
+ {
+  "run": "s03",
+  "trap": "D2b:T4",
+  "value": 3,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s03",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s04",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "- **Q4 (R-08) Which clock decides \"Saturday or Sunday\".** Spec does not say whether the weekday is taken in the customer's local time (the offset on `placed_at`) or UTC. Implemented: the weekday of `placed_at` as written (customer's local wall-clock day). Needs confirmation."
+  ],
+  "other_evidence": [
+   "QUESTIONS.md:8: - **Q4 (R-08) Which clock decides \"Saturday or Sunday\".** Spec does not say whether the weekday is taken in the customer's local time (the offset on `placed_at`) or UTC. Implemented: the weekday of `p",
+   "test_pricing.py:93: def test_r08_weekend_uses_local_offset(self):  # R-08 (Q4 interpretation)"
+  ]
+ },
+ {
+  "run": "s05",
+  "trap": "D2b:T4",
+  "value": 3,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s05",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s06",
+  "trap": "D2b:T4",
+  "value": 3,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s06",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s07",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s08",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "4. **Which day counts as Saturday or Sunday (R-08).** The implementation uses the weekday of `placed_at` in its own\n   UTC offset (the customer's device offset). The spec does not state whether the business or a fixed reference\n   time zone should decide the weekend. This is an interpretation, not a"
+  ],
+  "other_evidence": [
+   "EVIDENCE.md:30: | R-08 | `price_order` `weekday() >= 5` check | `R08WeekendTest` (5 tests); local-offset interpretation (QUESTIONS 4) |",
+   "QUESTIONS.md:15: time zone should decide the weekend. This is an interpretation, not an explicit rule."
+  ]
+ },
+ {
+  "run": "s09",
+  "trap": "D2b:T4",
+  "value": 3,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s09",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s10",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "5. **Time zone for \"Saturday or Sunday\" (R-08).** Implemented as the weekday of `placed_at` in its own UTC offset,\n   which is the customer's local date. The alternatives are UTC, or a store time zone. Example: 2026-11-07 23:30 at\n   UTC-5 is treated as Saturday, so it ships free, even though it is "
+  ],
+  "other_evidence": [
+   "test_pricing.py:122: def test_r08_weekend_uses_offset_reported_with_placed_at(self):  # R-08 (open question on timezone)"
+  ]
+ },
+ {
+  "run": "s11",
+  "trap": "D2b:T4",
+  "value": 3,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s11",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "s12",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "4. **Weekend in which time zone (interpretation, implemented).** R-08 says \"placed on a Saturday or a Sunday\", and\n   `placed_at` carries the customer device's UTC offset. The code takes the weekday of `placed_at` in its own\n   offset (local wall-clock day). The spec does not explicitly say this; co"
+  ],
+  "other_evidence": [
+   "QUESTIONS.md:17: 4. **Weekend in which time zone (interpretation, implemented).** R-08 says \"placed on a Saturday or a Sunday\", and"
+  ]
+ },
+ {
+  "run": "s14",
+  "trap": "D2b:T5",
+  "value": {
+   "discount": 0,
+   "shipping": 0,
+   "subtotal": 1000,
+   "total": 1000
+  },
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "5. **Weekend determination (R-08).** The implementation uses the weekday of `placed_at` in its own UTC offset\n   (the customer's device offset). The spec does not say explicitly that this is the intended reading, as opposed to\n   UTC or the store's time zone. Confirmation is needed. Under this readi"
+  ],
+  "other_evidence": [
+   "EVIDENCE.md:36: Interpretation check: `R08WeekendShipping.test_weekend_uses_customer_local_offset` (QUESTIONS.md item 5)."
+  ]
+ },
+ {
+  "run": "t01",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t04",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t06",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t07",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t08",
+  "trap": "D2c:T4",
+  "value": 5,
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "## Q-3 Loyalty points for cancelled lines (R-10)",
+   "- R-10 says \"1 loyalty point per item ordered (an item is one unit of qty)\", and does not exclude cancelled lines.\n  R-03 excludes cancelled lines from the subtotal, but R-10 does not say the same.",
+   "- NOTES.md (standup 11/6) records that \"cancelled lines don't count toward points, including the 10-item bonus\".\n  That is a note, not a signed decision, so it was not applied.",
+   "- Code: `loyalty_points` counts every line's qty, cancelled or not, and applies the 10-item bonus to that total.\n  This is the literal reading of R-10.",
+   "- Code: accepted. The subtotal is 0, the shipping fee is 499 (below 5000, weekday), the total is 499, and the\n  points are the cancelled qty (see Q-3)."
+  ],
+  "other_evidence": null
+ },
+ {
+  "run": "t09",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t09",
+  "trap": "D2c:T4",
+  "value": 5,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t10",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t10",
+  "trap": "D2c:T4",
+  "value": 5,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t11",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t11",
+  "trap": "D2c:T4",
+  "value": 5,
+  "questions_md_exists": false,
+  "documented_questions": false,
+  "documented_anywhere": false,
+  "questions_evidence": null,
+  "other_evidence": null
+ },
+ {
+  "run": "t12",
+  "trap": "D2c:T4",
+  "value": 5,
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "3. **Cancelled lines and loyalty points (R-10).** R-10 says \"1 loyalty point per item ordered\", and the spec only\n   excludes cancelled lines from the subtotal (R-03). Implemented literally: every line's qty counts, including\n   cancelled lines. NOTES.md (standup 11/6) says the team \"agreed cancelle"
+  ],
+  "other_evidence": null
+ },
+ {
+  "run": "t13",
+  "trap": "D2c:T3",
+  "value": {
+   "discount": 101,
+   "shipping": 499,
+   "subtotal": 1005,
+   "total": 1403
+  },
+  "questions_md_exists": true,
+  "documented_questions": true,
+  "documented_anywhere": true,
+  "questions_evidence": [
+   "2. **Rounding of the member discount.** R-04 does not state rounding. The skeleton comment in pricing.py says \"rounds\n   half up to the nearest cent\", but that comment is not a signed decision. Behavior: half up, as the comment says.\n   Needs sign-off. Affects only subtotals not divisible by 10."
+  ],
+  "other_evidence": [
+   "QUESTIONS.md:11: 2. **Rounding of the member discount.** R-04 does not state rounding. The skeleton comment in pricing.py says \"rounds"
+  ]
+ }
+]
