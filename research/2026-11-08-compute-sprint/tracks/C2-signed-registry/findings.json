@@ -1,0 +1,126 @@
+{
+  "schema": "sprint.findings/1",
+  "track": "C2-signed-registry",
+  "experiment": "SPR-C2-01",
+  "findings": [
+    {
+      "id": "C2-F-01",
+      "title": "Attestations are per release, ECDSA P-256/SHA-256 over a four-field statement, not signatures over a Registry set",
+      "classification": "VERIFIED",
+      "statement": "A signed resolved-set component entry must carry systemId, version, role 'project-binding', releaseManifest.sha256 and a releaseAttestation {schema 'echelon.release-attestation/v1', algorithm 'ecdsa-p256-sha256', keyId, base64 signature, non-empty consumerContracts including 'echelon.web-package-binding/v1'}. The signed payload is the UTF-8 line 'echelon.release-attestation/v1|systemId|version|releaseManifestSha256|sorted contracts'; the signature is IEEE P1363 r||s, verified with the BCL against a DER SubjectPublicKeyInfo P-256 key from the embedded trust file. Nothing signs the set as a whole; CR-01's 'sign Registry sets' wording is inaccurate.",
+      "evidence": [
+        "conditor@528ef45:src/Conditor.Core/ReleaseAttestation.fs:32-47",
+        "conditor@528ef45:src/Conditor.Core/ReleaseAttestation.fs:125-161",
+        "conditor@528ef45:src/Conditor.Core/ReleaseAttestation.fs:168-192",
+        "conditor@528ef45:src/Conditor.Core/ReleaseAttestation.fs:108-121",
+        "conditor@528ef45:src/Conditor.Core/Conditor.Core.fsproj:62",
+        "echelon-registry@5752402:spec/release-attestation-requirements.md:56-91,133-151",
+        "raw/harness-*/results.json A1"
+      ],
+      "limitations": "Spec text describes the Registry side that does not exist yet; verified against Conditor code and our signer only."
+    },
+    {
+      "id": "C2-F-02",
+      "title": "With a valid attestation the built-in catalog need not list the version, but must still declare a qualifiedRange for that component",
+      "classification": "VERIFIED",
+      "statement": "Conditor qualifies a version absent from qualifiedVersions when the descriptor declares qualifiedRange containing it, the version is not in deniedVersions, and the attestation verifies and claims the web contract. Shown on the production trust path with only the trust file changed: real echelon-current 1.37.0 forma 0.13.0 with 0.13.0 removed from the catalog, and synthetic forma 0.14.0 on the stock v0.10.21 catalog, both pass attestedSelections, Compatibility.validateIn and CLI `conditor doctor` (no COND-DOC-COMPAT), while the same unsigned set is refused. The production CurrentUpgrade.preview/apply (upgrade --current) qualifies Forma 0.7.0 as 'attested:>=0.2.0 <1.0.0:test-only-c2-001-2026-11-08' and applies it with no drift.",
+      "evidence": [
+        "conditor@528ef45:src/Conditor.Core/Registry.fs:22-26",
+        "conditor@528ef45:src/Conditor.Core/WebPackageBinding.fs:538-575",
+        "conditor@528ef45:src/Conditor.Core/Compatibility.fs:92",
+        "conditor@528ef45:src/Conditor.Core/Compatibility.fs:159-176",
+        "raw/harness-rollback-real-0.13.0/results.json (A0-A3)",
+        "raw/harness-stock-synthetic-0.14.0/results.json (A0-A3)",
+        "raw/regression/R1k.stdout.txt (SPR-C2-01 lines)",
+        "patches/01-trust-file-TEST-ONLY-key.diff"
+      ],
+      "limitations": "A4 full apply used the existing fixture repo (Forma 0.6.1->0.7.0 with fake npm), not 1.37.0 data; doctor exited 12 in both arms for unrelated lifecycle findings."
+    },
+    {
+      "id": "C2-F-03",
+      "title": "The range-qualification code is live, reachable from the CLI's normal flows",
+      "classification": "VERIFIED",
+      "statement": "The embedded trust is consumed by Planner.create (init/verify/doctor/status/repair/upgrade via Program.fs:90 and Doctor.fs:73), Compatibility.validateIn (Doctor.fs:63) and CurrentUpgrade.preview/apply (Program.fs:706,734; WebPackageBinding plan/verify at CurrentUpgrade.fs:379-384,442-444). It is dormant only because the trust list is empty, not dead code; populating the trust file activated it end to end through the CLI binary.",
+      "evidence": [
+        "conditor@528ef45:src/Conditor.Cli/Program.fs:89-90",
+        "conditor@528ef45:src/Conditor.Cli/Program.fs:700-740",
+        "conditor@528ef45:src/Conditor.Core/Planner.fs:259-263",
+        "conditor@528ef45:src/Conditor.Core/Planner.fs:594-595",
+        "conditor@528ef45:src/Conditor.Core/Doctor.fs:62-73",
+        "conditor@528ef45:src/Conditor.Core/CurrentUpgrade.fs:379-384,721-722,1096-1097",
+        "raw/harness-*/A3-doctor-*.json"
+      ],
+      "limitations": "Scaffolding without a Registry authority (EmbeddedCatalog) still pins from descriptor data only (Scaffolding.fs:53-69)."
+    },
+    {
+      "id": "C2-F-04",
+      "title": "Bad attestations are refused with clear reasons; an expiry/replay-by-date control does not exist",
+      "classification": "VERIFIED",
+      "statement": "Refused (NotAttested with a reason, not selected): one hex char of the signed manifest digest changed ('signature does not verify'), one signature byte flipped (same), untrusted key under the pinned keyId (same; also refused by production preview with that reason), untrusted key under an unknown keyId ('is not pinned'), revoked key ('was revoked at ...'), another version's statement replayed ('does not verify'), wrong contract (attested but not selected), out-of-range 1.0.0 (not selected), host-tool praxis (not selected). The format carries no expiry or freshness: an 'expiresAt' in the past is ignored and the attestation stays valid indefinitely; revocation needs a Conditor release (REG-SIG-007).",
+      "evidence": [
+        "raw/harness-stock-synthetic-0.14.0/results.json N1-N9, S2",
+        "raw/harness-rollback-real-0.13.0/results.json N1-N9, S2",
+        "raw/regression/R1k.stdout.txt (A4-rogue)",
+        "conditor@528ef45:src/Conditor.Core/ReleaseAttestation.fs:139-161",
+        "echelon-registry@5752402:spec/release-attestation-requirements.md:190-206"
+      ],
+      "limitations": "N6 used a stand-in digest for the replayed 0.12.0 statement; no real historical attestations exist."
+    },
+    {
+      "id": "C2-F-05",
+      "title": "The attestation does not cover the rest of the set entry (artifact digests, URLs)",
+      "classification": "VERIFIED",
+      "statement": "Changing one hex char of an unsigned field (artifacts[0].sha256) leaves the attestation valid (S1). Integrity of those fields rests on the set digest: a recorded authority altered after its digest was recorded is ignored (S3), and upgrade targets require a caller-supplied set digest; the digest itself is not signed. CR-01 therefore gives contract-claim authenticity, not set integrity.",
+      "evidence": [
+        "raw/harness-*/results.json S1, S3",
+        "conditor@528ef45:src/Conditor.Core/ReleaseAttestation.fs:46-47,149",
+        "conditor@528ef45:src/Conditor.Core/WebPackageBinding.fs:577-582"
+      ],
+      "limitations": "Whether the release-manifest digest chain covers artifact digests on the Registry side was not traced."
+    },
+    {
+      "id": "C2-F-06",
+      "title": "Populating the trust file breaks exactly one existing check, the deliberate 'inert' guard",
+      "classification": "VERIFIED",
+      "statement": "Full suite on 528ef45: R0 1552 PASS / 0 FAIL; with the TEST-ONLY key in the trust file R1 1552 PASS / 1 FAIL; with the added embedded-trust scenario R1k 1557 PASS / 1 FAIL. The only failure is 'this build pins no Registry release key yet, so contract qualification is inert until the Registry signs' (DeclaredWebBindingTests.fs:900-902), which a real enablement release would invert.",
+      "evidence": [
+        "raw/regression/R0.stdout.txt",
+        "raw/regression/R1.stderr.txt",
+        "raw/regression/R1k.stderr.txt",
+        "conditor@528ef45:tests/Conditor.Tests/DeclaredWebBindingTests.fs:900-902",
+        "patches/02-scratch-test-embedded-trust-scenario.diff"
+      ],
+      "limitations": "Suite is a custom check runner (PASS/FAIL lines), counted by grep."
+    },
+    {
+      "id": "C2-F-07",
+      "title": "CR-01 would not end lockstep Conditor releases: 2 of 13 recent releases were avoidable",
+      "classification": "CONTRADICTED",
+      "statement": "Range qualification is limited to project-binding web packages whose descriptor declares qualifiedRange (forma, limen, folio, forma-workflow); descriptors for host-tool and lifecycle components may not declare a range (CON-343). In echelon-current 1.37.0 only 3 of 17 entries are range-eligible. Of Conditor v0.10.9-v0.10.21, 2 (v0.10.15, v0.10.17: Forma-only) were avoidable, 9 were required (7 add Praxis/Ordo host-tool versions, v0.10.10 changes folio releaseArtifacts, v0.10.21 adds a new descriptor), 2 changed no catalog. The claim 'that would end the lockstep Conditor releases' is contradicted; the dominant driver is Praxis/Ordo.",
+      "evidence": [
+        "raw/release-history-H4.json",
+        "raw/unittest-release-history.txt",
+        "conditor@528ef45:src/Conditor.Core/ComponentDescriptors.fs:595-597",
+        "conditor@528ef45:src/Conditor.Core/ReleaseAttestation.fs:176-179",
+        "raw/harness-rollback-real-0.13.0/results.json (eligibility, N8)"
+      ],
+      "limitations": "Classification is from catalog diffs only; some releases also carried feature work. v0.10.10 (folio releaseArtifacts) is arguably avoidable for Registry-authority repos, giving at most 3/13."
+    },
+    {
+      "id": "C2-F-08",
+      "title": "CR-01 needs new infrastructure and process on the Registry side",
+      "classification": "VERIFIED",
+      "statement": "The Registry has no trust/release-signing-keys.json, no signing workflow or protected environment, no resolver step copying releaseAttestation, and no REG-SIG conformance checks; WI-0042 (implement REG-SIG) is 'ready, proposal-required' pending a key-custody proposal. Its REG-RU-007 gate reads only exact versions from `conditor compatibility --json` and refuses a range-only forma 0.14.0 on all 5 platforms ('Release a Conditor that qualifies these versions'), so it must change too. Key rotation and revocation each still require a Conditor release.",
+      "evidence": [
+        "echelon-registry@5752402: no trust/ directory; grep -rl attestation tools conformance .github -> none",
+        "echelon-registry@5752402:.ros/work/queue.md:42-50",
+        "echelon-registry@5752402:conformance/validate-conditor-qualification.fsx:1-60",
+        "echelon-registry@5752402:.github/workflows/distribution-conformance.yml:126-127",
+        "raw/reg-ru-007-baseline.txt",
+        "raw/reg-ru-007-forma-0.14.0.txt",
+        "echelon-registry@5752402:spec/release-attestation-requirements.md:40-54,111-131,171-206"
+      ],
+      "limitations": "Infrastructure listed from the spec and repository tree; not costed."
+    }
+  ]
+}

@@ -6,3 +6,5 @@
 - Next: harness/ with real echelon-current 1.37.0 data (A1-A3, N1-N8, S1-S2), release-history analysis (H4).
 - ~15:00 EST (clock): harness/C2Harness (F#) built against scratch builds. Stock catalog + synthetic forma 0.14.0: 17/17 cases pass (raw/harness-stock-synthetic-0.14.0). Rolled-back catalog (forma 0.13.0 removed, patches/03) + real 1.37.0 linux-x64 forma 0.13.0: 17/17 pass (raw/harness-rollback-real-0.13.0). Only 3 of 17 entries in 1.37.0 (limen, forma, folio) are range-eligible.
 - Next: release-history analysis (H4), experiments.json, findings.json.
+- ~15:05 EST (clock): H4 release history (harness/release_history.py, 9 unittest OK): 2 avoidable / 9 required / 2 no-catalog. REG-RU-007 Registry gate refuses range-only forma 0.14.0. experiments.json and findings.json (C2-F-01..08) written.
+- Status: experiment complete. No builds pending.
