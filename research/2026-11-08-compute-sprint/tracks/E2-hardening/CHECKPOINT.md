@@ -3,7 +3,7 @@
 Status: COMPLETE (all three experiments run; final patched suite run). EXPERIMENTAL; nothing pushed/applied.
 
 - Scratch: /home/user/sprint-scratch/E2/praxis (clean 12bf995, baseline build + suite), /home/user/sprint-scratch/E2/praxis-e2
-  (branch e2-patch: 9d5209b claim guard + queue integrity; 17033b9→amended HEAD evidence path), tac/ (SPR-E2-03 simulation).
+  (branch e2-patch: 9d5209b claim guard + queue integrity; 946bb44 evidence path + ratchet-compliant CLI wiring), tac/ (SPR-E2-03 simulation).
 - Builds: 5 Release builds of Praxis.slnx, all 0 warnings / 0 errors, 3m–4m10s each (raw/test-suite/build-*.txt).
 - Baseline suite 2513 tests: 2511 pass / 2 fail (real-Dokimos attested e2e), 2035 s.
 - Final patched suite (build 5) 2522 tests: 2513 pass / 9 fail, 1647 s; 7 newly failing, all assert a clean
