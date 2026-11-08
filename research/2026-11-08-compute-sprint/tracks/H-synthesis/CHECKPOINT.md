@@ -44,3 +44,7 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 - Ledger: 105 claims across 11 tracks; V3 verdict loading wired (none yet); contradicted findings listed.
 - Future experiments: FX-02/FX-11 done, FX-05 short-task arm concluded; FX-14 (blind semantic-check test), FX-15 (adoption barriers), IM-10..12 added.
 - Datasets: 13 entries (added F defects, F perf, A2 replay, B2 dry-run, D/D2 benchmarks).
+
+## CP-H-10 (15:39 EST): V3 verdicts; D3/D4 series end
+- Ledger reads V3 (combined ids like A2-F-01/02 expanded; SPR-D2-01 aliased to D2-F-02/03): 29 of 105 independently checked.
+- New X-28: rehearsal over-claiming/authority failures are not reproduced by 5 controlled fixtures (contradict, moderate). Outline 1 gains the counterpoint.

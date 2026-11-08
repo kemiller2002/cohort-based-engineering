@@ -130,6 +130,9 @@ C = {
     "F-F-17": ("medium", "29-defect UI pattern set: 6 catchable by existing tools, 13 need new contracts; hand-curated.", ["X-26"], None),
 }
 
+# Verdict ids that cover track finding ids under another name
+VERDICT_ALIASES = {"SPR-D2-01": ["D2-F-02", "D2-F-03"]}
+
 # H-001 notes where a verifier's verdict covers only part of the claim
 SCOPE_NOTES = {
     "E-F-07": "V2 verified the VERIFIED parts (protected=false, no rulesets via rules/branches endpoint, no CODEOWNERS). The SUPPORTED part (agent token admin, agent holds signing key) was not re-verified.",
@@ -168,7 +171,18 @@ def load_verdicts(name):
             except json.JSONDecodeError:
                 return {}, base + " (unparseable at read time)"
             items = d if isinstance(d, list) else d.get("verdicts", d.get("claims", []))
-            return {v.get("claimId") or v.get("id"): v for v in items}, base
+            out = {}
+            for v in items:
+                cid = v.get("claimId") or v.get("id")
+                out[cid] = v
+                # expand combined ids such as "A2-F-01/02" and known experiment aliases
+                if "/" in cid and "-F-" in cid:
+                    head, nums = cid.rsplit("-F-", 1)
+                    for n in nums.split("/"):
+                        out.setdefault(f"{head}-F-{n.zfill(2)}", dict(v, coveredVia=cid))
+                for alias in VERDICT_ALIASES.get(cid, []):
+                    out.setdefault(alias, dict(v, coveredVia=cid))
+            return out, base
     return {}, None
 
 
@@ -206,6 +220,8 @@ for cid, (rank, cons, support, use) in C.items():
               "independence": v.get("independence"),
               "discrepancies": v.get("discrepancies", []),
               "verifierNotes": v.get("notes")}
+        if v.get("coveredVia"):
+            iv["coveredVia"] = v["coveredVia"]
         if cid in SCOPE_NOTES:
             iv["scopeNote"] = SCOPE_NOTES[cid]
     elif vt == "V1" and cid in v1_pending:
@@ -262,7 +278,9 @@ summary = {
 other = []
 for src, vm in (("V1", v1), ("V2", v2), ("V3", v3)):
     for k, v in vm.items():
-        if k not in C:
+        covered = k in VERDICT_ALIASES or ("/" in k and "-F-" in k and any(
+            f"{k.rsplit('-F-', 1)[0]}-F-{n.zfill(2)}" in C for n in k.rsplit("-F-", 1)[1].split("/")))
+        if k not in C and not v.get("coveredVia") and not covered:
             other.append({"id": k, "by": src, "verdict": v.get("verdict"),
                           "trackClassification": findings.get(k, {}).get("classification"),
                           "claimedValue": v.get("claimedValue"),

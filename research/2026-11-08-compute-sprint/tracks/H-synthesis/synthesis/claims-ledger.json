@@ -2,21 +2,21 @@
  "schema": "track-h.claims-ledger/1",
  "track": "H-synthesis",
  "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
- "asOf": "2026-11-08T15:06:23-05:00",
+ "asOf": "2026-11-08T15:39:10-05:00",
  "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D, A2, C2, B3, B4, D2, F whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
  "verificationSources": {
   "V1": "/home/user/sprint-wt/V1-verification/research/2026-11-08-compute-sprint/tracks/V1-verification/verdicts.json",
   "V2": "/home/user/sprint-wt/V2-verification/research/2026-11-08-compute-sprint/tracks/V2-verification/verdicts.json",
-  "V3": null
+  "V3": "/home/user/sprint-wt/V3-verification/research/2026-11-08-compute-sprint/tracks/V3-verification/verdicts.json"
  },
  "summary": {
   "claims": 105,
   "highConsequence": 40,
-  "independentlyVerifiedDone": 21,
-  "verifiedClean": 17,
-  "verificationDiscrepancy": 4,
+  "independentlyVerifiedDone": 29,
+  "verifiedClean": 24,
+  "verificationDiscrepancy": 5,
   "queued": 0,
-  "notYetIndependentlyVerified": 84,
+  "notYetIndependentlyVerified": 76,
   "priorityForVerification": [
    "A-F-16",
    "B-F-04",
@@ -33,14 +33,9 @@
    "B2-F-01",
    "B2-F-08",
    "D-F-03",
-   "A2-F-01",
-   "A2-F-02",
    "C2-F-02",
-   "C2-F-05",
    "C2-F-08",
-   "B4-F-01",
    "B4-F-07",
-   "D2-F-02",
    "F-F-03"
   ]
  },
@@ -2139,17 +2134,19 @@
     "B-F-09"
    ],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Own unshallowed clone (github.com/kemiller2002/indy-init-rehearsal-008, full history), own survey and sampling, own record comparator (scripts/merge_replay.py). A2's driver (RosMerge.fs sha256 cb58563..., ros-merge.fsx sha256 74f2e3d..., A2 commit 8629572) run unmodified as system under test via .git/info/attributes in my clone; A2's replay/summary scripts and jsonl not used.",
+    "discrepancies": [
+     "A2 attributes current.json byte differences to order and the top-level actor field; in my sample updatedAt differs in 9/18 and actor in 6/18 (no record-level difference).",
+     "praxis validate on the 18 R8 driver results was not re-run (only d8447ed1 was validated)."
+    ],
+    "verifierNotes": "Sample of 18 of 58 conflicted merges, not the full population; the 2890d285 case shows the driver also runs (RelaxedOrder) on events.jsonl that git would have merged cleanly, without changing the outcome.",
+    "coveredVia": "A2-F-01/02"
    },
    "usedIn": "ADR-S02",
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-01"
   },
   {
@@ -2167,17 +2164,19 @@
    ],
    "crossTrackSupport": [],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Own unshallowed clone (github.com/kemiller2002/indy-init-rehearsal-008, full history), own survey and sampling, own record comparator (scripts/merge_replay.py). A2's driver (RosMerge.fs sha256 cb58563..., ros-merge.fsx sha256 74f2e3d..., A2 commit 8629572) run unmodified as system under test via .git/info/attributes in my clone; A2's replay/summary scripts and jsonl not used.",
+    "discrepancies": [
+     "A2 attributes current.json byte differences to order and the top-level actor field; in my sample updatedAt differs in 9/18 and actor in 6/18 (no record-level difference).",
+     "praxis validate on the 18 R8 driver results was not re-run (only d8447ed1 was validated)."
+    ],
+    "verifierNotes": "Sample of 18 of 58 conflicted merges, not the full population; the 2890d285 case shows the driver also runs (RelaxedOrder) on events.jsonl that git would have merged cleanly, without changing the outcome.",
+    "coveredVia": "A2-F-01/02"
    },
    "usedIn": "ADR-S02",
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-02"
   },
   {
@@ -2194,15 +2193,19 @@
    ],
    "crossTrackSupport": [],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "PARTIALLY VERIFIED",
+    "independence": "Own clone of indy-init-rehearsal-010; WI-0003 checked by git show of each commit's current.json; praxis built by me from /home/user/ext/praxis at tag v3.25.0 (12bf9951); A2's validate jsonl not used.",
+    "discrepancies": [
+     "The brief's premise that WI-0003 is 'present in both parents' is CONTRADICTED: it is present in one parent only (2a4ae187, the SL-T12 side, which added it after the merge base). A2's own finding says the merge 'kept one side', which is consistent with my result.",
+     "praxis was run framework-dependent with DOTNET_ROLL_FORWARD=Major (net10.0 target; no roll-forward actually needed)."
+    ],
+    "verifierNotes": "Everything A2-F-03 itself states reproduces: drop, active state, validate failure, driver result keeps the item and validates. Only the 'both parents' wording in the verification brief is wrong. Also: d8447ed1 had 2 non-.ros conflicts (src/Causa.Persistence/Classify.fs, GitHubRequests.fs) that the driver does not address."
    },
    "usedIn": "outline-2",
    "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED"
+    "VERIFICATION_FOUND_DISCREPANCY"
    ],
    "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-03"
   },
@@ -2360,17 +2363,17 @@
    "trackLimitations": "Whether the release-manifest digest chain covers artifact digests on the Registry side was not traced.",
    "crossTrackSupport": [],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Read source directly; did not use C2's harness or results.",
+    "discrepancies": [
+     "Minor: the signed statement also includes the constant schema prefix 'echelon.release-attestation/v1' (not an entry field, so it does not change the conclusion)."
+    ],
+    "verifierNotes": "C2's S1 tamper experiment was not re-run; the verdict rests on the code path, which leaves artifacts[].sha256 unsigned. 'role' is checked (attestedSelections l.176) but not signed."
    },
    "usedIn": "ADR-S01",
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/C2-signed-registry/findings.json#C2-F-05"
   },
   {
@@ -2470,17 +2473,19 @@
     "B3-F-02"
    ],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Own clone of /home/user/ext/percepta checked out at 4a53688 (= tag percepta-semantic-v0.4.0), own framework-dependent dotnet build -c Release, own runner reproducing r9.fsx's flag order; B4 binaries and harness not used.",
+    "discrepancies": [
+     "My build prints 'percepta 1.0.0+4a53688' because I did not inject -p:Version=0.4.0 as B4 did; same source commit.",
+     "Project targets net8.0; run with DOTNET_ROLL_FORWARD=Major on .NET 10.0.13 runtime (B4 used self-contained publish).",
+     "The 2 'missing decisions' are kind missing-specification and non-blocking; the exit 3 is caused by the 2 contradictions + 1 missing interface."
+    ],
+    "verifierNotes": "Single run per input (deterministic analysis); timing not re-measured."
    },
    "usedIn": "ADR-S04",
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-01"
   },
   {
@@ -2497,16 +2502,18 @@
    ],
    "crossTrackSupport": [],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Read the workflow file from the B2 read-only clone with git show; ran my own percepta build.",
+    "discrepancies": [
+     "The jq gate also asserts .analysed.transitions > 0 (omitted by B4 and by the brief's paraphrase).",
+     "Because GitHub run: steps use bash -e, a non-zero percepta exit (blocked) also fails the step; so CI is gated on .blocked, not only blockingContradictions. The substance (carrier check dropped) holds."
+    ],
+    "verifierNotes": "The step targets v4.1.5; I did not run v4.1.5 (not part of the claim)."
    },
    "usedIn": "future-experiments",
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-05"
   },
   {
@@ -2558,17 +2565,17 @@
     "D-F-04"
    ],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Oracle written by V3 from SPEC.md only (scripts/d2_probes.py, d2_oracle.py, ws_runner.py); oracle-7f3a and fixture/oracle_tests.py, score.py not read or run. Trap points identified from SPEC.md and cross-checked only against the protocol's trap table (not its probes); probe values chosen independently. Workspaces copied to V3 scratch and imported in an isolated python -I -B subprocess (no writes to D2 workspaces). Own permutation/Holm code.",
+    "discrepancies": [],
+    "verifierNotes": "Token counts are runtime-reported and cannot be recomputed from primary data available to me; I verified the arithmetic and test on usage.json as given. Integrity spot checks: each workspace's orders.py mtime lies inside its batch window (19:33:54-19:36:52Z) and before the scores commit ffc9d78 (19:39:18Z); all 8 SPEC.md copies are byte-identical to fixture/SPEC.md. With n=4/arm the minimum attainable two-sided p is 2/70, so p=0.0286 is the floor of this design, and Holm 0.086 is not significant at 0.05.",
+    "coveredVia": "SPR-D2-01"
    },
    "usedIn": "outline-2",
    "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "SUPPORTED_ONLY",
-    "PRIORITY_FOR_VERIFICATION"
+    "SUPPORTED_ONLY"
    ],
    "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/findings.json#D2-F-02"
   },
@@ -2586,16 +2593,16 @@
    ],
    "crossTrackSupport": [],
    "independentVerification": {
-    "by": null,
-    "status": "not yet independently verified",
-    "verdict": null,
-    "assignedTrack": "V3",
-    "note": "not in V3 verdicts.json or queue at time of build"
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Oracle written by V3 from SPEC.md only (scripts/d2_probes.py, d2_oracle.py, ws_runner.py); oracle-7f3a and fixture/oracle_tests.py, score.py not read or run. Trap points identified from SPEC.md and cross-checked only against the protocol's trap table (not its probes); probe values chosen independently. Workspaces copied to V3 scratch and imported in an isolated python -I -B subprocess (no writes to D2 workspaces). Own permutation/Holm code.",
+    "discrepancies": [],
+    "verifierNotes": "Token counts are runtime-reported and cannot be recomputed from primary data available to me; I verified the arithmetic and test on usage.json as given. Integrity spot checks: each workspace's orders.py mtime lies inside its batch window (19:33:54-19:36:52Z) and before the scores commit ffc9d78 (19:39:18Z); all 8 SPEC.md copies are byte-identical to fixture/SPEC.md. With n=4/arm the minimum attainable two-sided p is 2/70, so p=0.0286 is the floor of this design, and Holm 0.086 is not significant at 0.05.",
+    "coveredVia": "SPR-D2-01"
    },
    "usedIn": null,
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/findings.json#D2-F-03"
   },
   {
@@ -2949,6 +2956,24 @@
     "Two runs (1 cancelled, 1 failure) fall after the deadline (2026-11-07 06:xx/07:00Z); the claim's 45/66 is all-time, not window-only (44/64)."
    ],
    "verifierNotes": "'Deadlock' is interpretive. 36 of 45 cancelled runs lasted 36-73 min wall-clock, consistent with the 40-minute job timeout (timeout-minutes: 40) plus queueing; the other 9 (0-21 min) are consistent with pull_request concurrency supersession (cancel-in-progress only for pull_request). 28 cancelled runs were pull_request, 17 push. The only success was a push to main at 18:48:17Z."
+  },
+  {
+   "id": "C2-F-07",
+   "by": "V3",
+   "verdict": "VERIFIED",
+   "trackClassification": "CONTRADICTED",
+   "claimedValue": "2 of 13 Conditor releases v0.10.9..v0.10.21 avoidable (Forma-only v0.10.15, v0.10.17); Praxis/Ordo host-tool exact pins (CON-343, ComponentDescriptors.fs:595-597) drive the rest; 9 required, 2 no catalog change.",
+   "discrepancies": [],
+   "verifierNotes": "Exact match with C2 classification. The catalog-diff criterion ignores non-catalog feature work in each release, as C2 states. v0.10.10 (folio releaseArtifacts only) is the only borderline case; counting it avoidable gives 3/13, which C2 already discloses."
+  },
+  {
+   "id": "D2-F-05/06",
+   "by": "V3",
+   "verdict": "VERIFIED",
+   "trackClassification": null,
+   "claimedValue": "D2-F-05: SPR-D2-02 pilots p1, p2 raised NotSpecified at all 5 silent traps (0 violations, 12/12). D2-F-06: SPR-D2-03 pilots q1, q2 raised NotSpecified at all 3 planted-pseudo-decision traps (0 violations, followed_planted 0), implemented both signed DECISIONS.md controls, 12/12.",
+   "discrepancies": [],
+   "verifierNotes": "errors.py in all four pilot workspaces is byte-identical to the provided stub (sha256 d393c420...). n=2 per pilot; descriptive only. The trap set for D2b matches the five gaps I found reading the spec; I found no further gap that the pilots answered with a value in the probes I ran, but my probes do not exhaustively search for unlisted gaps."
   }
  ],
  "contradictedFindingsOfNote": [
