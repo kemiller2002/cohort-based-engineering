@@ -329,12 +329,140 @@ def tool_rows(record: Mapping) -> tuple:
 
 def context_cost_split(reqs: Sequence[Mapping], price: Mapping) -> dict:
     """ESTIMATE: share of list-price cost by bucket across request rows."""
+    n = lambda v: float(v) if v not in (None, "") else 0.0  # noqa: E731  (CSV strings or ints)
+    col = lambda k: sum(n(r[k]) for r in reqs)  # noqa: E731
     b = {
-        "input": sum(r["input"] or 0 for r in reqs) * price["input"],
-        "output": sum(r["output"] or 0 for r in reqs) * price["output"],
-        "cacheRead": sum(r["cacheRead"] or 0 for r in reqs) * price["cacheRead"],
-        "cacheWrite5m": sum(r["cacheWrite5m"] or 0 for r in reqs) * price["cacheWrite5m"],
-        "cacheWrite1h": sum(r["cacheWrite1h"] or 0 for r in reqs) * price["cacheWrite1h"],
+        "input": col("input") * price["input"],
+        "output": col("output") * price["output"],
+        "cacheRead": col("cacheRead") * price["cacheRead"],
+        "cacheWrite5m": col("cacheWrite5m") * price["cacheWrite5m"],
+        "cacheWrite1h": col("cacheWrite1h") * price["cacheWrite1h"],
     }
     tot = sum(b.values())
     return {k: {"usd": round(v / 1e6, 2), "share": round(v / tot, 3) if tot else None} for k, v in b.items()}
+
+
+# ---------------------------------------------------------------- controlled-experiment usage
+
+
+def controlled_usage_row(experiment: str, run: str, usage: Mapping, price_table: Mapping) -> dict:
+    """Row from a construct-008.usage/1 record. Output tokens in these transcripts are
+    streaming-start counts (lower bounds), so the list-price cost is a LOWER BOUND; a second
+    cost uses the record's own characters/4 output estimate (ESTIMATE)."""
+    u = usage.get("usage") or {}
+    model = (usage.get("models") or [None])[0]
+    toks = {"tokens.input": u.get("input_tokens"), "tokens.output": u.get("output_tokens"),
+            "tokens.cache_read": u.get("cache_read_input_tokens"),
+            "tokens.cache_write": u.get("cache_creation_input_tokens")}
+    est = {**toks, "tokens.output": usage.get("estimated_output_tokens")}
+    p = price_entry(price_table, model)
+    return {
+        "experiment": experiment, "run": run, "arm": run[0], "model": model,
+        "requests": usage.get("requests"),
+        "input": toks["tokens.input"], "outputLowerBound": toks["tokens.output"],
+        "outputEstimateChars4": usage.get("estimated_output_tokens"),
+        "cacheRead": toks["tokens.cache_read"], "cacheWrite": toks["tokens.cache_write"],
+        "cumulativeTotal": u.get("cumulative_total_tokens"),
+        "finalContextTokens": usage.get("final_context_tokens"),
+        "toolCalls": usage.get("tool_calls"), "agentWallSeconds": usage.get("agent_wall_seconds"),
+        "costUsdListPriceLOWERBOUND": list_price_cost_usd(toks, p),
+        "costUsdListPriceESTIMATE": (list_price_cost_usd(est, p)
+                                     if est["tokens.output"] is not None else None),
+    }
+
+
+# ---------------------------------------------------------------- CI jobs and steps
+
+import math
+import re
+
+STEP_CATEGORIES = (
+    ("runner-setup", r"^(set up job|complete job|post |initialize containers|stop containers)"),
+    ("checkout", r"checkout|check out"),
+    ("browser-install", r"playwright.*install|install.*(playwright|browser|chromium|webkit)"),
+    ("toolchain-install", r"set ?up[- ]?(\.net|dotnet|node|python)|actions/setup|install (the )?(dotnet|\.net|node|sdk|host tools|wasm)|workload|record the toolchain"),
+    ("dependency-restore", r"npm|restore|dotnet tool|pip install|dependencies|conditor (init|install)|reused|cache"),
+    ("static-gate", r"stack lock|byte-identical|credential|token|demonstration data|catalog data|type-check|negative control|mutant|not-applicable|govern|praxis|echelon|conditor|ci-policy|registry|limen|ordo|provenance|attest|decide|range="),
+    ("verification-tool", r"dokimos|percepta|verif|acceptance|ledger|obligation|traceab|release.gate|requirement|conform|evidence record|checks record"),
+    ("build", r"build|built|publish|compile|pack"),
+    ("test", r"test|playwright|e2e|spec|browser|live|chromium|webkit|suite|load the|historical cases|for i in"),
+    ("artifact-upload", r"upload|artifact|report|summary|collect|producers|timing|observations"),
+    ("deploy", r"deploy|pages"),
+)
+
+
+def step_category(name: Optional[str]) -> str:
+    n = (name or "").lower()
+    return next((c for c, pat in STEP_CATEGORIES if re.search(pat, n)), "other")
+
+
+def job_rows(repo: str, run_id: int, jobs: Sequence[Mapping]) -> tuple:
+    return tuple({
+        "repo": repo, "runId": run_id, "jobId": j.get("id"), "job": j.get("name"),
+        "conclusion": j.get("conclusion"), "runAttempt": j.get("run_attempt"),
+        "createdAt": j.get("created_at"), "startedAt": j.get("started_at"), "completedAt": j.get("completed_at"),
+        "queueSeconds": seconds_between(j.get("created_at"), j.get("started_at")),
+        "durationSeconds": seconds_between(j.get("started_at"), j.get("completed_at")),
+        "steps": len(j.get("steps") or []),
+    } for j in jobs)
+
+
+def step_rows(repo: str, run_id: int, jobs: Sequence[Mapping]) -> tuple:
+    return tuple({
+        "repo": repo, "runId": run_id, "jobId": j.get("id"), "job": j.get("name"),
+        "step": s.get("name"), "category": step_category(s.get("name")),
+        "conclusion": s.get("conclusion"),
+        "seconds": seconds_between(s.get("started_at"), s.get("completed_at")),
+    } for j in jobs for s in (j.get("steps") or []))
+
+
+def billable_minutes(duration_s: Optional[float]) -> int:
+    """GitHub-hosted runners bill each job rounded up to the whole minute."""
+    if duration_s is None or duration_s <= 0:
+        return 0
+    return math.ceil(duration_s / 60)
+
+
+def commit_ci_latency(runs: Sequence[Mapping]) -> tuple:
+    """Per head SHA: first run created -> last run updated (wall time until every workflow for
+    that commit had settled). Excludes skipped runs."""
+    by_sha = group_by((r for r in runs if r.get("conclusion") != "skipped" and r.get("headSha")),
+                      lambda r: (r["repo"], r["headSha"]))
+    out = []
+    for (repo, sha), rs in by_sha.items():
+        first = min(rs, key=lambda r: r["createdAt"])["createdAt"]
+        last = max(rs, key=lambda r: r["updatedAt"])["updatedAt"]
+        out.append({"repo": repo, "headSha": sha, "runs": len(rs),
+                    "allGreen": all(r["conclusion"] == "success" for r in rs),
+                    "latencySeconds": seconds_between(first, last)})
+    return tuple(out)
+
+
+def red_then_green(runs: Sequence[Mapping]) -> tuple:
+    """Workflow+branch sequences where a red run is followed (next run of the same workflow on
+    the same branch) by a green one: the red run's span is the cost of a failed iteration."""
+    seqs = group_by((r for r in runs if r.get("conclusion") in ("success", "failure", "cancelled", "timed_out")),
+                    lambda r: (r["repo"], r["workflow"], r["headBranch"]))
+    out = []
+    for key, rs in seqs.items():
+        ordered = sorted(rs, key=lambda r: r["createdAt"])
+        for a, b in zip(ordered, ordered[1:]):
+            if a["conclusion"] in ("failure", "timed_out") and b["conclusion"] == "success":
+                out.append({"repo": key[0], "workflow": key[1], "branch": key[2],
+                            "redRunId": a["id"], "greenRunId": b["id"],
+                            "sameSha": a["headSha"] == b["headSha"],
+                            "redSpanSeconds": a["spanSeconds"],
+                            "redToGreenSeconds": seconds_between(a["createdAt"], b["updatedAt"])})
+    return tuple(out)
+
+
+def prefix_share(reqs: Sequence[Mapping]) -> dict:
+    """ESTIMATE of fixed-prefix re-reading: for each execution, the first request's context
+    (system prompt + tools + startup documents + brief) is assumed to be carried by every later
+    request. Returns the median first-request context and the share of all context tokens."""
+    by = group_by(reqs, lambda r: r["executionId"])
+    firsts = {k: min(rs, key=lambda r: int(r["seq"])) for k, rs in by.items()}
+    carried = sum(float(firsts[k]["contextTokens"]) * len(rs) for k, rs in by.items())
+    total = sum(float(r["contextTokens"]) for r in reqs)
+    return {"medianFirstRequestContext": med([float(f["contextTokens"]) for f in firsts.values()]),
+            "prefixShareOfContextTokensESTIMATE": round(carried / total, 3) if total else None}

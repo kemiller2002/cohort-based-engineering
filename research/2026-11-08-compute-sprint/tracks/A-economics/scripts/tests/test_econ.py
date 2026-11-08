@@ -135,3 +135,58 @@ def test_transcript_extractors():
     assert econ.tool_rows(rec)[0]["calls"] == 4
     split = econ.context_cost_split(reqs, PRICE["entries"][0])
     assert split["output"]["usd"] == 20.0 and split["cacheRead"]["share"] == round(0.2 / 20.2, 3)
+
+
+def test_controlled_usage_row_bounds():
+    u = {"models": ["m"], "requests": 2, "estimated_output_tokens": 10**6,
+         "usage": {"input_tokens": 0, "output_tokens": 0, "cache_read_input_tokens": 10**6,
+                   "cache_creation_input_tokens": 0, "cumulative_total_tokens": 10**6}}
+    r = econ.controlled_usage_row("X", "A1", u, PRICE)
+    assert r["arm"] == "A" and r["costUsdListPriceLOWERBOUND"] == 0.2
+    assert r["costUsdListPriceESTIMATE"] == 20.2
+
+
+def test_step_category():
+    assert econ.step_category("Set up job") == "runner-setup"
+    assert econ.step_category("Run actions/checkout@v4") == "checkout"
+    assert econ.step_category("Install Playwright browsers") == "browser-install"
+    assert econ.step_category("Run dotnet test") == "test"
+    assert econ.step_category("dotnet build App.slnx") == "build"
+    assert econ.step_category("Dokimos verify") == "verification-tool"
+    assert econ.step_category("Install npm dependencies") == "dependency-restore"
+    assert econ.step_category("Stack lock (DEP-CURRENT-008)") == "static-gate"
+    assert econ.step_category("Set up .NET") == "toolchain-install"
+    assert econ.step_category("zzz") == "other"
+
+
+def test_job_rows_billable_and_latency():
+    jobs = [{"id": 1, "name": "b", "created_at": "2026-01-01T00:00:00Z", "started_at": "2026-01-01T00:00:05Z",
+             "completed_at": "2026-01-01T00:01:06Z",
+             "steps": [{"name": "Run tests", "started_at": "2026-01-01T00:00:05Z", "completed_at": "2026-01-01T00:00:35Z"}]}]
+    jr = econ.job_rows("r", 9, jobs)[0]
+    assert jr["queueSeconds"] == 5 and jr["durationSeconds"] == 61
+    assert econ.billable_minutes(61) == 2 and econ.billable_minutes(0) == 0 and econ.billable_minutes(None) == 0
+    assert econ.step_rows("r", 9, jobs)[0]["seconds"] == 30
+    runs = [{"repo": "r", "headSha": "s", "conclusion": "success", "createdAt": "2026-01-01T00:00:00Z",
+             "updatedAt": "2026-01-01T00:02:00Z"},
+            {"repo": "r", "headSha": "s", "conclusion": "failure", "createdAt": "2026-01-01T00:00:10Z",
+             "updatedAt": "2026-01-01T00:05:00Z"}]
+    lat = econ.commit_ci_latency(runs)[0]
+    assert lat["latencySeconds"] == 300 and lat["allGreen"] is False
+
+
+def test_red_then_green():
+    base = {"repo": "r", "workflow": "w", "headBranch": "b"}
+    runs = [{**base, "id": 1, "conclusion": "failure", "headSha": "x", "createdAt": "2026-01-01T00:00:00Z",
+             "updatedAt": "2026-01-01T00:01:00Z", "spanSeconds": 60},
+            {**base, "id": 2, "conclusion": "success", "headSha": "y", "createdAt": "2026-01-01T00:03:00Z",
+             "updatedAt": "2026-01-01T00:04:00Z", "spanSeconds": 60}]
+    out = econ.red_then_green(runs)
+    assert len(out) == 1 and out[0]["redToGreenSeconds"] == 240 and out[0]["sameSha"] is False
+
+
+def test_prefix_share():
+    reqs = [{"executionId": "e", "seq": "0", "contextTokens": "10"},
+            {"executionId": "e", "seq": "1", "contextTokens": "30"}]
+    out = econ.prefix_share(reqs)
+    assert out["medianFirstRequestContext"] == 10 and out["prefixShareOfContextTokensESTIMATE"] == 0.5
