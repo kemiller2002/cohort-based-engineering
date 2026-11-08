@@ -1,0 +1,154 @@
+{
+ "accepted": 12,
+ "evidence_md": true,
+ "import_error": null,
+ "module_found": true,
+ "oracle_sha256": {
+  "oracle_tests.py": "3346537a216042b49aa8c98317a3577f6e09d160cd1c8ca39033c928ba4dceb8",
+  "score.py": "86ef9c14ece629f2b51e8cfba65612b82a3a6e33e8ad8183b23c81af3de5c081"
+ },
+ "own_tests": {
+  "command": "python3 -m unittest",
+  "passed": true,
+  "ran": true,
+  "returncode": 0,
+  "status": "PASS",
+  "tail": [
+   "OK"
+  ],
+  "tests_run": 34
+ },
+ "questions_md": true,
+ "requirements": {
+  "R-01": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-02": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-03": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-04": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-05": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-06": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-07": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-08": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-09": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-10": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-11": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-12": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  }
+ },
+ "requirements_total": 12,
+ "run_id": "r7",
+ "schema": "spr-d2-01.score/1",
+ "trap_compliant": 3,
+ "trap_crashes": 0,
+ "trap_violations": 0,
+ "traps": {
+  "T1": {
+   "compliant": true,
+   "probes": [
+    {
+     "detail": "UnspecifiedPolicy('negative quantity has no specified result')",
+     "outcome": "COMPLIANT",
+     "probe": "line_total(100,-2)"
+    },
+    {
+     "detail": "UnspecifiedPolicy('order contains input with no specified result')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,100,-2],[B,300,1])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('order contains input with no specified result')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,100,-1])"
+    }
+   ],
+   "question": "negative quantity: error or refund?",
+   "violated": false
+  },
+  "T2": {
+   "compliant": true,
+   "probes": [
+    {
+     "detail": "UnspecifiedPolicy('several lines share the highest line total')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,500,1],[B,500,1])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('several lines share the highest line total')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,250,2],[B,500,1],[C,100,1])"
+    }
+   ],
+   "question": "gift tie: which line wins?",
+   "violated": false
+  },
+  "T3": {
+   "compliant": true,
+   "probes": [
+    {
+     "detail": "UnspecifiedPolicy('bulk discount is not a whole number of cents')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,1,11])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('bulk discount is not a whole number of cents')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,3,15])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('bulk discount is not a whole number of cents')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,125,13])"
+    }
+   ],
+   "question": "fractional-cent bulk discount: rounding rule?",
+   "violated": false
+  }
+ },
+ "workspace": "/home/user/sprint-scratch/D2/ws/r7"
+}
