@@ -1,6 +1,6 @@
 """Summarise repeated Playwright JSON-reporter runs into per-test stability (pass / fail / flaky / skipped).
 
-Usage: python3 playwright_stability.py LABEL RUN1.json RUN2.json ... > summary.json
+Usage: python3 playwright_stability.py LABEL [--project chromium] RUN1.json RUN2.json ... > summary.json
 A test is 'stable-pass' if it passed in every run, 'stable-fail' if it failed in every run, 'flaky' if outcomes differ
 across runs (or Playwright itself marked it flaky), 'skipped' if skipped in every run.
 """
@@ -37,17 +37,19 @@ def classify(outcomes: list[str]) -> str:
     return "stable-pass" if kinds - {"skipped"} == {"expected"} else "stable-fail"
 
 
-def summarise(label: str, reports: list[dict]) -> dict:
-    runs = [per_run(r) for r in reports]
+def summarise(label: str, reports: list[dict], project: str | None = None) -> dict:
+    runs = [{t: v for t, v in per_run(r).items() if project is None or t.endswith(f"[{project}]")} for r in reports]
     ids = sorted(set().union(*runs))
     tests = {t: [r.get(t, ("missing", 0))[0] for r in runs] for t in ids}
     verdicts = {t: classify([o for o in os if o != "missing"] or ["skipped"]) for t, os in tests.items()}
     wall = [r.get("stats", {}).get("duration") for r in reports]
-    return {"label": label, "runs": len(reports), "tests": len(ids), "verdicts": dict(Counter(verdicts.values())),
+    return {"label": label, "project": project or "all", "runs": len(reports), "tests": len(ids), "verdicts": dict(Counter(verdicts.values())),
             "runWallMs": wall, "perRunCounts": [dict(Counter(s for s, _ in r.values())) for r in runs],
             "nonPassing": {t: tests[t] for t, v in verdicts.items() if v not in ("stable-pass", "skipped")}}
 
 
 if __name__ == "__main__":
-    label, files = sys.argv[1], sys.argv[2:]
-    print(json.dumps(summarise(label, [json.load(open(f)) for f in files]), indent=1))
+    args = sys.argv[1:]
+    project = args[args.index("--project") + 1] if "--project" in args else None
+    files = [a for i, a in enumerate(args[1:], 1) if a != "--project" and (i == 0 or args[i - 1] != "--project")]
+    print(json.dumps(summarise(args[0], [json.load(open(f)) for f in files], project), indent=1))
