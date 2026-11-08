@@ -1,0 +1,725 @@
+{
+  "track": "E2-hardening",
+  "worker": "E2-001",
+  "date": "2026-11-08",
+  "testSuite": {
+    "baseline": {
+      "tests": 2513,
+      "passed": 2511,
+      "failed": 2,
+      "seconds": 2035,
+      "failures": [
+        "attested completion: REL-GATE-004 end to end through the real Dokimos: a pinned host verifier completes, PROBE-3 and PROBE-4 are refused",
+        "attested completion: end to end through a Dokimos with attested mode: genuine receipts verify, forged ones are refused by Dokimos too"
+      ]
+    },
+    "patched": {
+      "tests": 2522,
+      "passed": 2513,
+      "failed": 9,
+      "seconds": 1647,
+      "failures": [
+        "attested completion: C3b reproduced: a forged validation result plus a forged validation event is refused in attested mode",
+        "attested completion: F4 end to end: complete-verified --id --token alone, through the real Dokimos",
+        "attested completion: REL-GATE-003: workProtocol.requireVerifiedCompletion alone implies requireAttestedEvidence",
+        "attested completion: REL-GATE-004 end to end through the real Dokimos: a pinned host verifier completes, PROBE-3 and PROBE-4 are refused",
+        "attested completion: a genuine passing receipt completes with a clean worktree and a metadata-only commit on the verified commit",
+        "attested completion: attested mode fails closed on a Dokimos without completion.verify-attested",
+        "attested completion: end to end through a Dokimos with attested mode: genuine receipts verify, forged ones are refused by Dokimos too",
+        "attested completion: the verifier serves over a Unix domain socket and work verify stores compact receipts out of tree",
+        "validation evidence: cli: validate-run with true, false and a dirty worktree in a real Git repository"
+      ]
+    },
+    "newlyFailing": [
+      "attested completion: C3b reproduced: a forged validation result plus a forged validation event is refused in attested mode",
+      "attested completion: F4 end to end: complete-verified --id --token alone, through the real Dokimos",
+      "attested completion: REL-GATE-003: workProtocol.requireVerifiedCompletion alone implies requireAttestedEvidence",
+      "attested completion: a genuine passing receipt completes with a clean worktree and a metadata-only commit on the verified commit",
+      "attested completion: attested mode fails closed on a Dokimos without completion.verify-attested",
+      "attested completion: the verifier serves over a Unix domain socket and work verify stores compact receipts out of tree",
+      "validation evidence: cli: validate-run with true, false and a dirty worktree in a real Git repository"
+    ],
+    "newlyPassing": []
+  },
+  "experiments": [
+    {
+      "id": "SPR-E2-01",
+      "question": "Can plain completion and work validate be made to derive claim/completion facts from the tracked event log so that E-F-03 and E-F-11 are refused?",
+      "hypothesis": "H1: a tracked token-free claim marker + guard over worktree\u222aHEAD log refuses plain completion after claim-store deletion (CLAIM_RECORD_MISSING). H2: queue 'complete' rows without a tracked completion event are reported (UNRECORDED_COMPLETION).",
+      "independentVars": [
+        "Praxis build (baseline 12bf995 vs patched e2-patch)",
+        "attack case"
+      ],
+      "dependentVars": [
+        "exit code",
+        "refusal/finding code",
+        "existing test pass/fail"
+      ],
+      "comparison": "same harness, same fixtures recipe, baseline vs patched binary",
+      "startRevision": "praxis 12bf995",
+      "tools": [
+        "harness/spr-e2-01.sh",
+        "harness/queue_fp_scan.py",
+        "harness/run-praxis-tests.sh",
+        "tests/Praxis.Tests/E2HardeningTests.fs (in patch)"
+      ],
+      "environment": {
+        "host": "4 vCPU shared with other sprint tracks",
+        "dotnet": "SDK 10.0.402 (/root/.dotnet)",
+        "praxis": "12bf995 (3.25.0) scratch clone; patched worktree branch e2-patch",
+        "dokimos": "0.11.1 fecbe0c (binary copied from E's scratch build)",
+        "ordo": "db6d39e",
+        "python": "3.13, cryptography 50.0.1",
+        "isolation": "candidate = uid 65534 via setpriv; verifier = root"
+      },
+      "procedure": "protocols/SPR-E2-01.md; fresh fixture repos under /home/user/sprint-scratch/E2/fixtures with their own .git (lib.sh guard); patch = patches/praxis-claim-guard-queue-integrity.patch",
+      "rawResults": {
+        "baseline": {
+          "A1-claim": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "tracked marker present: 0; token in tracked log: 0"
+          },
+          "A1-pre": {
+            "exit": 3,
+            "codes": [
+              "PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A1": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A1b": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A1c": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-work-validate": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-backlog-validate": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-validate": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-verify": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1-validate-run": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1-after": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1-validate": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C2": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C3-complete": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C3": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C3-backlog": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1b": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "status=[] head-log-types=work.completion.verified,"
+          }
+        },
+        "patched": {
+          "A1-claim": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "tracked marker present: 1; token in tracked log: 0\n0"
+          },
+          "A1-pre": {
+            "exit": 3,
+            "codes": [
+              "PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A1": {
+            "exit": 3,
+            "codes": [
+              "PRX.COMPLETION.CLAIM_RECORD_MISSING"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A1b": {
+            "exit": 3,
+            "codes": [
+              "PRX.COMPLETION.CLAIM_RECORD_MISSING"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A1c": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-work-validate": {
+            "exit": 1,
+            "codes": [
+              "PRX.QUEUE.UNRECORDED_COMPLETION"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-backlog-validate": {
+            "exit": 1,
+            "codes": [
+              "PRX.QUEUE.UNRECORDED_COMPLETION"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-validate": {
+            "exit": 1,
+            "codes": [
+              "PRX.QUEUE.UNRECORDED_COMPLETION"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "A2-verify": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1-validate-run": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1-after": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1-validate": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C2": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C3-complete": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C3": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C3-backlog": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "C1b": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "status=[] head-log-types=work.claim.recorded,work.completion.verified,"
+          }
+        },
+        "falsePositiveScan": {
+          "repos": 43,
+          "completeRows": 1881,
+          "flagged": 0
+        }
+      },
+      "verification": "Each case re-run on the final build (build 4); unit + CLI tests in Praxis's own test project; full suite compared against baseline (raw/test-suite/comparison.json).",
+      "limitations": [
+        "A1c: a claim marker that was never committed can be deleted with the store (residual).",
+        "Anyone with write access can still forge tracked events or rewrite history; the fix moves the bypass from an out-of-tree directory to reviewable tracked history.",
+        "Deviation from protocol: the first patched build broke the attested flow (PRX.VALIDATION.DIRTY_WORKTREE from the uncommitted marker); fixed by letting verification treat a marker-only log diff as clean. Tests that assert 'claim leaves git status empty' (invariant I8) fail by design.",
+        "Queue check covers 'complete' rows only; backlog 'abandoned' writes no event in 3.25.0, so it cannot be cross-checked."
+      ],
+      "conclusion": "VERIFIED for the tested attacks: A1/A1b refused (exit 3, CLAIM_RECORD_MISSING), A2 reported by work validate/backlog-validate/validate (exit 1, UNRECORDED_COMPLETION); controls C1, C1b, C2, C3 pass; 0 false positives over the local repos.",
+      "reproduction": "harness/spr-e2-01.sh patched <praxis-e2>/src/Praxis.Cli/bin/Release/net10.0/praxis.dll > raw/spr-e2-01-patched.jsonl"
+    },
+    {
+      "id": "SPR-E2-02",
+      "question": "Does a default-on repository-containment policy with digest+commit binding refuse E-F-01 without breaking legitimate completion?",
+      "hypothesis": "H3: /etc/hostname (and traversal/symlink variants) are refused with OUTSIDE_REPOSITORY; an in-repo test log is accepted with a correct sha256/HEAD binding; opt-out restores old behaviour.",
+      "independentVars": [
+        "Praxis build",
+        "evidence path form",
+        "workProtocol.allowExternalEvidence"
+      ],
+      "dependentVars": [
+        "exit code",
+        "code",
+        "binding record fields"
+      ],
+      "comparison": "baseline vs patched, same harness",
+      "startRevision": "praxis 12bf995 + SPR-E2-01 commit",
+      "tools": [
+        "harness/spr-e2-02.sh"
+      ],
+      "environment": {
+        "host": "4 vCPU shared with other sprint tracks",
+        "dotnet": "SDK 10.0.402 (/root/.dotnet)",
+        "praxis": "12bf995 (3.25.0) scratch clone; patched worktree branch e2-patch",
+        "dokimos": "0.11.1 fecbe0c (binary copied from E's scratch build)",
+        "ordo": "db6d39e",
+        "python": "3.13, cryptography 50.0.1",
+        "isolation": "candidate = uid 65534 via setpriv; verifier = root"
+      },
+      "procedure": "protocols/SPR-E2-02.md; patch = patches/praxis-evidence-path.patch",
+      "rawResults": {
+        "baseline": {
+          "B1": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "B2": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "B3": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "B4": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "P1": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "{\"binding\":null,\"sha256_matches\":false,\"commit_matches\":false}"
+          },
+          "P2": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "none"
+          },
+          "P1b": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "none"
+          },
+          "P3": {
+            "exit": 1,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          }
+        },
+        "patched": {
+          "B1": {
+            "exit": 1,
+            "codes": [
+              "PRX.EVIDENCE.OUTSIDE_REPOSITORY"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "B2": {
+            "exit": 1,
+            "codes": [
+              "PRX.EVIDENCE.OUTSIDE_REPOSITORY"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "B3": {
+            "exit": 1,
+            "codes": [
+              "PRX.EVIDENCE.OUTSIDE_REPOSITORY"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "B4": {
+            "exit": 1,
+            "codes": [
+              "PRX.EVIDENCE.OUTSIDE_REPOSITORY"
+            ],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          },
+          "P1": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "{\"binding\":{\"schemaVersion\":\"praxis.evidence-binding/1-experimental\",\"workItems\":[\"E2-15\"],\"type\":\"tests\",\"path\":\"logs/test-run.log\",\"insideRepository\":true,\"sha256\":\"sha256:fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5\",\"commit\":\"9278db6e258fe9d4a724b61ec5f311fcfccde876\",\"committedAtHead\":false,\"observedAt\":\"2026-11-08T20:27:39.152Z\"},\"sha256_matches\":true,\"commit_matches\":true}"
+          },
+          "P2": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "{\"schemaVersion\":\"praxis.evidence-binding/1-experimental\",\"workItems\":[\"E2-16\"],\"type\":\"tests\",\"path\":\"/etc/hostname\",\"insideRepository\":false,\"sha256\":\"sha256:427f93cafd9cc19be6eec03e590c9c6cdf9f688a5eaf21fa8d72351e2b15fd05\",\"commit\":\"d5109e75c7168d891cfbea966e97495b73bb9d07\",\"committedAtHead\":false,\"observedAt\":\"2026-11-08T20:27:40.976Z\"}"
+          },
+          "P1b": {
+            "exit": 0,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": "{\"schemaVersion\":\"praxis.evidence-binding/1-experimental\",\"workItems\":[\"E2-18\"],\"type\":\"tests\",\"path\":\"test-run.log\",\"insideRepository\":true,\"sha256\":\"sha256:fb184ea57734512b1f088f9181209901b9cd46df3eb7eaa2500ea9e48dde20b5\",\"commit\":\"d14b25a08855398968d7b597f77d3d29da090f51\",\"committedAtHead\":true,\"observedAt\":\"2026-11-08T20:27:42.926Z\"}"
+          },
+          "P3": {
+            "exit": 1,
+            "codes": [],
+            "verdict": null,
+            "reasons": [],
+            "note": null
+          }
+        }
+      },
+      "verification": "Binding sha256 compared to the file's sha256 and commit to git rev-parse HEAD inside the harness; CLI test in the patch asserts the same plus work validate exit 0.",
+      "limitations": [
+        "Binding proves which bytes at which commit were cited, not that tests ran or passed; an agent can write a fake log inside the repo.",
+        "Deviation: bindings moved from .ros/evidence/bindings.jsonl (protocol) to .ros/work/evidence-bindings.jsonl because the former raised an attribution finding.",
+        "The binding is written just before completion is persisted, outside the completion's own transaction.",
+        "logs/ is git-ignored by praxis init, so typical test logs record committedAtHead=false (P1); only P1b (committed log) is fully bound.",
+        "The opt-out flag lives in agent-editable ros.json (E-F-04 class)."
+      ],
+      "conclusion": "VERIFIED: B1\u2013B4 refused (baseline accepted all four), P1/P1b accepted with correct bindings, P2 opt-out accepted, P3 unchanged.",
+      "reproduction": "harness/spr-e2-02.sh patched <praxis.dll> > raw/spr-e2-02-patched.jsonl"
+    },
+    {
+      "id": "SPR-E2-03",
+      "question": "Can an acceptance verdict be bound to evidence produced and signed by a verifier job the candidate cannot write, so that fabricated bundles are refused?",
+      "hypothesis": "Verifier-computed manifest digest + Ed25519 signatures by a key unreadable to the candidate uid refuse E/V2 fabricated bundles, self-signed forgeries, replays and tampering, while a real run is ACCEPTED and a buggy/cheating candidate FAILED.",
+      "independentVars": [
+        "bundle origin (verifier job, E script, V2 script, candidate forgery, tampered)",
+        "candidate commit"
+      ],
+      "dependentVars": [
+        "verdict",
+        "exit",
+        "reasons"
+      ],
+      "comparison": "old Indy verifier (dae2347) vs prototype trusted verdict on the same fabricated bundles",
+      "startRevision": "Indy-init dae2347 (scratch clone of full history)",
+      "tools": [
+        "harness/spr-e2-03.sh",
+        "harness/trusted_acceptance/*.py"
+      ],
+      "environment": {
+        "host": "4 vCPU shared with other sprint tracks",
+        "dotnet": "SDK 10.0.402 (/root/.dotnet)",
+        "praxis": "12bf995 (3.25.0) scratch clone; patched worktree branch e2-patch",
+        "dokimos": "0.11.1 fecbe0c (binary copied from E's scratch build)",
+        "ordo": "db6d39e",
+        "python": "3.13, cryptography 50.0.1",
+        "isolation": "candidate = uid 65534 via setpriv; verifier = root"
+      },
+      "procedure": "protocols/SPR-E2-03.md",
+      "rawResults": {
+        "P1-job": {
+          "exit": 0,
+          "codes": null,
+          "verdict": null,
+          "reasons": [],
+          "note": null
+        },
+        "P1": {
+          "exit": 0,
+          "codes": null,
+          "verdict": "ACCEPTED",
+          "reasons": [],
+          "note": null
+        },
+        "N1-job": {
+          "exit": 0,
+          "codes": null,
+          "verdict": null,
+          "reasons": [],
+          "note": null
+        },
+        "N1": {
+          "exit": 3,
+          "codes": null,
+          "verdict": "FAILED",
+          "reasons": [
+            "requirement R-MUL did not pass"
+          ],
+          "note": null
+        },
+        "N2-job": {
+          "exit": 0,
+          "codes": null,
+          "verdict": null,
+          "reasons": [],
+          "note": "candidate stdout is judged, not trusted"
+        },
+        "N2": {
+          "exit": 3,
+          "codes": null,
+          "verdict": "FAILED",
+          "reasons": [
+            "requirement R-ADD did not pass",
+            "requirement R-ERR did not pass"
+          ],
+          "note": null
+        },
+        "T1-old-verifier": {
+          "exit": 0,
+          "codes": null,
+          "verdict": "ACCEPTED",
+          "reasons": [],
+          "note": null
+        },
+        "T1": {
+          "exit": 4,
+          "codes": null,
+          "verdict": "REFUSED",
+          "reasons": [
+            "manifest carries no verifier signature (not produced by the trusted verifier job)"
+          ],
+          "note": null
+        },
+        "T2-old-verifier": {
+          "exit": 0,
+          "codes": null,
+          "verdict": "ACCEPTED",
+          "reasons": [],
+          "note": null
+        },
+        "T2": {
+          "exit": 4,
+          "codes": null,
+          "verdict": "REFUSED",
+          "reasons": [
+            "manifest carries no verifier signature (not produced by the trusted verifier job)"
+          ],
+          "note": null
+        },
+        "T3-forge": {
+          "exit": 0,
+          "codes": null,
+          "verdict": null,
+          "reasons": [],
+          "note": null
+        },
+        "T3": {
+          "exit": 4,
+          "codes": null,
+          "verdict": "REFUSED",
+          "reasons": [
+            "manifest signature does not verify under the pinned verifier key"
+          ],
+          "note": null
+        },
+        "T4-read-key": {
+          "exit": 1,
+          "codes": null,
+          "verdict": null,
+          "reasons": [],
+          "note": null
+        },
+        "T4-write-evidence": {
+          "exit": 2,
+          "codes": null,
+          "verdict": null,
+          "reasons": [],
+          "note": null
+        },
+        "T5": {
+          "exit": 4,
+          "codes": null,
+          "verdict": "REFUSED",
+          "reasons": [
+            "manifest is for source 1e940d1f2a3cfe7b0ca195cce8db3b4dd4e6acc0, not the pinned 85b9392f7dec653721bf416207f656c545a332e3"
+          ],
+          "note": null
+        },
+        "T6a": {
+          "exit": 4,
+          "codes": null,
+          "verdict": "REFUSED",
+          "reasons": [
+            "evidence entry entries/R-MUL.json does not match the signed manifest digest",
+            "requirement R-MUL has no trusted evidence"
+          ],
+          "note": null
+        },
+        "T6b": {
+          "exit": 4,
+          "codes": null,
+          "verdict": "REFUSED",
+          "reasons": [
+            "manifest signature does not verify under the pinned verifier key"
+          ],
+          "note": null
+        },
+        "T7": {
+          "exit": 0,
+          "codes": null,
+          "verdict": "ACCEPTED",
+          "reasons": [],
+          "note": null
+        },
+        "T8": {
+          "exit": 4,
+          "codes": null,
+          "verdict": "REFUSED",
+          "reasons": [
+            "evidence entry entries/R-REV.json is missing",
+            "requirement R-REV has no trusted evidence"
+          ],
+          "note": null
+        }
+      },
+      "verification": "5 unittest cases for the pure core; simulation re-runnable end to end (harness/spr-e2-03.sh rebuilds keys, repos and runs from scratch).",
+      "limitations": [
+        "Local simulation: uid separation on one host stands in for GitHub environment protection, branch rulesets, required reviewers and OIDC-bound secrets \u2014 none of which is tested.",
+        "Black-box checks are a 4-requirement toy plan; adequacy for the real 108-requirement baseline is not shown.",
+        "Candidate code runs as uid 65534 on the same kernel; no container/VM isolation; no network isolation.",
+        "Root (the verifier identity) can do anything; in production the agent's token must not reach the verifier repo/environment (E-F-07 says it currently can)."
+      ],
+      "conclusion": "VERIFIED for the local mechanism: T1/T2 (old verifier ACCEPTED both) REFUSED; T3, T5, T6a, T6b, T8 REFUSED; T4 EACCES; T7 caller digest ignored; P1 ACCEPTED; N1, N2 FAILED.",
+      "reproduction": "sudo-less as root: harness/spr-e2-03.sh > raw/spr-e2-03.jsonl"
+    }
+  ]
+}

@@ -94,3 +94,36 @@ experiments = [
 (T / "experiments.json").write_text(json.dumps({"track": "E2-hardening", "worker": "E2-001", "date": "2026-11-08",
                                                  "testSuite": suite_cmp, "experiments": experiments}, indent=2) + "\n")
 print(json.dumps({"suite": {k: (v if k in ("newlyFailing", "newlyPassing") else {kk: vv for kk, vv in v.items() if kk != "failures"}) for k, v in suite_cmp.items()}}, indent=1))
+
+I8_TESTS = "tests that assert `git status --porcelain` is empty right after `work claim` (invariant I8: claiming never touches the tracked tree)"
+findings = [
+ {"id": "E2-F-01", "title": "Deriving 'claimed' from the tracked event log refuses the E-F-03 claim-store deletion bypass",
+  "classification": "VERIFIED",
+  "statement": "With patch praxis-claim-guard-queue-integrity, `work claim` appends a token-free `work.claim.recorded` marker to .ros/events/events.jsonl and plain `work complete` consults the tracked log (working tree ∪ HEAD blob). After `rm -rf <git-common-dir>/praxis/claims/ID`, plain completion is refused with exit 3 and PRX.COMPLETION.CLAIM_RECORD_MISSING (baseline: exit 0). It is still refused when the committed marker's line is also deleted from the working tree (A1b). Normal claim -> validate-run -> complete-verified through real Dokimos 0.11.1 still completes, with and without a commit after the claim; the marker is then committed by the verified-completion metadata commit.",
+  "evidence": ["raw/spr-e2-01-baseline.jsonl#A1,A1b", "raw/spr-e2-01-patched.jsonl#A1,A1b,C1,C1b,C2", "patches/praxis-claim-guard-queue-integrity.patch", "raw/test-suite/tests-p5-e2.log"],
+  "limitations": "A1c: if the marker was never committed, deleting it together with the store still bypasses (exit 0). Anyone who can write the repository can forge or rewrite tracked history; the fix moves the bypass into reviewable tracked state, it does not create a trust root. Changes invariant I8; see E2-F-04."},
+ {"id": "E2-F-02", "title": "A queue/event cross-check detects hand-edited queue.json completions (E-F-11) with no false positives on local repositories",
+  "classification": "VERIFIED",
+  "statement": "`work validate`, `work backlog-validate` and `validate` now report PRX.QUEUE.UNRECORDED_COMPLETION (exit 1) for a queue row with status 'complete' and no tracked work.completed / work.completion.verified event (baseline: valid, exit 0 on all three). Legitimately completed items produce no finding. A read-only scan of the same rule over " + f"{fp_sum['repos']} local repositories ({fp_sum['completeRows']} complete rows) flagged {fp_sum['flagged']}.",
+  "evidence": ["raw/spr-e2-01-patched.jsonl#A2-*,C3", "raw/spr-e2-01-queue-fp-scan.json"],
+  "limitations": "Only 'complete' rows are checked: backlog 'abandoned' writes no event in 3.25.0. A forger who also appends a fake work.completed line passes. `praxis verify` is unchanged and still exits 0."},
+ {"id": "E2-F-03", "title": "Default repository containment plus digest/commit binding refuses /etc/hostname-style evidence (E-F-01) without breaking in-repo completion",
+  "classification": "VERIFIED",
+  "statement": "With patch praxis-evidence-path, plain `work complete` refuses evidence resolving outside the repository root (absolute, ../ traversal, file symlink, directory symlink) with exit 1 and PRX.EVIDENCE.OUTSIDE_REPOSITORY before any gate, lock or state change; baseline accepted all four. In-repo evidence is accepted and recorded in .ros/work/evidence-bindings.jsonl with sha256 (matches sha256sum) and HEAD commit (matches git rev-parse HEAD) plus committedAtHead. `workProtocol.allowExternalEvidence: true` restores the old behaviour explicitly and still records the digest.",
+  "evidence": ["raw/spr-e2-02-baseline.jsonl", "raw/spr-e2-02-patched.jsonl", "patches/praxis-evidence-path.patch"],
+  "limitations": "Proves which bytes at which commit were cited, not that tests ran or passed; a fabricated in-repo log is accepted. praxis init git-ignores logs/, so typical logs bind with committedAtHead=false. Opt-out lives in agent-editable ros.json. Binding is written just before (not inside) the completion transaction."},
+ {"id": "E2-F-04", "title": "Existing-suite impact: the claim marker conflicts with tests that encode 'claiming never touches the tracked tree'",
+  "classification": "VERIFIED",
+  "statement": f"Baseline suite: {base.get('tests')} tests, {base.get('passed')} passed, {base.get('failed')} failed ({base.get('seconds')} s). Final patched suite: {patched.get('tests')} tests, {patched.get('passed')} passed, {patched.get('failed')} failed ({patched.get('seconds')} s). Newly failing: {len(new_fail)}; all are {I8_TESTS}. No newly failing test relates to SPR-E2-02. Two baseline failures (real-Dokimos attested end-to-end) are pre-existing.",
+  "evidence": ["raw/test-suite/comparison.json", "raw/test-suite/tests-baseline-full.log", "raw/test-suite/tests-patched-full.log"],
+  "limitations": "Suites ran on a shared 4-vCPU host; timings are indicative. Fixing the conflict needs a design decision (accept a tracked claim marker and update the I8 tests, or commit the marker at claim time), not done here."},
+ {"id": "E2-F-05", "title": "A verifier-signed evidence flow refuses the E and V2 fabricated bundles that Indy-init's verifier ACCEPTS (local simulation)",
+  "classification": "VERIFIED",
+  "statement": "Re-running E's and V2's own fabrication scripts against Indy-init dae2347 still yields ACCEPTED from compute-acceptance-verdict.py. The prototype trusted verdict REFUSES both (no verifier signature), refuses a candidate-signed forgery, replay to another commit, tampered entries (with or without a re-hashed manifest) and a dropped entry, ignores a caller-supplied manifest digest, ACCEPTS a genuine run of a correct candidate and FAILS a buggy and a cheating candidate. The candidate uid could not read the key or write the verifier's output (EACCES).",
+  "evidence": ["raw/spr-e2-03.jsonl", "harness/trusted_acceptance/", "protocols/SPR-E2-03.md"],
+  "limitations": "Local uid separation only. GitHub environment protection, rulesets, required reviewers, OIDC/secrets scoping, runner isolation and the adequacy of acceptance checks for the real 108-requirement baseline are NOT TESTED. Root can bypass everything; in production the agent token must not reach the verifier repo (E-F-07: today it can)."},
+ {"id": "E2-F-06", "title": "Unverified: hardening against an agent with repository write access in general",
+  "classification": "NOT TESTED",
+  "statement": "None of the prototypes protects against an agent that rewrites history, edits tracked logs coherently, or modifies the verifier itself; these require server-side enforcement (protected branches, CODEOWNERS, verifier in an agent-unwritable repo/environment).",
+  "evidence": [], "limitations": "Out of scope of a local prototype."}]
+(T / "findings.json").write_text(json.dumps({"track": "E2-hardening", "worker": "E2-001", "date": "2026-11-08", "findings": findings}, indent=2) + "\n")
