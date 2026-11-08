@@ -1,24 +1,82 @@
+diff --git a/src/Praxis.Cli/BacklogQueueCommands.fs b/src/Praxis.Cli/BacklogQueueCommands.fs
+index ecd362d..9f9cdbd 100644
+--- a/src/Praxis.Cli/BacklogQueueCommands.fs
++++ b/src/Praxis.Cli/BacklogQueueCommands.fs
+@@ -25,6 +25,10 @@ module BacklogQueueCommands =
+     let eventFindings root : BacklogQueueFinding list =
+         BacklogQueueValidation.eventDisagreements (FileBacklogQueueRepository.readItems root) (FileEventLogRepository.readCompletedWorkItemIds root)
+ 
++    /// EXPERIMENTAL (E2 / E-F-11): the same cross-check in `work validate`'s finding shape.
++    let workValidateFindings root : WorkAttributionFinding list =
++        eventFindings root |> List.map (fun finding -> { Path = finding.Path; Field = finding.Field; Message = finding.Message })
++
+     /// The raw backlog rows' own findings plus their agreement with the live
+     /// context (`BacklogQueueValidation.contextDisagreements`).
+     let findings root : Result<BacklogQueueFinding list, string> =
+diff --git a/src/Praxis.Cli/EvidencePathCommands.fs b/src/Praxis.Cli/EvidencePathCommands.fs
+new file mode 100644
+index 0000000..db4604e
+--- /dev/null
++++ b/src/Praxis.Cli/EvidencePathCommands.fs
+@@ -0,0 +1,18 @@
++namespace Praxis.Cli
++
++open Praxis.Domain.Work
++open Praxis.Infrastructure.Work
++
++/// EXPERIMENTAL (E2 / E-F-01): the `work complete` evidence-path gate. Runs
++/// before the quality gate, any lock or any state change; evidence outside
++/// the repository root is refused (exit 1) unless
++/// `workProtocol.allowExternalEvidence` is set. Decisions live in
++/// `EvidencePathPolicy` / `FileEvidenceBinding`.
++[<RequireQualifiedAccess>]
++module EvidencePathCommands =
++    let gate root (evidence: WorkEvidence list) : Result<unit, int> =
++        match FileEvidenceBinding.refusals root evidence with
++        | [] -> Ok()
++        | refusals ->
++            refusals |> List.iter (eprintfn "ERROR %s")
++            Error 1
+diff --git a/src/Praxis.Cli/Praxis.Cli.fsproj b/src/Praxis.Cli/Praxis.Cli.fsproj
+index 32bf372..55a439e 100644
+--- a/src/Praxis.Cli/Praxis.Cli.fsproj
++++ b/src/Praxis.Cli/Praxis.Cli.fsproj
+@@ -61,6 +61,7 @@
+     <Compile Include="WorkGroupCommands.fs" />
+     <Compile Include="WorkGroupCheckpointCommands.fs" />
+     <Compile Include="BacklogQueueCommands.fs" />
++    <Compile Include="EvidencePathCommands.fs" />
+     <Compile Include="WorkGroupListCommands.fs" />
+     <Compile Include="WorkGroupShowCommands.fs" />
+     <Compile Include="WorkGroupLinkCommands.fs" />
 diff --git a/src/Praxis.Cli/Program.fs b/src/Praxis.Cli/Program.fs
-index fe76d51..ca7e3b7 100644
+index fe76d51..791a17e 100644
 --- a/src/Praxis.Cli/Program.fs
 +++ b/src/Praxis.Cli/Program.fs
-@@ -1488,7 +1488,15 @@ let private runWorkComplete root arguments (eventActor: Actor) =
-     let occurredAt = optionValue "--occurred-at" arguments
-     let providedEvidence = optionValues "--evidence" arguments |> List.map parseEvidence
+@@ -531,12 +531,7 @@ let private runWorkAttributionValidate root arguments =
+         eprintfn "%s" usage
+         2
+     else
+-        // EXPERIMENTAL (E2 / E-F-11): `work validate` also cross-checks the
+-        // backlog queue's `complete` rows against the tracked event log.
+-        let queueEventFindings: WorkAttributionFinding list =
+-            BacklogQueueCommands.eventFindings root |> List.map (fun f -> { Path = f.Path; Field = f.Field; Message = f.Message })
+-
+-        match computeWorkAttributionFindings root |> Result.map (fun findings -> findings @ queueEventFindings) with
++        match computeWorkAttributionFindings root |> Result.map (fun findings -> findings @ BacklogQueueCommands.workValidateFindings root) with
+         | Error message ->
+             eprintfn "ERROR %s" message
+             2
+@@ -1490,7 +1485,7 @@ let private runWorkComplete root arguments (eventActor: Actor) =
  
-+    // EXPERIMENTAL (E2 / E-F-01): evidence outside the repository root is
-+    // refused before any gate, lock or state change (default policy).
-+    let outside =
-+        if providedEvidence |> List.forall Option.isSome then FileEvidenceBinding.refusals root (List.choose id providedEvidence) else []
-+
      match ids, occurredAt with
-+    | (_ :: _), Some _ when not outside.IsEmpty ->
-+        outside |> List.iter (eprintfn "ERROR %s")
-+        1
      | (_ :: _), Some timestamp when providedEvidence |> List.forall Option.isSome ->
-         match QualityEvidenceCommands.completionGate root ids (List.choose id providedEvidence) with
+-        match QualityEvidenceCommands.completionGate root ids (List.choose id providedEvidence) with
++        match EvidencePathCommands.gate root (List.choose id providedEvidence) |> Result.bind (fun () -> QualityEvidenceCommands.completionGate root ids (List.choose id providedEvidence)) with
          | Error exitCode -> exitCode
-@@ -1569,7 +1577,7 @@ let private runWorkComplete root arguments (eventActor: Actor) =
+         | Ok readinessRecords ->
+         Praxis.Infrastructure.Planning.FileGroupGates.costWarnings root ids |> List.iter (eprintfn "WARN %s")
+@@ -1569,7 +1564,7 @@ let private runWorkComplete root arguments (eventActor: Actor) =
                                                    EventActor = eventActor
                                                    ReadinessRecords = readinessRecords
                                                    ExplicitConclusion = optionValue "--conclusion" arguments
