@@ -1,0 +1,32 @@
+{
+ "experiment": "SPR-D-04",
+ "seed": 4041,
+ "replicates": 6,
+ "design": "abba",
+ "cwd": "/home/user/sprint-scratch/D/r010",
+ "env": {
+  "PATH": "/root/.dotnet:/usr/local/bin:/usr/bin:/bin",
+  "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+  "DOTNET_NOLOGO": "1",
+  "DOTNET_ROOT": "/root/.dotnet",
+  "HOME": "/root"
+ },
+ "arms": {
+  "surface": {
+   "prepare": [
+    "git checkout -- src/Causa.Domain/Kernel.fs",
+    "dotnet build Causa.slnx --no-restore --disable-build-servers -v q -nologo >/dev/null",
+    "N=$(( $(date +%s%N) % 100000000 )); printf '\\nmodule SprDProbe%s =\\n    let value = %s\\n' $N $N >> src/Causa.Domain/Kernel.fs"
+   ],
+   "measure": "dotnet build Causa.slnx --no-restore --disable-build-servers -v q -nologo"
+  },
+  "internal": {
+   "prepare": [
+    "git checkout -- src/Causa.Domain/Kernel.fs",
+    "dotnet build Causa.slnx --no-restore --disable-build-servers -v q -nologo >/dev/null",
+    "printf '\\n// spr-d probe %s\\n' $(date +%s%N) >> src/Causa.Domain/Kernel.fs"
+   ],
+   "measure": "dotnet build Causa.slnx --no-restore --disable-build-servers -v q -nologo"
+  }
+ }
+}

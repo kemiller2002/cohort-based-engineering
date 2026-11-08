@@ -1,0 +1,29 @@
+{
+ "experiment": "SPR-D-03",
+ "seed": 3031,
+ "replicates": 6,
+ "design": "abba",
+ "cwd": "/home/user/sprint-scratch/D/r010",
+ "env": {
+  "PATH": "/root/.dotnet:/usr/local/bin:/usr/bin:/bin",
+  "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+  "DOTNET_NOLOGO": "1",
+  "DOTNET_ROOT": "/root/.dotnet",
+  "HOME": "/root"
+ },
+ "arms": {
+  "clean": {
+   "prepare": [
+    "git clean -xfdq src tests",
+    "dotnet restore Causa.slnx -v q"
+   ],
+   "measure": "dotnet build Causa.slnx --no-restore --disable-build-servers -v q -nologo"
+  },
+  "noop": {
+   "prepare": [
+    "dotnet build Causa.slnx --no-restore --disable-build-servers -v q -nologo >/dev/null"
+   ],
+   "measure": "dotnet build Causa.slnx --no-restore --disable-build-servers -v q -nologo"
+  }
+ }
+}
