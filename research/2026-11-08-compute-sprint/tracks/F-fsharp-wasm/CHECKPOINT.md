@@ -12,3 +12,7 @@
 ## CP-F-02 15:10 EST
 - Suite runner hit the 30-min background limit during R10 run 2 (R9 runs 1-2, R8 runs 1-2, R10 run 1 complete). Remaining runs (R10 2, R9 3, R8 3, R10 3) restarted with a 2-h limit, followed by phase 2 (wasm-tools startup, R10 TrimMode=full suite x2, build batch 2). R8 runs 1-2 included the WebKit project (fails: no WebKit here); analysis filters to chromium; run 3 is chromium-only.
 - R10 run 1: 194 chromium tests, 158 pass, 36 fail = 17 live (no token, by design) + 19 acceptance; matches R10 FINAL-REPORT's 20 known Chromium failures (incl. contrast 4.00:1 / 4.39:1 = Forma known-issue token pairs).
+
+## CP-F-03 15:55 EST — contamination found and contained
+- An orphaned copy of run_phase2.sh (its wrapper was killed at 15:05 but the child survived) ran concurrently with the restarted one from ~15:29: duplicated r010-wasmtools startup runs, overlapping R10 TrimMode=full suite runs on the same ports (connection refused at the end of run 1; port-in-use for run 2), and an MSBuild-cancelled r008 batch-2 cold build. Orphan killed (own PIDs only). Excluded in scripts/summarize.py (EXCLUDED_STARTUP/EXCLUDED_BUILD); clean reruns queued (run_phase3.sh) with distinct server labels and ports.
+- Suites: R8 110 chromium tests x3, R9 20 x3: all stable-pass; R10 194 x3: 158 stable-pass, 36 stable-fail (17 live/no token, 19 acceptance), 0 flaky.
