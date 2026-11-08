@@ -1,0 +1,14 @@
+{"experiment":"SPR-A2-02",
+ "sourceBuild":"git archive of praxis@aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c, `dotnet build src/Praxis.Cli/Praxis.Cli.fsproj --configuration Release` (SDK 10.0.402), run as `dotnet praxis.dll --root <app> foundations verify --json` exactly as foundations-verify.yml does",
+ "releaseArtifact":"praxis-linux-x64.tar.gz from GitHub Release v3.9.1 (tag commit 607d058, 2 commits after the pin, no src/ difference), sha256 ad475fc5..., run as `praxis-bin --root <app> foundations verify --json`",
+ "cases":[
+  {"app":"indy-init-rehearsal-008@fd8fba9","sourceExit":0,"releaseExit":0,"jsonByteIdentical":true,"passed":true},
+  {"app":"indy-init-rehearsal-010@95b3ed4","sourceExit":0,"releaseExit":0,"jsonByteIdentical":true,"passed":true},
+  {"app":"indy-init-rehearsal-005@b972cb4","sourceExit":0,"releaseExit":0,"jsonByteIdentical":true,"passed":true},
+  {"app":"indy-init-rehearsal-002@b053d1d","sourceExit":0,"releaseExit":0,"jsonByteIdentical":true,"passed":true},
+  {"app":"indy-init-rehearsal-002@b053d1d with aegis version mutated to 9.9.9 (negative control)","sourceExit":3,"releaseExit":3,"jsonByteIdentical":true,"passed":false}],
+ "verifyRunSeconds":{"source":0.26,"release":0.28,"note":"single runs on R8"},
+ "determinism":{"differentPathsColdBuilds":"praxis.dll sha256 differed in all 6 fresh-directory builds (cold1-3, warm-nuget1-3)",
+   "samePathRebuild":"clean rebuild in the same directory (cold1, bin/obj deleted) reproduced praxis.dll sha256 6b6202f3... byte-for-byte",
+   "interpretation":"output depends on build path (embedded paths); with a fixed path (as on a CI runner) the build reproduced bit-identically in this one probe"},
+ "classification":"MEASURED"}
