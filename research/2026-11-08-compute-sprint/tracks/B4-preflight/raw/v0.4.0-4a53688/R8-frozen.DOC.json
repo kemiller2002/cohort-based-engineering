@@ -1,0 +1,134 @@
+{
+  "analysed": {
+    "catalogCommands": 134,
+    "invariants": 25,
+    "machines": 5,
+    "operations": 26,
+    "transitions": 97,
+    "types": 78
+  },
+  "blocked": true,
+  "blockingContradictions": [
+    {
+      "blocking": true,
+      "counterexample": [
+        "T-S01: Saved --Edit [online]--\u003E Unsaved",
+        "T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\u003E Saving",
+        "T-S19: Saving --AnswerLost [current]--\u003E UnknownOutcome",
+        "(steps that make \u0027automatic reads spent\u0027 hold come first; they add reconciliation reads, never remove one)",
+        "T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\u003E UnknownOutcome  [reconciliation read #1]",
+        "T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\u003E UnknownOutcome  [reconciliation read #2]",
+        "T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\u003E UnknownOutcome  [reconciliation read #3]",
+        "T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\u003E UnknownOutcome  [reconciliation read #4]",
+        "T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\u003E UnknownOutcome  [reconciliation read #5]",
+        "5 reconciliation reads with no time between them: exceeds 4 in 60 s"
+      ],
+      "detail": "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S31 (UnknownOutcome x CheckAgain, guard \u0027automatic reads spent\u0027) emits a reconciliation read on every repetition, and no guard on it limits repetition or references a clock.",
+      "kind": "likely-contradiction",
+      "ownerAction": "decide which governs: bound T-S31 (a clock, a count or a rate in its guard) or amend INV-04",
+      "requiresOwnerDecision": true,
+      "rule": "rate-bound-vs-unbounded-loop",
+      "subjects": [
+        "INV-04",
+        "SM-SAVE",
+        "T-S31"
+      ]
+    },
+    {
+      "blocking": true,
+      "counterexample": [
+        "T-S01: Saved --Edit [online]--\u003E Unsaved",
+        "T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\u003E Saving",
+        "T-S19: Saving --AnswerLost [current]--\u003E UnknownOutcome",
+        "T-S32: UnknownOutcome --WentOnline [true]--\u003E UnknownOutcome  [reconciliation read #1]",
+        "T-S32: UnknownOutcome --WentOnline [true]--\u003E UnknownOutcome  [reconciliation read #2]",
+        "T-S32: UnknownOutcome --WentOnline [true]--\u003E UnknownOutcome  [reconciliation read #3]",
+        "T-S32: UnknownOutcome --WentOnline [true]--\u003E UnknownOutcome  [reconciliation read #4]",
+        "T-S32: UnknownOutcome --WentOnline [true]--\u003E UnknownOutcome  [reconciliation read #5]",
+        "5 reconciliation reads with no time between them: exceeds 4 in 60 s"
+      ],
+      "detail": "INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S32 (UnknownOutcome x WentOnline, guard \u0027true\u0027) emits a reconciliation read on every repetition, and no guard on it limits repetition or references a clock.",
+      "kind": "likely-contradiction",
+      "ownerAction": "decide which governs: bound T-S32 (a clock, a count or a rate in its guard) or amend INV-04",
+      "requiresOwnerDecision": true,
+      "rule": "rate-bound-vs-unbounded-loop",
+      "subjects": [
+        "INV-04",
+        "SM-SAVE",
+        "T-S32"
+      ]
+    }
+  ],
+  "missingDecisions": [
+    {
+      "blocking": false,
+      "counterexample": [
+        "T-S01: Saved --Edit [online]--\u003E Unsaved",
+        "T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\u003E Saving",
+        "T-S19: Saving --AnswerLost [current]--\u003E UnknownOutcome",
+        "UnknownOutcome x ReconcileReadFailed with the counter at its limit: no legal transition"
+      ],
+      "detail": "SM-SAVE (UnknownOutcome, ReconcileReadFailed) is specified only when \u0027fewer than three automatic reads made\u0027; no transition covers the counter at its limit, so that input fails closed without a stated outcome.",
+      "kind": "missing-specification",
+      "ownerAction": "state the transition for (UnknownOutcome, ReconcileReadFailed) with the counter at its limit, or record that failing closed is intended",
+      "requiresOwnerDecision": true,
+      "rule": "counter-guard-without-complement",
+      "subjects": [
+        "SM-SAVE",
+        "T-S29"
+      ]
+    },
+    {
+      "blocking": false,
+      "counterexample": [
+        "T-S01: Saved --Edit [online]--\u003E Unsaved",
+        "T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\u003E Saving",
+        "T-S19: Saving --AnswerLost [current]--\u003E UnknownOutcome",
+        "UnknownOutcome x CheckAgain with the counter still below its limit: no legal transition"
+      ],
+      "detail": "SM-SAVE (UnknownOutcome, CheckAgain) is specified only when \u0027automatic reads spent\u0027; no transition covers the counter still below its limit, so that input fails closed without a stated outcome.",
+      "kind": "missing-specification",
+      "ownerAction": "state the transition for (UnknownOutcome, CheckAgain) with the counter still below its limit, or record that failing closed is intended",
+      "requiresOwnerDecision": true,
+      "rule": "counter-guard-without-complement",
+      "subjects": [
+        "SM-SAVE",
+        "T-S31"
+      ]
+    }
+  ],
+  "missingInterfaces": [
+    {
+      "blocking": true,
+      "counterexample": [
+        "two different commands (e.g. StartInvestigation and RenameInvestigation) with the same identities and version are the same CommandEnvelope value",
+        "the body is therefore also lost wherever DomainKernel carries CommandEnvelope (Decide)",
+        "the body is therefore also lost wherever RefusedCommand carries CommandEnvelope (Command)",
+        "the body is therefore also lost wherever ConflictInput carries CommandEnvelope (ReapplyDone)",
+        "the body is therefore also lost wherever SaveInput carries CommandEnvelope (Edit, ConflictResolvedReapplied)",
+        "the body is therefore also lost wherever SaveEffect carries CommandEnvelope (ExportCommands)",
+        "the body is therefore also lost wherever InvestigationSession carries CommandEnvelope (Unsaved, AfterInFlight)",
+        "the body is therefore also lost wherever Msg carries CommandEnvelope (DomainCommand)"
+      ],
+      "detail": "The catalog carries all 134 commands (StartInvestigation, RenameInvestigation, ActivateInvestigation, MarkAwaitingEvidence, ...) inside CommandEnvelope, but \u0060CommandEnvelope = { CommandId: Guid; Investigation: InvestigationId; ExpectedVersion: AggregateVersion option }\u0060 holds only identities and versions: no field can say which command it is or carry its body. IF41-DOMAIN.Decide must distinguish them from that value alone.",
+      "kind": "missing-interface",
+      "ownerAction": "add the command (a union of the catalog commands, with payloads) to CommandEnvelope, or name the out-of-band source consumers must read it from",
+      "requiresOwnerDecision": true,
+      "rule": "carrier-cannot-discriminate",
+      "subjects": [
+        "CommandEnvelope",
+        "IF41-DOMAIN.Decide"
+      ]
+    }
+  ],
+  "schema": "percepta.specification-preflight/1",
+  "suggestedOwnerActions": [
+    "decide which governs: bound T-S31 (a clock, a count or a rate in its guard) or amend INV-04",
+    "decide which governs: bound T-S32 (a clock, a count or a rate in its guard) or amend INV-04",
+    "state the transition for (UnknownOutcome, ReconcileReadFailed) with the counter at its limit, or record that failing closed is intended",
+    "state the transition for (UnknownOutcome, CheckAgain) with the counter still below its limit, or record that failing closed is intended",
+    "add the command (a union of the catalog commands, with payloads) to CommandEnvelope, or name the out-of-band source consumers must read it from"
+  ],
+  "unsupportedVerificationObligations": [],
+  "warnings": []
+}
