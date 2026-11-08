@@ -95,6 +95,39 @@ C = {
     "D-F-09": ("medium", "Incremental no-op build ~4% of clean CPU; one fixture.", ["X-25", "A-F-13"], "outline-2"),
     "D-F-10": ("medium", "Surface edits cost ~a clean build.", ["X-25"], None),
     "D-F-11": ("medium", "Affected-test run ~4% of full suite CPU; selection safety untested.", ["X-25"], "outline-2"),
+    # A2 remediation
+    "A2-F-01": ("high", "ADR-S02 core result: driver removes every .ros conflict on replay (v2 rule added after v1 16/26).", ["A-F-07", "B-F-09"], "ADR-S02"),
+    "A2-F-02": ("high", "Driver preserves records; validate cannot detect duplicate lines (negative control).", [], "ADR-S02"),
+    "A2-F-03": ("medium", "Real team merge error in R10 (dropped WI-0003); single instance.", [], "outline-2"),
+    "A2-F-04": ("medium", "Bounds ADR-S02: 9 merges still need humans.", ["X-02"], "ADR-S02"),
+    "A2-F-05": ("medium", "Praxis documented ordering rule fails on real histories: policy change needed.", [], "ADR-S02"),
+    "A2-F-08": ("medium", "Release binary output byte-identical to source-built verifier; attestation not verified.", ["E-F-09"], "future-experiments"),
+    "A2-F-09": ("medium", "~550 min saving ESTIMATE from caching; single determinism probe.", ["A-F-13", "D-F-09"], "future-experiments"),
+    # C2 signed registry prototype
+    "C2-F-02": ("high", "Range qualification works end to end with a trusted key.", ["C-F-04"], "ADR-S01"),
+    "C2-F-05": ("high", "Attestation covers contract claim, not set integrity: limits what ADR-S01 can promise.", [], "ADR-S01"),
+    "C2-F-08": ("high", "CR-01 needs new Registry-side infrastructure and process (contradicts 'no new infrastructure').", ["X-07"], "ADR-S01"),
+    # B3 semantic checks / B4 spec-preflight
+    "B3-F-01": ("medium", "Semantic check catches R8 INV-04 pre-T0; answer-informed design.", ["B4-F-01"], "ADR-S04"),
+    "B3-F-02": ("medium", "Semantic check catches R8 command-body gap; does not generalise (B3-F-04).", ["B4-F-01"], "ADR-S04"),
+    "B4-F-01": ("high", "Existing spec-preflight reproduces R8 catches with 0 control false alarms: reuse instead of new tooling.", ["B3-F-01", "B3-F-02"], "ADR-S04"),
+    "B4-F-05": ("medium", "Indy-init CI drops the carrier check (no --catalog).", [], "future-experiments"),
+    "B4-F-07": ("high", "Both semantic tools are lexically tuned; generality unproven.", ["B3-F-04"], "ADR-S04"),
+    # D2 agent experiment
+    "D2-F-02": ("high", "Governance block costs +6% tokens, +55% wall at equal acceptance (n=4/arm; Holm p=0.086 tokens).", ["A-F-16", "G-F-08", "D-F-04"], "outline-2"),
+    "D2-F-03": ("low", "Checklist produces artefacts; value unmeasured.", [], None),
+    # F fsharp-wasm
+    "F-F-01": ("medium", "Untrimmed WASM payload R8/R9; single snapshot.", [], None),
+    "F-F-02": ("medium", "Startup times; contended host, emulated 4G.", [], None),
+    "F-F-03": ("high", "R10 global no-store fetch override re-downloads 10.1 MB per warm load; root cause a Limen gap.", ["F-F-12"], "future-experiments"),
+    "F-F-07": ("medium", "Edit-publish loop ~10 s fixed WASM cost.", ["D-F-09"], None),
+    "F-F-08": ("medium", "Agent F# compile errors are mostly type/name and quickly fixed.", ["F-F-09"], None),
+    "F-F-09": ("medium", "CI failures are infrastructure, not compile errors; 5 logs sampled.", ["B-F-08", "A-F-12"], None),
+    "F-F-10": ("medium", "WASM interpreter locals limit statically checkable; reproduces R5.", ["B-F-13"], None),
+    "F-F-13": ("medium", "Existing Limen contract tooling unused in every rehearsal.", ["X-26"], None),
+    "F-F-14": ("low", "Folio declared but not integrated (R10).", ["C-F-07"], None),
+    "F-F-15": ("medium", "Accessibility: 0 axe violations on reachable routes; R10 contrast traced to known Forma tokens.", [], None),
+    "F-F-17": ("medium", "29-defect UI pattern set: 6 catchable by existing tools, 13 need new contracts; hand-curated.", ["X-26"], None),
 }
 
 # H-001 notes where a verifier's verdict covers only part of the claim
@@ -107,8 +140,8 @@ SCOPE_NOTES = {
 }
 
 # Which verification track is assigned to each source track
-ASSIGNED = {"A": "V1", "G": "V1", "B": "V2", "C": "V2", "E": "V2"}
-TRACKNAME = {"A": "A-economics", "B": "B-forensics", "C": "C-architecture", "E": "E-security", "G": "G-market", "B2": "B2-dryrun", "D": "D-experiments"}
+ASSIGNED = {"A": "V1", "G": "V1", "B": "V2", "C": "V2", "E": "V2", "A2": "V3", "C2": "V3", "B4": "V3", "D2": "V3"}
+TRACKNAME = {"A": "A-economics", "B": "B-forensics", "C": "C-architecture", "E": "E-security", "G": "G-market", "B2": "B2-dryrun", "D": "D-experiments", "A2": "A2-remediation", "C2": "C2-signed-registry", "B3": "B3-semantic", "B4": "B4-preflight", "D2": "D2-agent-experiment", "F": "F-fsharp-wasm"}
 
 
 def prefix(cid):
@@ -156,6 +189,7 @@ for t in TRACKNAME.values():
 
 v1, v1src = load_verdicts("V1-verification")
 v2, v2src = load_verdicts("V2-verification")
+v3, v3src = load_verdicts("V3-verification")
 v1_pending = load_v1_pending()
 
 entries = []
@@ -165,7 +199,7 @@ for cid, (rank, cons, support, use) in C.items():
     if cls not in ("VERIFIED", "SUPPORTED"):
         raise SystemExit(f"{cid} is {cls}, not VERIFIED/SUPPORTED")
     vt = ASSIGNED.get(prefix(cid))
-    vmap = v1 if vt == "V1" else (v2 if vt == "V2" else {})
+    vmap = {"V1": v1, "V2": v2, "V3": v3}.get(vt, {})
     if cid in vmap:
         v = vmap[cid]
         iv = {"by": vt, "status": "done", "verdict": v.get("verdict"),
@@ -226,7 +260,7 @@ summary = {
 }
 
 other = []
-for src, vm in (("V1", v1), ("V2", v2)):
+for src, vm in (("V1", v1), ("V2", v2), ("V3", v3)):
     for k, v in vm.items():
         if k not in C:
             other.append({"id": k, "by": src, "verdict": v.get("verdict"),
@@ -240,12 +274,16 @@ out = {
     "track": "H-synthesis",
     "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
     "asOf": sys.argv[3] if len(sys.argv) > 3 else None,
-    "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
-    "verificationSources": {"V1": v1src, "V2": v2src},
+    "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D, A2, C2, B3, B4, D2, F whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
+    "verificationSources": {"V1": v1src, "V2": v2src, "V3": v3src},
     "summary": summary,
     "claims": entries,
     "omittedLowConsequence": omitted,
     "verificationsOutsideLedger": other,
+    "contradictedFindingsOfNote": sorted(
+        [{"id": k, "title": f["title"], "track": TRACKNAME.get(prefix(k))}
+         for k, f in findings.items() if f.get("classification") == "CONTRADICTED"],
+        key=lambda x: x["id"]),
     "notes": [
         "consequence is H-001's judgement of decision impact, not a confidence rating.",
         "A V1/V2 verdict of PARTIALLY VERIFIED means the core number reproduced but part of the statement or its inference did not; read discrepancies before citing.",

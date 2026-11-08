@@ -67,6 +67,12 @@ Across eleven governed, agent-built rehearsals, the recurring failure was not th
 - From R8 onward, governance or verification machinery was the first refusal that ended the governed verdict. **VERIFIED+IV** in that narrow sense, B-F-03 / V2 PARTIALLY VERIFIED.
 - Even without it, R8 had 346/613 P0 obligations not run, and R9 implemented 0/541 executable obligations (V2).
 - **[DO NOT STATE]** "the runs failed because of governance" (matrix X-23).
+- **Retrospective test of a pre-T0 dry run.**
+  - Mechanical checks catch 4/8 of the brief's blockers, robustly 2/8 (**SUPPORTED**, B2-F-01). They run in seconds (**VERIFIED**, B2-F-10).
+  - Semantic checks catch R8's two semantic blockers (**VERIFIED**, B3-F-01/F-02; answer-informed).
+  - An existing tool, spec-preflight, already did this after R8 (**VERIFIED**, B4-F-01). Indy-init CI ran it with the key option off (**VERIFIED**, B4-F-05).
+  - **[DO NOT STATE]** that these checks would catch the next package's defects. Prospective generality is **NOT TESTED** (B4-F-07; FX-14).
+- **Theme to close on.** The pattern is "built but not adopted" (matrix X-26): verified completion, range qualification, Limen contracts and spec-preflight options were all available and unused. **Corroborated across six tracks.**
 
 ## 7. What we are changing (proposals, not results)
 

@@ -2,20 +2,21 @@
  "schema": "track-h.claims-ledger/1",
  "track": "H-synthesis",
  "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
- "asOf": "2026-11-08T14:38:57-05:00",
- "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
+ "asOf": "2026-11-08T15:06:23-05:00",
+ "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D, A2, C2, B3, B4, D2, F whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
  "verificationSources": {
   "V1": "/home/user/sprint-wt/V1-verification/research/2026-11-08-compute-sprint/tracks/V1-verification/verdicts.json",
-  "V2": "/home/user/sprint-wt/V2-verification/research/2026-11-08-compute-sprint/tracks/V2-verification/verdicts.json"
+  "V2": "/home/user/sprint-wt/V2-verification/research/2026-11-08-compute-sprint/tracks/V2-verification/verdicts.json",
+  "V3": null
  },
  "summary": {
-  "claims": 77,
-  "highConsequence": 31,
+  "claims": 105,
+  "highConsequence": 40,
   "independentlyVerifiedDone": 21,
   "verifiedClean": 17,
   "verificationDiscrepancy": 4,
   "queued": 0,
-  "notYetIndependentlyVerified": 56,
+  "notYetIndependentlyVerified": 84,
   "priorityForVerification": [
    "A-F-16",
    "B-F-04",
@@ -31,7 +32,16 @@
    "G-F-06",
    "B2-F-01",
    "B2-F-08",
-   "D-F-03"
+   "D-F-03",
+   "A2-F-01",
+   "A2-F-02",
+   "C2-F-02",
+   "C2-F-05",
+   "C2-F-08",
+   "B4-F-01",
+   "B4-F-07",
+   "D2-F-02",
+   "F-F-03"
   ]
  },
  "claims": [
@@ -2110,25 +2120,812 @@
     "SUPPORTED_ONLY"
    ],
    "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-11"
+  },
+  {
+   "claimId": "A2-F-01",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Semantic merge driver removes every .ros/ state conflict in R8 and R10 replays",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-S02 core result: driver removes every .ros conflict on replay (v2 rule added after v1 16/26).",
+   "trackLimitations": [
+    "v2's relaxed-order rule was added after v1 (16/26) results; disclosed in protocol Amendment 1",
+    "replay only; not deployed"
+   ],
+   "crossTrackSupport": [
+    "A-F-07",
+    "B-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-01"
+  },
+  {
+   "claimId": "A2-F-02",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Driver output preserves every record and passes praxis validate",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "Driver preserves records; validate cannot detect duplicate lines (negative control).",
+   "trackLimitations": [
+    "praxis validate does not detect duplicated event lines (negative control); duplicates are checked by the harness",
+    "byte identity with M is lower: current.json 32/84 (R8), events 76/84; differences are item/event order and the top-level actor field"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-02"
+  },
+  {
+   "claimId": "A2-F-03",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "One team merge in R10 dropped a live work item; the driver would have kept it",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Real team merge error in R10 (dropped WI-0003); single instance.",
+   "trackLimitations": [
+    "single instance; the item reappears later on main"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-03"
+  },
+  {
+   "claimId": "A2-F-04",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "A .ros driver cannot remove application-code conflicts",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Bounds ADR-S02: 9 merges still need humans.",
+   "trackLimitations": [],
+   "crossTrackSupport": [
+    "X-02"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-04"
+  },
+  {
+   "claimId": "A2-F-05",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Strict Praxis ordering rule fails on real rehearsal histories",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Praxis documented ordering rule fails on real histories: policy change needed.",
+   "trackLimitations": [
+    "relaxed ordering is a policy decision for Praxis owners"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-05"
+  },
+  {
+   "claimId": "A2-F-08",
+   "track": "A2-remediation",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "A published, attested release is source-equivalent to the pin and behaves identically",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Release binary output byte-identical to source-built verifier; attestation not verified.",
+   "trackLimitations": [
+    "version string differs (3.9.1); attestation itself not verified with gh attestation verify",
+    "fetch timed through sandbox proxy"
+   ],
+   "crossTrackSupport": [
+    "E-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-08"
+  },
+  {
+   "claimId": "A2-F-09",
+   "track": "A2-remediation",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Caching the verifier keyed on the pinned commit is safe if the key is complete",
+   "measuredOrEstimate": "ESTIMATE (savings); MEASURED (determinism probe)",
+   "consequence": "medium",
+   "consequenceIfWrong": "~550 min saving ESTIMATE from caching; single determinism probe.",
+   "trackLimitations": [
+    "single determinism probe",
+    "savings assume CI restore ~= local fetch time",
+    "V1 puts verifier minutes at 607 (CI 580-632), consistent with 604 from step data"
+   ],
+   "crossTrackSupport": [
+    "A-F-13",
+    "D-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-09"
+  },
+  {
+   "claimId": "C2-F-02",
+   "track": "C2-signed-registry",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "With a valid attestation the built-in catalog need not list the version, but must still declare a qualifiedRange for that component",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Range qualification works end to end with a trusted key.",
+   "trackLimitations": "A4 full apply used the existing fixture repo (Forma 0.6.1->0.7.0 with fake npm), not 1.37.0 data; doctor exited 12 in both arms for unrelated lifecycle findings.",
+   "crossTrackSupport": [
+    "C-F-04"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C2-signed-registry/findings.json#C2-F-02"
+  },
+  {
+   "claimId": "C2-F-05",
+   "track": "C2-signed-registry",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The attestation does not cover the rest of the set entry (artifact digests, URLs)",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Attestation covers contract claim, not set integrity: limits what ADR-S01 can promise.",
+   "trackLimitations": "Whether the release-manifest digest chain covers artifact digests on the Registry side was not traced.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C2-signed-registry/findings.json#C2-F-05"
+  },
+  {
+   "claimId": "C2-F-08",
+   "track": "C2-signed-registry",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "CR-01 needs new infrastructure and process on the Registry side",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "CR-01 needs new Registry-side infrastructure and process (contradicts 'no new infrastructure').",
+   "trackLimitations": "Infrastructure listed from the spec and repository tree; not costed.",
+   "crossTrackSupport": [
+    "X-07"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C2-signed-registry/findings.json#C2-F-08"
+  },
+  {
+   "claimId": "B3-F-01",
+   "track": "B3-semantic",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "C1-loop catches R8 INV-04 vs SM-SAVE before T0",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Semantic check catches R8 INV-04 pre-T0; answer-informed design.",
+   "trackLimitations": "Answer-informed design (see B3-F-03). 3 of the 6 R8 alarms attach to the per-request bound 'at most 3 automatic reconciliation reads' because matching uses the head noun only; CheckAgain reads are not automatic and INV-04 exempts 'one per offline-to-online change', so those 3 are misattributions, not separate defects.",
+   "crossTrackSupport": [
+    "B4-F-01"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B3-semantic/findings.json#B3-F-01"
+  },
+  {
+   "claimId": "B3-F-02",
+   "track": "B3-semantic",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "C2 catches the R8 CommandEnvelope without a command body",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Semantic check catches R8 command-body gap; does not generalise (B3-F-04).",
+   "trackLimitations": "Name-based candidate selection; does not generalise out of sample (B3-F-04).",
+   "crossTrackSupport": [
+    "B4-F-01"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B3-semantic/findings.json#B3-F-02"
+  },
+  {
+   "claimId": "B4-F-01",
+   "track": "B4-preflight",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Indy-init's spec-preflight claim reproduces exactly",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Existing spec-preflight reproduces R8 catches with 0 control false alarms: reuse instead of new tooling.",
+   "trackLimitations": [
+    "Local rebuild from tagged source (percepta --version: 0.4.0), not the downloaded release archive.",
+    "Wall time includes process start on a host at load 9-11."
+   ],
+   "crossTrackSupport": [
+    "B3-F-01",
+    "B3-F-02"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-01"
+  },
+  {
+   "claimId": "B4-F-05",
+   "track": "B4-preflight",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Indy-init's CI invocation drops the carrier check",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Indy-init CI drops the carrier check (no --catalog).",
+   "trackLimitations": [
+    "Only R8 shows the effect; on controls CI and DOC agree (no findings)."
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-05"
+  },
+  {
+   "claimId": "B4-F-07",
+   "track": "B4-preflight",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Neither tool is shown to be generic; both are lexically tuned",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Both semantic tools are lexically tuned; generality unproven.",
+   "trackLimitations": [
+    "Post hoc, adversarially chosen probes on one package; false-alarm behaviour on independent specifications is untested for both tools."
+   ],
+   "crossTrackSupport": [
+    "B3-F-04"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-07"
+  },
+  {
+   "claimId": "D2-F-02",
+   "track": "D2-agent-experiment",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Governance block adds tokens, wall-clock and tool uses at equal acceptance",
+   "measuredOrEstimate": "MEASURED (runtime-reported)",
+   "consequence": "high",
+   "consequenceIfWrong": "Governance block costs +6% tokens, +55% wall at equal acceptance (n=4/arm; Holm p=0.086 tokens).",
+   "trackLimitations": [
+    "exploratory power",
+    "loaded host for wall-clock"
+   ],
+   "crossTrackSupport": [
+    "A-F-16",
+    "G-F-08",
+    "D-F-04"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/findings.json#D2-F-02"
+  },
+  {
+   "claimId": "D2-F-03",
+   "track": "D2-agent-experiment",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Checklist reliably produces QUESTIONS.md and EVIDENCE.md",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "low",
+   "consequenceIfWrong": "Checklist produces artefacts; value unmeasured.",
+   "trackLimitations": [
+    "artefact presence only"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/findings.json#D2-F-03"
+  },
+  {
+   "claimId": "F-F-01",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Untrimmed .NET WASM framework dominates payload in R8/R9",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Untrimmed WASM payload R8/R9; single snapshot.",
+   "trackLimitations": "Single snapshot per rehearsal; dist sizes include files never fetched (R8 node_modules); 4 vCPU Xeon 2.3 GHz shared container, .NET SDK 10.0.402 (no workloads), headless Chromium 153, measurements/environment.json",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-01"
+  },
+  {
+   "claimId": "F-F-02",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Time to app-ready in headless Chromium",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Startup times; contended host, emulated 4G.",
+   "trackLimitations": "Chromium only; CPU contention from other tracks (loadavg up to 14 on 4 vCPU) inflates localhost numbers; 4G is CDP emulation, not a real network; each app's own ready marker differs in meaning. 4 vCPU Xeon 2.3 GHz shared container, .NET SDK 10.0.402 (no workloads), headless Chromium 153, measurements/environment.json",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-02"
+  },
+  {
+   "claimId": "F-F-03",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R10's global fetch no-store override defeats HTTP caching of the WASM runtime",
+   "measuredOrEstimate": "measured",
+   "consequence": "high",
+   "consequenceIfWrong": "R10 global no-store fetch override re-downloads 10.1 MB per warm load; root cause a Limen gap.",
+   "trackLimitations": "python http.server sends no Cache-Control; R9's warm reuse relies on heuristic caching/revalidation. A CDN with long max-age would not change the no-store behaviour.",
+   "crossTrackSupport": [
+    "F-F-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-03"
+  },
+  {
+   "claimId": "F-F-07",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Build and edit-loop cost of F# WASM apps",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Edit-publish loop ~10 s fixed WASM cost.",
+   "trackLimitations": "Heavy contention from concurrent tracks (loadavg median 11.7 on 4 vCPU during batch 1); batch 2 interleaved to reduce order effects; MSBuild node reuse on.",
+   "crossTrackSupport": [
+    "D-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-07"
+  },
+  {
+   "claimId": "F-F-08",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Where agents struggle with F#: type mismatches and unresolved names, fixed quickly",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Agent F# compile errors are mostly type/name and quickly fixed.",
+   "trackLimitations": "Domain-logic tasks, not UI; arms differ in prompt and generated scaffolding, so arm differences are associations; 41 build invocations had undeterminable outcome (output piped/truncated).",
+   "crossTrackSupport": [
+    "F-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-08"
+  },
+  {
+   "claimId": "F-F-09",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Compile errors rarely reach rehearsal commits or CI; CI failures are infrastructure",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "CI failures are infrastructure, not compile errors; 5 logs sampled.",
+   "trackLimitations": "Keyword classification is a screen; only 5 CI logs read (token cost); R8 run list is the first 100 of 642.",
+   "crossTrackSupport": [
+    "B-F-08",
+    "A-F-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-09"
+  },
+  {
+   "claimId": "F-F-10",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "WASM interpreter locals limit is now statically checkable; R8-R10 have ample headroom",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "WASM interpreter locals limit statically checkable; reproduces R5.",
+   "trackLimitations": "Value-type locals counted as 8 B (under-count); optimiser retry not modelled.",
+   "crossTrackSupport": [
+    "B-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-10"
+  },
+  {
+   "claimId": "F-F-13",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Existing contract tooling went unused",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Existing Limen contract tooling unused in every rehearsal.",
+   "trackLimitations": "Adoption barriers not investigated.",
+   "crossTrackSupport": [
+    "X-26"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-13"
+  },
+  {
+   "claimId": "F-F-14",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Folio is declared but not integrated",
+   "measuredOrEstimate": "measured",
+   "consequence": "low",
+   "consequenceIfWrong": "Folio declared but not integrated (R10).",
+   "trackLimitations": "R8 later integrated Folio elements (CR-T26); not re-measured.",
+   "crossTrackSupport": [
+    "C-F-07"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-14"
+  },
+  {
+   "claimId": "F-F-15",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Contrast failures in R10 trace to Forma token pairs; reachable screens pass axe",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Accessibility: 0 axe violations on reachable routes; R10 contrast traced to known Forma tokens.",
+   "trackLimitations": "axe only on states reachable without a GitHub session; connected states not scanned by axe directly.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-15"
+  },
+  {
+   "claimId": "F-F-17",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Recurring UI defect patterns and the contracts that would catch them",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "29-defect UI pattern set: 6 catchable by existing tools, 13 need new contracts; hand-curated.",
+   "trackLimitations": "Hand-curated from commit messages and defect files; selection bias towards well-described fixes.",
+   "crossTrackSupport": [
+    "X-26"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-17"
   }
  ],
  "omittedLowConsequence": [
+  "A2-F-06",
+  "A2-F-07",
   "B2-F-06",
   "B2-F-07",
   "B2-F-11",
+  "B3-F-03",
+  "B3-F-04",
+  "B3-F-05",
+  "B3-F-07",
+  "B3-F-08",
+  "B4-F-02",
+  "B4-F-03",
+  "B4-F-04",
+  "B4-F-06",
+  "B4-F-08",
+  "B4-F-09",
   "C-F-06",
   "C-F-10",
   "C-F-11",
   "C-F-15",
   "C-F-16",
   "C-F-17",
+  "C2-F-01",
+  "C2-F-03",
+  "C2-F-04",
+  "C2-F-06",
   "D-F-01",
   "D-F-02",
   "D-F-04",
   "D-F-06",
+  "D2-F-04",
   "E-F-10",
   "E-F-11",
-  "E-F-12"
+  "E-F-12",
+  "F-F-04",
+  "F-F-06",
+  "F-F-12",
+  "F-F-16",
+  "F-F-18",
+  "F-F-20"
  ],
  "verificationsOutsideLedger": [
   {
@@ -2152,6 +2949,33 @@
     "Two runs (1 cancelled, 1 failure) fall after the deadline (2026-11-07 06:xx/07:00Z); the claim's 45/66 is all-time, not window-only (44/64)."
    ],
    "verifierNotes": "'Deadlock' is interpretive. 36 of 45 cancelled runs lasted 36-73 min wall-clock, consistent with the 40-minute job timeout (timeout-minutes: 40) plus queueing; the other 9 (0-21 min) are consistent with pull_request concurrency supersession (cancel-in-progress only for pull_request). 28 cancelled runs were pull_request, 17 push. The only success was a push to main at 18:48:17Z."
+  }
+ ],
+ "contradictedFindingsOfNote": [
+  {
+   "id": "B3-F-06",
+   "title": "Causa T18->T20 dependency was derivable from pre-T0 artifacts; B2's 'not in any pre-T0 artifact' is contradicted",
+   "track": "B3-semantic"
+  },
+  {
+   "id": "C2-F-07",
+   "title": "CR-01 would not end lockstep Conditor releases: 2 of 13 recent releases were avoidable",
+   "track": "C2-signed-registry"
+  },
+  {
+   "id": "F-F-05",
+   "title": "Trimming satellite resources does not change startup",
+   "track": "F-fsharp-wasm"
+  },
+  {
+   "id": "F-F-11",
+   "title": "Limen silently drops a second template root, contrary to its docs",
+   "track": "F-fsharp-wasm"
+  },
+  {
+   "id": "G-F-11",
+   "title": "Managed software factory / outcome-based delivery is not ready",
+   "track": "G-market"
   }
  ],
  "notes": [

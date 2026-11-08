@@ -56,6 +56,16 @@ Track B2 ran the dry run retrospectively on T0-era artefacts for R4, R8, R9, R10
 
 DECISION-LOG D-022 narrows B's recommendation on this basis.
 
+## Semantic checks (B3, B4)
+
+- **B3 catches what B2 missed.** B3's preregistered semantic checks catch both R8 semantic blockers in under a second: INV-04 against SM-SAVE (B3-F-01) and the CommandEnvelope without a command body (B3-F-02).
+- **B3 settles the Causa cycle.** Its C4 check derives the Causa T18↔T20 cycle from pre-T0 artefacts (B3-F-06, which contradicts B2-F-07). The check is noisy.
+- **The tooling already existed.** percepta spec-preflight 0.4.0 reproduces the R8 catches exactly, with 0 control false alarms (B4-F-01). It was built after R8 and pinned for R9.
+- **Caveats:**
+  - Both tools were designed knowing the answer, and both are lexically tuned. Paraphrased defects evade them (B3-F-03/F-04, B4-F-06/F-07).
+  - Indy-init's CI runs spec-preflight without `--catalog`, which drops the carrier rule (B4-F-05).
+- **Decisions taken.** DECISION-LOG D-025 and D-029: reuse spec-preflight, and contribute B3's C4 slice-cycle check upstream instead of building a parallel tool (matrix X-26).
+
 ## Decision (proposed)
 
 Before any timed run, execute the whole governance pipeline end to end:
@@ -66,7 +76,7 @@ Before any timed run, execute the whole governance pipeline end to end:
 The run is a GO only if all of the following pass:
 1. `authorize-implementation` against the real approved plan.
 2. Suite preflight: every frozen suite command executes on the pinned SDK.
-3. A dependency-cycle check on the slice plan.
+3. Semantic package checks: percepta spec-preflight run **with `--catalog`**, failing on any blocking section (B4-F-05). Plus a slice-dependency cycle check that follows invariant sources (B3 C4, B3-F-06).
 4. The release or acceptance gate, including the trusted job of ADR-S03 once it exists.
 5. Approvals in the verifier's exact format, with process rules bound to the target repository.
 6. Job time budgets: suite duration against the job cap, which addresses the R10 20-minute cap against a 29-minute suite.

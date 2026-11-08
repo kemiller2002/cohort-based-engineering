@@ -1,57 +1,78 @@
-# ADR-S01: Qualify components from signed Registry sets instead of lockstep Conditor releases
+# ADR-S01: Reduce lockstep Conditor releases: a host-tool range policy first, signed Registry attestations second
 
-- **Status:** Proposed — EXPERIMENTAL evidence
+- **Status:** Proposed — EXPERIMENTAL evidence.
+  - **Revised 2026-11-08 ~15:10** after the C2 prototype contradicted the original framing, "signed Registry sets end lockstep releases" (Track C CR-01). See DECISION-LOG D-031.
 - **Date:** 2026-11-08
-- **Drafted by:** Track H (H-001), from Track C's CR-01. This is a candidate for owner decision. It is not a decision.
-- **Paths:** relative to `research/2026-11-08-compute-sprint/tracks/`.
+- **Drafted by:** Track H (H-001), from Track C's CR-01 and Track C2's prototype. This is a candidate for owner decision. It is not a decision.
+- **Paths:** relative to `research/2026-11-08-compute-sprint/tracks/`. C2 paths resolve in its worktree until merged.
 
 ## Context
 
-- Qualification is defined in two places. Conditor embeds its own component catalog: 11 descriptors in `components/*.component.json`, each with `qualifiedVersions` and `defaultVersion`. The echelon-registry catalog covers 17 systems. REG-RU-007 requires a released Conditor to qualify each approved set (C-F-03, VERIFIED).
-- **Effect:** 13 Conditor releases (v0.10.9–v0.10.21) went out alongside 12 approved sets (1.26.0–1.37.0) in 14 days. Several were pure "RELEASE TRIGGER" commits (C-F-03). echelon-current received 12 owner-approved sets in 13 days (C-F-18, VERIFIED). So one component release currently costs four things: a component release, a Conditor release, a Registry set and an owner approval.
-- **The two catalogs disagree.** forma-workflow is a Conditor built-in with no Registry entry (C-F-09). Dokimos, arca, fides and others are in the Registry with no Conditor descriptor (C-F-03).
-  - The forma-workflow gap matches a recurring rehearsal defect: forma-workflow sat outside the approved set in R4, R5, R8 and R10 (B-F-13, SUPPORTED; cross-track theme X-07).
-- **The escape hatch exists but is switched off.** Conditor already implements attested range qualification (`Registry.attestedQualification`), but `trust/registry-release-keys.json` lists no keys (C-F-04, VERIFIED).
-- **Adjacent problem, not solved here:** the wider ecosystem lags the approved set by up to 35 set versions (C-F-01, VERIFIED; V2 VERIFIED, counting 8 repositories on sets 1.3.0–1.24.0, not 9). That is CR-02 and needs its own decision.
-- V2 also notes that causa locks forma-workflow 1.2.0, which the 1.37.0 set does not name. So the only "approved-set" product repository already sits outside the Registry catalog.
+**Two catalogs force releases in lockstep.**
+- Conditor embeds its own component catalog. echelon-registry has another. REG-RU-007 requires a released Conditor to qualify each approved set (C-F-03, VERIFIED).
+- Result: 13 Conditor releases went out alongside 12 approved sets in 14 days.
+- echelon-current received 12 owner-approved sets in 13 days (C-F-18, VERIFIED).
+- The catalogs disagree on forma-workflow (C-F-09). That matches a defect that recurred in R4, R5, R8 and R10 (B-F-13). Matrix theme X-07.
+
+**Conditor's attested range qualification is live code, dormant only because no key is trusted.**
+- The trust list is `keys: []` (C-F-04, VERIFIED by V2).
+- C2 populated it with a throwaway key in scratch. Range qualification then worked end to end through the CLI (C2-F-02, C2-F-03, VERIFIED).
+- Bad signatures, untrusted keys, revoked keys and replayed statements are all refused (C2-F-04).
+- Only one existing test fails: the deliberate "inert" guard (C2-F-06).
+
+**What signing would not do** (matrix X-27):
+- **It would not end the lockstep releases.** Only 2 of the 13 recent Conditor releases were avoidable, at most 3 (C2-F-07, CONTRADICTED).
+  - Range qualification applies only to project-binding web packages: forma, limen, folio and forma-workflow. That is 3 of the 17 entries in 1.37.0.
+  - Seven releases were driven by exact pins of the Praxis and Ordo host tools. Descriptors may not declare a range for those (CON-343).
+- **It needs new infrastructure.** The Registry has no signing keys, no signing workflow or protected environment, no resolver step and no REG-SIG checks. REG-RU-007 refuses range-only versions (C2-F-08). WI-0042 is waiting on a key-custody proposal.
+- **It does not give set integrity.** The attestation covers the contract claim, not artifact digests or URLs (C2-F-05). It also has no expiry or freshness control (C2-F-04).
+
+**Adjacent problem, not addressed here:** ecosystem pin staleness (C-F-01, VERIFIED by V2, 8 not 9 repositories on sets 1.3.0–1.24.0). That is CR-02.
 
 ## Decision (proposed)
 
-1. Publish a Registry release-attestation key and add it to `conditor/trust/registry-release-keys.json`. Let project bindings use attested range qualification against signed Registry sets.
-2. Make the Registry set the single source of qualified versions. Conditor descriptors keep only install mechanics: package and commands.
-3. Add the missing catalog entries (forma-workflow in the Registry), or remove forma-workflow from Conditor's built-ins.
-4. Separately, update Conditor's stale `defaultVersion` values (C-F-16), or remove them in favour of the bound set.
+1. **Owner decision first: a host-tool range policy (CON-343).** Decide whether the Praxis and Ordo host tools may be qualified by range or by signed attestation. Seven of the 13 releases trace to these exact pins. This is the lever with the largest measured effect (C2-F-07).
+2. **Then, if the owner accepts range trust, build the Registry signing side** (C2-F-08):
+   - key custody outside agent reach;
+   - a protected signing workflow;
+   - a resolver step that copies `releaseAttestation`;
+   - REG-SIG conformance checks;
+   - an REG-RU-007 change to accept range-qualified versions.
+3. **Fix the formats before relying on them.**
+   - Add expiry or freshness to the attestation statement (C2-F-04).
+   - Either sign the set digest, or state plainly that attestation gives contract authenticity only (C2-F-05).
+4. **Independently of 1–3, close the catalog gap.** Register forma-workflow in the Registry, or remove it from Conditor's built-ins (C-F-09). Update or remove Conditor's stale `defaultVersion` values (C-F-16).
 
 ## Consequences
 
-**Expected, all ESTIMATES:**
-- No more Conditor release purely to qualify a set.
-- Fewer owner approvals per component bump.
-- A single catalog, which removes the forma-workflow class of rehearsal defects.
+**Expected:**
+- Step 1 could remove most host-tool-driven Conditor releases. That is an ESTIMATE: up to 7 of 13 in the observed window, if the policy also covers future host-tool bumps.
+- Step 2 alone removes about 2–3 of 13.
+- Step 4 removes the forma-workflow class of rehearsal defect.
 
-**New risks:**
-- **Key ceremony and custody.** Track E found that the agent's credential is reportedly admin, and that the agent held the R7 signing key (E-F-07, SUPPORTED). A Registry key reachable by an agent would let it qualify anything. The key must sit outside agent reach, and E-F-09's caveat applies: attestations that bind only the repository are weak.
-- **Policy.** The owner must accept range trust for signed sets (C-F-04 limitation).
-
-**Not addressed:** ecosystem pin staleness (C-F-01, C-F-02). That needs CR-02.
+**Costs and risks:**
+- Key ceremony and custody. The agent credential is reportedly admin (E-F-07; V2 verified that there is no branch protection or ruleset). A Registry key reachable by an agent would let it qualify anything.
+- Key rotation and revocation each still require a Conditor release (C2-F-08).
+- Owner approval churn (C-F-18) falls only if the owner accepts range trust. Otherwise every set remains an explicit approval.
 
 ## Evidence
 
 | Finding | Class | Independent check |
 |---|---|---|
-| C-F-03 (dual catalogs, 13 releases in 14 days) | VERIFIED (C) | V2 pending |
-| C-F-04 (range qualification built, keys empty) | VERIFIED (C, code reading) | V2 VERIFIED: `keys: []`, unchanged since 2026-10-13, and the only trust source. The path itself has still not been executed |
-| C-F-18 (12 sets in 13 days) | VERIFIED (C) | V2 pending |
-| C-F-09 (forma-workflow outside Registry) | VERIFIED (C) | V2 pending |
-| B-F-13 (forma-workflow defect in R4, R5, R8, R10) | SUPPORTED (B) | none |
-| E-F-07, E-F-09 (key custody and attestation scope risks) | SUPPORTED (E) | V2 pending |
+| C-F-03, C-F-18 | VERIFIED (C) | not independently verified |
+| C-F-04 | VERIFIED (C) | V2 VERIFIED |
+| C2-F-02, C2-F-03, C2-F-04, C2-F-06 | VERIFIED (C2, scratch prototype) | V3 pending |
+| C2-F-05, C2-F-08 | VERIFIED (C2) | V3 pending |
+| C2-F-07 | CONTRADICTED (CR-01's claim) | V3 pending |
+| C-F-09; B-F-13 | VERIFIED; SUPPORTED | — |
+| E-F-07 | SUPPORTED with VERIFIED parts | V2 VERIFIED (protection parts) |
 
-Files: `C-architecture/findings.json`, `C-architecture/complexity-reductions.json#CR-01`, `B-forensics/findings.json#B-F-13`, `E-security/findings.json`. Theme: `H-synthesis/synthesis/cross-track-matrix.json#X-07`.
+Files: `C-architecture/findings.json`, `C-architecture/complexity-reductions.json#CR-01`, `C2-signed-registry/findings.json`, `V2-verification/verdicts.json#C-F-04`. Matrix themes X-07, X-26, X-27.
 
 ## Open questions
 
-1. Has anyone run `attestedQualification` end to end with a trusted key? C read the code; nobody executed it (NOT TESTED).
-2. Who holds the Registry key, and how is it isolated from agent sessions (E-F-07)?
-3. Does the owner accept range qualification, for example "any signed set ≥ X"? Or must every set remain an explicit approval, in which case the approval-churn saving shrinks?
-4. Is the owner's time per approval material? It was not measured (C-F-18 limitation).
-5. Would the forma-workflow defect have been prevented in practice? Only a replay of R8/R10 bootstrap with a single catalog would show that.
+1. Will the owner accept range or attested qualification for host tools (CON-343)? This decides most of the benefit.
+2. Who holds the Registry key, and how is it isolated from agent sessions?
+3. Should the attestation cover the whole set entry, including artifact digests, or should the set digest be signed separately (C2-F-05)?
+4. Is owner time per approval material? Not measured (C-F-18).
+5. Would a single catalog have prevented the forma-workflow rehearsal defects in practice? Not replayed.
