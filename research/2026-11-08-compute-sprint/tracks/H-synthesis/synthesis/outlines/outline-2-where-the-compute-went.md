@@ -82,7 +82,10 @@ In the one rehearsal with full telemetry (R8), most tokens were cache reads of a
 - **The benefit depends on the model.** With a smaller model (Haiku), the same governance prompt cut undocumented policy invention from 21 to 0 across 12 runs per arm (2.17 fewer violations per run, p=0.00028), at the same +6–8% token cost.
   - Evidence class: preregistered SPR-X-02, adopted in D-037. V4 verification is in progress.
   - Caveat D-041: the block was delivered before the task line.
-  - Candidate framing: "calibrate governance per model". **[DO NOT STATE]** this as general until V4 and the X-03 ablation report.
+  - V4 **VERIFIED** the primary result exactly. Use V4's corrected descriptives: wall +40.1%, tokens +7.6%.
+  - Ablation SPR-X-03 (V5 **VERIFIED**): the one-paragraph Authority contract carries the benefit at roughly baseline token cost. The question/evidence checklist alone does not reduce violations and adds +7–9% tokens and +36–46% wall. "Documenting is not refusing."
+  - Candidate framing: "keep a short authority contract; calibrate it per model; do not treat checklists as controls". Matrix X-11, X-30.
+  - **[DO NOT STATE]** this as general across domains. SPR-X-04 is pending; the evidence is one model and two fixtures.
 
 ## 7. What we cannot measure yet
 
