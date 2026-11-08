@@ -22,6 +22,8 @@ class StabilityTests(unittest.TestCase):
         self.assertEqual(s["tests"], 3)
         self.assertEqual(s["verdicts"], {"stable-pass": 1, "flaky": 1, "skipped": 1})
         self.assertEqual(len(s["nonPassing"]), 1)
+        self.assertEqual(summarise("x", [report(["expected"])], "webkit")["tests"], 0)
+        self.assertEqual(summarise("x", [report(["expected"])], "chromium")["tests"], 1)
 
 
 if __name__ == "__main__":
