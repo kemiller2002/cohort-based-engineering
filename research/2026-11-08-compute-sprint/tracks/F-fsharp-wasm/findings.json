@@ -42,7 +42,7 @@
   "id": "F-F-04",
   "title": "Full trimming including FSharp.Core cuts R10 payload by about a third",
   "classification": "SUPPORTED",
-  "statement": "TrimMode=full (+SatelliteResourceLanguages=en) on R10: cold transfer 7.8 MB vs 11.1 MB; FSharp.Core 2.40 -> 0.29 MB; 4G gzip ready 3825 ms (n=5, range 3662-3915) vs 5073 ms (n=5, range 4988-5269). Functional check: see F-F-16 (R10 chromium suite against the full-trim build).",
+  "statement": "TrimMode=full (+SatelliteResourceLanguages=en) on R10: cold transfer 7.8 MB vs 11.1 MB; FSharp.Core 2.40 -> 0.29 MB; 4G gzip ready 3825 ms (n=5, range 3662-3915) vs 5073 ms (n=5, range 4988-5269). Functional check: R10's own Chromium suite (194 tests, stateful GitHub fake) against the full-trim build, 2 clean runs: 158 pass / 36 fail, the identical failing set as the untrimmed build (3 runs) - no regression detected.",
   "measuredOrEstimate": "measured",
   "evidence": [
    "measurements/bundles/r010-full.json",
@@ -67,7 +67,7 @@
   "id": "F-F-06",
   "title": "wasm-tools workload relinking halves the native runtime but is not needed to build",
   "classification": "SUPPORTED",
-  "statement": "All publishes succeeded without any workload. With wasm-tools installed (isolated SDK copy), R10 publish relinks dotnet.native.wasm 3.00 -> 1.50 MB (total _framework 10.8 -> 9.4 MB); one publish took 83 s vs 34-42 s without (n=1, contended). Startup (clean rerun): localhost 575 ms (n=7, range 528-647) vs R10 921 ms (n=7, range 756-1082); 4G gzip 4070 ms (n=3, range 4053-4089) vs 5073 ms (n=5, range 4988-5269).",
+  "statement": "All publishes succeeded without any workload. With wasm-tools installed (isolated SDK copy), R10 publish relinks dotnet.native.wasm 3.00 -> 1.50 MB (total _framework 10.8 -> 9.4 MB); one publish took 83 s vs 34-42 s without (n=1, contended). Startup (clean rerun): localhost 575 ms (n=7, range 528-647) vs R10 921 ms (n=7, range 756-1082); 4G gzip 4086 ms (n=5, range 4053-4127) vs 5073 ms (n=5, range 4988-5269).",
   "measuredOrEstimate": "measured",
   "evidence": [
    "measurements/bundles/r010-wasmtools.json",
@@ -193,7 +193,7 @@
   "id": "F-F-16",
   "title": "Playwright suite stability (Chromium)",
   "classification": "SUPPORTED",
-  "statement": "pending",
+  "statement": "r008: 110 chromium tests x 3 runs -> {'stable-pass': 110}; r009: 20 chromium tests x 3 runs -> {'stable-pass': 20}; r010: 194 chromium tests x 3 runs -> {'stable-pass': 158, 'stable-fail': 36}; r010-trimfull: 194 chromium tests x 2 runs -> {'stable-pass': 158, 'stable-fail': 36}. No flaky test in any app. R10's 36 stable failures = 17 live-provider tests (no CAUSA_GITHUB_TOKEN, fail as BLOCKED by design) + 19 acceptance obligations, matching the R10 FINAL-REPORT's list of ~20 known Chromium failures (contrast, save-flow re-read, wording/selector mismatches); PERSIST-031-O19, which R10 called timing-sensitive, passed in all 5 runs. Wall time per R10 run 509-743 s.",
   "measuredOrEstimate": "measured",
   "evidence": [
    "measurements/playwright-stability.json",
