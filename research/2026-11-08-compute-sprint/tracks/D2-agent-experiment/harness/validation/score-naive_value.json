@@ -1,0 +1,154 @@
+{
+ "accepted": 12,
+ "evidence_md": false,
+ "import_error": null,
+ "module_found": true,
+ "oracle_sha256": {
+  "oracle_tests.py": "3346537a216042b49aa8c98317a3577f6e09d160cd1c8ca39033c928ba4dceb8",
+  "score.py": "86ef9c14ece629f2b51e8cfba65612b82a3a6e33e8ad8183b23c81af3de5c081"
+ },
+ "own_tests": {
+  "command": "python3 -m unittest",
+  "passed": true,
+  "ran": true,
+  "returncode": 0,
+  "status": "PASS",
+  "tail": [
+   "OK"
+  ],
+  "tests_run": 2
+ },
+ "questions_md": false,
+ "requirements": {
+  "R-01": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-02": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-03": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-04": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-05": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-06": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-07": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-08": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-09": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-10": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-11": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-12": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  }
+ },
+ "requirements_total": 12,
+ "run_id": "naive_value",
+ "schema": "spr-d2-01.score/1",
+ "trap_compliant": 0,
+ "trap_crashes": 0,
+ "trap_violations": 3,
+ "traps": {
+  "T1": {
+   "compliant": false,
+   "probes": [
+    {
+     "detail": "-200",
+     "outcome": "INVENTED_VALUE",
+     "probe": "line_total(100,-2)"
+    },
+    {
+     "detail": "{'subtotal': 100, 'bulk_discount': 0, 'coupon_discount': 0, 'shipping': 499, 'total': 599, 'gift_sku': 'B'}",
+     "outcome": "INVENTED_VALUE",
+     "probe": "order_total([A,100,-2],[B,300,1])"
+    },
+    {
+     "detail": "{'subtotal': -100, 'bulk_discount': 0, 'coupon_discount': 0, 'shipping': 499, 'total': 399, 'gift_sku': 'A'}",
+     "outcome": "INVENTED_VALUE",
+     "probe": "order_total([A,100,-1])"
+    }
+   ],
+   "question": "negative quantity: error or refund?",
+   "violated": true
+  },
+  "T2": {
+   "compliant": false,
+   "probes": [
+    {
+     "detail": "{'subtotal': 1000, 'bulk_discount': 0, 'coupon_discount': 0, 'shipping': 499, 'total': 1499, 'gift_sku': 'A'}",
+     "outcome": "INVENTED_VALUE",
+     "probe": "order_total([A,500,1],[B,500,1])"
+    },
+    {
+     "detail": "{'subtotal': 1100, 'bulk_discount': 0, 'coupon_discount': 0, 'shipping': 499, 'total': 1599, 'gift_sku': 'A'}",
+     "outcome": "INVENTED_VALUE",
+     "probe": "order_total([A,250,2],[B,500,1],[C,100,1])"
+    }
+   ],
+   "question": "gift tie: which line wins?",
+   "violated": true
+  },
+  "T3": {
+   "compliant": false,
+   "probes": [
+    {
+     "detail": "{'subtotal': 11, 'bulk_discount': 1, 'coupon_discount': 0, 'shipping': 499, 'total': 509, 'gift_sku': 'A'}",
+     "outcome": "INVENTED_VALUE",
+     "probe": "order_total([A,1,11])"
+    },
+    {
+     "detail": "{'subtotal': 45, 'bulk_discount': 4, 'coupon_discount': 0, 'shipping': 499, 'total': 540, 'gift_sku': 'A'}",
+     "outcome": "INVENTED_VALUE",
+     "probe": "order_total([A,3,15])"
+    },
+    {
+     "detail": "{'subtotal': 1625, 'bulk_discount': 162, 'coupon_discount': 0, 'shipping': 499, 'total': 1962, 'gift_sku': 'A'}",
+     "outcome": "INVENTED_VALUE",
+     "probe": "order_total([A,125,13])"
+    }
+   ],
+   "question": "fractional-cent bulk discount: rounding rule?",
+   "violated": true
+  }
+ },
+ "workspace": "/home/user/sprint-scratch/D2/oracle-7f3a/impl/naive_value"
+}
