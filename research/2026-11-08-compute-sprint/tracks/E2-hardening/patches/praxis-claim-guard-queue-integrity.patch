@@ -1,0 +1,385 @@
+diff --git a/src/Praxis.Application/Work/CompletionPolicy.fs b/src/Praxis.Application/Work/CompletionPolicy.fs
+index d75a788..748b84c 100644
+--- a/src/Praxis.Application/Work/CompletionPolicy.fs
++++ b/src/Praxis.Application/Work/CompletionPolicy.fs
+@@ -13,6 +13,27 @@ type PlainCompletion =
+     | Permitted
+     | Refused of CompletionFinding
+ 
++/// What the tracked event log (`.ros/events/events.jsonl`, working tree and
++/// HEAD) says about one work item's claim history (EXPERIMENTAL, E2).
++[<RequireQualifiedAccess>]
++type TrackedClaimHistory =
++    | NeverClaimed
++    | Claimed
++    | VerifiedComplete
++
++[<RequireQualifiedAccess>]
++module TrackedClaimHistory =
++    let ClaimRecordedType = "work.claim.recorded"
++    let VerifiedType = "work.completion.verified"
++
++    /// Pure fold over the (type, workItem) pairs of the tracked log lines.
++    let ofEvents (workItemId: string) (events: (string * string) list) =
++        let types = events |> List.filter (fun (_, item) -> item = workItemId) |> List.map fst |> Set.ofList
++
++        if types.Contains VerifiedType then TrackedClaimHistory.VerifiedComplete
++        elif types.Contains ClaimRecordedType then TrackedClaimHistory.Claimed
++        else TrackedClaimHistory.NeverClaimed
++
+ [<RequireQualifiedAccess>]
+ module PlainCompletion =
+     let RequiredCode = "PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED"
+@@ -42,6 +63,40 @@ module PlainCompletion =
+             | PlainCompletion.Permitted -> None)
+         |> Option.defaultValue PlainCompletion.Permitted
+ 
++    /// EXPERIMENTAL (E2 / E-F-03): the local claim store lives in the Git
++    /// directory, so a completing process can delete it. The tracked event
++    /// log records a token-free `work.claim.recorded` marker for every claim
++    /// and the canonical `work.completion.verified` event, so "claimed" is
++    /// derived from the tracked history as well as the store: a store that
++    /// is missing (or claims completion) while the tracked history shows a
++    /// claim without a verified completion is refused, never trusted.
++    let ClaimRecordMissingCode = "PRX.COMPLETION.CLAIM_RECORD_MISSING"
++
++    let decideWithHistory (requireVerified: bool) (workItemId: string) (claim: WorkClaim option) (history: TrackedClaimHistory) =
++        match claim, history with
++        | None, TrackedClaimHistory.Claimed ->
++            PlainCompletion.Refused
++                { Code = ClaimRecordMissingCode
++                  Detail =
++                    $"the tracked event log records a claim on work item '{workItemId}' but the claim store has no record of it; "
++                    + "the claim store is not a trust root, so plain 'work complete' is refused (complete it with 'praxis work complete-verified')" }
++        | Some claim, TrackedClaimHistory.Claimed when claim.Status = ClaimStatus.Completed ->
++            PlainCompletion.Refused
++                { Code = ClaimRecordMissingCode
++                  Detail =
++                    $"the claim store marks work item '{workItemId}' completed but the tracked event log has no 'work.completion.verified' event for it" }
++        | None, TrackedClaimHistory.VerifiedComplete -> PlainCompletion.Permitted
++        | _ -> decide requireVerified workItemId claim
++
++    /// `decideAll` over the tracked history as well as the store.
++    let decideAllWithHistory (requireVerified: bool) (claims: (string * WorkClaim option * TrackedClaimHistory) list) =
++        claims
++        |> List.map (fun (id, claim, history) -> decideWithHistory requireVerified id claim history)
++        |> List.tryPick (function
++            | PlainCompletion.Refused finding -> Some(PlainCompletion.Refused finding)
++            | PlainCompletion.Permitted -> None)
++        |> Option.defaultValue PlainCompletion.Permitted
++
+ /// Binds an Ordo constructibility contract (interface I3) to the Dokimos
+ /// authority so the contract, not a hand-written file, is the source of the
+ /// contract identity: version and digest come from admission, a conflicting
+diff --git a/src/Praxis.Cli/BacklogQueueCommands.fs b/src/Praxis.Cli/BacklogQueueCommands.fs
+index 4207045..ecd362d 100644
+--- a/src/Praxis.Cli/BacklogQueueCommands.fs
++++ b/src/Praxis.Cli/BacklogQueueCommands.fs
+@@ -21,13 +21,19 @@ module BacklogQueueCommands =
+     let private liveStates (contextItems: LiveWorkItem list) =
+         contextItems |> List.map (fun item -> item.Id, item.SemanticState) |> Map.ofList
+ 
++    /// EXPERIMENTAL (E2 / E-F-11): `complete` rows the tracked log never records.
++    let eventFindings root : BacklogQueueFinding list =
++        BacklogQueueValidation.eventDisagreements (FileBacklogQueueRepository.readItems root) (FileEventLogRepository.readCompletedWorkItemIds root)
++
+     /// The raw backlog rows' own findings plus their agreement with the live
+     /// context (`BacklogQueueValidation.contextDisagreements`).
+     let findings root : Result<BacklogQueueFinding list, string> =
+         FileWorkListRepository.readContextItems root
+         |> Result.map (fun contextItems ->
+             let items = FileBacklogQueueRepository.readItems root
+-            BacklogQueueValidation.findings items @ BacklogQueueValidation.contextDisagreements items (liveStates contextItems))
++            BacklogQueueValidation.findings items
++            @ BacklogQueueValidation.contextDisagreements items (liveStates contextItems)
++            @ eventFindings root)
+ 
+     /// Mirrors production `queueFindings` (`tools/ros_cli.mjs`): duplicate
+     /// ids, invalid ids, invalid status, and invalid priority over the raw
+diff --git a/src/Praxis.Cli/Program.fs b/src/Praxis.Cli/Program.fs
+index bbe9098..fe76d51 100644
+--- a/src/Praxis.Cli/Program.fs
++++ b/src/Praxis.Cli/Program.fs
+@@ -531,7 +531,12 @@ let private runWorkAttributionValidate root arguments =
+         eprintfn "%s" usage
+         2
+     else
+-        match computeWorkAttributionFindings root with
++        // EXPERIMENTAL (E2 / E-F-11): `work validate` also cross-checks the
++        // backlog queue's `complete` rows against the tracked event log.
++        let queueEventFindings: WorkAttributionFinding list =
++            BacklogQueueCommands.eventFindings root |> List.map (fun f -> { Path = f.Path; Field = f.Field; Message = f.Message })
++
++        match computeWorkAttributionFindings root |> Result.map (fun findings -> findings @ queueEventFindings) with
+         | Error message ->
+             eprintfn "ERROR %s" message
+             2
+diff --git a/src/Praxis.Domain/Work/QueueValidation.fs b/src/Praxis.Domain/Work/QueueValidation.fs
+index d474dfb..5e110a1 100644
+--- a/src/Praxis.Domain/Work/QueueValidation.fs
++++ b/src/Praxis.Domain/Work/QueueValidation.fs
+@@ -95,6 +95,23 @@ module BacklogQueueValidation =
+                         $"backlog item '{item.Id}' is '{item.Status}' but live work item '{item.Id}' is '{liveStateCode state}'" }
+             | _ -> None)
+ 
++    /// EXPERIMENTAL (E2 / E-F-11): a backlog row's `complete` status is a
++    /// claim that some completion happened; the tracked event log is the
++    /// record of completions. A `complete` row with no `work.completed` or
++    /// `work.completion.verified` event for its ID is unrecorded (for
++    /// example, hand-edited into `queue.json`) and reported, never trusted.
++    let UnrecordedCompletionCode = "PRX.QUEUE.UNRECORDED_COMPLETION"
++    let eventAgreementField = "event_agreement"
++
++    let eventDisagreements (items: BacklogQueueItemRecord list) (completedInLog: Set<string>) : BacklogQueueFinding list =
++        items
++        |> List.filter (fun item -> item.Status = "complete" && not (completedInLog.Contains item.Id))
++        |> List.map (fun item ->
++            { Path = queuePath
++              Field = eventAgreementField
++              Message =
++                $"{UnrecordedCompletionCode}: backlog item '{item.Id}' is 'complete' in queue.json but .ros/events/events.jsonl records no completion event (work.completed or work.completion.verified) for it" })
++
+ type BacklogReidentificationRequest =
+     { Id: string
+       NewId: string
+diff --git a/src/Praxis.Infrastructure/Work/FileEventLogRepository.fs b/src/Praxis.Infrastructure/Work/FileEventLogRepository.fs
+index 17a7d8a..aa90bc9 100644
+--- a/src/Praxis.Infrastructure/Work/FileEventLogRepository.fs
++++ b/src/Praxis.Infrastructure/Work/FileEventLogRepository.fs
+@@ -49,3 +49,29 @@ module FileEventLogRepository =
+             |> Array.filter (fun line -> line.Trim().Length > 0)
+             |> Array.choose eventWorkItem
+             |> Set.ofArray
++
++    let private eventTypeAndItem (line: string) =
++        try
++            use document = JsonDocument.Parse line
++            let field (name: string) =
++                match document.RootElement.TryGetProperty name with
++                | true, value when value.ValueKind = JsonValueKind.String -> Some(value.GetString())
++                | _ -> None
++            Option.map2 (fun kind item -> kind, item) (field "type") (field "workItem")
++        with _ ->
++            None
++
++    /// EXPERIMENTAL (E2 / E-F-11): IDs the tracked log records as completed.
++    let readCompletedWorkItemIds (root: string) : Set<string> =
++        let path = Path.Combine(root, ".ros", "events", "events.jsonl")
++        let completion = set [ "work.completed"; "work.completion.verified" ]
++
++        if not (File.Exists path) then
++            Set.empty
++        else
++            File.ReadAllLines path
++            |> Array.filter (fun line -> line.Trim().Length > 0)
++            |> Array.choose eventTypeAndItem
++            |> Array.filter (fun (kind, _) -> completion.Contains kind)
++            |> Array.map snd
++            |> Set.ofArray
+diff --git a/src/Praxis.Infrastructure/Work/FileWorkClaims.fs b/src/Praxis.Infrastructure/Work/FileWorkClaims.fs
+index 418f4c6..f9d693f 100644
+--- a/src/Praxis.Infrastructure/Work/FileWorkClaims.fs
++++ b/src/Praxis.Infrastructure/Work/FileWorkClaims.fs
+@@ -162,13 +162,58 @@ module FileWorkClaimEvents =
+             lease.Release() |> ignore
+             result
+ 
++    /// EXPERIMENTAL (E2 / E-F-03): the token-free tracked marker of one claim
++    /// acquisition. Derived deterministically from the store event, so a
++    /// replayed acquisition appends nothing new (same `eventId`).
++    let claimMarker (storeNode: JsonNode) =
++        let marker = JsonObject()
++        let copy (name: string) =
++            match storeNode[name] with
++            | null -> ()
++            | value -> marker[name] <- value.DeepClone()
++
++        marker["schemaVersion"] <- JsonValue.Create "1.0.0"
++        marker["type"] <- JsonValue.Create TrackedClaimHistory.ClaimRecordedType
++        [ "workItem"; "repository"; "protocolVersion"; "occurredAt"; "claimant"; "generation"; "actor" ] |> List.iter copy
++        marker["sourceEventId"] <- JsonValue.Create(storeNode["eventId"].GetValue<string>())
++        marker["eventId"] <- JsonValue.Create(Praxis.Infrastructure.Json.CanonicalJson.sha256HexPrefix 24 (Praxis.Infrastructure.Json.CanonicalJson.serializeCompact marker))
++        marker :> JsonNode
++
+     let create (root: string) (actor: Actor option) (execution: string option) : ClaimEvent -> Result<unit, string> =
+         fun event ->
+             let repository = FileWorkConfigRepository.readRepositoryId root
+             let protocolVersion = FileWorkConfigRepository.readProtocolVersion root
+             let node = WorkClaimJson.eventNode repository protocolVersion execution actor event
+             let eventId = node["eventId"].GetValue<string>()
++
+             TransientStore.appendEvent root eventId (Praxis.Infrastructure.Json.CanonicalJson.serializeCompact node)
++            |> Result.bind (fun () ->
++                match event.Payload with
++                | ClaimEventPayload.ClaimAcquired _ -> appendTracked root (claimMarker node)
++                | _ -> Ok())
++
++    let private eventPairs (text: string) =
++        text.Split('\n')
++        |> Array.choose (fun line ->
++            if line.Trim().Length = 0 then None
++            else
++                try
++                    use document = JsonDocument.Parse line
++                    let field (name: string) =
++                        match document.RootElement.TryGetProperty name with
++                        | true, value when value.ValueKind = JsonValueKind.String -> Some(value.GetString())
++                        | _ -> None
++                    Option.map2 (fun kind item -> kind, item) (field "type") (field "workItem")
++                with _ -> None)
++        |> Array.toList
++
++    /// EXPERIMENTAL (E2): (type, workItem) pairs of the tracked log, as the
++    /// union of the working-tree file and the blob committed at HEAD, so a
++    /// committed claim marker survives an uncommitted edit of the file.
++    let trackedEventPairs (root: string) (headBlob: unit -> string option) =
++        let path = Path.Combine(root, eventsRelativePath)
++        let worktree = if File.Exists path then File.ReadAllText path else ""
++        eventPairs worktree @ (headBlob () |> Option.map eventPairs |> Option.defaultValue [])
+ 
+ [<RequireQualifiedAccess>]
+ type ClaimStoreChoice =
+@@ -484,6 +529,12 @@ module FileWorkClaims =
+         with error ->
+             Error [ { Code = "PRX.COMPLETION.AUTHORITY_UNAVAILABLE"; Detail = $"Ordo contract '{path}' could not be read: {error.Message}" } ]
+ 
++    /// EXPERIMENTAL (E2): the tracked event log as committed at HEAD, if any.
++    let headEventsBlob (root: string) () =
++        match ClaimProcess.run "git" root [] None gitTimeout [ "show"; "HEAD:.ros/events/events.jsonl" ] with
++        | Ok result when result.ExitCode = 0 -> Some result.Stdout
++        | _ -> None
++
+     /// Whether plain `work complete` may close `ids`: reads the policy and each
+     /// item's claim from the selected store (fails closed on any read error).
+     let plainCompletion (root: string) (choice: ClaimStoreChoice) (ids: string list) : Result<PlainCompletion, string> =
+@@ -507,9 +558,12 @@ module FileWorkClaims =
+             match ProtectedCompletionPolicy.decide worktree source with
+             | Error finding -> Ok(PlainCompletion.Refused finding)
+             | Ok policy ->
++                // EXPERIMENTAL (E2 / E-F-03): "claimed" also comes from the tracked log.
++                let tracked = FileWorkClaimEvents.trackedEventPairs root (headEventsBlob root)
++
+                 ids
+-                |> List.fold (fun acc id -> acc |> Result.bind (fun read -> claims.Read id |> Result.map (fun claim -> read @ [ id, claim ]))) (Ok [])
+-                |> Result.map (PlainCompletion.decideAll policy.RequireVerifiedCompletion)
++                |> List.fold (fun acc id -> acc |> Result.bind (fun read -> claims.Read id |> Result.map (fun claim -> read @ [ id, claim, TrackedClaimHistory.ofEvents id tracked ]))) (Ok [])
++                |> Result.map (PlainCompletion.decideAllWithHistory policy.RequireVerifiedCompletion)
+ 
+     /// The authority input bound to the ready Ordo contract at `contract`
+     /// (PRX-REL-008, REL-GATE-002). Without a contract there is no ready
+diff --git a/tests/Praxis.Tests/E2HardeningTests.fs b/tests/Praxis.Tests/E2HardeningTests.fs
+new file mode 100644
+index 0000000..07e4a7f
+--- /dev/null
++++ b/tests/Praxis.Tests/E2HardeningTests.fs
+@@ -0,0 +1,86 @@
++namespace Praxis.Tests
++
++open System
++open System.IO
++open Praxis.Application.Work
++open Praxis.Domain.Work
++
++/// EXPERIMENTAL (Echelon sprint 2026-11-08, track E2): regression tests for
++/// E-F-03 (claim-store deletion bypasses the plain-completion guard) and
++/// E-F-11 (hand-edited queue.json completion goes unnoticed).
++[<RequireQualifiedAccess>]
++module E2HardeningTests =
++    let private t name run = { Name = $"E2 hardening: {name}"; Run = run }
++
++    let private identity =
++        [ "PRAXIS_ACTOR_KIND", "agent"; "PRAXIS_ACTOR", "test/e2"; "PRAXIS_TELEMETRY_PROVIDER", "test"; "PRAXIS_TELEMETRY_RUNTIME", "test" ]
++
++    let private claimOf id status : WorkClaim =
++        { WorkItemId = id
++          Revision = 1L
++          Generation = 1L
++          Status = status
++          Holder = None
++          PreviousClaimant = None
++          PendingPacketDigest = None
++          ConsumedPacketDigests = []
++          Completion = None
++          UpdatedAt = DateTimeOffset.UnixEpoch }
++
++    let private refusedWith code outcome =
++        match outcome with
++        | PlainCompletion.Refused finding -> Assert.equal code finding.Code
++        | PlainCompletion.Permitted -> failwith $"expected refusal {code}"
++
++    let private item id status : BacklogQueueItemRecord = { Id = id; Status = status; Priority = None }
++
++    let tests =
++        [ t "tracked history: a claim marker without a verified completion is Claimed" (fun () ->
++              Assert.equal TrackedClaimHistory.Claimed (TrackedClaimHistory.ofEvents "WI-1" [ "work.claim.recorded", "WI-1"; "work.completed", "WI-2" ])
++              Assert.equal TrackedClaimHistory.VerifiedComplete (TrackedClaimHistory.ofEvents "WI-1" [ "work.claim.recorded", "WI-1"; "work.completion.verified", "WI-1" ])
++              Assert.equal TrackedClaimHistory.NeverClaimed (TrackedClaimHistory.ofEvents "WI-1" [ "work.claim.recorded", "WI-2"; "work.started", "WI-1" ]))
++
++          t "E-F-03: a missing store record with a tracked claim is refused with CLAIM_RECORD_MISSING" (fun () ->
++              PlainCompletion.decideWithHistory false "WI-1" None TrackedClaimHistory.Claimed |> refusedWith PlainCompletion.ClaimRecordMissingCode
++              PlainCompletion.decideWithHistory true "WI-1" None TrackedClaimHistory.Claimed |> refusedWith PlainCompletion.ClaimRecordMissingCode)
++
++          t "E-F-03: a store that claims completion without a tracked verified completion is refused" (fun () ->
++              PlainCompletion.decideWithHistory false "WI-1" (Some(claimOf "WI-1" ClaimStatus.Completed)) TrackedClaimHistory.Claimed
++              |> refusedWith PlainCompletion.ClaimRecordMissingCode)
++
++          t "controls: unclaimed and verified-complete items keep the 3.25.0 decisions" (fun () ->
++              Assert.equal PlainCompletion.Permitted (PlainCompletion.decideWithHistory false "WI-1" None TrackedClaimHistory.NeverClaimed)
++              PlainCompletion.decideWithHistory true "WI-1" None TrackedClaimHistory.NeverClaimed |> refusedWith PlainCompletion.RequiredCode
++              Assert.equal PlainCompletion.Permitted (PlainCompletion.decideWithHistory false "WI-1" None TrackedClaimHistory.VerifiedComplete)
++              Assert.equal PlainCompletion.Permitted (PlainCompletion.decideWithHistory false "WI-1" (Some(claimOf "WI-1" ClaimStatus.Completed)) TrackedClaimHistory.VerifiedComplete)
++              PlainCompletion.decideWithHistory false "WI-1" (Some(claimOf "WI-1" ClaimStatus.Claimed)) TrackedClaimHistory.Claimed |> refusedWith PlainCompletion.RequiredCode)
++
++          t "E-F-11: a complete row without a completion event is reported; recorded and non-terminal rows are not" (fun () ->
++              let finding =
++                  Assert.single (BacklogQueueValidation.eventDisagreements [ item "WI-1" "complete"; item "WI-2" "complete"; item "WI-3" "captured" ] (set [ "WI-2" ]))
++
++              Assert.equal BacklogQueueValidation.eventAgreementField finding.Field
++              Assert.isTrue (finding.Message.StartsWith BacklogQueueValidation.UnrecordedCompletionCode) finding.Message
++              Assert.isTrue (finding.Message.Contains "'WI-1'") finding.Message)
++
++          t "cli E-F-03: deleting the claim directory no longer re-enables plain work complete" (fun () ->
++              let root = CliHarness.temporaryDirectory "praxis-e2-claim"
++              CliHarness.git root [ "init"; "-q"; "-b"; "main" ] |> ignore
++              CliHarness.write root ".ros/work/queue.json" """{"schemaVersion":"1.0.0","items":[{"id":"E2-CLAIM-1","status":"captured"}]}"""
++              CliHarness.commitAll root "fixture"
++              Assert.equal 0 (CliHarness.rosWith root identity [ "work"; "claim"; "--id"; "E2-CLAIM-1"; "--token"; "tok-e2" ]).Exit
++              Assert.isTrue (CliHarness.read root ".ros/events/events.jsonl" |> fun text -> text.Contains "work.claim.recorded" && not (text.Contains "tok-e2")) "claim leaves a token-free tracked marker"
++              Directory.Delete(Path.Combine(root, ".git", "praxis", "claims", "E2-CLAIM-1"), true)
++              let refused = CliHarness.rosWith root identity [ "work"; "complete"; "--id"; "E2-CLAIM-1"; "--occurred-at"; "2026-11-08T12:00:00.000Z" ]
++              Assert.equal 3 refused.Exit
++              Assert.isTrue (refused.Err.Contains PlainCompletion.ClaimRecordMissingCode) refused.Err)
++
++          t "cli E-F-11: work validate reports a hand-edited complete row" (fun () ->
++              let root = CliHarness.initializedRepository "praxis-e2-queue" None
++              CliHarness.rosOk root [ "work"; "capture"; "--title"; "t"; "--id"; "E2-QUEUE-1"; "--occurred-at"; CliHarness.now () ] |> ignore
++              let queue = CliHarness.read root ".ros/work/queue.json"
++              Assert.equal 0 (CliHarness.ros root [ "work"; "validate" ]).Exit
++              CliHarness.write root ".ros/work/queue.json" (queue.Replace("\"status\": \"captured\"", "\"status\": \"complete\"").Replace("\"status\":\"captured\"", "\"status\":\"complete\""))
++              let result = CliHarness.ros root [ "work"; "validate" ]
++              Assert.equal 1 result.Exit
++              Assert.isTrue (result.Out.Contains BacklogQueueValidation.UnrecordedCompletionCode) result.Out) ]
+diff --git a/tests/Praxis.Tests/Praxis.Tests.fsproj b/tests/Praxis.Tests/Praxis.Tests.fsproj
+index 5da08cd..8f8e25d 100644
+--- a/tests/Praxis.Tests/Praxis.Tests.fsproj
++++ b/tests/Praxis.Tests/Praxis.Tests.fsproj
+@@ -202,6 +202,7 @@
+     <Compile Include="TelemetryReliabilityReportTests.fs" />
+     <Compile Include="TelemetryAgentAttributionTests.fs" />
+     <Compile Include="ReliabilityPipelineTests.fs" />
++    <Compile Include="E2HardeningTests.fs" />
+     <Compile Include="AttestedCompletionTests.fs" />
+     <Compile Include="AutonomyTests.fs" />
+     <Compile Include="Program.fs" />
+diff --git a/tests/Praxis.Tests/Program.fs b/tests/Praxis.Tests/Program.fs
+index 09c5903..3ba9814 100644
+--- a/tests/Praxis.Tests/Program.fs
++++ b/tests/Praxis.Tests/Program.fs
+@@ -198,6 +198,7 @@ let main argv =
+     @ TelemetryReliabilityReportTests.tests
+     @ TelemetryAgentAttributionTests.tests
+     @ ReliabilityPipelineTests.tests
++    @ E2HardeningTests.tests
+     @ AttestedCompletionTests.tests
+     @ AttestedCompletionTests.finishTests
+     @ AttestedCompletionTests.idempotenceTests
