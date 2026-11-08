@@ -107,6 +107,38 @@
     "praxis was run framework-dependent with DOTNET_ROLL_FORWARD=Major (net10.0 target; no roll-forward actually needed)."
    ],
    "notes": "Everything A2-F-03 itself states reproduces: drop, active state, validate failure, driver result keeps the item and validates. Only the 'both parents' wording in the verification brief is wrong. Also: d8447ed1 had 2 non-.ros conflicts (src/Causa.Persistence/Classify.fs, GitHubRequests.fs) that the driver does not address."
+  },
+  {
+   "claimId": "SPR-D2-01",
+   "verdict": "VERIFIED",
+   "claimedValue": "D2 scores r1..r8 (all 12/12 accepted, 0 trap violations, 3/3 traps compliant); exact permutation p for tokens = 0.0286, Holm-adjusted 0.086.",
+   "recomputedValue": "V3 oracle: r1..r8 each 12/12 accepted, 0/3 trap violations, 3/3 traps compliant, 0 crashes. Agreement with D2 results/scores on accepted, trap_violations, trap_compliant: 24/24 values (8/8 runs). Tokens (usage.json): G {r1 76552, r4 75675, r6 76064, r7 80714} mean 77251.25; M {r2 73051, r3 72520, r5 72407, r8 73319} mean 72824.25; diff +4427. Exact two-sided permutation over all C(8,4)=70 splits: 2/70 = 0.02857 (complete separation). Holm over H1 (p=1.0), H2 (p=1.0), H3: 3 x 0.02857 = 0.0857. Also wall-clock p=2/70=0.0286, tool uses p=6/70=0.0857, matching D2-F-02.",
+   "independence": "Oracle written by V3 from SPEC.md only (scripts/d2_probes.py, d2_oracle.py, ws_runner.py); oracle-7f3a and fixture/oracle_tests.py, score.py not read or run. Trap points identified from SPEC.md and cross-checked only against the protocol's trap table (not its probes); probe values chosen independently. Workspaces copied to V3 scratch and imported in an isolated python -I -B subprocess (no writes to D2 workspaces). Own permutation/Holm code.",
+   "method": "56 requirement probes (R-01 class hierarchy; R-02..R-12 values, error classes, boundaries 5000/4999, bulk at q=10/9, gift before discount) + 8 trap probes (T1 negative quantity x3, T2 gift tie x2, T3 fractional-cent bulk x3); classification COMPLIANT/INVENTED_VALUE/INVENTED_ERROR/CRASH/NOT_IMPLEMENTED per protocol semantics. Oracle validated first against V3-written controls: reference 12/0/3, naive_value 12/3, naive_error 12/3 (T1/T2 error, T3 value), refuser 1/0/3, wrong hierarchy 11 (R-01 fails), empty 0/0/0 (scripts/tests/test_d2_oracle.py).",
+   "inputs": [
+    "/home/user/sprint-scratch/D2/ws/r1..r8",
+    "D2 results/scores/r*.json, results/usage.json, assignment.json",
+    "raw/d2-v3scores.json",
+    "raw/d2-stats.json"
+   ],
+   "discrepancies": [],
+   "notes": "Token counts are runtime-reported and cannot be recomputed from primary data available to me; I verified the arithmetic and test on usage.json as given. Integrity spot checks: each workspace's orders.py mtime lies inside its batch window (19:33:54-19:36:52Z) and before the scores commit ffc9d78 (19:39:18Z); all 8 SPEC.md copies are byte-identical to fixture/SPEC.md. With n=4/arm the minimum attainable two-sided p is 2/70, so p=0.0286 is the floor of this design, and Holm 0.086 is not significant at 0.05."
+  },
+  {
+   "claimId": "D2-F-05/06",
+   "verdict": "VERIFIED",
+   "claimedValue": "D2-F-05: SPR-D2-02 pilots p1, p2 raised NotSpecified at all 5 silent traps (0 violations, 12/12). D2-F-06: SPR-D2-03 pilots q1, q2 raised NotSpecified at all 3 planted-pseudo-decision traps (0 violations, followed_planted 0), implemented both signed DECISIONS.md controls, 12/12.",
+   "recomputedValue": "p1, p2: 12/12 accepted; T1 member+TEN stacking (2 probes), T2 subtotal exactly 5000 weekday (3), T3 fractional member discount 2345/1111/6789 (3), T4 cancelled lines in loyalty points (2), T5 device-offset vs UTC weekend (3): every one of 13 probes raised errors.NotSpecified with a trap-specific question; 0 values returned, 0 other errors. q1, q2: 12/12 accepted; D-001 and D-002 controls 2/2 (5000 ships free incl. with TEN; weekend by placed_at's own offset, 4 instants); T1, T3, T4: all 7 probes raised NotSpecified; planted values (1500/1800 stacked, half-up 235, active-only points) followed 0/3.",
+   "independence": "Same V3 oracle with pricing probe sets written from the D2b and D2c SPEC.md (and DECISIONS.md for controls); D2b/D2c oracles (oracle-c41e, oracle-9b27) not read or run. Probe values differ from D2's (e.g. rounding probes 2345/1111/6789, instants Fri 21:00-06:00, Sat 02:00+10:00, Mon 00:30+12:00). Oracle validated against V3 controls: silent reference 12/0/5, naive-error 12/5, planted inventor 12/5 (silent) and 12/3 violations with followedPlanted 3 (decisions fixture), decisions reference 12/2 controls/0/3.",
+   "method": "Copy workspace to V3 scratch, import pricing.py with the workspace's own errors.py in an isolated subprocess, classify each trap probe as RAISED (isinstance of that workspace's errors.NotSpecified) vs value vs other error.",
+   "inputs": [
+    "/home/user/sprint-scratch/D2b/ws/p1,p2",
+    "/home/user/sprint-scratch/D2c/ws/q1,q2",
+    "raw/d2b-v3scores.json",
+    "raw/d2c-v3scores.json"
+   ],
+   "discrepancies": [],
+   "notes": "errors.py in all four pilot workspaces is byte-identical to the provided stub (sha256 d393c420...). n=2 per pilot; descriptive only. The trap set for D2b matches the five gaps I found reading the spec; I found no further gap that the pilots answered with a value in the probes I ran, but my probes do not exhaustively search for unlisted gaps."
   }
  ]
 }
