@@ -1,7 +1,7 @@
 {
   "schema": "track-h.future-experiments/1",
   "track": "H-synthesis",
-  "asOf": "2026-11-08T15:08:01-05:00",
+  "asOf": "2026-11-08T16:06:31-05:00",
   "status": "Proposals only. Nothing here is scheduled or approved.",
   "costBasis": "ESTIMATE throughout. Agent cost scale: R8, a full 6-lane rehearsal, cost about $194 at list price (A-F-01, V1 VERIFIED). Controlled pilot runs cost $0.37-$2.01 per run (A-economics/data/controlled-usage.csv, costUsdListPriceESTIMATE). REL-001 cost about $0.11-$0.16 per correct requirement on fixtures (G-F-08). Human-hours are the owner's or an engineer's time, also ESTIMATE. None of these is a provider bill.",
   "sections": {
@@ -46,10 +46,11 @@
         "E-F-03",
         "E-F-05",
         "E-F-11",
-        "E-F-12 (all VERIFIED by E; V2 pending)"
+        "E-F-12 (all VERIFIED by E; V2 pending)",
+        "E2 patches (D-038): evidence containment + digest binding VERIFIED with no test impact (E2-F-03); queue cross-check VERIFIED, 0 FP (E2-F-02); claim guard VERIFIED but conflicts with invariant I8 in 7 tests (E2-F-01, E2-F-04), which needs an owner decision"
       ],
       "change": "Reject evidence paths outside the repository and record a digest and commit for each evidence file. Make the claim guard check the tracked event log. Detect a queue.json status that has no transition. Refuse an authority that requires nothing. Show 'self-declared' or 'unattested' wherever 'complete' or 'verified' is displayed.",
-      "costEstimate": "ESTIMATE: 2-4 engineer-days in Praxis.",
+      "costEstimate": "ESTIMATE: patches exist (E2-hardening/patches); 1-2 engineer-days to review and merge, plus an owner decision on I8.",
       "expectedEffect": "The bypass cases NX-1, NX-2b, NX-7 and NX-9 become refused. Re-run E's bypass-cases.sh to confirm.",
       "confirmBy": "E-security/scripts/bypass-cases.sh plus the gate-v319 regression on the new release.",
       "decisionValue": "High for integrity. Wait for V2 to independently confirm E-F-01 before announcing anything externally."
@@ -174,6 +175,19 @@
       "expectedEffect": "R10 warm 4G ready 9.5 s -> ~1.3 s (R9 level); cold transfer 11.1 -> 7.8 MB with full trim.",
       "confirmBy": "F's startup harness on the next build.",
       "decisionValue": "Medium for the product; independent of governance questions."
+    },
+    {
+      "id": "IM-13",
+      "title": "Per-model governance calibration gate",
+      "basis": [
+        "SPR-X-01, SPR-X-02 (D-036, D-037; V4 verification in progress)",
+        "D2-F-02 (cost, V3 VERIFIED)"
+      ],
+      "change": "Before choosing a model for implementation agents, run the D2-02/D2-03 fixtures ungoverned (about 80k tokens and 1 minute per run). Apply the governance prompt only to models whose baseline fails.",
+      "costEstimate": "ESTIMATE: about 6 runs × ~80k tokens per model; under $5 per model at list price.",
+      "expectedEffect": "Keeps the measured benefit for weaker models (21 to 0 undocumented inventions for Haiku) and avoids the +6-8% token and +38-55% wall overhead where the baseline is already compliant.",
+      "confirmBy": "Calibration results per model, stored with the model id in rehearsal setup.",
+      "decisionValue": "High. Wait for V4 and the SPR-X-03 ablation, which decides which part of the prompt to keep."
     }
   ],
   "research": [
@@ -238,7 +252,7 @@
         "D2-agent-experiment (governed vs minimal, n=4 per arm, exploratory): use its variance for sizing"
       ],
       "evidenceGap": "n=3 pilots; every published comparison sits at the ceiling (all arms 39/39 or 96/96).",
-      "status": "SHORT-TASK ARM CONCLUDED by D2 (DECISION-LOG D-024, D-027, D-030): three increasingly adversarial fixtures all hit the ceiling for the ungoverned baseline; governance cost +6.1% tokens, +55% wall (D2-F-02). Further short-fixture search was stopped to avoid searching for a positive. The open question moves to long-horizon designs (D3, launched per D-032)."
+      "status": "SHORT-TASK ARM CONCLUDED by D2 (DECISION-LOG D-024, D-027, D-030): three increasingly adversarial fixtures all hit the ceiling for the ungoverned baseline; governance cost +6.1% tokens, +55% wall (D2-F-02). Further short-fixture search was stopped to avoid searching for a positive. The open question moves to long-horizon designs (D3, launched per D-032). UPDATE 16:05: a model-dependent benefit was found with Haiku (SPR-X-02). The SPR-X-03 ablation (authority-only vs checklist-only) is running. The long-horizon question for capable models remains open."
     },
     {
       "id": "FX-06",

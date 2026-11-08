@@ -36,6 +36,17 @@ Praxis 3.25.0 with Dokimos 0.11.1 in attested mode refuses equivalent forgeries:
 
 The acceptance tooling that lacks this property lives in Indy-init's 39k-line parallel toolchain (C-F-12).
 
+### E2 prototype (local simulation; DECISION-LOG D-038)
+
+A verifier-signed evidence flow was prototyped with local uid separation (E2-F-05, VERIFIED locally):
+
+- **Refused:** both E's and V2's fabricated bundles, a candidate-signed forgery, replay to another commit, tampered or dropped entries, and a caller-supplied manifest digest.
+- **Accepted:** a genuine run of a correct candidate. Buggy and cheating candidates fail.
+- **Isolation held:** the candidate uid could not read the key or write the verifier's output.
+- **Control:** Indy-init's verifier still ACCEPTS the same fabricated bundles.
+
+**Untested** (E2-F-06): server-side controls such as protected branches, environment protection, OIDC scoping and runner isolation. So is protection against an agent that can rewrite history or modify the verifier.
+
 ## Decision (proposed)
 
 1. Run acceptance in a repository and workflow that the candidate's agent cannot write to:
@@ -72,6 +83,8 @@ The acceptance tooling that lacks this property lives in Indy-init's 39k-line pa
 | E-F-07 | SUPPORTED with VERIFIED parts (E) | V2 VERIFIED the VERIFIED parts; `rules/branches/main` returns [] for praxis, ordo and Indy-init, so no ruleset applies. Agent admin scope not re-verified |
 | E-F-04 | VERIFIED (E; documented limit) | not yet independently verified |
 | E-F-03 | VERIFIED (E) | V2 VERIFIED |
+| E2-F-05 | VERIFIED (E2, local simulation) | not independently verified |
+| E2-F-06 | NOT TESTED: server-side controls | — |
 | B-F-04, B-F-15 | SUPPORTED (B) | none |
 | C-F-12 | SUPPORTED (C) | none |
 

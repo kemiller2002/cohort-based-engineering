@@ -127,6 +127,12 @@ C = {
     "F-F-13": ("medium", "Existing Limen contract tooling unused in every rehearsal.", ["X-26"], None),
     "F-F-14": ("low", "Folio declared but not integrated (R10).", ["C-F-07"], None),
     "F-F-15": ("medium", "Accessibility: 0 axe violations on reachable routes; R10 contrast traced to known Forma tokens.", [], None),
+    # E2 hardening prototypes
+    "E2-F-01": ("medium", "Claim-guard fix refuses E-F-03; A1c residual bypass if marker never committed.", ["E-F-03"], "future-experiments"),
+    "E2-F-02": ("medium", "Queue/event cross-check detects hand-edited completions; 0 FP on 1,881 rows.", ["E-F-11"], "future-experiments"),
+    "E2-F-03": ("high", "Evidence containment + digest binding refuses E-F-01-style evidence with no suite impact.", ["E-F-01"], "future-experiments"),
+    "E2-F-04": ("medium", "Claim-marker fix conflicts with Praxis invariant I8 (7 tests): owner decision.", ["X-26"], "future-experiments"),
+    "E2-F-05": ("high", "Verifier-signed flow refuses fabricated bundles Indy-init accepts (local uid separation only).", ["E-F-02", "V2:E-F-02"], "ADR-S03"),
     "F-F-17": ("medium", "29-defect UI pattern set: 6 catchable by existing tools, 13 need new contracts; hand-curated.", ["X-26"], None),
 }
 
@@ -144,7 +150,7 @@ SCOPE_NOTES = {
 
 # Which verification track is assigned to each source track
 ASSIGNED = {"A": "V1", "G": "V1", "B": "V2", "C": "V2", "E": "V2", "A2": "V3", "C2": "V3", "B4": "V3", "D2": "V3"}
-TRACKNAME = {"A": "A-economics", "B": "B-forensics", "C": "C-architecture", "E": "E-security", "G": "G-market", "B2": "B2-dryrun", "D": "D-experiments", "A2": "A2-remediation", "C2": "C2-signed-registry", "B3": "B3-semantic", "B4": "B4-preflight", "D2": "D2-agent-experiment", "F": "F-fsharp-wasm"}
+TRACKNAME = {"A": "A-economics", "B": "B-forensics", "C": "C-architecture", "E": "E-security", "G": "G-market", "B2": "B2-dryrun", "D": "D-experiments", "A2": "A2-remediation", "C2": "C2-signed-registry", "B3": "B3-semantic", "B4": "B4-preflight", "D2": "D2-agent-experiment", "F": "F-fsharp-wasm", "E2": "E2-hardening"}
 
 
 def prefix(cid):
@@ -259,6 +265,23 @@ for cid, (rank, cons, support, use) in C.items():
         "evidence": f"research/2026-11-08-compute-sprint/tracks/{TRACKNAME[prefix(cid)]}/findings.json#{cid}",
     })
 
+# Claims recorded outside findings.json (experiment RESULT/REPORT files); listed verbatim from their sources
+SUPPLEMENTARY = [
+    {"claimId": "SPR-X-01 / X-F-01", "track": "D2-agent-experiment (RD-000 runs)", "classification": "SUPPORTED (exploratory, n=1 per cell)",
+     "title": "Model capability moderates authorization behaviour: Haiku baseline invents/adopts policy 3/8; Sonnet 0/8; session model 0/27",
+     "consequence": "high", "consequenceIfWrong": "The model-dependent governance recommendation (D-037) rests on it.",
+     "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-01/RESULT.md",
+     "independentVerification": {"by": "V4", "status": "in progress"}, "usedIn": "outline-2",
+     "flags": ["NOT_YET_INDEPENDENTLY_VERIFIED", "PRIORITY_FOR_VERIFICATION"]},
+    {"claimId": "SPR-X-02", "track": "D2-agent-experiment (RD-000 runs)", "classification": "per D-037 (adopted); preregistered at 82b3c36",
+     "title": "Governance prompt reduces Haiku policy violations (2.17/run, p=0.00028; undocumented 21->0) at +6-8% tokens, +38-55% wall",
+     "consequence": "high", "consequenceIfWrong": "First positive governance-benefit evidence; reverses 'no measured gain' framing for small models.",
+     "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-02/results/results.json; spr-x-02/REPORT.md",
+     "caveats": ["D-041: governance block delivered before 'Task:' line (frozen G.txt has it after)", "single model (Haiku), two short fixtures", "D-039: run s11 made a failed empty send_message; kept"],
+     "independentVerification": {"by": "V4", "status": "in progress"}, "usedIn": "outline-2",
+     "flags": ["NOT_YET_INDEPENDENTLY_VERIFIED", "PRIORITY_FOR_VERIFICATION"]},
+]
+
 omitted = sorted(
     k for k, f in findings.items()
     if f.get("classification") in ("VERIFIED", "SUPPORTED") and k not in C
@@ -296,6 +319,7 @@ out = {
     "verificationSources": {"V1": v1src, "V2": v2src, "V3": v3src},
     "summary": summary,
     "claims": entries,
+    "supplementaryClaims": SUPPLEMENTARY,
     "omittedLowConsequence": omitted,
     "verificationsOutsideLedger": other,
     "contradictedFindingsOfNote": sorted(
