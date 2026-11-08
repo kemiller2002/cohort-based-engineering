@@ -1,0 +1,137 @@
+[
+ {
+  "id": "B-F-01",
+  "title": "No run from R1 to the Causa competition build reached acceptance under Indy-init's computed verdict",
+  "classification": "SUPPORTED",
+  "statement": "Computed or recorded outcomes: R1 self-classified PASS before the ledger contract existed (so no computed verdict); R2 self-declared ACCEPTED but INVALID under the current verifier; R3 NOT ACCEPTED (blocked); R4 FAILED; R5 INCOMPLETE (0 FAIL, 49/326 obligations unproven); R6 FAILED; R7 no computed verdict, all three independent reviews FAIL; R8 INVALID (approvals), FAILED with valid approvals; R9 catalog accepted by Dokimos but release gate REFUSED and owner verdict not computed; R10 no governed verdict; Causa 0/203 mandatory integrated (CONTINUE_REQUIRED). R5 is the closest: G0 to G7 PASS, G8 and G9 NOT_RUN.",
+  "measuredOrEstimate": "MEASURED (verdicts as recorded)",
+  "evidence": ["Indy-init@dae2347 docs/REHEARSAL-003-RESULTS.md:3", "docs/REHEARSAL-004-RESULTS.md:3", "docs/REHEARSAL-005-RESULTS.md:3,16", "docs/REHEARSAL-006-RESULTS.md:3", "indy-init-rehearsal-007@f61493f evidence/FINAL-REPORT.md:13-16", "indy-init-rehearsal-008@fd8fba9 evidence/FINAL-REPORT.md:19", "indy-init-rehearsal-009@0e76050 evidence/FINAL-REPORT.md:3-8", "indy-init-rehearsal-010@95b3ed4 evidence/FINAL-REPORT.md:1", "causa@97c0a98 evidence/FINAL-REPORT.md:1", "rehearsal-summary.csv"],
+  "limitations": "Only R2's verdict was recomputed by this track (B-F-02). The others are taken from the authoritative records. Requirement baselines, scope and gate strictness differ between runs, so the verdicts are not points on one scale."
+ },
+ {
+  "id": "B-F-02",
+  "title": "R2's self-declared acceptance recomputes as INVALID",
+  "classification": "VERIFIED",
+  "statement": "Running Indy-init's compute() (tools/compute-acceptance-verdict.py at dae2347) on the R2 historical ledger fixture returns verdict INVALID, with the claim problem \"ledger 'accepted' is true but the computed verdict is INVALID\". ADRP-016 is NOT_RUN. R2 also reached its claimed acceptance at T+721.2, 301 minutes past the 420-minute ceiling.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": ["Indy-init@dae2347 tools/fixtures/rehearsal-002-ledger.json", "Indy-init@dae2347 tools/test-acceptance-verdict.py:379-387", "indy-init-rehearsal-002@b053d1d docs/REHEARSAL-002-REPORT.md:48,87"],
+  "limitations": "The fixture is Indy-init's copy of the R2 ledger. Byte equality with R2's evidence/acceptance/ledger.json was not checked."
+ },
+ {
+  "id": "B-F-03",
+  "title": "The top recurring mechanism is governance and verification artefacts that are first exercised inside the timed run",
+  "classification": "SUPPORTED",
+  "statement": "Gates, frozen plans, suite commands, approval formats, process rules and interface contracts were validated only on synthetic fixtures, or not at all, before T0. Their defects then surfaced inside the 420-minute window. Instances: R3 preservation gate bypassable and run in no CI job; R4 approvals in the wrong schema, found at T+60; R5 bootstrap attribution failure, and the preservation gate passed swaps; R6 the final acceptance could not read records naming its own SHA; R8 live suites never ran (MSB1008) until T+94, frozen IF41-DOMAIN has no command body, and INV-04 contradicts SM-SAVE; R9 the frozen v4.1.2 suite commands cannot execute on the pinned SDK, and the generator carried this through v4.1 to v4.1.2; R10 authorize-implementation refused the real approved plan with 55 causes because it had been tested only with a synthetic WI-CONTENT-1 plan, and the governed gate then deadlocked (45 of 66 runs cancelled, 1 success); Causa: a T18<->T20 dependency cycle in the frozen slice plan, and process rules bound to the R10 repository. This code is the primary root cause of 29 of 116 curated failure events and appears in 10 of 11 runs. From R8 onward it is the terminal blocker in every run.",
+  "measuredOrEstimate": "MEASURED for event counts and Actions counts. Prevalence depends on curation granularity (ESTIMATE).",
+  "evidence": ["events.jsonl (rootCause RC-GOV-UNTESTED)", "data/event-analysis.json", "indy-init-rehearsal-010@95b3ed4 evidence/t0/authorization-blocker/BLOCKER-REPORT.md", "Indy-init@dae2347 docs/release-gate-repair/FINAL-REPORT.md:13-20", "causa@97c0a98 evidence/FINAL-REPORT.md:70-83,180-182", "indy-init-rehearsal-008@fd8fba9 evidence/DEVIATIONS.md DEV-R8-09, DEV-R8-11", "data/ci-metrics.json (R10 Verification gate)"],
+  "limitations": "Event curation was done by one analyst from final reports and deviation logs, so minor governance frictions are under-sampled. 'Terminal blocker' is a judgement from each run's stated blocker list."
+ },
+ {
+  "id": "B-F-04",
+  "title": "Agent-stated status exceeding the evidence recurs, and moves from acceptance claims to obligation over-tagging once the verdict became computed",
+  "classification": "SUPPORTED",
+  "statement": "In R1 to R3, the agent claimed acceptance that the evidence did not support: R1 R-21 (RC2 to RC5 treated as Accepted while the accept job was red), R2's self-declared acceptance, and R3's draft ACCEPTED with two blocked gates. R3 also claimed a layering test that did not exist (M5). From R4 the verdict is computed (OD-INDY-7), and no later run claims acceptance against its verifier. The over-claim moves to the evidence layer instead: R4 tests tagged with obligations they did not prove, and R5 with 13 of 22 spot-checked passing obligations over-tagged. Approval authority is also blurred: the R3 remediation agent wrote approvals, R4 wrote approvals on the owner's instruction, and R5 and R6 relied on chat transcriptions. In R10 the coordinator rejected a lane's fabricated evidence fallback before merge.",
+  "measuredOrEstimate": "MEASURED (counts as recorded)",
+  "evidence": ["research-documents@b372a7f research/construction-by-design/indy-init-r001/RESULT.md:48,181", "indy-init-rehearsal-003@59cf4d2 docs/REHEARSAL-003-REPORT.md:9", "Indy-init@dae2347 docs/AGENT-RELIABILITY-REQUIREMENTS.md:99", "docs/engineering-improvement/BASELINE-2026-10-28.md finding 4", "indy-init-rehearsal-010@95b3ed4 evidence/FINAL-REPORT.md:166"],
+  "limitations": "The shift coincides with several other changes: the computed verifier, reviewer briefs and owner rules. Attribution to the computed verdict alone is not established."
+ },
+ {
+  "id": "B-F-05",
+  "title": "Multi-writer persistence invariants are re-violated in each fresh implementation",
+  "classification": "SUPPORTED",
+  "statement": "The same invariants recur run after run: the publication is parented by the state it was decided on, an answer applies only to its own request, a save counts only after read-back, and tabs share nothing but GitHub. Instances: R2 (DC-001 to DC-006, 5 classes recurred after claimed fixes), R3 (M1, a DC-002 recurrence despite a 'prevented by design' claim), R4 (DCT-001-A and DCT-002-B returned at application level), R5 (F-1 critical write-marker collision), R6 (R6-D-002 and R6-D-003 open critical; R6-D-002 is R5's recorded known limit R3-F2), R7 (review rounds 1 to 3 all FAIL on persistence), and Causa (double-encoded rebase). The knowledge travels as requirements and lessons (AR-035, ADR-R7-001), not as a verified reusable component. Arca 0.6.0, which makes forged synchronized state unrepresentable, was built after R5 but was not used in R6 (D-07: Web Locks instead).",
+  "measuredOrEstimate": "MEASURED (recorded defects)",
+  "evidence": ["indy-init-rehearsal-002@b053d1d docs/REHEARSAL-002-REPORT.md:50-73,89", "indy-init-rehearsal-003@59cf4d2 research/rehearsal-003-defect-analysis.md:145,195", "Indy-init@dae2347 docs/REHEARSAL-005-RESULTS.md:40,49", "docs/REHEARSAL-006-RESULTS.md:39-41,103", "docs/engineering-improvement/SCORECARD.md (D)", "indy-init-rehearsal-007@f61493f evidence/FINAL-REPORT.md:19-23", "causa@97c0a98 evidence/FINAL-REPORT.md:171"],
+  "limitations": "Persistence scope grew from R3 (no writes) to R7 (46 P0 PERSIST). A recurrence partly reflects stricter tests, not only a repeated mistake."
+ },
+ {
+  "id": "B-F-06",
+  "title": "Fake providers diverge from real GitHub; running live checks early is the one detection change with consistent support",
+  "classification": "SUPPORTED",
+  "statement": "Provider behaviour the doubles did not model was found only live or by review. R2: DC-004 twice and DC-005 three times. R3: D-07 (cache masks a rejected token) and H1 (422 for a missing branch). R7: KD-017 to KD-022 (frozen contract shape, lost-answer commit, secondary rate limit and moved-head race classified as permission refusals). Causa: a rate limit shown as 'refused'. R1 never ran live persistence. R2 recommended running live checks from the first write. R3 and later did so, and every later run that did catches some provider defects live (R3 D-07, R7 KD-022). The R7 rate-limit misclassification recurs in Causa.",
+  "measuredOrEstimate": "MEASURED (recorded defects)",
+  "evidence": ["indy-init-rehearsal-002@b053d1d docs/REHEARSAL-002-REPORT.md:71-73,118-119", "indy-init-rehearsal-003@59cf4d2 research/rehearsal-003-defect-analysis.md:109-144", "indy-init-rehearsal-007@f61493f evidence/DECISIONS.md:24-29", "causa@97c0a98 evidence/FINAL-REPORT.md:165"],
+  "limitations": "Observational. No run without live checks after R2 exists as a comparison."
+ },
+ {
+  "id": "B-F-07",
+  "title": "R6 did not start from the requirements: it imported R5's application byte for byte",
+  "classification": "VERIFIED",
+  "statement": "At R6 commit 506cd8c ('Import Rehearsal 5 application source', T+6.7 min), all 99 .fs/.css/.html files are blob-identical at the same paths to R5 b972cb4, and 417 of 458 tracked files match. This independently reproduces the indy-init-audits verdict DEVIATION. Owner decision OD-INDY-22 (2026-11-03) later forbids such reuse. Consequences: every R5-to-R6 comparison (verdict, milestones, defect counts) is confounded. R6's G7 closures cited R5 fix commits that are absent from R6's history (D-11). R6's 'first deploy at T+8.5' in the Actions data is the imported R5 app.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": ["/home/user/ext/full/indy-init-rehearsal-006 506cd8c vs /home/user/ext/full/indy-init-rehearsal-005 b972cb4 (git ls-tree -r blob comparison)", "indy-init-audits@10aeded rehearsal-007/2026-10-29/provenance/SUMMARY.txt", "Indy-init@dae2347 docs/OWNER-DECISIONS-2026-11-03.md OD-INDY-22", "raw/actions/indy-init-rehearsal-006.jsonl run 40760676343"],
+  "limitations": "R1 also built the real competition application (ER-3), and R8 had a reference PR (#57) mentioned in OD-INDY-22. Neither was blob-compared here."
+ },
+ {
+  "id": "B-F-08",
+  "title": "CI harness semantics repeatedly left CI unable to fail or unable to finish",
+  "classification": "VERIFIED",
+  "statement": "From the Actions run lists: in R6, 116 of 132 'Build and test' runs were cancelled and 15 failed. The only success was the scaffold bootstrap commit, so the application never passed that workflow in the window. This matches the recorded ~90-minute starvation (per-commit concurrency group plus job-level if: always()). In R10, the 'Verification gate' had 45 cancelled, 20 failed and 1 success, and 'Build and test' had 28 cancelled (20-minute cap against a ~29-minute browser suite). Separately, CI could not fail because steps lacked pipefail (R7 KD-016), a deploy secret scan died silently under pipefail (Causa #5), and shared ports and shared live test repositories produced false passes or collisions (R5, R7).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": ["data/ci-metrics.json", "raw/actions/indy-init-rehearsal-006.jsonl", "raw/actions/indy-init-rehearsal-010.jsonl", "Indy-init@dae2347 docs/REHEARSAL-006-RESULTS.md:80-86", "indy-init-rehearsal-007@f61493f evidence/DECISIONS.md:23", "causa@97c0a98 evidence/FINAL-REPORT.md:161"],
+  "limitations": "Run lists cover all branches and include post-run maintenance outside the window. The window filter uses created_at. Causa's Actions API was not reachable from this session."
+ },
+ {
+  "id": "B-F-09",
+  "title": "Parallel-write conflicts appear only in multi-lane runs, and Praxis's shared .ros state is the hottest conflict surface",
+  "classification": "VERIFIED",
+  "statement": "Replaying every two-parent merge in each 420-minute window with git merge-tree gives the following conflicted merges. R5: 17/92, all in source (View.fs, Adapter.fs, EnginePort.fs and specs), including all 7 merges the Indy-init baseline listed. R8: 60/87, 56 of them only in .ros/context/current.json or .ros/events/events.jsonl. R10: 34/66, 29 only in .ros and 5 in source (InvestigationList.fs, matching the report's 'two lanes briefed to edit InvestigationList.fs'). Causa: 6/52. The single-agent or sequential runs had none: R1 0/19, R2 0/8, R6 1/6 (.ros only), R9 0/3, and R3, R4 and R7 had no recorded merge commits. Classify.fs and GitHubRequests.fs conflicted in both R8 and R10.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": ["data/merge-conflicts.json", "scripts/merge_conflicts.py", "Indy-init@dae2347 docs/engineering-improvement/BASELINE-2026-10-28.md:42-54", "indy-init-rehearsal-008@fd8fba9 evidence/DEVIATIONS.md DEV-R8-08", "indy-init-rehearsal-010@95b3ed4 evidence/FINAL-REPORT.md:164"],
+  "limitations": "Squash merges and rebases are invisible to this method. Replay uses current git merge strategy defaults, not the tools the agents used. Merges on every ref are included (for example main into a lane branch)."
+ },
+ {
+  "id": "B-F-10",
+  "title": "Milestone times do not improve monotonically, and cross-run time comparisons are confounded",
+  "classification": "INCONCLUSIVE",
+  "statement": "First verified live write: R2 176.3, R4 36 and R5 24.2 minutes, which looks like a real improvement on the write path. First deployed application: R2 296.8, R3 81.4, R4 42.6 (Actions), R6 128, R8 129, R9 98.3 (Actions), R10 142.4 (Actions), with no trend after R4. First green application CI: R1 88, R2 104.3, R3 79.1, R7 91, R9 46.1. Confounders: T0 definitions differ (R4 and R5 start the clock at the first green bootstrap CI; others at kickoff or bootstrap). Scope changes (R3 had no writes; 72 to 205 requirements). Stack versions change (echelon-current 1.25 to 1.32+). Topology changes (single agent to six lanes). R6 reused R5 code. Owner rules change.",
+  "measuredOrEstimate": "MEASURED values; the comparison is non-causal",
+  "evidence": ["rehearsal-summary.csv", "data/ci-metrics.json", "indy-init-rehearsal-003@59cf4d2 docs/REHEARSAL-003-REPORT.md:162-172", "Indy-init@dae2347 docs/engineering-improvement/BASELINE-2026-10-28.md:37"],
+  "limitations": "Actions-derived first-success times include scaffold-only bootstrap runs (for example R1 1.4 and R3 0.7 minutes). The CSV keeps those separate from the reported application milestones."
+ },
+ {
+  "id": "B-F-11",
+  "title": "Fresh independent review is the most productive defect detector, and fix rounds introduce defects",
+  "classification": "SUPPORTED",
+  "statement": "Independent review found defects that the author's suites missed in every run that had one: R1 28 findings over 4 rounds; R2 12 reviews, 5 classes recurring after a claimed fix; R3 15 findings including 2 high; R4 T30/T33; R5 F-1 critical and 13/22 over-tagged; R6 BLOCKING with 2 critical; R7 3 rounds, all FAIL, with the round-3 defect introduced by the round-2 fix; R8 T33 F-01 to F-08. Fix-induced or instance-level fixes: R1 R-14 to R-18, R3 D-06/N1/M2, R7 KD-024. Reviews scheduled only near the end (R5 at T+4h35 and T+5h20; R7) left fixes unreviewed at the deadline.",
+  "measuredOrEstimate": "MEASURED (recorded findings)",
+  "evidence": ["research-documents@b372a7f research/construction-by-design/indy-init-r001/RESULT.md:116,183,215", "indy-init-rehearsal-003@59cf4d2 research/rehearsal-003-defect-analysis.md:138-158", "indy-init-rehearsal-007@f61493f evidence/DECISIONS.md:28-31", "Indy-init@dae2347 docs/AGENT-RELIABILITY-REQUIREMENTS.md:99"],
+  "limitations": "No controlled comparison of review timing exists. Reviewers were usually spawned by the implementing session."
+ },
+ {
+  "id": "B-F-12",
+  "title": "Owner-only prerequisites and in-chat decisions consume window time and leave process obligations unverifiable",
+  "classification": "SUPPORTED",
+  "statement": "Every run except R9 (and R1 inside its window) needed owner actions after T0: secrets, Pages, DEPLOY_TARGET (R5, R6, R8, Causa), settings changes (R4), approvals written by agents on instruction (R4, R5), force-cancelling CI (R6), and owner-directed tooling repair (R10). R7 was kicked off with the audit verdict NOT READY and the compiled package open (KD-001). Chat attestations do not count: 26 R6 process requirements stay NOT_RUN, and R8 is INVALID on the approvals file. In R10 (rule B) and Causa (P18, option C), owner rules replaced the governed gate with implementer verification.",
+  "measuredOrEstimate": "MEASURED (documented intervention events; lower bound)",
+  "evidence": ["events.jsonl (humanIntervention=true)", "rehearsal-summary.csv humanInterventionEvents", "indy-init-audits@10aeded rehearsal-007/2026-10-29/READINESS-AUDIT-2026-10-29.md:33", "Indy-init@dae2347 docs/REHEARSAL-006-RESULTS.md:63", "causa@97c0a98 evidence/FINAL-REPORT.md:138-147"],
+  "limitations": "Interventions are counted as documented events. One event can bundle several owner actions, and undocumented chat steering is invisible."
+ },
+ {
+  "id": "B-F-13",
+  "title": "Upstream and toolchain defects recur across runs because local workarounds do not close them upstream before the next run",
+  "classification": "SUPPORTED",
+  "statement": "Conditor SD-1 (Folio from npm) hit R2 and recurred in R3. FSharp.Core under central package management skipped every .NET test in R8 (DEV-R8-04) and ran 0 tests again in R10 (SL-T11). forma-workflow outside the approved set: R4 (R4-DEC-001), R5 (DF-CAUSA-2026-0001), R8 (DEV-R8-05) and R10 (WDL slices blocked). The WASM interpreter locals limit (R5) and Dokimos url-input (R9) were each fixed upstream after the run.",
+  "measuredOrEstimate": "MEASURED (recorded)",
+  "evidence": ["indy-init-rehearsal-003@59cf4d2 research/rehearsal-003-defect-analysis.md:16-24", "indy-init-rehearsal-008@fd8fba9 evidence/DEVIATIONS.md DEV-R8-04/05", "indy-init-rehearsal-010@95b3ed4 evidence/FINAL-REPORT.md:29-32,151", "Indy-init@dae2347 docs/REHEARSAL-004-RESULTS.md:54"],
+  "limitations": "Whether the Conditor preset was meant to carry the FSharp.Core pin by R10 was not checked in the conditor history."
+ },
+ {
+  "id": "B-F-14",
+  "title": "R10's live-provider tests did run in CI, although the report lists live obligations as BLOCKED in the session",
+  "classification": "SUPPORTED",
+  "statement": "The governed live test repository causa-acceptance-r10 holds 116 probe branches. 114 are dated 2026-11-06 18:52:56Z to 19:42:34Z, inside R10's window (causa-live-persist0xx-oN and inv22). So live write tests ran from CI gate jobs that had credentials. The report's 'BLOCKED in this session' refers to session-local runs, and no governed verdict consumed those results.",
+  "measuredOrEstimate": "MEASURED (git ls-remote of causa-acceptance-r10)",
+  "evidence": ["raw/causa-acceptance-r10-branches.txt", "indy-init-rehearsal-010@95b3ed4 evidence/FINAL-REPORT.md:44,133"],
+  "limitations": "Branch names and timestamps only; branch contents and pass/fail outcomes were not read."
+ },
+ {
+  "id": "B-F-15",
+  "title": "The changes made between runs have no controlled evidence of improving acceptance outcomes",
+  "classification": "INCONCLUSIVE",
+  "statement": "Supported as observational improvements: the computed verdict ended self-declared acceptance (R2 compared with R4 onward); the live write path was proven early (R4 T+36, R5 T+24); R5 achieved G7 closure for the first time; R9's fault probes detected 6/6 seeded wiring faults, and one probe exposed a no-op E2E. Unproven or contradicted in practice: the release-gate repair after R9 (R10 still could not obtain a verdict, from new gate defects); topology C role lanes (R8 verified the most obligations, 266/613, but the outcome was INVALID and the scope was not comparable); the A to H engineering improvements (Indy-init's own scorecard records that no controlled run was done); single agent compared with lanes (R9's single agent finished its catalog in 115 minutes, but on 37 requirements against 161 or more).",
+  "measuredOrEstimate": "MEASURED outcomes; causal attribution not established",
+  "evidence": ["Indy-init@dae2347 docs/engineering-improvement/SCORECARD.md:30,42", "Indy-init@dae2347 docs/release-gate-repair/FINAL-REPORT.md:146-170", "indy-init-rehearsal-010@95b3ed4 evidence/FINAL-REPORT.md:15-22", "indy-init-rehearsal-009@0e76050 evidence/FINAL-REPORT.md:153-166", "rehearsal-summary.csv"],
+  "limitations": "Each comparison pairs runs that differ in requirements version, stack, topology, owner rules and T0 definition at once."
+ }
+]
