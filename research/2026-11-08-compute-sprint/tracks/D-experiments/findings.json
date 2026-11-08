@@ -1,0 +1,151 @@
+[
+ {
+  "id": "D-F-01",
+  "title": "A021 grouped vs independent cost and time recompute exactly",
+  "classification": "VERIFIED",
+  "statement": "Grouped $9.4768 vs independent $21.5148 and 61.2 vs 111.4 session-minutes recompute from sessions.json platform usage. $3.84 of the control cost (18%) is two failed item-04 attempts blocked by a permission prompt; completed-only control cost is $17.68 (ratio 0.54 instead of 0.44). One run per arm: no inferential statistic exists.",
+  "measuredOrEstimate": "MEASURED (platform-reported cost)",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#a021",
+   "praxis/research/experiments/EX-ROS-2026-A021-harness/sessions.json"
+  ],
+  "limitations": "n=1 per arm; cost is platform-reported, not recomputed from tokens (cache-write TTL split absent)."
+ },
+ {
+  "id": "D-F-02",
+  "title": "A024 continuous / code-only / handoff costs, acceptance and architecture scores recompute",
+  "classification": "VERIFIED",
+  "statement": "$8.2725 / $15.3005 / $17.4306 (completed sessions); 36/36 acceptance in all arms; blinded architecture composites 5, 10, 8 of 10 via reveal mapping P/K/W. Including pre-start launcher failures: B $15.69, C $18.24.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#a024"
+  ],
+  "limitations": "n=1 per arm."
+ },
+ {
+  "id": "D-F-03",
+  "title": "VAC-001 continuity saving -40.9% recomputes; uncertainty is understated",
+  "classification": "VERIFIED",
+  "statement": "B vs A cost per accepted unit -40.86% (paired bootstrap CI -48.18% to -33.01%, 16 blocks); F1 -38.06% (-46.96% to -26.37%). Costs recomputed from token counts x price table match recorded costs to <=4e-7 USD; 96/96 units accepted with an independent proxy agreeing. But blocks within a continuous chain are not independent: at chain level 3/3 runs favour B (-39.5%, -42.2%, -38.1%), exact sign p=0.25.",
+  "measuredOrEstimate": "MEASURED (lower-bound cost per published amendment A4)",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#vac001.contrasts",
+   "reanalysis/outputs/reanalysis.json#vac001.chainLevel"
+  ],
+  "limitations": "One fixture, one model; output tokens are lower bounds."
+ },
+ {
+  "id": "D-F-04",
+  "title": "VAC-001 Ordo/full-Echelon control overhead +14% to +31% recomputes",
+  "classification": "VERIFIED",
+  "statement": "C vs B +14.1% (CI +2.5% to +27.9%), D vs B +16.8% (+6.2% to +29.6%), D vs B in F1 +31.0% (+21.3% to +43.3%). C vs B rests on 2 chains and its CI lower bound is near zero.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#vac001.contrasts"
+  ],
+  "limitations": "Correctness at ceiling, so no benefit side could be measured."
+ },
+ {
+  "id": "D-F-05",
+  "title": "VAC-001 fresh-from-verified-state +86% recomputes (one chain)",
+  "classification": "VERIFIED",
+  "statement": "DR vs D +85.7% (bootstrap CI +49.1% to +129.1%, 8 blocks, all 8 favour D); this is a single chain per arm.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#vac001.contrasts"
+  ],
+  "limitations": "n=1 chain; preliminary as published."
+ },
+ {
+  "id": "D-F-06",
+  "title": "VAC-002 P3 H1 3/18 vs 7/18, p=0.125 recomputes",
+  "classification": "VERIFIED",
+  "statement": "B 3/18 vs A 7/18 unauthorized decisions under oracle, review and oracle-and-review rules; discordant 0:4; exact two-sided sign p=0.125; cluster bootstrap RD -0.222 [-0.556, 0]. H4 (E 7/18 confirmed vs B 3/18, p=0.125) also recomputes; E has 8/18 oracle-flagged (one not confirmed by review), oracle-only p=0.0625.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#vac002"
+  ],
+  "limitations": "Outcome labels taken from the recorded oracle and reviewer adjudication; not re-adjudicated."
+ },
+ {
+  "id": "D-F-07",
+  "title": "VAC-002 P3 was underpowered for its realized effect",
+  "classification": "SUPPORTED",
+  "statement": "At the observed rates (0.39 vs 0.17) the exact sign test has power 0.19-0.21 with 18 blocks; 80% power needs about 52-72 blocks. The preregistered sizing (17 blocks) assumed p_A about 0.55 and p_B 0.067.",
+  "measuredOrEstimate": "ESTIMATE (simulation, 4000 sims per n, seed 20261108)",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#power"
+  ],
+  "limitations": "Assumes observed rates are true; scenario heterogeneity not modelled beyond a within-block concordance parameter."
+ },
+ {
+  "id": "D-F-08",
+  "title": "Replicates needed for the cost claims",
+  "classification": "SUPPORTED",
+  "statement": "Paired t (log cost ratio, alpha .05, power .80, observed effect assumed true): VAC-001 B vs A 5 blocks, D vs B 14, C vs B 24, DR vs D 5. A021-size and A024 continuous-vs-reset effects need about 4 runs per arm if run-level variance resembles VAC-001 unit-level variance; A024 handoff-vs-reset (+14%) needs about 39.",
+  "measuredOrEstimate": "ESTIMATE",
+  "evidence": [
+   "reanalysis/outputs/reanalysis.json#power"
+  ],
+  "limitations": "Observed effects are likely inflated (winner's curse); whole-cohort run variance is unobserved (n=1) and likely larger than unit-level variance, so these are lower bounds."
+ },
+ {
+  "id": "D-F-09",
+  "title": "Keeping build outputs makes a no-change verification build ~4% of a clean build's CPU",
+  "classification": "SUPPORTED",
+  "statement": "SPR-D-03 (confirmatory, 6 per arm): no-op vs clean build CPU median 2.89 vs 65.88 s, ratio 0.044 (95% CI 0.038-0.104), exact permutation p=0.0022; wall ratio 0.086.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/SPR-D-03.jsonl",
+   "reanalysis/outputs/SPR-D-03-analysis.json",
+   "protocols/SPR-D-03-clean-vs-noop-build.md"
+  ],
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced."
+ },
+ {
+  "id": "D-F-10",
+  "title": "A public-surface edit to the root project costs ~5.7x a non-surface edit, about a full clean build",
+  "classification": "SUPPORTED",
+  "statement": "SPR-D-04 (confirmatory): surface vs internal edit CPU median 76.79 vs 13.46 s, ratio 5.704 (95% CI 4.905-11.485), exact permutation p=0.0022. Reference assemblies are produced (obj/ref), so non-surface edits skip dependants; surface edits rebuild the dependency cone (~a clean build).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/SPR-D-04.jsonl",
+   "reanalysis/outputs/SPR-D-04-analysis.json"
+  ],
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced."
+ },
+ {
+  "id": "D-F-11",
+  "title": "Running one test project costs ~4% of the full offline suite's CPU",
+  "classification": "SUPPORTED",
+  "statement": "SPR-D-05 (confirmatory): Causa.Domain.Tests (9 tests) vs full offline suite (278 tests) CPU median 1.65 vs 44.19 s, ratio 0.037 (95% CI 0.033-0.048), exact permutation p=0.0022. Whole-step exploratory SPR-D-07: scoped build+test vs full build+test CPU ratio 0.143 (n=4).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/SPR-D-05.jsonl",
+   "raw/SPR-D-07.jsonl"
+  ],
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Cost only; safety of selection not assessed. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced."
+ },
+ {
+  "id": "D-F-12",
+  "title": "Warm build servers: no detectable wall-time benefit for incremental builds under contention",
+  "classification": "INCONCLUSIVE",
+  "statement": "SPR-D-06 (exploratory, n=4): wall median 9.78 vs 10.19 s, ratio 0.960 (95% CI 0.588-1.204), exact permutation p=0.4857.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/SPR-D-06.jsonl"
+  ],
+  "limitations": "n=4, load 9-12; server CPU unattributed."
+ },
+ {
+  "id": "D-F-13",
+  "title": "Matched-task agent experiments not run",
+  "classification": "NOT TESTED",
+  "statement": "No Agent/subagent tool was available to this worker; governed vs minimal, preflight vs advisory and one vs two agents remain untested here.",
+  "measuredOrEstimate": "n/a",
+  "evidence": [
+   "experiments.json#SPR-D-08"
+  ],
+  "limitations": "Blocker."
+ }
+]
