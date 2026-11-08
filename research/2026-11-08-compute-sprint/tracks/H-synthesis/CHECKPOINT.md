@@ -13,3 +13,6 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 
 ## CP-H-03 (14:55 EST): ADRs
 - `synthesis/adr/ADR-S01..S05`: signed Registry sets; .ros out of merge path; trusted acceptance job; mandatory pre-T0 dry run; coordinator context cap (conditional, weakest, contradicted in part by VAC-001 per X-12).
+
+## CP-H-04 (15:10 EST): datasets
+- `synthesis/datasets.json`: 8 candidate datasets (B events, B summary, Actions A+B, A tokens, A controlled, C graph, E bypass matrix, merge replays). Global caveats: private-source data inside a public repo branch; no LICENSE in source repos; model column in A data vs MANIFEST rule; E bypass matrix is security-sensitive.
