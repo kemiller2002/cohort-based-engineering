@@ -1,0 +1,33 @@
+{
+ "experiment": "SPR-D-06",
+ "seed": 6061,
+ "replicates": 4,
+ "design": "abba",
+ "cwd": "/home/user/sprint-scratch/D/r010",
+ "env": {
+  "PATH": "/root/.dotnet:/usr/local/bin:/usr/bin:/bin",
+  "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+  "DOTNET_NOLOGO": "1",
+  "DOTNET_ROOT": "/root/.dotnet",
+  "HOME": "/root"
+ },
+ "arms": {
+  "servers-on": {
+   "prepare": [
+    "git checkout -- src/Causa.Domain/Kernel.fs",
+    "dotnet build Causa.slnx --no-restore -v q -nologo >/dev/null",
+    "printf '\\n// spr-d probe %s\\n' $(date +%s%N) >> src/Causa.Domain/Kernel.fs"
+   ],
+   "measure": "dotnet build Causa.slnx --no-restore -v q -nologo"
+  },
+  "servers-off": {
+   "prepare": [
+    "dotnet build-server shutdown >/dev/null 2>&1",
+    "git checkout -- src/Causa.Domain/Kernel.fs",
+    "dotnet build Causa.slnx --no-restore -v q -nologo --disable-build-servers >/dev/null",
+    "printf '\\n// spr-d probe %s\\n' $(date +%s%N) >> src/Causa.Domain/Kernel.fs"
+   ],
+   "measure": "dotnet build Causa.slnx --no-restore -v q -nologo --disable-build-servers"
+  }
+ }
+}
