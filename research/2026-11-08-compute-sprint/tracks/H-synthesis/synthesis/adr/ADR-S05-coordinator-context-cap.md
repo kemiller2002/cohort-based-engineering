@@ -53,7 +53,9 @@ Do not adopt a hard cap yet. Instead:
 | A-F-03 | VERIFIED (A) | V1 VERIFIED |
 | A-F-04 | VERIFIED (A) | none |
 | A-F-05 | SUPPORTED, ESTIMATE (A) | none |
-| VAC-001 B vs A, DR vs D | Published; recomputed by D | D VERIFIED (arithmetic); D's unit-of-independence caveat applies |
+| D-F-03 (VAC-001 continuity −40.9%) | VERIFIED arithmetic (D) | Chain-level exact sign p = 0.25 with 3 chains |
+| D-F-05 (fresh-from-verified +86%) | VERIFIED (D), 1 chain | — |
+| D-F-08 (about 5 blocks would detect the B vs A and DR vs D effects if true) | SUPPORTED (D) | Lower bound |
 | A-F-17 | NOT TESTED: effect of topology and agent count | — |
 
 Files: `A-economics/findings.json#A-F-03`, `A-economics/analysis/r8-economics.json`, `V1-verification/verdicts.json#A-F-03`, `D-experiments/reanalysis/CLAIMS.md`. Matrix theme X-12.

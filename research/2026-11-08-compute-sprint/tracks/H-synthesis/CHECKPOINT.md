@@ -29,3 +29,11 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 - Matrix: new theme X-23 (governance failure masked product incompleteness; contradicts B-F-03's strong reading). Notes added to X-04/05/06/08/09/10/14/15.
 - Ledger: 18 of 63 independently checked (15 clean, 3 partial). Builder now carries verifier notes, scope notes and out-of-ledger verifications.
 - ADR-S01/S03/S04 and outlines 1 and 3 updated; ADR-S04 narrowed to 'removes the first point of failure'.
+
+## CP-H-08 (14:39 EST): B2, D, V1 complete; new tracks noted
+- B2-dryrun findings integrated: ADR-S04 now carries the measured catch rate (4/8 brief, robust 2/8; 7/11 extended) and cost (seconds); FX-01 marked DONE.
+- D-experiments findings integrated: X-12/X-11/X-15 updates; new X-25 (incremental verification); IM-09 added.
+- V1 final (A-F-11, A-F-12 VERIFIED; A-F-13 PARTIALLY VERIFIED: ~605 min not 688). Outline 2 corrected.
+- New theme X-24: B2-F-07 contradicts B's 'cycle in the frozen slice plan'.
+- Ledger extended to B2 and D: 77 claims, 21 independently checked.
+- New tracks seen (not yet producing findings): B3-semantic, D2-agent-experiment, E2-hardening.

@@ -30,7 +30,7 @@ Make `.ros` history files merge-safe by construction, in order of preference. Th
 
 1. **Per-lane, append-only records.** Each lane writes its own event file, keyed by lane or execution. `current.json` becomes derived state, not tracked. Git then has nothing to conflict on.
 2. **Interim: a semantic merge driver.** Register Praxis's history-merge logic as a Git merge driver for the two files. Items merge 3-way by id, events are unioned by eventId, and a divergent same-id record is refused, never auto-picked. This is what SPR-A2-01 tests.
-3. Either way, keep machine-checked file ownership between lanes for application code (B).
+3. Either way, keep machine-checked file ownership between lanes for application code (B). DECISION-LOG D-019 records that a `.ros` merge driver cannot remove R8's 4 application-code branch merges.
 
 ## Consequences
 

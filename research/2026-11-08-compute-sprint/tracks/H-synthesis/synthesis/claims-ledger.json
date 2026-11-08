@@ -2,23 +2,21 @@
  "schema": "track-h.claims-ledger/1",
  "track": "H-synthesis",
  "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
- "asOf": "2026-11-08T14:15:07-05:00",
- "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
+ "asOf": "2026-11-08T14:38:57-05:00",
+ "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
  "verificationSources": {
   "V1": "/home/user/sprint-wt/V1-verification/research/2026-11-08-compute-sprint/tracks/V1-verification/verdicts.json",
   "V2": "/home/user/sprint-wt/V2-verification/research/2026-11-08-compute-sprint/tracks/V2-verification/verdicts.json"
  },
  "summary": {
-  "claims": 63,
-  "highConsequence": 28,
-  "independentlyVerifiedDone": 18,
-  "verifiedClean": 15,
-  "verificationDiscrepancy": 3,
-  "queued": 3,
-  "notYetIndependentlyVerified": 45,
+  "claims": 77,
+  "highConsequence": 31,
+  "independentlyVerifiedDone": 21,
+  "verifiedClean": 17,
+  "verificationDiscrepancy": 4,
+  "queued": 0,
+  "notYetIndependentlyVerified": 56,
   "priorityForVerification": [
-   "A-F-12",
-   "A-F-13",
    "A-F-16",
    "B-F-04",
    "B-F-09",
@@ -30,7 +28,10 @@
    "E-F-14",
    "G-F-01",
    "G-F-02",
-   "G-F-06"
+   "G-F-06",
+   "B2-F-01",
+   "B2-F-08",
+   "D-F-03"
   ]
  },
  "claims": [
@@ -302,13 +303,16 @@
    ],
    "independentVerification": {
     "by": "V1",
-    "status": "queued",
-    "verdict": null
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "sample",
+    "discrepancies": [
+     "The claim's wording ('median 3 s everywhere except R6') could suggest R6's median differs. It does not: R6's median is also 3 s. R6 differs in its tail (p90) and total queued minutes."
+    ],
+    "verifierNotes": "The R6 total is consistent with 7,612 but imprecise from a sample (heavy tail). Run-level queue was not used (created_at = run_started_at)."
    },
    "usedIn": null,
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-11"
   },
   {
@@ -326,14 +330,17 @@
    ],
    "independentVerification": {
     "by": "V1",
-    "status": "queued",
-    "verdict": null
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "sample",
+    "discrepancies": [
+     "Window: every T0 matches the rehearsal's documented start and the in-window run populations equal Track A's exactly (128/114/135/436/427/54/566/50/281 non-skipped). But the fixed T0+420 window does not match activity: R2 ran to its accepted release at T+721 min (87 runs in the 17 h after the window), R3's timed phase ended at T+127 (09:39Z) yet the window runs to T+420, R4 has 249 runs in the 17 h after the window, R3 had 35 preflight runs in the 2 h before T0, and R5's T0 is defined post hoc as its first green check.",
+     "Definition sensitivity (primary sample): 65.6% with ceil-minutes attributed by run conclusion; 76.4% with unrounded job seconds; 54.3% if only jobs that themselves failed/cancelled count."
+    ],
+    "verifierNotes": "Claim reproduced within sampling error: 67% lies inside the CI and the census strata (R7 59%, R9 28%) match Track A's figures exactly. 'Red' includes cancellations of superseded runs (largely R6, R10) and successful jobs inside failed runs, so it is not a waste or defect measure on its own."
    },
    "usedIn": "outline-2",
-   "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
-   ],
+   "flags": [],
    "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-12"
   },
   {
@@ -351,13 +358,20 @@
    ],
    "independentVerification": {
     "by": "V1",
-    "status": "queued",
-    "verdict": null
+    "status": "done",
+    "verdict": "PARTIALLY VERIFIED",
+    "independence": "sample",
+    "discrepancies": [
+     "688 is wrong for the verifier. Track A's own step data puts 604.0 min on 'Build pinned Praxis verifier'; the other 84.5 min is R5's 'Build the candidate and the plan verifier', which builds the application (App.slnx) and Indy-init's requirements compiler, not Praxis. The corrected figure is about 604-607 min, about 7.4% of step time.",
+     "'Every run' means every run of the Echelon foundations workflow (about 27% of in-window runs), not every CI run.",
+     "R6's workflow has a fingerprint cache gate that could skip the build, but the build was never skipped in the sample (inputs changed on every commit).",
+     "R7 has no foundations workflow; its praxis-autonomy.yml also builds Praxis from source (`dotnet build praxis/src/Praxis.Cli/...`, about 33 min, census) under a step name the claim does not count."
+    ],
+    "verifierNotes": "The recommendation (cache or ship a prebuilt pinned verifier) still holds; the size is about 10 job-hours across the nine windows, not 11.5."
    },
    "usedIn": "outline-2",
    "flags": [
-    "NOT_YET_INDEPENDENTLY_VERIFIED",
-    "PRIORITY_FOR_VERIFICATION"
+    "VERIFICATION_FOUND_DISCREPANCY"
    ],
    "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-13"
   },
@@ -1707,15 +1721,411 @@
     "SUPPORTED_ONLY"
    ],
    "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-13"
+  },
+  {
+   "claimId": "B2-F-01",
+   "track": "B2-dryrun",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "A pre-T0 dry run would have caught half of the brief's blockers and 7 of 11 overall",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Sizes ADR-S04's benefit: 4/8 brief (robust 2/8), 7/11 extended; matching rules partly finalised after first runs.",
+   "trackLimitations": [
+    "11 blockers is a small sample; outcomes depend on matching rules partly finalized after first runs (see B2-F-05/06/07)."
+   ],
+   "crossTrackSupport": [
+    "X-09",
+    "DECISION-LOG D-022"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-01"
+  },
+  {
+   "claimId": "B2-F-02",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R10's authorize-implementation refusal reproduces exactly from pre-T0 inputs in ~6 s",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "R10-AUTH reproduces exactly pre-T0 (55/55 causes).",
+   "trackLimitations": [
+    "The suite-preflight report's root field was relocated to the scratch path; unrelocated run gives 56 causes (one path-only).",
+    "Setup commit is 10 min after T0 but contains no application code."
+   ],
+   "crossTrackSupport": [
+    "B-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-02"
+  },
+  {
+   "claimId": "B2-F-03",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Approvals-format blockers (R4, R8) are caught by the pinned verifier with a stub ledger",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Approvals-format blockers catchable pre-T0.",
+   "trackLimitations": [
+    "Verdict remains INVALID in all runs because the ledger is a stub; only approvals-related problems are matched."
+   ],
+   "crossTrackSupport": [
+    "B-F-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-03"
+  },
+  {
+   "claimId": "B2-F-04",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The frozen plans' suite commands fail on the pinned SDK before any code is written (R8, R9); v4.1.5 does not",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Frozen-plan suite commands fail on pinned SDK pre-T0.",
+   "trackLimitations": [
+    "Stub trees have no tests, so every executable suite also reports NO_TESTS_SELECTED; this is not counted as a failure."
+   ],
+   "crossTrackSupport": [
+    "B-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-04"
+  },
+  {
+   "claimId": "B2-F-05",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The same dry run also exposes the FSharp.Core skip that hit R8 (DEV-R8-04) and R10 (SL-T11)",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "FSharp.Core skip detectable pre-T0; not preregistered.",
+   "trackLimitations": [
+    "By-product observation; matching rule not preregistered for it."
+   ],
+   "crossTrackSupport": [
+    "B-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-05"
+  },
+  {
+   "claimId": "B2-F-08",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R8's semantic contract defects pass the whole pinned package pipeline",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Semantic contract defects pass the whole pinned pipeline: the uncovered class that limits ADR-S04.",
+   "trackLimitations": [
+    "A purpose-built model check of SM-SAVE against INV-04 was not attempted."
+   ],
+   "crossTrackSupport": [
+    "X-23"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-08"
+  },
+  {
+   "claimId": "B2-F-10",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The dry run is cheap",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Dry-run cost is seconds per rehearsal (loaded host).",
+   "trackLimitations": [
+    "Host load avg 11-20 from other tracks; R8/R9 suite times include compiling the bootstrap's stub projects."
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-10"
+  },
+  {
+   "claimId": "D-F-03",
+   "track": "D-experiments",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "VAC-001 continuity saving -40.9% recomputes; uncertainty is understated",
+   "measuredOrEstimate": "MEASURED (lower-bound cost per published amendment A4)",
+   "consequence": "high",
+   "consequenceIfWrong": "VAC-001 continuity saving is one of the few positive results and bears on ADR-S05; chain-level p=0.25.",
+   "trackLimitations": "One fixture, one model; output tokens are lower bounds.",
+   "crossTrackSupport": [
+    "X-12",
+    "G-F-08"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S05",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-03"
+  },
+  {
+   "claimId": "D-F-05",
+   "track": "D-experiments",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "VAC-001 fresh-from-verified-state +86% recomputes (one chain)",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Fresh-from-verified +86% (one chain) is the main counter-evidence to a coordinator cap.",
+   "trackLimitations": "n=1 chain; preliminary as published.",
+   "crossTrackSupport": [
+    "X-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S05",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-05"
+  },
+  {
+   "claimId": "D-F-07",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "VAC-002 P3 was underpowered for its realized effect",
+   "measuredOrEstimate": "ESTIMATE (simulation, 4000 sims per n, seed 20261108)",
+   "consequence": "medium",
+   "consequenceIfWrong": "VAC-002 P3 underpowered; affects how its null result is cited.",
+   "trackLimitations": "Assumes observed rates are true; scenario heterogeneity not modelled beyond a within-block concordance parameter.",
+   "crossTrackSupport": [
+    "X-15"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-07"
+  },
+  {
+   "claimId": "D-F-08",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Replicates needed for the cost claims",
+   "measuredOrEstimate": "ESTIMATE",
+   "consequence": "medium",
+   "consequenceIfWrong": "Replicate counts used to size FX experiments; lower bounds.",
+   "trackLimitations": "Observed effects are likely inflated (winner's curse); whole-cohort run variance is unobserved (n=1) and likely larger than unit-level variance, so these are lower bounds.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-08"
+  },
+  {
+   "claimId": "D-F-09",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Keeping build outputs makes a no-change verification build ~4% of a clean build's CPU",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Incremental no-op build ~4% of clean CPU; one fixture.",
+   "trackLimitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced.",
+   "crossTrackSupport": [
+    "X-25",
+    "A-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-09"
+  },
+  {
+   "claimId": "D-F-10",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "A public-surface edit to the root project costs ~5.7x a non-surface edit, about a full clean build",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Surface edits cost ~a clean build.",
+   "trackLimitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced.",
+   "crossTrackSupport": [
+    "X-25"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-10"
+  },
+  {
+   "claimId": "D-F-11",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Running one test project costs ~4% of the full offline suite's CPU",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Affected-test run ~4% of full suite CPU; selection safety untested.",
+   "trackLimitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Cost only; safety of selection not assessed. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced.",
+   "crossTrackSupport": [
+    "X-25"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-11"
   }
  ],
  "omittedLowConsequence": [
+  "B2-F-06",
+  "B2-F-07",
+  "B2-F-11",
   "C-F-06",
   "C-F-10",
   "C-F-11",
   "C-F-15",
   "C-F-16",
   "C-F-17",
+  "D-F-01",
+  "D-F-02",
+  "D-F-04",
+  "D-F-06",
   "E-F-10",
   "E-F-11",
   "E-F-12"
