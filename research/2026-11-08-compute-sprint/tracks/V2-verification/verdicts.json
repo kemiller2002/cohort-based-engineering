@@ -1,0 +1,219 @@
+{
+  "track": "V2-verification",
+  "date": "2026-11-08",
+  "verdicts": [
+    {
+      "claimId": "B-F-02",
+      "verdict": "VERIFIED",
+      "claimedValue": "R2's self-declared acceptance recomputes as INVALID with Indy-init's verifier at dae2347",
+      "recomputedValue": "INVALID (exit 1, claim problem: ledger 'accepted' is true but the computed verdict is INVALID); 83 reasons. R2's committed ledger is byte-identical to Indy-init's fixture (sha256 6ab44de1...).",
+      "independence": "High: verifier re-run by V2 from a git-archive export of dae2347; R2 ledger read directly from the R2 repository; B's scripts not used.",
+      "method": "git archive Indy-init@dae2347 tools/ -> scratch; python3 -I compute-acceptance-verdict.py on (a) indy-init-rehearsal-002@b053d1d:evidence/acceptance/ledger.json and (b) tools/fixtures/rehearsal-002-ledger.json; sha256 comparison.",
+      "inputs": [
+        "Indy-init@dae2347 tools/compute-acceptance-verdict.py, tools/validate-acceptance-ledger.py",
+        "indy-init-rehearsal-002@b053d1d evidence/acceptance/ledger.json",
+        "scripts/verdict_artifacts.py",
+        "data/verdict-artifacts.json"
+      ],
+      "discrepancies": [
+        "B's limitation (fixture vs R2 ledger byte equality unchecked) is resolved: identical."
+      ],
+      "notes": "Definitional: INVALID is mostly anachronistic. The R2 ledger predates schema causa.acceptance-ledger/2 and no trusted inputs exist for R2, so 77 of 83 reasons are schema/trust-input absences that any R2-era ledger would trigger. The one substantive, schema-independent reason is 'P0 requirement ADRP-016: NOT_RUN' (the ledger itself records a P0 NOT_RUN while declaring accepted=true), which alone would yield INCOMPLETE, not ACCEPTED. So 'not acceptable' is robust; the specific label INVALID is a property of applying the later contract."
+    },
+    {
+      "claimId": "B-F-07",
+      "verdict": "VERIFIED",
+      "claimedValue": "R6 506cd8c imported R5 b972cb4's application byte for byte: 99/99 .fs/.css/.html files; 417/458 tracked files",
+      "recomputedValue": "99/99 .fs/.css/.html blob-identical at the same path; 417/458 tracked files identical; widening to .fs/.fsproj/.css/.html/.js/.fsx/.ts gives 133/133. 92 of the 99 were added and 1 modified by 506cd8c itself; 6 were already identical in the pre-import scaffold c80f35e.",
+      "independence": "High: own ls-tree blob comparison script.",
+      "method": "git ls-tree -r on both commits; path->blob maps compared (scripts/blob_compare.py); diff --name-status c80f35e..506cd8c.",
+      "inputs": [
+        "ext/full/indy-init-rehearsal-005@b972cb4",
+        "ext/full/indy-init-rehearsal-006@506cd8c (parent c80f35e)",
+        "scripts/blob_compare.py"
+      ],
+      "discrepancies": [],
+      "notes": "R5 has 5 extra .fs files (tools/derive-requirements/*) not imported. b972cb4 is R5's post-run record commit, i.e. the import source is R5's final state, as the commit message states."
+    },
+    {
+      "claimId": "B-F-01",
+      "verdict": "VERIFIED",
+      "claimedValue": "No run (R1..R10, Causa) reached acceptance under Indy-init's computed verdict",
+      "recomputedValue": "Committed computed verdicts: R4 FAILED (ab08b76; also INVALID/FAILED on earlier candidates), R5 INCOMPLETE (x2), R8 INVALID (x2); R6 FAILED per Indy-init results and run 40803128103 'Acceptance (final)' conclusion=failure; R2 recomputes INVALID. R1, R3, R7, R9, R10 and Causa have no computed verdict. No file at any run repository HEAD contains a verdict of ACCEPTED.",
+      "independence": "Medium-high: verdict artifacts read directly; R2 recomputed; R4/R5/R8 verdict files not recomputed (inputs not reconstructed).",
+      "method": "git show of verdict JSON and report markers at each run repo HEAD; git grep for '\"verdict\": \"ACCEPTED\"' across all 11 run repos; Actions API GET for R6 run 40803128103; final reports read for R7, R9, R10, Causa, R3; research-documents RESULT.md for R1.",
+      "inputs": [
+        "indy-init-rehearsal-001..010 at HEAD (dd63ab4, b053d1d, 59cf4d2, 78a1b15, b972cb4, 41fb6d6, f61493f, fd8fba9, 0e76050, 95b3ed4)",
+        "ext/causa@97c0a98",
+        "Indy-init@dae2347 docs/REHEARSAL-00{3..6}-RESULTS.md",
+        "scripts/verdict_artifacts.py",
+        "data/verdict-artifacts.json"
+      ],
+      "discrepancies": [],
+      "notes": "Definitional: the statement is true but vacuous for 6 of 11 runs, which never produced a computed verdict (R1 predates the contract; R3 was self-reported NOT ACCEPTED (blocked); R7 relied on reviews; R9/R10/Causa lacked owner-pinned inputs or a governed gate verdict). R1 classified itself PASS against its own frozen criteria, with its deployed accept job green on the final release; that is not acceptance under Indy-init's later computed verdict, but readers should not read B-F-01 as 'R1 failed its own criteria'."
+    },
+    {
+      "claimId": "B-F-03",
+      "verdict": "PARTIALLY VERIFIED",
+      "claimedValue": "From R8 onward, every terminal blocker was governance/verification machinery",
+      "recomputedValue": "R8: first-ranked blocker is governance (INVALID: approvals file fails trust checks), but with valid approvals the ledger is FAILED: G3 Domain FAIL (INV04), G7 FAIL, G8 FAIL (three suites with no results), 346/613 P0 obligations not run, 51/161 requirements fully verified. R9: release gate refused in run-suites (frozen plan commands fail with MSB1008; webkit project absent) - governance/plan machinery - but 0/541 executable and 0/119 record obligations implemented, the agent stopping at ~115/420 min by choice. R10: no governed verdict (40-min gate cap, write-once record, Playwright install timeouts); also T22, T29-T36 not started, 20/173 Chromium and 19/173 WebKit browser failures, WDL slices blocked by a lock re-pin. Causa: 0/203 integrated, dominated by frozen-package defects (T18<->T20 cycle, process rules pinned to the R10 repository, no catalog repository) - classification holds strongly.",
+      "independence": "Medium: primary final reports read independently; judgment-based, not computed.",
+      "method": "Read indy-init-rehearsal-008@fd8fba9, -009@0e76050, -010@95b3ed4 evidence/FINAL-REPORT.md and causa@97c0a98 evidence/FINAL-REPORT.md in full for verdict, blocker and not-integrated sections.",
+      "inputs": [
+        "indy-init-rehearsal-008@fd8fba9 evidence/FINAL-REPORT.md:19-35,73-80",
+        "indy-init-rehearsal-009@0e76050 evidence/FINAL-REPORT.md:186-240",
+        "indy-init-rehearsal-010@95b3ed4 evidence/FINAL-REPORT.md:13-60,115-190",
+        "causa@97c0a98 evidence/FINAL-REPORT.md:1-85,149-195"
+      ],
+      "discrepancies": [
+        "'Terminal blocker' holds only as 'first refusal that ended the governed verdict'. As 'dominant blocker' it does not hold for R8 and is doubtful for R9 and R10: governance failures masked large product/verification incompleteness that would independently have prevented acceptance."
+      ],
+      "notes": "Definitional: B's category is broad. It counts frozen-spec contradictions (INV-04 vs SM-SAVE), an SDK incompatibility of plan suite commands (MSB1008) and CI timeouts as 'governance machinery'. With a narrower definition (approval/process records only), R8 (approvals), Causa (process rules) and part of R10 qualify; R9's blocker is a test-plan/toolchain defect."
+    },
+    {
+      "claimId": "R10-gate-deadlock",
+      "verdict": "VERIFIED",
+      "claimedValue": "R10 'Verification gate': 45 of 66 runs cancelled, 1 success (plus 20 failed)",
+      "recomputedValue": "All-time (Actions API, workflow id 409560650): 66 runs = 45 cancelled, 20 failure, 1 success. Inside the window 16:40:13Z-23:40:13Z: 64 runs = 44 cancelled, 19 failure, 1 success. B's raw list matches the API on all 66 run ids with no outcome mismatch.",
+      "independence": "High: independent fetch of the full workflow run list from the GitHub REST API (GET only) and own counting code.",
+      "method": "gh api --paginate repos/kemiller2002/indy-init-rehearsal-010/actions/workflows/409560650/runs (read-only); scripts/actions_count.py counts all-time and in-window and diffs by id against B's raw/actions/indy-init-rehearsal-010.jsonl.",
+      "inputs": [
+        "GitHub Actions API, fetched 2026-11-08",
+        "data/r10-verification-gate-runs.api.jsonl",
+        "indy-init-rehearsal-010@95b3ed4 .github/workflows/verification-gate.yml:38-49",
+        "scripts/actions_count.py"
+      ],
+      "discrepancies": [
+        "Two runs (1 cancelled, 1 failure) fall after the deadline (2026-11-07 06:xx/07:00Z); the claim's 45/66 is all-time, not window-only (44/64)."
+      ],
+      "notes": "'Deadlock' is interpretive. 36 of 45 cancelled runs lasted 36-73 min wall-clock, consistent with the 40-minute job timeout (timeout-minutes: 40) plus queueing; the other 9 (0-21 min) are consistent with pull_request concurrency supersession (cancel-in-progress only for pull_request). 28 cancelled runs were pull_request, 17 push. The only success was a push to main at 18:48:17Z."
+    },
+    {
+      "claimId": "C-F-01",
+      "verdict": "VERIFIED",
+      "claimedValue": "23 of 33 repos install Praxis 3.7.2; 15 bind Conditor authority to set 1.2.0; only causa and rehearsal-010 match approved set 1.37.0",
+      "recomputedValue": "Over 37 repos (all ext clones except ext/full, plus Indy-init and rehearsal-010): Praxis 3.7.2 in .echelon/ros.json = 23; resolved-release-set authority echelon-current 1.2.0 = 15; other sets 1.3.0-1.24.0 = 8 (arca 1.12, chrona 1.22, fides 1.5, folio 1.13, forma-studio 1.13, signal 1.22, strata 1.3, summa 1.24); 0 repos carry a 1.37.0 authority file; causa and rehearsal-010 have no authority file but their .conditor/lock.json versions equal 1.37.0's for every shared component.",
+      "independence": "High: own inventory script over committed HEAD content.",
+      "method": "git show HEAD:.echelon/ros.json (installedVersion), conditor.json registryAuthority.path -> resolved-release-set profile.version, .conditor/lock.json components vs echelon-registry sets/echelon-current/1.37.0.json (status approved).",
+      "inputs": [
+        "ext/* at HEAD revisions in data/release-inventory.json (C's source-revisions.tsv revisions match)",
+        "echelon-registry@5752402 sets/echelon-current/1.37.0.json",
+        "scripts/release_inventory.py"
+      ],
+      "discrepancies": [
+        "C's finding text also says '9 more to sets 1.3.0-1.24.0'; V2 counts 8, and C's own repo-facts.json also lists 8.",
+        "Denominator: C says 33; V2's universe has 37 (8 with no Praxis install). Numerators are unaffected."
+      ],
+      "notes": "'Match' for causa and rehearsal-010 is lock-based (neither carries an authority file). causa also locks forma-workflow 1.2.0, which the 1.37.0 set does not name."
+    },
+    {
+      "claimId": "C-F-04",
+      "verdict": "VERIFIED",
+      "claimedValue": "Conditor's trusted Registry release keys list is empty (trust/registry-release-keys.json:4)",
+      "recomputedValue": "\"keys\": [] at line 4 of trust/registry-release-keys.json at conditor 528ef45 (2026-11-06); the file is unchanged since 7b9eb13 (2026-10-13). It is the only trust source: embedded as resource Conditor.Trust.registry-release-keys.json and read by ReleaseAttestation.embedded.",
+      "independence": "High (local clone); remote HEAD not queryable (conditor outside session allowlist).",
+      "method": "git show HEAD:trust/registry-release-keys.json | cat -n; git log on the file; git grep of the resource name in src.",
+      "inputs": [
+        "ext/conditor@528ef45 trust/registry-release-keys.json, src/Conditor.Core/Conditor.Core.fsproj:62, src/Conditor.Core/ReleaseAttestation.fs:107-121"
+      ],
+      "discrepancies": [],
+      "notes": "A later remote commit could have added keys; the local clone is the latest available."
+    },
+    {
+      "claimId": "C-F-08",
+      "verdict": "VERIFIED",
+      "claimedValue": "Aegis 2.0.0 is in source but never released; 16 consumers are on 1.0.0",
+      "recomputedValue": "Aegis.Core.fsproj <Version>2.0.0</Version> (ec0e876, 2026-10-05; HEAD 2c28b6e 2026-10-16). git ls-remote --tags: 0 tags. Registry releases/aegis: only 1.0.0. NuGet.org flat container for echelonfoundry.aegis.core: versions [1.0.0]. Every consumer pins 1.0.0: 36 repos under V2's broad definition (NuGet reference or Conditor component/lock/authority entry); 16 with a NuGet PackageReference among ext + Indy-init + rehearsal-010.",
+      "independence": "High: own pin scanner plus NuGet.org and ls-remote checks.",
+      "method": "scripts/consumer_pins.py over all repos; git ls-remote --tags; curl api.nuget.org/v3-flatcontainer/echelonfoundry.aegis.core/index.json.",
+      "inputs": [
+        "ext/aegis@2c28b6e",
+        "echelon-registry@5752402 releases/aegis/",
+        "NuGet.org 2026-11-08",
+        "data/aegis-consumers.json"
+      ],
+      "discrepancies": [
+        "The consumer count depends on the definition: 16 (NuGet code consumers, matching C) or 36 (any pin, including rehearsals). No consumer is on 2.0.0 under either."
+      ],
+      "notes": "C relied on the Registry only; V2 adds NuGet.org, which also has only 1.0.0."
+    },
+    {
+      "claimId": "C-F-05",
+      "verdict": "VERIFIED",
+      "claimedValue": "Praxis pins Ordo.Core 1.8.2 and carries ~1,043 lines of duplicate ORDO.CONTRACT.* admission code",
+      "recomputedValue": "Praxis.Domain.fsproj:9 PackageReference EchelonFoundry.Ordo.Core 1.8.2 (vendored nupkg). src/Praxis.Domain/Ordo/ContractAdmission.fs 723 lines + Model.fs 320 lines = 1,043. All 29 ORDO.CONTRACT.* codes used in Praxis appear among the 42 in ordo src/Ordo.Core/ConstructibilityContract.fs. The vendored 1.8.2 Ordo.Core.dll contains no 'Constructibility', 'ORDO.CONTRACT' or 'ContractAdmission' strings. In the (shallow) ordo history ConstructibilityContract.fs first appears at the 1.20.0 release commit.",
+      "independence": "High for the counts; medium for 'duplicate' (vocabulary overlap, not code equivalence).",
+      "method": "git show + wc -l; grep -o of ORDO.CONTRACT codes in both repos with set comparison; byte scan of lib/net8.0/Ordo.Core.dll inside the vendored nupkg.",
+      "inputs": [
+        "ext/praxis@12bf995",
+        "ext/ordo@db6d39e",
+        "praxis vendor/nuget/echelonfoundry.ordo.core.1.8.2.nupkg"
+      ],
+      "discrepancies": [],
+      "notes": "1,043 counts both files, and Model.fs is the Ordo model, not admission logic alone. 'Duplicate' means re-implementation of the same vocabulary. Behavioural equivalence was not tested, and which came first cannot be fixed from shallow clones (Praxis's addition is recorded 2026-10-19, Ordo's 1.20.0 2026-11-02)."
+    },
+    {
+      "claimId": "E-F-01",
+      "verdict": "VERIFIED",
+      "claimedValue": "In default policy, `praxis work complete` accepts an arbitrary file such as /etc/hostname as test evidence; no surveyed config enables verified completion",
+      "recomputedValue": "Reproduced on Praxis 3.25.0 built by V2 from 12bf995 (0 warnings, 0 errors), on a fresh `praxis init` fixture: work complete with --evidence tests=/etc/hostname exits 0; the item becomes complete with evidence path /etc/hostname recorded in the work.completed event; `work validate` reports valid with 0 findings; `praxis verify` exits 0. Control: a non-existent path is refused ('evidence path does not exist'), so the only check is existence. Survey: 59 repos, 47 with a root ros.json; 0 set requireVerifiedCompletion/requireAttestedEvidence true or a non-empty trustedVerifierKeyIds; no committed JSON in any repo uses these keys at all.",
+      "independence": "High: own build, own fixture, own script; survey reads committed HEAD content with own code.",
+      "method": "scripts/praxis_completion_repro.sh (case A, A2); scripts/flag_survey.py over /home/user repos, ext/*, ext/full/*; source check that the flags are read only from <root>/ros.json workProtocol (FileWorkClaims.readProtocolFlag).",
+      "inputs": [
+        "praxis@12bf995 (v3.25.0) built in /home/user/sprint-scratch/V2/praxis-12bf995",
+        "data/praxis-3.25.0-completion-repro.jsonl",
+        "data/flag-survey.json",
+        "praxis src/Praxis.Infrastructure/Work/FileWorkClaims.fs:250-281"
+      ],
+      "discrepancies": [
+        "E surveyed 45 ros.json; V2 finds 47 (different repo universe); the conclusion is unchanged."
+      ],
+      "notes": "The protected-policy path (REL-GATE-004 effectivePolicy) was not separately exercised. With no repo setting the flags, it does not change the outcome for surveyed repos."
+    },
+    {
+      "claimId": "E-F-02",
+      "verdict": "VERIFIED",
+      "claimedValue": "compute-acceptance-verdict.py (dae2347) returns ACCEPTED for a fabricated evidence bundle on a README-only repo; rehearsal-005's acceptance.sh derives the manifest digest from the candidate's own tool in the same job",
+      "recomputedValue": "ACCEPTED, exit 0, no reasons, no claim problems, for a candidate repo whose only tracked file is README.md, with 118 invented artifacts (G0-G9 plus all 108 P0 requirements of BL-CAUSA-INDY-INIT-aab8f80c7743), each claiming PASS for the command 'true'. Real pinned baseline (sha256 621e2f96...) and approvals (3e70dcd2..., from Indy-init 295bc64). Same result with the verifier at 459f65a, the INDY_INIT_REF rehearsal-005 actually pinned. Negative control: changing one byte of one artifact after pinning yields non-ACCEPTED with 'digest mismatch'. acceptance.sh:66-70 sets manifest_sha to the stdout of `$CA ledger`, where CA is the candidate repo's own tools/acceptance/Causa.Acceptance (build-and-test.yml:47). Line 111 passes it as --evidence-manifest-sha256, and --trusted-source-sha is SOURCE_SHA=github.sha (build-and-test.yml:1179,1198).",
+      "independence": "High: fabrication script written by V2 from the verifier source (E's script not read or used); full Indy-init history cloned by V2.",
+      "method": "scripts/fabricate_acceptance.py; scripts/test_v2.py FabricationEndToEnd (ACCEPTED + tamper control); read acceptance.sh and the build-and-test workflow at rehearsal-005 HEAD.",
+      "inputs": [
+        "Indy-init@dae2347 and @459f65a tools/compute-acceptance-verdict.py",
+        "Indy-init@cae4102 requirements/causa-requirements-baseline.json",
+        "Indy-init@295bc64 kickoff/rehearsal-005/approvals.causa.json",
+        "indy-init-rehearsal-005@b972cb4 tools/acceptance/ci/acceptance.sh:22,32-36,66-71,107-113; .github/workflows/build-and-test.yml:42,47,1179,1198",
+        "data/fabricated-acceptance.json"
+      ],
+      "discrepancies": [],
+      "notes": "Scope: only the ledger verifier. rehearsal-005 also runs requirements-compiler verify-plan, which V2 did not test, so 'the R5 pipeline would have accepted' is not shown. The approvals file has an empty approvals list, so no scope changes were needed. The weakness is that every pin except the baseline and approvals digests is supplied by the candidate's job."
+    },
+    {
+      "claimId": "E-F-03",
+      "verdict": "VERIFIED",
+      "claimedValue": "Deleting <git-common-dir>/praxis/claims/ID lets plain completion succeed after a claim",
+      "recomputedValue": "On a fresh fixture with Praxis 3.25.0: after `work claim`, plain `work complete` exits 3 with PRX.COMPLETION.VERIFIED_COMPLETION_REQUIRED. After rm -rf .git/praxis/claims/WI-V2B, the same command exits 0 and the item is complete with /etc/hostname as tests evidence. `work validate` is valid with 0 findings.",
+      "independence": "High: own script and build.",
+      "method": "scripts/praxis_completion_repro.sh case B.",
+      "inputs": [
+        "praxis@12bf995 build",
+        "data/praxis-3.25.0-completion-repro.jsonl (case B)"
+      ],
+      "discrepancies": [],
+      "notes": "The claim's acquisition event remains in .git/praxis/events.jsonl (outside tracked history), and nothing consults it on plain completion. This requires local write access to .git, which implementation agents have."
+    },
+    {
+      "claimId": "E-F-07",
+      "verdict": "VERIFIED",
+      "claimedValue": "praxis main reports protected=false; no CODEOWNERS in core repos",
+      "recomputedValue": "GET repos/kemiller2002/{praxis,ordo,Indy-init}/branches/main -> protected=false. GET rules/branches/main -> [] (no rulesets apply) for all three. CODEOWNERS is absent (404 at .github/, root and docs/) on all three remotes, and absent at HEAD in praxis, ordo, Indy-init, mercatus, signal and rehearsals 001-010. Only ext/causa-data and ext/limen carry .github/CODEOWNERS.",
+      "independence": "High for the three queried remotes; conditor and causa were not queryable (session allowlist, 403).",
+      "method": "gh api GET endpoints (read-only); git ls-tree scan for CODEOWNERS at all local HEADs.",
+      "inputs": [
+        "GitHub REST API 2026-11-08",
+        "data/branch-protection-api.json"
+      ],
+      "discrepancies": [],
+      "notes": "The rules endpoint returning [] strengthens E's 'protected flag may miss rulesets' limitation: no branch ruleset applies to main either. Agent token scope (admin) was not re-verified (E's SUPPORTED part)."
+    }
+  ]
+}
