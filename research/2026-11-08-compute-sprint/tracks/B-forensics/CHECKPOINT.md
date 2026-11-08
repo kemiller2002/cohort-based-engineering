@@ -14,3 +14,10 @@
 - Verified: R6 imported R5 app (99/99 source files identical); R2 historical ledger recomputes INVALID; R5 conflict list contains all 7 baseline conflicting merges.
 - Note: REPORT.md cannot be written by subagents (harness); its content goes in the final reply.
 - Next: findings.json, rehearsal-summary.csv.
+
+## CP-B-03 (final data, ~14:00 EST)
+- findings.json: 16 findings (5 VERIFIED, 9 SUPPORTED, 2 INCONCLUSIVE). rehearsal-summary.csv regenerated. events.jsonl 135 records.
+- Added B-F-16: R1 R-21 confirmed from Actions (RC2-RC5 deploy/accept runs failed).
+- data/revisions.tsv records every revision used.
+- Gaps: causa Actions runs (API needs push attachment, not requested); causa-acceptance-r10 contents beyond branch list; SDE-Engineering-Trial-1/2 and holiday-list unreadable (not needed for this track); token data left to Track A.
+- REPORT.md content delivered in the final reply (harness forbids subagent report files).
