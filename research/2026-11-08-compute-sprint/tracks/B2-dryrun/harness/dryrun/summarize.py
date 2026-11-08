@@ -22,6 +22,17 @@ def rows(records):
                "dryRunSeconds": r["dryRunSeconds"]}
 
 
+def cost(records):
+    """Dry-run tool seconds per rehearsal (pre-T0 runs only; fixed-version reruns excluded) and build seconds."""
+    out = {}
+    for r in records:
+        e = out.setdefault(r["rehearsal"], {"dryRunSeconds": 0.0, "buildSeconds": 0.0, "blockers": 0})
+        e["dryRunSeconds"] = round(e["dryRunSeconds"] + float(r["dryRunSeconds"] or 0), 2)
+        e["buildSeconds"] = round(e["buildSeconds"] + float(r.get("buildSeconds", 0) or 0), 2)
+        e["blockers"] += 1
+    return out
+
+
 def main():
     recs = {p.stem: json.loads(p.read_text()) for p in (TRACK / "raw").glob("*.json")}
     ordered = [recs[k] for k in ORDER if k in recs]
@@ -33,7 +44,8 @@ def main():
     summary = {"extended": c.catch_rate([r["outcome"] for r in ordered]),
                "briefList": c.catch_rate([r["outcome"] for r in ordered if r["key"] in BRIEF]),
                "briefPlusR4": c.catch_rate([r["outcome"] for r in ordered if r["key"] in BRIEF | {"R4-APPROVALS"}]),
-               "missing": [k for k in ORDER if k not in recs]}
+               "missing": [k for k in ORDER if k not in recs],
+               "dryRunSecondsByRehearsal": cost(ordered)}
     json.dump(summary, sys.stdout, indent=2)
     print()
     return summary

@@ -20,9 +20,6 @@ ENV = core.DOTNET_ENV | {"DOTNET_ROOT": "/root/.dotnet"}
 def pipeline():
     src = core.export(core.INDY_FULL, PRE, core.SCRATCH / "r8sem" / "src")
     builds, runs = [], []
-    cc = core.run(["dotnet", "build", "requirements-compiled/v4.1.1/contracts/ContractCheck.fsproj", "-nologo", "-v", "q"],
-                  src, env=ENV, timeout=1200, limit=6000)
-    builds.append({"what": "ContractCheck.fsproj (frozen v4.1.1 contracts typecheck)", **cc})
     rc = core.run(["dotnet", "build", "tools/requirements-compiler/src", "-c", "Release", "-nologo", "-v", "q"],
                   src, env=ENV, timeout=1500, limit=6000)
     builds.append({"what": "requirements-compiler (Release)", **rc})
@@ -31,6 +28,10 @@ def pipeline():
         v = core.run(["dotnet", str(dll), "v41", "--source", ".", "--package", "requirements-compiled/v4.1.1",
                       "--base", "requirements-compiled/v4", "--check"], src, env=ENV, timeout=1200, limit=12000)
         runs.append({"what": "requirements-compiler v41 --check (v4.1.1)", **v})
+    # ContractCheck builds after --check: its bin/obj inside the package would otherwise fail --check (exit 4).
+    cc = core.run(["dotnet", "build", "requirements-compiled/v4.1.1/contracts/ContractCheck.fsproj", "-nologo", "-v", "q"],
+                  src, env=ENV, timeout=1200, limit=6000)
+    builds.append({"what": "ContractCheck.fsproj (frozen v4.1.1 contracts typecheck)", **cc})
     return {"src": core.commit_info(core.INDY_FULL, PRE), "builds": builds, "runs": runs}
 
 
@@ -46,6 +47,7 @@ def replay():
     text = "\n".join(x["stdout"] + x["stderr"] for x in p["builds"] + p["runs"]) + "\n" + json.dumps(suites)
     replayable = bool(p["runs"]) and p["builds"][0]["exit"] != "TIMEOUT"
     out = []
+    first = True
     for key, blocker, event, pattern in (
             ("R8-CMDBODY", "frozen IF41-DOMAIN carries no command body", "B-E-093", r"command body|CommandEnvelope"),
             ("R8-INV04", "INV-04 contradicts SM-SAVE T-S31/T-S32", "B-E-094", r"INV-?04|T-S31|T-S32|SM-SAVE")):
@@ -62,6 +64,8 @@ def replay():
             "pinned pipeline exits " + ", ".join(f"{k}={v}" for k, v in
                                                  {x["what"]: x["exit"] for x in p["builds"] + p["runs"]}.items()) +
             "; no failing output names the mechanism",
-            "dryRunSeconds": round(sum(x["seconds"] for x in p["runs"]), 2),
-            "buildSeconds": round(sum(x["seconds"] for x in p["builds"]), 2)})
+            "dryRunSeconds": round(sum(x["seconds"] for x in p["runs"]), 2) if first else 0.0,
+            "buildSeconds": round(sum(x["seconds"] for x in p["builds"]), 2) if first else 0.0,
+            "costNote": "pipeline run shared with R8-CMDBODY; seconds counted there" if not first else ""})
+        first = False
     return out

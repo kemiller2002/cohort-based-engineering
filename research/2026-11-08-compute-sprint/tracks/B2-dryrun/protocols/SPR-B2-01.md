@@ -91,3 +91,13 @@ Builds run serially (shared 4-vCPU host).
 
 ## Evidence classes
 VERIFIED (reproduced by execution here), SUPPORTED, INCONCLUSIVE, CONTRADICTED, NOT TESTED.
+
+---
+## Addendum: deviations recorded after execution (the preregistered text above is unchanged; see commit c7088f8)
+1. Praxis 3.25.0 was built from praxis@v3.25.0 (local source) because the release-installer download was refused by the session permission classifier.
+2. R10-AUTH: the committed suite-preflight report's `root` is R10's checkout path; the dry-run copy rewrites it to the scratch path. The unrelocated run is kept (56 causes = 55 historical + 1 path-only).
+3. D2 classifier: the first run mislabelled single-project commands as MSB1008 because the scratch directory name contained "MSB1008"; the classifier now matches `error MSB1008` and scratch labels are neutral. All D2 records come from the corrected run.
+4. D4: after a first run produced a 27-slice SCC from cross-cutting `praxis:*` record tests, the mechanism-match rule was made explicit: a catch requires an SL-T18 -> SL-T20 edge. Post-hoc variants V2x/V3x (executable tests only) were added as diagnostics.
+5. D5: the preregistered check also fails on the fixed rules (project id `causa-t0` vs repo name `causa`); a post-hoc variant also accepts the bootstrap's Praxis project id. The outcome reported is the preregistered one, flagged non-discriminating.
+6. D6: the estimator was fixed after a first run in which cancelled R6 steps dominated: per-kind maxima over *successful* pre-T0 steps; all-conclusions and R8-R9-only figures are kept as sensitivity rows.
+7. D7: `v41 --check` must run before ContractCheck is built (its bin/obj inside the package otherwise make --check exit 4); the record comes from the corrected order.

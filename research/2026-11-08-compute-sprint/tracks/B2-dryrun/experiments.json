@@ -1,0 +1,74 @@
+[
+  {
+    "id": "SPR-B2-01",
+    "question": "For each terminal or major governance blocker of R8, R9, R10 and Causa (plus R4), would a pre-T0 dry run of the governance pipeline on the exact frozen package and lock have failed with an error matching the historical blocker?",
+    "hypothesis": "H1: the dry run catches > 50% of replayable blockers. H2: it catches mechanical blockers (format, tool/plan, binding, time budget) and misses semantic package defects (R8 command body, INV-04 vs SM-SAVE) and the Causa T18<->T20 cycle under declared-edge checks. H3: catching checks pass on the later fixed artefacts.",
+    "independentVars": [
+      "blocker (11)",
+      "artefact version: pre-T0 vs later fixed",
+      "check variant (D4 V1/V2/V3; D5 preregistered vs project-id; D6 estimator)"
+    ],
+    "dependentVars": [
+      "outcome (CAUGHT / NOT CAUGHT / NOT REPLAYABLE)",
+      "tool exit code and refusal text",
+      "dry-run wall-clock seconds",
+      "build seconds"
+    ],
+    "comparison": "Each check's failure text vs the historical blocker's mechanism (Track B events.jsonl); same check on the later fixed artefacts as false-positive control.",
+    "startRevision": {
+      "track": "c7088f8 (preregistration commit)",
+      "Indy-init": {
+        "R4": "ad2f1af",
+        "R8": "1cb27ec",
+        "R9": "bc3c381",
+        "R10": "89f5840",
+        "Causa": "dae2347"
+      },
+      "fixed": {
+        "R4": "1ede27f",
+        "R8-approvals": "81b5461",
+        "R8/R9-suites": "89f5840 (v4.1.5)",
+        "R10-auth": "669fe04",
+        "Causa-rules": "8d63637"
+      },
+      "dryRunRepos": {
+        "R8": "indy-init-rehearsal-008@616ec62",
+        "R9": "indy-init-rehearsal-009@8001e7c",
+        "R10": "indy-init-rehearsal-010@33fd372 (auth), @314cc8c (workflows, suites fixed)",
+        "Causa": "causa@c706816 (ros.json project id)"
+      }
+    },
+    "tools": [
+      "Indy-init tools/compute-acceptance-verdict.py (pinned)",
+      "Indy-init tools/r9/r9.fsx authorize-implementation (pinned, dotnet fsi)",
+      "Indy-init requirements-compiler v41 --check (pinned)",
+      "frozen package ContractCheck.fsproj",
+      "Praxis 3.25.0 built from praxis@v3.25.0",
+      "dotnet SDK 10.0.402",
+      "@playwright/test 1.63.0",
+      "harness/dryrun (Python 3, functional): D4 Tarjan SCC, D5 binding, D6 budgets from Track A ci-steps.csv/ci-jobs.csv"
+    ],
+    "environment": "4-vCPU shared sprint host (load avg 11-20 from other tracks), Linux, .NET SDK 10.0.402 at /root/.dotnet, Python 3, Node 22; scratch under /home/user/sprint-scratch/B2; source repositories only read (git archive / local clone).",
+    "procedure": [
+      "Preregister protocols/SPR-B2-01.md (commit c7088f8) before any check runs.",
+      "Freeze inputs: last pre-T0 Indy-init commit or the run's recorded governing commit; T0 bootstrap commit as the throwaway repo.",
+      "Run D1-D7 per blocker (python3 -m dryrun.main causa approvals r10 suites r8sem), each writing raw/<KEY>.json with tool output.",
+      "Rerun each catching check on later fixed artefacts.",
+      "python3 -m dryrun.summarize -> results.csv and catch rates."
+    ],
+    "rawResults": "raw/*.json (11 records), raw/full-rerun-timing.txt, results.csv",
+    "verification": "Full clean end-to-end rerun reproduced all 11 outcomes (raw/full-rerun-timing.txt). 16 unittest tests pass (harness/tests: pure checks + consistency over raw records). R10-AUTH cause set compared line-by-line to the historical refused log (55/55 identical).",
+    "limitations": [
+      "Dry-run repositories are the runs' own T0 bootstrap/setup commits (timestamps 2-10 min after T0, but no application code and determined by pre-T0 inputs), not repositories bootstrapped by me before T0.",
+      "R10-AUTH needed one relocation: the committed suite-preflight report names the R10 checkout path; its root field was rewritten to the scratch path (unrelocated run kept: 56 causes = 55 historical + 1 path-only).",
+      "Praxis 3.25.0 was built from source because the release-installer download was refused by the session permission classifier.",
+      "D6 estimator (success-only per-kind maxima) was fixed after a first run in which cancelled R6 steps dominated; outcome is estimator-sensitive.",
+      "D5 as preregistered also fails on the fixed rules (causa-t0 vs repo name causa); the discriminating variant uses the bootstrap Praxis project id and is post hoc.",
+      "D4 V2/V3 were preregistered; the mechanism-match rule (T18->T20 edge required, giant SCC treated as unrelated) was applied after seeing a 27-slice SCC.",
+      "R10-GATE: only the time-budget cause is replayable; write-once record, install timeouts, branch-name refusal and cancellations need hosted Actions.",
+      "Stub suites select zero tests, so stub runs cannot measure suite duration; time budgets rely on historical data."
+    ],
+    "conclusion": "Catch rate 4/8 (0.50) on the brief's blocker list, 5/9 with R4, 7/11 on the extended list. Robust, discriminating catches: R4 and R8 approvals, R8 and R9 MSB1008/undefined webkit, R10 authorize-implementation (55/55 causes). CAUSA-RULES caught but the preregistered check is non-discriminating; R10-JOBCAP caught only under one estimator. Not caught: R8 command body, R8 INV-04, Causa T18<->T20 cycle, R10 gate deadlock. H1 not supported on the brief list (0.50 is not > 0.5), supported on the extended list; H2 supported; H3 supported except preregistered D5. Cost: under 1 minute of tool time per rehearsal once tools are built (max 45 s, R8); builds 28 s (requirements-compiler + ContractCheck) and 152 s (Praxis).",
+    "reproduction": "cd harness && python3 -m dryrun.main causa approvals r10 suites r8sem && python3 -m dryrun.summarize && python3 -m unittest discover -s tests  (needs /home/user/sprint-scratch/B2/indy-init-full = full clone of kemiller2002/Indy-init, Praxis 3.25.0 built at /home/user/sprint-scratch/B2/build/praxis-3.25.0 with wrapper bin/praxis, @playwright/test 1.63.0 in /home/user/sprint-scratch/B2/pw)"
+  }
+]
