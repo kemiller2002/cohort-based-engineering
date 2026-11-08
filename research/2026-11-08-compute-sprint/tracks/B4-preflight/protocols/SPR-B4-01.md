@@ -102,4 +102,16 @@ Each finding is classed VERIFIED / SUPPORTED / INCONCLUSIVE / CONTRADICTED / NOT
 
 ## Deviations addendum
 
-(none yet)
+- **D0 (build path):** the preferred self-contained `dotnet publish -r linux-x64` (as `package.sh`) restored and built
+  in 36 s; the fallback was not needed. `percepta --version` prints `percepta 0.4.0`. This is a local rebuild from the
+  tagged source, not the downloaded GitHub release archive (no network fetch of the release was attempted).
+- **D1 (V-FIRST runs):** the secondary version 0ad2bd3 was run n=3 per cell (not 5), as a secondary condition.
+- **D2 (POST HOC probe):** `harness/probe.py` (eight rewrites of the R8 inputs, run through both tools) was added after
+  the preregistered runs. Its results are post hoc and labelled so. For P7 (carrier renamed) the preregistered
+  `R8-CMDBODY` criterion requires the literal name `CommandEnvelope`, so the probe also reports a name-agnostic variant.
+  For B3 the probe reports B3's own criterion and a stricter one (alarm attributed to the 'four reconciliation reads'
+  clause), because B3 also alarms T-S31/T-S32 against the per-request 'three automatic reads' clause.
+- **D3 (adjudication, POST HOC):** non-blocking extras on R8 adjudicated against v4.1.2's state machine and
+  AMENDMENT-4.1.2 after the runs.
+- **D4:** B3's checks were re-run from a scratch copy (`/home/user/sprint-scratch/B4/b3-copy`); results are identical to
+  B3's committed raw for all four packages.

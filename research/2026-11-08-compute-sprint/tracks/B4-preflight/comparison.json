@@ -1,0 +1,118 @@
+{
+  "version": "v0.4.0-4a53688",
+  "condition": "DOC",
+  "perDefect": [
+    {
+      "defect": "R8-INV04",
+      "description": "INV-04 x SM-SAVE T-S31/T-S32",
+      "package": "R8-frozen",
+      "b3Check": "C1-loop",
+      "b3": {
+        "alarms": 6,
+        "outcome": "R8-INV04 CAUGHT",
+        "subjects": "INV-04:T-S31[at most 3 automatic reconciliation reads]; INV-04:T-S31[at most 4 reconciliation reads in 60 s]; INV-04:T-S32[at most 3 automatic reconciliation reads]; INV-04:T-S32[at most 4 reconciliation reads in 60 s]; INV-04:T-S47[at most 3 automatic reconciliation reads]; INV-04:T-S47[at most 4 reconciliation reads in 60 s]"
+      },
+      "b3Caught": true,
+      "specPreflightDOC": true,
+      "specPreflightCI": true,
+      "agreement": "both"
+    },
+    {
+      "defect": "R8-CMDBODY",
+      "description": "CommandEnvelope has no command body",
+      "package": "R8-frozen",
+      "b3Check": "C2",
+      "b3": {
+        "alarms": 5,
+        "outcome": "R8-CMDBODY CAUGHT",
+        "subjects": "case Msg.DomainCommand; case SaveEffect.ExportCommands; field RefusedCommand.Command; type CommandEnvelope; type RefusedCommand"
+      },
+      "b3Caught": true,
+      "specPreflightDOC": true,
+      "specPreflightCI": false,
+      "agreement": "both"
+    },
+    {
+      "defect": "DEV-R8-12",
+      "description": "(UnknownOutcome, ReconcileReadFailed) unspecified at the read limit",
+      "package": "R8-frozen",
+      "b3Check": "C3",
+      "b3": {
+        "alarms": 1,
+        "outcome": "DEV-R8-12 FLAGGED",
+        "subjects": "UnknownOutcome/ReconcileReadFailed(T-S29)"
+      },
+      "b3Caught": true,
+      "specPreflightDOC": true,
+      "specPreflightCI": true,
+      "agreement": "both"
+    },
+    {
+      "defect": "CAUSA-T18-T20",
+      "description": "T18<->T20 dependency cycle",
+      "package": "Causa-frozen",
+      "b3Check": "C4-browser",
+      "b3": {
+        "alarms": 1,
+        "outcome": "CAUSA-CYCLE DETECTABLE",
+        "subjects": "SCC6[SL-T16,SL-T17,SL-T18,SL-T19,SL-T20,SL-T22] implied:SL-T16->SL-T19,SL-T16->SL-T22,SL-T18->SL-T20,SL-T19->SL-T20,SL-T19->SL-T22,SL-T22->SL-T16,SL-T22->SL-T19"
+      },
+      "b3Caught": true,
+      "specPreflightDOC": false,
+      "specPreflightCI": false,
+      "agreement": "B3 only"
+    }
+  ],
+  "controlFalseAlarms": {
+    "R8-corrected": {
+      "specPreflightBlocking": 0,
+      "specPreflightNonBlocking": 0,
+      "specPreflightExit": "0/0/0/0/0",
+      "b3Primary": 0,
+      "b3Secondary": {
+        "C1-cycle": 6,
+        "C2b": 0,
+        "C3": 0,
+        "C4-browser": null,
+        "C4-all": null
+      }
+    },
+    "R10-frozen": {
+      "specPreflightBlocking": 0,
+      "specPreflightNonBlocking": 0,
+      "specPreflightExit": "0/0/0/0/0",
+      "b3Primary": 0,
+      "b3Secondary": {
+        "C1-cycle": 6,
+        "C2b": 0,
+        "C3": 0,
+        "C4-browser": 1,
+        "C4-all": 1
+      }
+    },
+    "Causa-frozen": {
+      "specPreflightBlocking": 0,
+      "specPreflightNonBlocking": 0,
+      "specPreflightExit": "0/0/0/0/0",
+      "b3Primary": 0,
+      "b3Secondary": {
+        "C1-cycle": 6,
+        "C2b": 0,
+        "C3": 0,
+        "C4-browser": 1,
+        "C4-all": 1
+      }
+    }
+  },
+  "r8Extras": {
+    "specPreflight": [
+      "counter-guard-without-complement:SM-SAVE/T-S31 (non-blocking)"
+    ],
+    "b3": {
+      "C1-loop": "INV-04:T-S31[at most 3 automatic reconciliation reads]; INV-04:T-S31[at most 4 reconciliation reads in 60 s]; INV-04:T-S32[at most 3 automatic reconciliation reads]; INV-04:T-S32[at most 4 reconciliation reads in 60 s]; INV-04:T-S47[at most 3 automatic reconciliation reads]; INV-04:T-S47[at most 4 reconciliation reads in 60 s]",
+      "C2": "case Msg.DomainCommand; case SaveEffect.ExportCommands; field RefusedCommand.Command; type CommandEnvelope; type RefusedCommand",
+      "C2b": "field EventEnvelope.Payload; type EventPayload",
+      "C3": "UnknownOutcome/ReconcileReadFailed(T-S29)"
+    }
+  }
+}
