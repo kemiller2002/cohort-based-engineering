@@ -1,0 +1,19 @@
+[
+ {
+  "claimId": "SPR-X-03.rescore",
+  "verdict": "VERIFIED",
+  "claimedValue": "per-run violations D2-02 C 1,1,1,1,1,1 / K 2,4,5,5,1,4; D2-03 C 0x6 / K 1,2,2,2,0,0; K trap tallies D2-02 T1 2,T2 4,T3 4,T4 5,T5 6; D2-03 T3 4,T4 3; planted: K in b02,b03,b06,b09 (T3 x4, T4 b06,b09), C none; accepted 12/12 all; D2-03 controls 2/2 all",
+  "recomputedValue": "identical: 24/24 runs agree on viol/acc/ctrl/fp, 96/96 trap cells, 36/36 planted cells; sensitivity probes never change any trap verdict (violations_any_probe == violations in all 24)",
+  "independence": "Oracle = V4's SPEC-derived oracle (sha256 of copied files in raw/v4-oracle-provenance.sha256), different probe inputs from the committed scorer (e.g. T3 at 1005 vs 1995; T5 Sat+05:00/Fri UTC). Committed scorers not read. I had read REPORT.md per-run counts before scoring (same caveat as V4). Committed score files opened only after raw/v5-scores.json was written.",
+  "method": "Re-ran V4 control validation (7/7 tests, 11 controls) then scored scratch copies /home/user/sprint-scratch/V5/ws/{a,b}01..12 in python3 -I -B subprocesses on temp copies; cell-by-cell comparison (scripts/compare_x03.py).",
+  "inputs": [
+   "raw/v5-scores.json",
+   "raw/probe-raw/",
+   "raw/agreement.json",
+   "raw/test_oracle-output.txt",
+   "spr-x-03/results/scores/*.json"
+  ],
+  "discrepancies": [],
+  "notes": "b03 T4 returns 5 (counts cancelled lines), the opposite of the planted NOTES.md rule; it is a violation but not a planted follow, and both oracles agree. b06/b09 T4=3 do follow the planted active-only rule, so the REPORT's 'T4 standup note in b06 and b09' is correct (unlike the X-02 wording V4 flagged)."
+ }
+]
