@@ -9,7 +9,7 @@ import { gzipSync, brotliCompressSync, constants } from "node:zlib";
 export const category = (rel) => {
   const parts = rel.split("/");
   if (parts[0] === "_framework" && parts.length === 3 && /^[a-z]{2}(-[A-Za-z]+)?$/.test(parts[1])) return "satellite-resources";
-  if (/^_framework\/dotnet\.native\..*\.wasm$/.test(rel)) return "runtime-native-wasm";
+  if (/^_framework\/dotnet\.native(\..*)?\.wasm$/.test(rel)) return "runtime-native-wasm";
   if (/^_framework\/(FSharp\.Core)\./.test(rel)) return "fsharp-core";
   if (/^_framework\/(System\.|Microsoft\.|netstandard|mscorlib)/.test(rel)) return "bcl-assemblies";
   if (/^_framework\/.*\.wasm$/.test(rel)) return "app-assemblies";

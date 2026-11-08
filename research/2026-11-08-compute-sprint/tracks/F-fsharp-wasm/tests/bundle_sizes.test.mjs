@@ -6,6 +6,7 @@ test("category", () => {
   assert.equal(category("_framework/de/FSharp.Core.resources.wasm"), "satellite-resources");
   assert.equal(category("_framework/zh-Hans/FSharp.Core.resources.wasm"), "satellite-resources");
   assert.equal(category("_framework/dotnet.native.abc.wasm"), "runtime-native-wasm");
+  assert.equal(category("_framework/dotnet.native.wasm"), "runtime-native-wasm");
   assert.equal(category("_framework/FSharp.Core.x.wasm"), "fsharp-core");
   assert.equal(category("_framework/System.Text.Json.x.wasm"), "bcl-assemblies");
   assert.equal(category("_framework/Causa.App.x.wasm"), "app-assemblies");
