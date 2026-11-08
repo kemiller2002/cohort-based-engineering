@@ -11,3 +11,5 @@
 | D-007 | 13:44 | Attach research-documents, causa-acceptance-r10, Indy-init-audits (read only) | Priority-1 inputs for Tracks B/D/E; were METADATA_ONLY |
 | D-008 | 13:44 | Do not attach the 6 priority-3 private repos | Non-blocking; avoids widening access without need |
 | D-009 | 13:44 | gh used for search only; permissions come from the search API `permissions` field instead of `gh repo view` / `gh api repos/...` | Environment policy restricts gh to search; the search API returns the same permission object |
+| D-010 | 13:50 | Subagent report files are delivered as reply text and committed by the Director; all tracks were told not to work around the harness refusal | Harness refused G-001's REPORT.md write; workarounds would bypass a control |
+| D-011 | 13:50 | Plan a second wave of tracks: G finished in 11.6 min, far under its deadline. Follow-ups will be chosen from first-wave findings rather than queued blindly | §4: prefer targeted follow-ups to the next queued task when findings emerge |

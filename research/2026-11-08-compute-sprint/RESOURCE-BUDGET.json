@@ -3,11 +3,26 @@
   "asOf": "2026-11-08T13:35:13-05:00",
   "deadline": "2026-11-08T23:00:00-05:00",
   "quota": {
-    "computeUnits": {"available": "unavailable", "note": "No quota or token meter is exposed inside the session. Treated as unknown; conservative concurrency."},
-    "tokens": {"available": "unavailable", "consumed": "unavailable", "note": "Subagent results may report usage; recorded per agent in AGENT-REGISTRY.json when the runtime exposes it. Never estimated."}
+    "computeUnits": {
+      "available": "unavailable",
+      "note": "No quota or token meter is exposed inside the session. Treated as unknown; conservative concurrency."
+    },
+    "tokens": {
+      "available": "unavailable",
+      "consumed": "unavailable",
+      "note": "Runtime reports per-subagent token totals at completion (task-notification usage). Director's own tokens are not observable. Recorded per agent; never estimated."
+    }
   },
-  "machine": {"vcpu": 4, "memGiB": 15, "diskWritableGiB": 30},
-  "concurrencyPolicy": {"initialSpecialists": 8, "maxConcurrent": 8, "rationale": "Unknown quota + 4 vCPU host: 8 mostly-I/O-bound analysis agents; heavy builds serialized (dotnet build contention)."},
+  "machine": {
+    "vcpu": 4,
+    "memGiB": 15,
+    "diskWritableGiB": 30
+  },
+  "concurrencyPolicy": {
+    "initialSpecialists": 8,
+    "maxConcurrent": 8,
+    "rationale": "Unknown quota + 4 vCPU host: 8 mostly-I/O-bound analysis agents; heavy builds serialized (dotnet build contention)."
+  },
   "allocation": {
     "A-economics": "1 agent, deadline 21:30",
     "B-forensics": "1 agent, deadline 21:30",
@@ -19,5 +34,18 @@
     "H-synthesis": "1 agent, launched after first track outputs; deadline 22:15",
     "verification": "Independent verifier agent(s) from 21:30; deadline 22:30"
   },
-  "observed": {"agentWallClock": [], "ciMinutes": "not consumed by this sprint (no CI runs triggered)", "failedRuns": [], "verifiedFindings": 0, "costPerVerifiedFinding": "unavailable (no cost meter)"}
+  "observed": {
+    "agentWallClock": [
+      {
+        "agent": "G-001",
+        "durationMs": 698734,
+        "subagentTokens": 203767,
+        "toolUses": 91
+      }
+    ],
+    "ciMinutes": "not consumed by this sprint (no CI runs triggered)",
+    "failedRuns": [],
+    "verifiedFindings": 0,
+    "costPerVerifiedFinding": "unavailable (no cost meter)"
+  }
 }
