@@ -1,0 +1,1019 @@
+{
+ "label": "R8-frozen",
+ "role": "target",
+ "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+ "rev": "1cb27ecc0f6f505fa7d1477d1dc35b3fafeded72",
+ "committerTime": "2026-11-01T12:27:55-05:00",
+ "package": "requirements-compiled/v4.1.1",
+ "inputsSha256": {
+  "requirements-compiled/v4.1.1/state-machine-contracts.json": "e007be75fe551d45d8466eb4f425b7e7db0bbdd430bee0b788f7348fc5baed3a",
+  "requirements-compiled/v4/invariants.json": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad",
+  "requirements-compiled/v4.1.1/contracts/00-DOMAIN-STUBS.fs": "59b80124ff6eabf69db6e31792fae103bb7b8213ea8dd7a35b09272bb8704ac1",
+  "requirements-compiled/v4.1.1/contracts/01-IF41-DOMAIN.fs": "815aec410e3dba0f7d8d8232ed8476515f0ab2d237c96170f5aaedb64e286e00",
+  "requirements-compiled/v4.1.1/contracts/02-IF41-STORAGE.fs": "bdf4ef23a006c3280ee67c94145fcecad01286bd2da0da1afd803f2edd064e9d",
+  "requirements-compiled/v4.1.1/contracts/03-IF41-WIRE.fs": "a437ee4085d772cfd4a1cf1fc793580f2852ff7282259d44e86370ff3ccaa477",
+  "requirements-compiled/v4.1.1/contracts/04-IF41-ERRORS.fs": "fa16ee821c411dcbfac32cef4d064e560a00976edea41177fa132f8fb51e9eab",
+  "requirements-compiled/v4.1.1/contracts/05-IF41-SAVE.fs": "550ef45ee167b5b54f51ecc649789817f9d30a0b3bd36595cda55eb745816e5a",
+  "requirements-compiled/v4.1.1/contracts/06-IF41-APP.fs": "d62e594865a59afb7fc75c22676010a6fc3214bffdb1e73c3085d86eb3e28805",
+  "requirements-compiled/v4.1.1/contracts/07-IF41-VIEW.fs": "80f948ef32d466b2d204c96cbc7297411bfa32660b30adf87d640a1373508d2c",
+  "requirements-compiled/v4.1.1/contracts/08-IF41-REPORT.fs": "ab62fa82f92d140dfe64dc3fa225ff547118a481faaf3ccb13445291d9a7e33c",
+  "requirements-compiled/v4.1.1/contracts/99-Usage.fs": "2ee688af9aac273b778788625c3a27821ebb2916e1e8596d1c5576ff67981096"
+ },
+ "parsed": {
+  "machines": {
+   "SM-SAVE": 61,
+   "SM-CONFLICT": 15,
+   "SM-CONNECTION": 9,
+   "SM-LOAD": 10,
+   "SM-NETWORK": 2
+  },
+  "bounds": [
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "mutations",
+    "head": "mutations",
+    "window_s": null,
+    "clause": "per save request at most four mutations and at most three automatic reconciliation reads at least 2, 4 and 8 seconds apart (plus one per offline-to-online change)",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 3,
+    "phrase": "automatic reconciliation reads",
+    "head": "reads",
+    "window_s": null,
+    "clause": "per save request at most four mutations and at most three automatic reconciliation reads at least 2, 4 and 8 seconds apart (plus one per offline-to-online change)",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "mutations",
+    "head": "mutations",
+    "window_s": 60.0,
+    "clause": "under total network failure at most four mutations and four reconciliation reads in 60 seconds",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "reconciliation reads",
+    "head": "reads",
+    "window_s": 60.0,
+    "clause": "under total network failure at most four mutations and four reconciliation reads in 60 seconds",
+    "machines": [
+     "SM-SAVE"
+    ]
+   }
+  ],
+  "fsTypes": 78
+ },
+ "results": {
+  "C1-loop": [
+   {
+    "check": "C1-loop",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-loop",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-loop",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-loop",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-loop",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-loop",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   }
+  ],
+  "C1-loop-deleg": [
+   {
+    "check": "C1-loop-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-loop-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-loop-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-loop-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-loop-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-loop-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   }
+  ],
+  "C1-cycle": [
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   }
+  ],
+  "C1-cycle-deleg": [
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S31",
+    "guard": "automatic reads spent",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S31"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "CheckAgain"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S31 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S47",
+    "guard": "true",
+    "effects": [
+     "automatic reads pause; one read on return"
+    ],
+    "cycle": [
+     "T-S47"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOffline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S47 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S32",
+    "guard": "true",
+    "effects": [
+     "one reconciliation read"
+    ],
+    "cycle": [
+     "T-S32"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested",
+      "AnswerLost"
+     ],
+     "repeat": [
+      "WentOnline"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 0.0
+    },
+    "reason": "transition T-S32 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 0 s)"
+   }
+  ],
+  "C2": [
+   {
+    "check": "C2",
+    "candidate": "type CommandEnvelope",
+    "type": "CommandEnvelope",
+    "file": "00-DOMAIN-STUBS.fs",
+    "reason": "carrier has no body that can discriminate alternatives: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}"
+   },
+   {
+    "check": "C2",
+    "candidate": "type RefusedCommand",
+    "type": "RefusedCommand",
+    "file": "05-IF41-SAVE.fs",
+    "reason": "carrier has no body that can discriminate alternatives: RefusedCommand {Command: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}; Reason: string (scalar)}"
+   },
+   {
+    "check": "C2",
+    "candidate": "field RefusedCommand.Command",
+    "type": "CommandEnvelope",
+    "file": "05-IF41-SAVE.fs",
+    "reason": "carrier has no body that can discriminate alternatives: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}"
+   },
+   {
+    "check": "C2",
+    "candidate": "case SaveEffect.ExportCommands",
+    "type": "CommandEnvelope list",
+    "file": "05-IF41-SAVE.fs",
+    "reason": "carrier has no body that can discriminate alternatives: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}"
+   },
+   {
+    "check": "C2",
+    "candidate": "case Msg.DomainCommand",
+    "type": "CommandEnvelope",
+    "file": "06-IF41-APP.fs",
+    "reason": "carrier has no body that can discriminate alternatives: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}"
+   }
+  ],
+  "C2-examined": [
+   {
+    "candidate": "type CommandEnvelope",
+    "type": "CommandEnvelope",
+    "hasBody": false,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "type RefusedCommand",
+    "type": "RefusedCommand",
+    "hasBody": false,
+    "reason": "RefusedCommand {Command: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}; Reason: string (scalar)}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "field RefusedCommand.Command",
+    "type": "CommandEnvelope",
+    "hasBody": false,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "case SaveEffect.ExportCommands",
+    "type": "CommandEnvelope list",
+    "hasBody": false,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "case Msg.DomainCommand",
+    "type": "CommandEnvelope",
+    "hasBody": false,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar))}",
+    "file": "06-IF41-APP.fs"
+   }
+  ],
+  "C2b": [
+   {
+    "check": "C2b",
+    "candidate": "type EventPayload",
+    "type": "EventPayload",
+    "file": "00-DOMAIN-STUBS.fs",
+    "reason": "carrier has no body that can discriminate alternatives: EventPayload (single case EventPayload of string (scalar))"
+   },
+   {
+    "check": "C2b",
+    "candidate": "field EventEnvelope.Payload",
+    "type": "EventPayload",
+    "file": "00-DOMAIN-STUBS.fs",
+    "reason": "carrier has no body that can discriminate alternatives: EventPayload (single case EventPayload of string (scalar))"
+   }
+  ],
+  "C2b-examined": [
+   {
+    "candidate": "type EventPayload",
+    "type": "EventPayload",
+    "hasBody": false,
+    "reason": "EventPayload (single case EventPayload of string (scalar))",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "field EventEnvelope.Payload",
+    "type": "EventPayload",
+    "hasBody": false,
+    "reason": "EventPayload (single case EventPayload of string (scalar))",
+    "file": "00-DOMAIN-STUBS.fs"
+   }
+  ],
+  "C3": [
+   {
+    "check": "C3",
+    "machine": "SM-SAVE",
+    "state": "UnknownOutcome",
+    "event": "ReconcileReadFailed",
+    "transitions": [
+     "T-S29"
+    ],
+    "guards": [
+     "fewer than three automatic reads made"
+    ],
+    "reason": "guards depend on a remaining budget but no transition covers the exhausted budget: the pair has no legal move when it runs out"
+   }
+  ]
+ },
+ "timing": {
+  "loadSeconds": 0.0307,
+  "C1-loop": 0.0011,
+  "C1-loop-deleg": 0.0007,
+  "C1-cycle": 0.0009,
+  "C1-cycle-deleg": 0.0008,
+  "C2": 0.0005,
+  "C2b": 0.0001,
+  "C3": 0.0003
+ }
+}

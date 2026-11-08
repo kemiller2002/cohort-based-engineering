@@ -1,0 +1,1331 @@
+{
+ "label": "R10-frozen",
+ "role": "control",
+ "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+ "rev": "89f5840523b9e1185a5dbcd2a29d0799fe728598",
+ "committerTime": "2026-11-06T10:50:32-05:00",
+ "package": "requirements-compiled/v4.1.5",
+ "inputsSha256": {
+  "requirements-compiled/v4.1.5/state-machine-contracts.json": "d58d21f9c11b23238402727c39ce6045a960dbf248fe0f58bf3a30a2bc4a8bc2",
+  "requirements-compiled/v4/invariants.json": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad",
+  "requirements-compiled/v4.1.5/contracts/00-DOMAIN-STUBS.fs": "877d18e46bf17fe77eedfcfe8bdc0a85f543773cf7a8a15bec2a3e9b7c4b4e55",
+  "requirements-compiled/v4.1.5/contracts/01-IF41-DOMAIN.fs": "815aec410e3dba0f7d8d8232ed8476515f0ab2d237c96170f5aaedb64e286e00",
+  "requirements-compiled/v4.1.5/contracts/02-IF41-STORAGE.fs": "8a3791ba50e681e6b2c3d90022655f755961a5492d311e3b63545c648f1817fd",
+  "requirements-compiled/v4.1.5/contracts/03-IF41-WIRE.fs": "48f227960704c4e5b165e227b44d53a2da03c1d1347ab43ee0d9c6bcd3a21116",
+  "requirements-compiled/v4.1.5/contracts/04-IF41-ERRORS.fs": "fa16ee821c411dcbfac32cef4d064e560a00976edea41177fa132f8fb51e9eab",
+  "requirements-compiled/v4.1.5/contracts/05-IF41-SAVE.fs": "f758c8bc1dfc2f06ca0f65b3bfabefcf4a7700801b9e13766a320314d57b509e",
+  "requirements-compiled/v4.1.5/contracts/06-IF41-APP.fs": "ee647592d3ff2749d8ac85ca48b87e19d093b62e62785c434a449afc72a46ed7",
+  "requirements-compiled/v4.1.5/contracts/07-IF41-VIEW.fs": "e1e584862b15137d8786feecca03cf7bbf19a5b536bd925ae55876f04c554831",
+  "requirements-compiled/v4.1.5/contracts/08-IF41-REPORT.fs": "ab62fa82f92d140dfe64dc3fa225ff547118a481faaf3ccb13445291d9a7e33c",
+  "requirements-compiled/v4.1.5/contracts/99-Usage.fs": "2ee688af9aac273b778788625c3a27821ebb2916e1e8596d1c5576ff67981096",
+  "docs/rehearsal-010-readiness/slice-execution-manifest.json": "95f3086ae2fb156901b4ebe7569818a704ad6d4651146db96e4a656652ea7bc8"
+ },
+ "parsed": {
+  "machines": {
+   "SM-SAVE": 65,
+   "SM-CONFLICT": 15,
+   "SM-CONNECTION": 9,
+   "SM-LOAD": 10,
+   "SM-NETWORK": 2
+  },
+  "bounds": [
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "mutations",
+    "head": "mutations",
+    "window_s": null,
+    "clause": "per save request at most four mutations and at most three automatic reconciliation reads at least 2, 4 and 8 seconds apart (plus one per offline-to-online change)",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 3,
+    "phrase": "automatic reconciliation reads",
+    "head": "reads",
+    "window_s": null,
+    "clause": "per save request at most four mutations and at most three automatic reconciliation reads at least 2, 4 and 8 seconds apart (plus one per offline-to-online change)",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "mutations",
+    "head": "mutations",
+    "window_s": 60.0,
+    "clause": "under total network failure at most four mutations and four reconciliation reads in 60 seconds",
+    "machines": [
+     "SM-SAVE"
+    ]
+   },
+   {
+    "invariant": "INV-04",
+    "count": 4,
+    "phrase": "reconciliation reads",
+    "head": "reads",
+    "window_s": 60.0,
+    "clause": "under total network failure at most four mutations and four reconciliation reads in 60 seconds",
+    "machines": [
+     "SM-SAVE"
+    ]
+   }
+  ],
+  "fsTypes": 227
+ },
+ "results": {
+  "C1-loop": [],
+  "C1-loop-deleg": [],
+  "C1-cycle": [
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   }
+  ],
+  "C1-cycle-deleg": [
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 3 automatic reconciliation reads",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 4,
+     "emissions": 4,
+     "statedDelaySeconds": 6.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 4 traversals give 4 > 3 within a single trace"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S19",
+    "guard": "current",
+    "effects": [
+     "send no mutation",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S19",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "AnswerLost",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S19 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S59",
+    "guard": "current and online",
+    "effects": [
+     "state the cause (GitHub could not be read after a stale head); reconciliation decides, Check again is offered after the automatic reads; never Conflict, never Discard",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S59",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "RebaseReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S59 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   },
+   {
+    "check": "C1-cycle-deleg",
+    "invariant": "INV-04",
+    "bound": "at most 4 reconciliation reads in 60 s",
+    "machine": "SM-SAVE",
+    "transition": "T-S58",
+    "guard": "current",
+    "effects": [
+     "the commit may hold the bytes; reconcile by marker and head before anything else is sent",
+     "schedule reconciliation read 1 after at least 2 s"
+    ],
+    "cycle": [
+     "T-S58",
+     "T-S22",
+     "T-S04"
+    ],
+    "witness": {
+     "prefix": [
+      "Edit",
+      "SaveRequested"
+     ],
+     "repeat": [
+      "ReadBackReadFailed",
+      "ReconcileMarkerBytesMatch",
+      "SaveRequested"
+     ],
+     "times": 5,
+     "emissions": 5,
+     "statedDelaySeconds": 8.0
+    },
+    "reason": "transition T-S58 issues 'reads' with no count or window in its guard and stays enabled when repeated: 5 traversals give 5 > 4 within 60 s (stated delays 8 s)"
+   }
+  ],
+  "C2": [],
+  "C2-examined": [
+   {
+    "candidate": "type CoreCommand",
+    "type": "CoreCommand",
+    "hasBody": true,
+    "reason": "CoreCommand (union, 29 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "type Command",
+    "type": "Command",
+    "hasBody": true,
+    "reason": "Command (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "type CommandEnvelope",
+    "type": "CommandEnvelope",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "field CommandEnvelope.Command",
+    "type": "Command",
+    "hasBody": true,
+    "reason": "Command (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "type RefusedCommand",
+    "type": "RefusedCommand",
+    "hasBody": true,
+    "reason": "RefusedCommand {Command: CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}; Reason: string (scalar)}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "field RefusedCommand.Command",
+    "type": "CommandEnvelope",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "case SaveEffect.ExportCommands",
+    "type": "CommandEnvelope list",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "05-IF41-SAVE.fs"
+   },
+   {
+    "candidate": "case Msg.DomainCommand",
+    "type": "CommandEnvelope",
+    "hasBody": true,
+    "reason": "CommandEnvelope {CommandId: Guid (scalar); Investigation: InvestigationId (single case InvestigationId of Guid (scalar)); ExpectedVersion: AggregateVersion (single case AggregateVersion of int64 (scalar)); Command: Command (union, 2 cases)}",
+    "file": "06-IF41-APP.fs"
+   }
+  ],
+  "C2b": [],
+  "C2b-examined": [
+   {
+    "candidate": "type EventPayload",
+    "type": "EventPayload",
+    "hasBody": true,
+    "reason": "EventPayload (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   },
+   {
+    "candidate": "field EventEnvelope.Payload",
+    "type": "EventPayload",
+    "hasBody": true,
+    "reason": "EventPayload (union, 2 cases)",
+    "file": "00-DOMAIN-STUBS.fs"
+   }
+  ],
+  "C3": [],
+  "C4-all": {
+   "check": "C4-all",
+   "impliedEdges": 64,
+   "impliedNotDeclared": 61,
+   "cycles": [
+    {
+     "slices": [
+      "SL-T10",
+      "SL-T11",
+      "SL-T12",
+      "SL-T13",
+      "SL-T14",
+      "SL-T15",
+      "SL-T16",
+      "SL-T17",
+      "SL-T18",
+      "SL-T19",
+      "SL-T20",
+      "SL-T21",
+      "SL-T22",
+      "SL-T23",
+      "SL-T24",
+      "SL-T25",
+      "SL-T26",
+      "SL-T27",
+      "SL-T28",
+      "SL-T29",
+      "SL-T30",
+      "SL-T31",
+      "SL-T32",
+      "SL-T33",
+      "SL-T34",
+      "SL-WI-GEN-AR",
+      "SL-WI-GEN-EXT-DATA",
+      "SL-WI-GEN-RECORDS",
+      "SL-WI-GEN-UI"
+     ],
+     "size": 29,
+     "impliedEdgesInside": [
+      "SL-T10->SL-T30",
+      "SL-T10->SL-T33",
+      "SL-T10->SL-WI-GEN-RECORDS",
+      "SL-T11->SL-T30",
+      "SL-T11->SL-T33",
+      "SL-T11->SL-WI-GEN-RECORDS",
+      "SL-T12->SL-T19",
+      "SL-T12->SL-T22",
+      "SL-T12->SL-T30",
+      "SL-T12->SL-T33",
+      "SL-T12->SL-WI-GEN-RECORDS",
+      "SL-T13->SL-T30",
+      "SL-T13->SL-T33",
+      "SL-T13->SL-WI-GEN-RECORDS",
+      "SL-T16->SL-T19",
+      "SL-T16->SL-T22",
+      "SL-T18->SL-T19",
+      "SL-T18->SL-T30",
+      "SL-T18->SL-T33",
+      "SL-T18->SL-WI-GEN-RECORDS",
+      "SL-T19->SL-T13",
+      "SL-T19->SL-T15",
+      "SL-T19->SL-T22",
+      "SL-T19->SL-WI-GEN-AR",
+      "SL-T19->SL-WI-GEN-EXT-DATA",
+      "SL-T19->SL-WI-GEN-UI",
+      "SL-T21->SL-T19",
+      "SL-T21->SL-T30",
+      "SL-T21->SL-T33",
+      "SL-T21->SL-WI-GEN-AR",
+      "SL-T21->SL-WI-GEN-RECORDS",
+      "SL-T22->SL-T16",
+      "SL-T22->SL-T18",
+      "SL-T22->SL-T19",
+      "SL-T22->SL-WI-GEN-UI",
+      "SL-T24->SL-T30",
+      "SL-T24->SL-T33",
+      "SL-T24->SL-WI-GEN-RECORDS",
+      "SL-T30->SL-T33",
+      "SL-T30->SL-WI-GEN-RECORDS",
+      "SL-T31->SL-T22",
+      "SL-T31->SL-T33",
+      "SL-T31->SL-T34",
+      "SL-T31->SL-WI-GEN-RECORDS",
+      "SL-T33->SL-T30",
+      "SL-T33->SL-WI-GEN-RECORDS",
+      "SL-T34->SL-T30",
+      "SL-T34->SL-T31",
+      "SL-T34->SL-WI-GEN-RECORDS",
+      "SL-WI-GEN-AR->SL-T30",
+      "SL-WI-GEN-AR->SL-T33",
+      "SL-WI-GEN-AR->SL-WI-GEN-RECORDS",
+      "SL-WI-GEN-RECORDS->SL-T30",
+      "SL-WI-GEN-RECORDS->SL-T33",
+      "SL-WI-GEN-UI->SL-T30",
+      "SL-WI-GEN-UI->SL-T33",
+      "SL-WI-GEN-UI->SL-WI-GEN-RECORDS"
+     ]
+    }
+   ],
+   "edgeEvidence": {
+    "SL-T10->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T10->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T10->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T11->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T11->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T11->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T12->SL-T19": [
+     {
+      "test": "dotnet:Causa.Invariants.Mutation.INV01.ReadBackSkipped",
+      "invariant": "INV-01",
+      "source": "PERSIST-007"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Mutation.INV01.ReadBackSkipped",
+      "invariant": "INV-01",
+      "source": "PERSIST-015"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV02.LateConflictReReadKeepsOtherWriter",
+      "invariant": "INV-02",
+      "source": "PERSIST-007"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV02.LateConflictReReadKeepsOtherWriter",
+      "invariant": "INV-02",
+      "source": "PERSIST-013"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV02.StaleRefreshDropped",
+      "invariant": "INV-02",
+      "source": "PERSIST-007"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV02.StaleRefreshDropped",
+      "invariant": "INV-02",
+      "source": "PERSIST-013"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV01.NoSavedWithoutMatchingReadBack",
+      "invariant": "INV-01",
+      "source": "PERSIST-007"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV01.NoSavedWithoutMatchingReadBack",
+      "invariant": "INV-01",
+      "source": "PERSIST-015"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV02.ReorderedRepliesAreInert",
+      "invariant": "INV-02",
+      "source": "PERSIST-007"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV02.ReorderedRepliesAreInert",
+      "invariant": "INV-02",
+      "source": "PERSIST-013"
+     }
+    ],
+    "SL-T12->SL-T22": [
+     {
+      "test": "dotnet:Causa.Invariants.Mutation.INV01.ReadBackSkipped",
+      "invariant": "INV-01",
+      "source": "PERSIST-031"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV01.NoSavedWithoutMatchingReadBack",
+      "invariant": "INV-01",
+      "source": "PERSIST-031"
+     }
+    ],
+    "SL-T12->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T12->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T12->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T13->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T13->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T13->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T16->SL-T19": [
+     {
+      "test": "playwright:invariants/INV-24.spec.js > save-state and conflict actions by keyboard and screen reader [webkit]",
+      "invariant": "INV-24",
+      "source": "PERSIST-012"
+     },
+     {
+      "test": "playwright:invariants/INV-24.spec.js > save-state and conflict actions by keyboard and screen reader [webkit]",
+      "invariant": "INV-24",
+      "source": "PERSIST-019"
+     }
+    ],
+    "SL-T16->SL-T22": [
+     {
+      "test": "playwright:invariants/INV-24.spec.js > save-state and conflict actions by keyboard and screen reader [webkit]",
+      "invariant": "INV-24",
+      "source": "PERSIST-030"
+     }
+    ],
+    "SL-T18->SL-T19": [
+     {
+      "test": "dotnet:Causa.Invariants.Live.INV22.ThreeSimultaneousCommits",
+      "invariant": "INV-22",
+      "source": "PERSIST-024"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV22.RecordedGitHubAnswerForms",
+      "invariant": "INV-22",
+      "source": "PERSIST-024"
+     }
+    ],
+    "SL-T18->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T18->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T18->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T19->SL-T13": [
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV12.ReapplyEqualsEngineFold",
+      "invariant": "INV-12",
+      "source": "AR-006"
+     }
+    ],
+    "SL-T19->SL-T15": [
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV11.EachIntegrityCheckHasAMutant",
+      "invariant": "INV-11",
+      "source": "EXT-DATA-011"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV11.WrittenFileSetsReplay",
+      "invariant": "INV-11",
+      "source": "EXT-DATA-011"
+     }
+    ],
+    "SL-T19->SL-T22": [
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV07.RefreshNeverReplacesWork",
+      "invariant": "INV-07",
+      "source": "PERSIST-031"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV25.UnresolvableConflictExports",
+      "invariant": "INV-25",
+      "source": "PERSIST-031"
+     },
+     {
+      "test": "playwright:invariants/INV-13.spec.js > indicator equals machine projection [chromium]",
+      "invariant": "INV-13",
+      "source": "PERSIST-030"
+     },
+     {
+      "test": "playwright:invariants/INV-13.spec.js > indicator equals machine projection [chromium]",
+      "invariant": "INV-13",
+      "source": "PERSIST-033"
+     }
+    ],
+    "SL-T19->SL-WI-GEN-AR": [
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV09.AllCommitsReachable",
+      "invariant": "INV-09",
+      "source": "AR-035"
+     }
+    ],
+    "SL-T19->SL-WI-GEN-EXT-DATA": [
+     {
+      "test": "playwright:invariants/INV-06.spec.js > every store empty of investigation content [chromium]",
+      "invariant": "INV-06",
+      "source": "EXT-DATA-004"
+     }
+    ],
+    "SL-T19->SL-WI-GEN-UI": [
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV07.RefreshNeverReplacesWork",
+      "invariant": "INV-07",
+      "source": "UI-010"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV11.EachIntegrityCheckHasAMutant",
+      "invariant": "INV-11",
+      "source": "UI-010"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV25.UnresolvableConflictExports",
+      "invariant": "INV-25",
+      "source": "UI-010"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV11.WrittenFileSetsReplay",
+      "invariant": "INV-11",
+      "source": "UI-010"
+     }
+    ],
+    "SL-T21->SL-T19": [
+     {
+      "test": "dotnet:Causa.Acceptance.Live.PERSIST041Tests.PERSIST-041-O3",
+      "invariant": "INV-09",
+      "source": "PERSIST-013"
+     }
+    ],
+    "SL-T21->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T21->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T21->SL-WI-GEN-AR": [
+     {
+      "test": "dotnet:Causa.Acceptance.Live.PERSIST041Tests.PERSIST-041-O3",
+      "invariant": "INV-09",
+      "source": "AR-035"
+     }
+    ],
+    "SL-T21->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T22->SL-T16": [
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV24.FormaTokensExist",
+      "invariant": "INV-24",
+      "source": "UI-011"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV24.FormaTokensExist",
+      "invariant": "INV-24",
+      "source": "UI-016"
+     }
+    ],
+    "SL-T22->SL-T18": [
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV07.WorkSurvivesRecoverableFailures",
+      "invariant": "INV-07",
+      "source": "PERSIST-008"
+     }
+    ],
+    "SL-T22->SL-T19": [
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV24.FormaTokensExist",
+      "invariant": "INV-24",
+      "source": "PERSIST-012"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV24.FormaTokensExist",
+      "invariant": "INV-24",
+      "source": "PERSIST-019"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV07.WorkSurvivesRecoverableFailures",
+      "invariant": "INV-07",
+      "source": "PERSIST-010"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV07.WorkSurvivesRecoverableFailures",
+      "invariant": "INV-07",
+      "source": "PERSIST-011"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV07.WorkSurvivesRecoverableFailures",
+      "invariant": "INV-07",
+      "source": "PERSIST-018"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV07.WorkSurvivesRecoverableFailures",
+      "invariant": "INV-07",
+      "source": "PERSIST-019"
+     },
+     {
+      "test": "playwright:invariants/INV-25.spec.js > reconnect keeps unsaved work [chromium]",
+      "invariant": "INV-25",
+      "source": "PERSIST-012"
+     }
+    ],
+    "SL-T22->SL-WI-GEN-UI": [
+     {
+      "test": "dotnet:Causa.Invariants.Property.INV07.WorkSurvivesRecoverableFailures",
+      "invariant": "INV-07",
+      "source": "UI-010"
+     },
+     {
+      "test": "playwright:invariants/INV-25.spec.js > reconnect keeps unsaved work [chromium]",
+      "invariant": "INV-25",
+      "source": "UI-010"
+     }
+    ],
+    "SL-T24->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T24->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T24->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T30->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T30->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T31->SL-T22": [
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV14.ForbiddenPhrases",
+      "invariant": "INV-14",
+      "source": "PERSIST-032"
+     }
+    ],
+    "SL-T31->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T31->SL-T34": [
+     {
+      "test": "verifier:Causa.Acceptance.Independent.PAT13ProvenanceComparison",
+      "invariant": "INV-20",
+      "source": "PERSIST-026"
+     }
+    ],
+    "SL-T31->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T33->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T33->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T34->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T34->SL-T31": [
+     {
+      "test": "verifier:Causa.Acceptance.Independent.PERSIST026Provenance",
+      "invariant": "INV-20",
+      "source": "PERSIST-052"
+     }
+    ],
+    "SL-T34->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-T36->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T36->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-T36->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-WI-GEN-AR->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-WI-GEN-AR->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-WI-GEN-AR->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ],
+    "SL-WI-GEN-PF->SL-WI-GEN-EXT-DATA": [
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV21.CredentialDestinations",
+      "invariant": "INV-21",
+      "source": "EXT-DATA-004"
+     },
+     {
+      "test": "dotnet:Causa.Invariants.Negative.INV21.CredentialDestinations",
+      "invariant": "INV-21",
+      "source": "EXT-DATA-005"
+     },
+     {
+      "test": "playwright:invariants/INV-21.spec.js > no credential in storage, URL or artifact [chromium]",
+      "invariant": "INV-21",
+      "source": "EXT-DATA-004"
+     },
+     {
+      "test": "playwright:invariants/INV-21.spec.js > no credential in storage, URL or artifact [chromium]",
+      "invariant": "INV-21",
+      "source": "EXT-DATA-005"
+     }
+    ],
+    "SL-WI-GEN-RECORDS->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-WI-GEN-RECORDS->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-WI-GEN-UI->SL-T30": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-WI-GEN-UI->SL-T33": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-008"
+     }
+    ],
+    "SL-WI-GEN-UI->SL-WI-GEN-RECORDS": [
+     {
+      "test": "praxis:independent-review",
+      "invariant": "INV-15",
+      "source": "AR-019"
+     }
+    ]
+   }
+  },
+  "C4-browser": {
+   "check": "C4-browser",
+   "impliedEdges": 7,
+   "impliedNotDeclared": 7,
+   "cycles": [
+    {
+     "slices": [
+      "SL-T16",
+      "SL-T17",
+      "SL-T19",
+      "SL-T22",
+      "SL-WI-GEN-EXT-DATA",
+      "SL-WI-GEN-UI"
+     ],
+     "size": 6,
+     "impliedEdgesInside": [
+      "SL-T16->SL-T19",
+      "SL-T16->SL-T22",
+      "SL-T19->SL-T22",
+      "SL-T19->SL-WI-GEN-EXT-DATA",
+      "SL-T22->SL-T19",
+      "SL-T22->SL-WI-GEN-UI"
+     ]
+    }
+   ],
+   "edgeEvidence": {
+    "SL-T16->SL-T19": [
+     {
+      "test": "playwright:invariants/INV-24.spec.js > save-state and conflict actions by keyboard and screen reader [webkit]",
+      "invariant": "INV-24",
+      "source": "PERSIST-012"
+     },
+     {
+      "test": "playwright:invariants/INV-24.spec.js > save-state and conflict actions by keyboard and screen reader [webkit]",
+      "invariant": "INV-24",
+      "source": "PERSIST-019"
+     }
+    ],
+    "SL-T16->SL-T22": [
+     {
+      "test": "playwright:invariants/INV-24.spec.js > save-state and conflict actions by keyboard and screen reader [webkit]",
+      "invariant": "INV-24",
+      "source": "PERSIST-030"
+     }
+    ],
+    "SL-T19->SL-T22": [
+     {
+      "test": "playwright:invariants/INV-13.spec.js > indicator equals machine projection [chromium]",
+      "invariant": "INV-13",
+      "source": "PERSIST-030"
+     },
+     {
+      "test": "playwright:invariants/INV-13.spec.js > indicator equals machine projection [chromium]",
+      "invariant": "INV-13",
+      "source": "PERSIST-033"
+     }
+    ],
+    "SL-T19->SL-WI-GEN-EXT-DATA": [
+     {
+      "test": "playwright:invariants/INV-06.spec.js > every store empty of investigation content [chromium]",
+      "invariant": "INV-06",
+      "source": "EXT-DATA-004"
+     }
+    ],
+    "SL-T22->SL-T19": [
+     {
+      "test": "playwright:invariants/INV-25.spec.js > reconnect keeps unsaved work [chromium]",
+      "invariant": "INV-25",
+      "source": "PERSIST-012"
+     }
+    ],
+    "SL-T22->SL-WI-GEN-UI": [
+     {
+      "test": "playwright:invariants/INV-25.spec.js > reconnect keeps unsaved work [chromium]",
+      "invariant": "INV-25",
+      "source": "UI-010"
+     }
+    ],
+    "SL-WI-GEN-PF->SL-WI-GEN-EXT-DATA": [
+     {
+      "test": "playwright:invariants/INV-21.spec.js > no credential in storage, URL or artifact [chromium]",
+      "invariant": "INV-21",
+      "source": "EXT-DATA-004"
+     },
+     {
+      "test": "playwright:invariants/INV-21.spec.js > no credential in storage, URL or artifact [chromium]",
+      "invariant": "INV-21",
+      "source": "EXT-DATA-005"
+     }
+    ]
+   }
+  }
+ },
+ "timing": {
+  "loadSeconds": 0.1123,
+  "C1-loop": 0.0007,
+  "C1-loop-deleg": 0.0006,
+  "C1-cycle": 0.0058,
+  "C1-cycle-deleg": 0.0012,
+  "C2": 0.0004,
+  "C2b": 0.0001,
+  "C3": 0.0003,
+  "C4-all": 0.0004,
+  "C4-browser": 0.0002
+ }
+}
