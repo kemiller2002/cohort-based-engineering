@@ -99,6 +99,19 @@ def aggregate(runs, categorize):
     return {"byRepo": {k: pct(v) for k, v in sorted(by.items())}, "total": pct(total)}
 
 
+# Sensitivity (added after first computation, disclosed): failing "test"-category steps that are not cheap
+# unit gates (live/acceptance/provider/mutation suites, or an aggregate "fail when ... failed" step).
+NOT_CHEAP_RE = r"live|acceptance|evidence failed|provider|mutation|conformance"
+
+
+def strict_categorize(categorize):
+    import re
+    def cat(name):
+        c = categorize(name)
+        return "expensive-test" if c in CHEAP and re.search(NOT_CHEAP_RE, (name or "").lower()) else c
+    return cat
+
+
 def main(argv):
     scripts, jobs_path, out = argv[1:4]
     sys.path.insert(0, scripts)
@@ -106,6 +119,7 @@ def main(argv):
     runs = [json.loads(l) for l in open(jobs_path) if l.strip()]
     result = aggregate(runs, step_category)
     med, n = gating_latency(runs, step_category)
+    result["sensitivityStrictCheapGates"] = {"rule": NOT_CHEAP_RE, **aggregate(runs, strict_categorize(step_category))["total"]}
     result["latencyPenaltyESTIMATE"] = {"medianGatingJobSecondsInGreenRuns": med, "samples": n}
     result["nature"] = "counterfactual ESTIMATE; assumptions A1-A5 in protocols/SPR-A2-03-fail-fast-replay.md"
     json.dump(result, open(out, "w"), indent=1)

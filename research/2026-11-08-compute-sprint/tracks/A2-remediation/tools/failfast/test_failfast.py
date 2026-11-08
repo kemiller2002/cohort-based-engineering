@@ -45,5 +45,13 @@ class FailFastTests(unittest.TestCase):
         self.assertEqual((s["within"], s["acrossV1"], s["failedRunSeconds"]), (0.0, 0.0, 0.0))
 
 
+
+class StrictTests(unittest.TestCase):
+    def test_strict_reclassifies_live_tests(self):
+        c = ff.strict_categorize(lambda n: "test")
+        self.assertEqual(c("Live .NET acceptance tests"), "expensive-test")
+        self.assertEqual(c("Unit tests"), "test")
+
+
 if __name__ == "__main__":
     unittest.main()
