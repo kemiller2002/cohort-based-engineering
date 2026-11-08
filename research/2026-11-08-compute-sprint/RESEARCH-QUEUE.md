@@ -16,3 +16,12 @@ Scores 1–5 (higher is better, except cost/time/burden/risk where higher = more
 | Q-10 | Market & competitive landscape with sourced citations | G | 4 | 4 | 3 | 2 | 3 | 2 | 1 | 6.0 | ACTIVE |
 | Q-11 | Synthesis: contradictions, claims needing verification, ADRs | H | 4 | 4 | 4 | 2 | 3 | 2 | 2 | 7.1 | ACTIVE (late start) |
 | Q-12 | Independent verification of consequential findings | Director/V | 5 | 4 | 4 | 2 | 2 | 3 | 2 | 8.9 | QUEUED (after first findings) |
+
+## Wave 2 (added 13:57 EST after Track A/G results; see D-012)
+
+| ID | Investigation | Track | Value | Prob. | Reuse | Cost | Time | Burden | Risk | Priority | Status |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Q-13 | Independent recomputation of A/G consequential findings | V1 | 5 | 5 | 4 | 2 | 2 | 2 | 1 | 14.3 | ACTIVE |
+| Q-14 | Semantic merge driver replayed on all R8 `.ros/` conflicts | A2 | 5 | 4 | 5 | 2 | 2 | 2 | 2 | 12.5 | ACTIVE |
+| Q-15 | Verifier rebuild vs cache/release measurement | A2 | 3 | 5 | 4 | 2 | 1 | 1 | 1 | 12.0 | ACTIVE |
+| Q-16 | Fail-fast CI ordering counterfactual | A2 | 3 | 4 | 4 | 1 | 2 | 2 | 1 | 8.0 | ACTIVE (if time) |
