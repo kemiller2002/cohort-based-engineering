@@ -67,7 +67,7 @@
   "id": "F-F-06",
   "title": "wasm-tools workload relinking halves the native runtime but is not needed to build",
   "classification": "SUPPORTED",
-  "statement": "All publishes succeeded without any workload. With wasm-tools installed (isolated SDK copy), R10 publish relinks dotnet.native.wasm 3.00 -> 1.50 MB (total _framework 10.8 -> 9.4 MB); one publish took 83 s vs 34-42 s without (n=1, contended). Startup effect: see measurements (label r010-wasmtools).",
+  "statement": "All publishes succeeded without any workload. With wasm-tools installed (isolated SDK copy), R10 publish relinks dotnet.native.wasm 3.00 -> 1.50 MB (total _framework 10.8 -> 9.4 MB); one publish took 83 s vs 34-42 s without (n=1, contended). Startup (clean rerun): localhost 575 ms (n=7, range 528-647) vs R10 921 ms (n=7, range 756-1082); 4G gzip 4070 ms (n=3, range 4053-4089) vs 5073 ms (n=5, range 4988-5269).",
   "measuredOrEstimate": "measured",
   "evidence": [
    "measurements/bundles/r010-wasmtools.json",
@@ -77,9 +77,9 @@
  },
  {
   "id": "F-F-07",
-  "title": "Build and edit-loop cost of F# WASM apps",
+  "title": "Build and edit-loop cost of F# WASM apps; trimming doubles the edit-publish loop",
   "classification": "SUPPORTED",
-  "statement": "Release publish of the WASM host (warm NuGet cache): cold R8 58.1 s (n=3, range 56.7-61.3), R9 46.4 s (n=3, range 39.3-49.1), R10 37.2 s (n=3, range 33.8-42.3), fixture 23.2 s (n=3, range 20.4-27.8); no-op 2.5-3.1 s; one-line F# edit then publish: R8 11.6 s (n=3, range 10.2-12.2), R9 7.1 s (n=3, range 7.1-7.5), R10 17.4 s (n=3, range 17.1-17.9), fixture 10.6 s (n=3, range 10.5-12.0). About 10 s of every edit-publish is fixed WASM/ILLink pipeline cost (fixture). First-ever publish incl. runtime-pack download: 51.3 s (n=1).",
+  "statement": "Release publish of the WASM host (warm NuGet cache). Batch 2 (interleaved, loadavg ~5): cold R8 38.0 s (n=2, range 37.6-38.4), R9 41.4 s (n=3, range 37.7-44.6), R10 36.4 s (n=3, range 36.3-36.7); edit+publish R8 8.2 s (n=2, range 7.9-8.5), R9 5.7 s (n=3, range 5.6-5.9), R10 16.1 s (n=3, range 16.0-16.8). Batch 1 (sequential, loadavg ~12): cold R8 58.1 s (n=3, range 56.7-61.3), R9 46.4 s (n=3, range 39.3-49.1), R10 37.2 s (n=3, range 33.8-42.3); Debug solution build cold R8 32.8 s (n=3, range 30.8-33.0), R9 16.0 s (n=3, range 16.0-21.9), R10 44.6 s (n=3, range 36.7-53.3). All batches pooled: cold R8 56.7 s (n=5, range 37.6-61.3), R9 43.0 s (n=6, range 37.7-49.1), R10 36.6 s (n=6, range 33.8-42.3), fixture 23.2 s (n=3, range 20.4-27.8); no-op 2.5-3.1 s; one-line F# edit then publish: R8 10.2 s (n=5, range 7.9-12.2), R9 6.5 s (n=6, range 5.6-7.5), R10 16.9 s (n=6, range 16.0-17.9), fixture 10.6 s (n=3, range 10.5-12.0). Trimmed apps (R10, fixture: TrimMode=partial) re-run ILLink on every publish, so a one-line edit costs 10.6-16 s versus 5.7-8.2 s for untrimmed R8/R9: the trimming that cuts payload 3-4x (F-F-01) roughly doubles the edit-publish loop; a Debug/no-trim dev loop with Release-only trimming avoids paying both. First-ever publish incl. runtime-pack download: 51.3 s (n=1).",
   "measuredOrEstimate": "measured",
   "evidence": [
    "measurements/build-times.csv",
