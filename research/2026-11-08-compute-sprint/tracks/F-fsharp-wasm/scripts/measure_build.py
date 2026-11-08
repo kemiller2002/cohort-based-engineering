@@ -17,7 +17,7 @@ from pathlib import Path
 ENV = {**os.environ, "PATH": "/root/.dotnet:" + os.environ.get("PATH", ""),
        "DOTNET_CLI_TELEMETRY_OPTOUT": "1", "DOTNET_NOLOGO": "1"}
 
-FIELDS = ["timestampUtc", "label", "mode", "rep", "seconds", "exitCode", "command", "note"]
+FIELDS = ["timestampUtc", "label", "mode", "rep", "seconds", "exitCode", "command", "note", "loadavg1Start", "batch"]
 
 
 def build_dirs(repo: Path, roots: tuple[str, ...]) -> list[Path]:
@@ -52,13 +52,14 @@ def run_one(repo: Path, label: str, mode: str, rep: int, spec: dict, touch_file:
     if spec["touch"]:
         with open(repo / touch_file, "a", encoding="utf-8") as f:
             f.write(f"\n// sprint-F incremental touch {mode} {rep}\n")
+    load = open("/proc/loadavg").read().split()[0]
     start = time.perf_counter()
     proc = subprocess.run(spec["cmd"], cwd=repo, env=ENV, capture_output=True, text=True)
     seconds = time.perf_counter() - start
     tail = (proc.stdout + proc.stderr).strip().splitlines()[-1:] if proc.returncode else []
     return {"timestampUtc": datetime.now(timezone.utc).isoformat(timespec="seconds"), "label": label,
             "mode": mode, "rep": rep, "seconds": round(seconds, 3), "exitCode": proc.returncode,
-            "command": " ".join(spec["cmd"]), "note": " | ".join(tail)[:300]}
+            "command": " ".join(spec["cmd"]), "note": " | ".join(tail)[:300], "loadavg1Start": load, "batch": os.environ.get("SPRINT_BATCH", "")}
 
 
 def main() -> None:
