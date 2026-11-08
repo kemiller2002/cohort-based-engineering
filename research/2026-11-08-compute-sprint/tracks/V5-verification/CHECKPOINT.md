@@ -9,3 +9,4 @@
 - 16:50 Tasks 3 and 7 DONE: 0 arm mismatches; no fixture modifications, disallowed imports or file access; C < K in every batch (raw/confounds.json). Verdicts .arm-assignment and .confounds VERIFIED.
 - 16:58 Task 4 DONE: C/K/G_as_delivered reproduce byte for byte from frozen M + G sections before 'Task:' (raw/prompts_check.json). Delivered prompts not verifiable. Verdict .prompt-derivation VERIFIED (templates only).
 - 17:10 Tasks 5 and 6 DONE: descriptive table reproduced; C~G and C~M(tokens) hold; K>M on D2b descriptive only (p 0.10 unadjusted) and reversed on D2c. T5 fair but low-discrimination (24/25 Haiku runs device-local); primary unchanged without T5. SO-01 drop sensitivity p = 1/8820 (corrected confounds note).
+- 17:15 All tasks done. Tests: test_oracle (V4, re-run), test_v5stats, test_prompts_check, test_helpers all OK (raw/*-output.txt). 9 verdicts in verdicts.json. Final report delivered in hand-back (REPORT.md not written per harness rule).

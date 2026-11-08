@@ -139,5 +139,25 @@
    "'May simply look specified' is only partly supported. All 6 K runs listed T5 in QUESTIONS.md as unspecified (for example a10: 'the spec does not say this outright. Alternative reading: UTC, or the store's time zone'), and so did a02 (C). They recognised the gap yet still implemented the device-local default. The better description is a strong natural default (Python's aware-datetime .weekday() gives device-local), not an apparent specification."
   ],
   "notes": "Fairness judgment: T5 is a FAIR but LOW-DISCRIMINATION trap. SPEC D2-02 says placed_at carries 'the UTC offset reported by the customer's device' and that 'Customers order from many time zones'. This describes the data, not the rule, and R-08 never says whose calendar decides 'Saturday or Sunday' (device date, UTC date or a store time zone are all plausible). The fixture author treated it as unspecified: D2-03 had to add signed decision D-002 to settle it. Sonnet and one G run detected it. However, the SPEC wording and Python's default both point to device-local, and Haiku chose it in 24/25 runs regardless of arm. T5 therefore contributes nothing to the C-vs-K contrast, and excluding it leaves the primary unchanged."
+ },
+ {
+  "claimId": "SPR-X-03",
+  "verdict": "VERIFIED (primary and secondaries); descriptive and X-F-08 wording PARTIALLY VERIFIED",
+  "claimedValue": "Haiku, C (M + Authority) vs K (M + Checklist): 3.67 fewer violations/run with C (stratified exact p = 0.00046); D2-02 C 1 (T5, undocumented) vs K 3.5 (documented); D2-03 C 0 vs K 1.17; planted: K 4 runs, C 0; C about 6,400 fewer tokens and about 22 s less per run (Holm < 1e-5); C ~ G violations at ~ M cost; K > M on D2-02",
+  "recomputedValue": "stat 11/3, p = 1/2178 (0.000459); all per-run, per-trap and planted cells reproduced by an independent oracle (24/24, 96/96, 36/36); tokens 6386.8/run, wall 21.73 s/run, Holm 9.37e-6; robust to T5 exclusion (unchanged), fixture x batch stratification (p = 2/729) and dropping the SO-01 runs (p = 1/8820)",
+  "independence": "V4's SPEC-derived oracle (control validation re-run) plus my own statistics, prompt, arm, confound and descriptive code. Committed scorers, x02.py, x03.py and V4's stats.py were not used. Tokens and wall are runtime-reported. Delivered prompts cannot be seen.",
+  "method": "See the component verdicts.",
+  "inputs": [
+   "verdicts.json component entries",
+   "raw/"
+  ],
+  "discrepancies": [
+   "PROTOCOL prereg time '~16:05' is actually 15:59:50 EST (still before the runs).",
+   "C's T5 is 'undocumented'/'silent' only under the QUESTIONS.md rule; every C run states the reading in a code comment, and a02 flags it for confirmation.",
+   "X-F-08's 'may look specified' is weakly supported: 6/6 K runs and a02 explicitly called T5 unspecified and still chose device-local.",
+   "K > M on D2-02 is descriptive and not distinguishable (unadjusted p = 0.10), and it reverses on D2-03.",
+   "C wall-clock on D2-03 is about 11% above M (not '~M cost' for wall on that fixture)."
+  ],
+  "notes": "The C-vs-K effect is a genuine within-experiment randomized result. Comparisons with X-02 are non-randomized context. The D2-03 stratum alone is not significant (p = 2/33); the joint result rests mainly on D2-02 T1-T4, where C had 0/24 violations vs K 15/24 trap cells."
  }
 ]
