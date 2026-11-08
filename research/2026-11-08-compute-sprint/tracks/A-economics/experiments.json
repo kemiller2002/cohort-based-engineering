@@ -1,0 +1,36 @@
+[
+ {
+  "id": "EXP-A-01",
+  "question": "Can the Rehearsal 8 token total and per-role figures be independently reproduced from the raw Praxis execution records, and what does that work cost at list price?",
+  "hypothesis": "Summing the four token buckets over the 56 R8 execution records reproduces FINAL-REPORT.md's 533,823,102 exactly; the request ledger sums equal the execution metrics.",
+  "independentVars": ["none (reproduction)"],
+  "dependentVars": ["tokens.total4 per execution", "request-ledger sums", "list-price cost ESTIMATE"],
+  "comparison": "indy-init-rehearsal-008/evidence/FINAL-REPORT.md 'Token economics' section and evidence/telemetry/token-economics.json",
+  "startRevision": "indy-init-rehearsal-008@fd8fba9; cohort-based-engineering@fb280d7 (price table 2026-10-20.1)",
+  "tools": ["scripts/build_executions.py", "scripts/build_transcript_detail.py", "scripts/analyze_r8.py"],
+  "environment": "Linux cloud container, Python 3.13, no network for this step",
+  "procedure": "Parse every .ros/telemetry/executions/*.json; sum tokens.input+output+cache_read+cache_write; sum requestLedger rows per execution and compare; price with the CBE price table.",
+  "rawResults": ["data/executions.csv", "data/requests.csv", "analysis/r8-economics.json"],
+  "verification": "Total 533,823,102 equals the report; 49/49 ledger-carrying executions match their metric totals (0 mismatches). R3 list-price cost recomputed with the same method gives $36.01, equal to R3's own report (REHEARSAL-003-REPORT.md:153).",
+  "limitations": "Reproduction shows internal consistency of the telemetry, not that the transcripts captured every request (8 R8 executions have no transcript; coordinator turns after 23:50:44Z are absent). Cost is list price, not a bill.",
+  "conclusion": "VERIFIED: the R8 token figures are reproducible from raw records; list-price cost ESTIMATE $193.74.",
+  "reproduction": "python3 scripts/build_executions.py /home/user $PRICE data/executions.csv indy-init-rehearsal-008 && python3 scripts/build_transcript_detail.py /home/user $PRICE data indy-init-rehearsal-008 && python3 scripts/analyze_r8.py data $PRICE /home/user/indy-init-rehearsal-008/evidence/telemetry/merges.jsonl analysis/r8-economics.json"
+ },
+ {
+  "id": "EXP-A-02",
+  "question": "Where does CI time go in rehearsal timed windows: runner queueing, red/cancelled runs, or step categories?",
+  "hypothesis": "Runner queueing is negligible; a large share of CI minutes is spent in red or cancelled runs; toolchain/dependency/browser setup is a large share of step time.",
+  "independentVars": ["rehearsal (R2-R10)"],
+  "dependentVars": ["job queue seconds", "job duration", "billable minutes ESTIMATE", "red/cancelled share", "step seconds by category", "per-commit CI latency"],
+  "comparison": "across rehearsals; no treatment",
+  "startRevision": "GitHub Actions API state on 2026-11-08 for kemiller2002/indy-init-rehearsal-002..010",
+  "tools": ["scripts/fetch_ci_runs.py", "scripts/fetch_ci_jobs.py", "scripts/build_ci.py", "scripts/analyze_ci.py"],
+  "environment": "gh CLI read-only GET through the session proxy",
+  "procedure": "Fetch all runs; select runs created inside each rehearsal's 420-minute window (rehearsal-windows.csv); fetch jobs with step timings; compute job queue (started-created), duration, ceil-minute billing, step categories by name regex, per-SHA latency, red->green sequences.",
+  "rawResults": ["data/raw/ci-runs-*.jsonl", "data/raw/ci-jobs-timed.jsonl", "data/ci-*.csv", "analysis/ci-overhead.json"],
+  "verification": "R3 run counts cross-checked against indy-init-rehearsal-003/evidence/telemetry/ci-timed.json (different window end: R3 file stops at 09:39:09Z, this study uses the 420-minute ceiling).",
+  "limitations": "Public-repo minutes are not billed; 'billable minutes' is the GitHub rounding rule applied as a compute proxy. Step categories are regex heuristics. Run updated_at can move after completion. Window ends are T0+420 min, not each rehearsal's actual stop.",
+  "conclusion": "See findings A-F-06..A-F-09.",
+  "reproduction": "python3 scripts/fetch_ci_runs.py data/raw kemiller2002 Indy-init indy-init-rehearsal-0{01..10}; python3 scripts/build_ci.py data/raw data/rehearsal-windows.csv data; python3 scripts/fetch_ci_jobs.py data/ci-runs.csv data/raw/ci-jobs-timed.jsonl --timed-only; python3 scripts/analyze_ci.py data data/raw/ci-jobs-timed.jsonl analysis/ci-overhead.json"
+ }
+]
