@@ -14,3 +14,8 @@
 
 ## 2026-11-08T14:13:15-05:00 — CP-D-03
 - Confirmatory SPR-D-03/04/05 executed per frozen plans (6 per arm, ABBA); raw/*.jsonl; analyses reanalysis/outputs/SPR-D-0{3,4,5}-analysis.json. All three H SUPPORTED on CPU (details in findings.json).
+
+## 2026-11-08T14:23:56-05:00 — CP-D-04 (final)
+- Exploratory SPR-D-06/07 run (4 per arm). experiments.json (SPR-D-01..08) and findings.json (D-F-01..13) written.
+- Tests: reanalysis 18/18 OK, tooling 10/10 OK. Scratch fixture left at /home/user/sprint-scratch/D/r010 (Kernel.fs restored by git checkout).
+- REPORT.md content delivered in the final reply (harness refuses subagent report files).

@@ -1,0 +1,208 @@
+[
+ {
+  "id": "SPR-D-01",
+  "type": "exploratory",
+  "question": "Do published Echelon cost/governance statistics (A021, A024, VAC-001, VAC-002 P3) recompute from raw records, and how many replicates would detect the claimed effects?",
+  "hypothesis": "n/a (verification re-analysis)",
+  "independentVars": [
+   "n/a"
+  ],
+  "dependentVars": [
+   "recomputed point estimates",
+   "bootstrap CIs",
+   "exact p-values",
+   "required replicates for 80% power"
+  ],
+  "comparison": "recomputed vs published values",
+  "startRevision": "cohort-based-engineering working tree as checked out 2026-11-08 (see sprint inventory/starting-revisions.tsv); praxis likewise; research-documents b372a7f (summaries only)",
+  "tools/models": "python3 stdlib; reanalysis/stats.py, reanalyze.py (18 unit tests)",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "Load raw per-unit usage/verify JSON (VAC-001), per-execution score + adjudication (VAC-002 P3 S2), platform usage per session (A021, A024); recompute cost from tokens x price table 2026-10-20.1; paired percentile bootstrap (seed 20261108, 10k); exact sign / sign-flip tests; chain-level sensitivity; power by t-iteration and McNemar simulation.",
+  "rawResults": "reanalysis/outputs/reanalysis.json",
+  "verification": "reanalysis/test_stats.py (18 tests pass); costs recomputed from tokens agree with recorded costs to <=4e-7 USD; acceptance proxy agrees 96/96",
+  "limitations": "Bootstrap RNG differs from the original F# analysis, so CI endpoints differ in the 3rd decimal; A021/A024 have one run per arm, so variance and power for them are ESTIMATES borrowing VAC-001 variance; acceptance relies on recorded oracle/verdict outputs (oracles not re-executed).",
+  "conclusion": "All 10 published numeric claims VERIFIED from raw data; VAC-001 CIs treat within-chain units as independent (3 chains); VAC-002 P3 had ~0.19-0.21 power for its realized effect and would need ~52-72 blocks.",
+  "reproduction": "cd reanalysis && python3 -m unittest test_stats && python3 -I reanalyze.py /home/user/cohort-based-engineering /home/user/praxis"
+ },
+ {
+  "id": "SPR-D-02",
+  "type": "exploratory",
+  "question": "Pilot: feasibility and magnitude of build/test timings on the fixture",
+  "hypothesis": "n/a",
+  "independentVars": [
+   "n/a"
+  ],
+  "dependentVars": [
+   "wall",
+   "CPU"
+  ],
+  "comparison": "none",
+  "startRevision": "indy-init-rehearsal-010 @ 95b3ed4df80de0f95afd07be659dbaf6a0e338a6 (clone at /home/user/sprint-scratch/D/r010), Causa.slnx",
+  "tools/models": ".NET SDK 10.0.402; tooling/bench.py; tooling/analyze_bench.py; no LLM model involved",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "One clean build via bench.py plus manual no-op build and full test run; discovered live-GitHub tests fail without CAUSA_GITHUB_TOKEN and ~9 Acceptance tests need unavailable npm packages",
+  "rawResults": "raw/SPR-D-02-pilot.jsonl",
+  "verification": "manual",
+  "limitations": "n=1",
+  "conclusion": "Clean build ~58 s wall / 79 s CPU at load ~8; live tests must be filtered; CPU chosen as primary metric because of contention.",
+  "reproduction": "see protocols/COMMON.md"
+ },
+ {
+  "id": "SPR-D-03",
+  "type": "confirmatory",
+  "question": "How much build cost does keeping obj/bin save when nothing changed (long-lived workspace vs clean sandbox)?",
+  "hypothesis": "CPU(noop)/CPU(clean) < 0.20",
+  "independentVars": [
+   "build-output state: clean vs noop"
+  ],
+  "dependentVars": [
+   "CPU seconds (user+sys, RUSAGE_CHILDREN) [primary]",
+   "wall seconds",
+   "exit code",
+   "test counts",
+   "1-min load average before/after"
+  ],
+  "comparison": "noop vs clean, 6 each, ABBA seed 3031",
+  "startRevision": "indy-init-rehearsal-010 @ 95b3ed4df80de0f95afd07be659dbaf6a0e338a6 (clone at /home/user/sprint-scratch/D/r010), Causa.slnx",
+  "tools/models": ".NET SDK 10.0.402; tooling/bench.py; tooling/analyze_bench.py; no LLM model involved",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "protocols/SPR-D-03-clean-vs-noop-build.md",
+  "rawResults": "raw/SPR-D-03.jsonl",
+  "verification": "frozen analysis tooling/analyze_bench.py -> reanalysis/outputs/SPR-D-03-analysis.json; tooling unit tests (tooling/test_*.py) pass",
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions.",
+  "conclusion": "SUPPORTED: CPU median 2.89 vs 65.88 s, ratio 0.044 (95% CI 0.038-0.104), exact permutation p=0.0022; wall median 3.99 vs 46.20 s, ratio 0.086 (95% CI 0.055-0.099), exact permutation p=0.0022",
+  "reproduction": "python3 tooling/bench.py run --plan plans/SPR-D-03.json --out raw/SPR-D-03.jsonl && python3 tooling/analyze_bench.py ..."
+ },
+ {
+  "id": "SPR-D-04",
+  "type": "confirmatory",
+  "question": "Does a public-surface edit in the root domain project cost more to rebuild than a non-surface edit?",
+  "hypothesis": "CPU(surface)/CPU(internal) > 1.5",
+  "independentVars": [
+   "edit kind: surface (new public module) vs internal (comment)"
+  ],
+  "dependentVars": [
+   "CPU seconds (user+sys, RUSAGE_CHILDREN) [primary]",
+   "wall seconds",
+   "exit code",
+   "test counts",
+   "1-min load average before/after"
+  ],
+  "comparison": "surface vs internal, 6 each, ABBA seed 4041",
+  "startRevision": "indy-init-rehearsal-010 @ 95b3ed4df80de0f95afd07be659dbaf6a0e338a6 (clone at /home/user/sprint-scratch/D/r010), Causa.slnx",
+  "tools/models": ".NET SDK 10.0.402; tooling/bench.py; tooling/analyze_bench.py; no LLM model involved",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "protocols/SPR-D-04-surface-vs-internal-edit.md",
+  "rawResults": "raw/SPR-D-04.jsonl",
+  "verification": "frozen analysis tooling/analyze_bench.py -> reanalysis/outputs/SPR-D-04-analysis.json; tooling unit tests (tooling/test_*.py) pass",
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions.",
+  "conclusion": "SUPPORTED: CPU median 76.79 vs 13.46 s, ratio 5.704 (95% CI 4.905-11.485), exact permutation p=0.0022; wall median 43.66 vs 9.21 s, ratio 4.740 (95% CI 3.369-6.219), exact permutation p=0.0022. Surface edit CPU (median 76.8 s) is comparable to a clean build (65.9 s, SPR-D-03): reference assemblies (obj/ref present) let a non-surface edit skip dependants.",
+  "reproduction": "python3 tooling/bench.py run --plan plans/SPR-D-04.json --out raw/SPR-D-04.jsonl && python3 tooling/analyze_bench.py ..."
+ },
+ {
+  "id": "SPR-D-05",
+  "type": "confirmatory",
+  "question": "What fraction of test cost does running only one test project save versus the full offline suite?",
+  "hypothesis": "CPU(affected)/CPU(full) < 0.25",
+  "independentVars": [
+   "test scope: Causa.Domain.Tests only vs full offline suite (filter !Live)"
+  ],
+  "dependentVars": [
+   "CPU seconds (user+sys, RUSAGE_CHILDREN) [primary]",
+   "wall seconds",
+   "exit code",
+   "test counts",
+   "1-min load average before/after"
+  ],
+  "comparison": "affected vs full, 6 each, ABBA seed 5051",
+  "startRevision": "indy-init-rehearsal-010 @ 95b3ed4df80de0f95afd07be659dbaf6a0e338a6 (clone at /home/user/sprint-scratch/D/r010), Causa.slnx",
+  "tools/models": ".NET SDK 10.0.402; tooling/bench.py; tooling/analyze_bench.py; no LLM model involved",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "protocols/SPR-D-05-affected-vs-full-tests.md",
+  "rawResults": "raw/SPR-D-05.jsonl",
+  "verification": "frozen analysis tooling/analyze_bench.py -> reanalysis/outputs/SPR-D-05-analysis.json; tooling unit tests (tooling/test_*.py) pass",
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Cost only: selection safety not assessed; all test projects depend on Causa.Domain.",
+  "conclusion": "SUPPORTED: CPU median 1.65 vs 44.19 s, ratio 0.037 (95% CI 0.033-0.048), exact permutation p=0.0022; wall median 1.72 vs 24.86 s, ratio 0.069 (95% CI 0.054-0.085), exact permutation p=0.0022. Counts constant per arm: full 278 tests (9 environment failures), affected 9 tests.",
+  "reproduction": "python3 tooling/bench.py run --plan plans/SPR-D-05.json --out raw/SPR-D-05.jsonl && python3 tooling/analyze_bench.py ..."
+ },
+ {
+  "id": "SPR-D-06",
+  "type": "exploratory",
+  "question": "Do warm build servers reduce incremental-build wall time after a non-surface edit?",
+  "hypothesis": "none (exploratory)",
+  "independentVars": [
+   "build servers enabled vs --disable-build-servers"
+  ],
+  "dependentVars": [
+   "CPU seconds (user+sys, RUSAGE_CHILDREN) [primary]",
+   "wall seconds",
+   "exit code",
+   "test counts",
+   "1-min load average before/after"
+  ],
+  "comparison": "4 each, ABBA seed 6061",
+  "startRevision": "indy-init-rehearsal-010 @ 95b3ed4df80de0f95afd07be659dbaf6a0e338a6 (clone at /home/user/sprint-scratch/D/r010), Causa.slnx",
+  "tools/models": ".NET SDK 10.0.402; tooling/bench.py; tooling/analyze_bench.py; no LLM model involved",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "protocols/EXPLORATORY-SPR-D-06-07.md",
+  "rawResults": "raw/SPR-D-06.jsonl",
+  "verification": "frozen analysis tooling/analyze_bench.py -> reanalysis/outputs/SPR-D-06-summary.json; tooling unit tests (tooling/test_*.py) pass",
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. n=4; CPU not comparable across arms.",
+  "conclusion": "No wall-time difference detected: median 9.78 vs 10.19 s, ratio 0.960 (95% CI 0.588-1.204), exact permutation p=0.4857. CPU of the client process is lower with servers on but server CPU is unattributed, so the CPU comparison is not valid.",
+  "reproduction": "python3 tooling/bench.py run --plan plans/SPR-D-06.json --out raw/SPR-D-06.jsonl && python3 tooling/analyze_bench.py ..."
+ },
+ {
+  "id": "SPR-D-07",
+  "type": "exploratory",
+  "question": "Cost of a whole scoped verification step vs a full one after a non-surface edit",
+  "hypothesis": "none (exploratory)",
+  "independentVars": [
+   "verification scope: build+test Domain.Tests vs build solution + full offline suite"
+  ],
+  "dependentVars": [
+   "CPU seconds (user+sys, RUSAGE_CHILDREN) [primary]",
+   "wall seconds",
+   "exit code",
+   "test counts",
+   "1-min load average before/after"
+  ],
+  "comparison": "4 each, ABBA seed 7071",
+  "startRevision": "indy-init-rehearsal-010 @ 95b3ed4df80de0f95afd07be659dbaf6a0e338a6 (clone at /home/user/sprint-scratch/D/r010), Causa.slnx",
+  "tools/models": ".NET SDK 10.0.402; tooling/bench.py; tooling/analyze_bench.py; no LLM model involved",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "protocols/EXPLORATORY-SPR-D-06-07.md",
+  "rawResults": "raw/SPR-D-07.jsonl",
+  "verification": "frozen analysis tooling/analyze_bench.py -> reanalysis/outputs/SPR-D-07-summary.json; tooling unit tests (tooling/test_*.py) pass",
+  "limitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. n=4; scoped selection is unsafe for a Domain change without impact analysis.",
+  "conclusion": "Scoped step median 7.78 vs 54.54 s, ratio 0.143 (95% CI 0.132-0.159), exact permutation p=0.0286 (CPU); wall median 8.89 vs 56.54 s, ratio 0.157 (95% CI 0.140-0.173), exact permutation p=0.0286.",
+  "reproduction": "python3 tooling/bench.py run --plan plans/SPR-D-07.json --out raw/SPR-D-07.jsonl && python3 tooling/analyze_bench.py ..."
+ },
+ {
+  "id": "SPR-D-08",
+  "type": "confirmatory",
+  "question": "Matched-task agent experiments: governed vs minimal instructions; preflight gate vs advisory; one vs two agents",
+  "hypothesis": "not preregistered (not runnable)",
+  "independentVars": [
+   "governance",
+   "preflight enforcement",
+   "agent count"
+  ],
+  "dependentVars": [
+   "oracle-accepted requirements",
+   "unauthorized decisions",
+   "tokens",
+   "wall",
+   "rework"
+  ],
+  "comparison": "n/a",
+  "startRevision": "n/a",
+  "tools/models": "BLOCKED: no Agent/subagent tool in this worker's tool set",
+  "environment": "Linux 6.18 container, 4 vCPU shared with other sprint tracks (1-min load 9-24 during runs), .NET SDK 10.0.402, warm NuGet cache",
+  "procedure": "Not executed. The only agent-spawning capability visible (remote create_session) starts separate cloud sessions in the owner's account that cannot see /home/user/sprint-scratch without a push (forbidden) and would exceed the Director's concurrency cap; not used without Director authorization.",
+  "rawResults": "none",
+  "verification": "n/a",
+  "limitations": "NOT TESTED",
+  "conclusion": "NOT TESTED (blocker recorded)",
+  "reproduction": "Requires an in-process Agent tool or Director-authorized create_session with a pushed fixture repo."
+ }
+]
