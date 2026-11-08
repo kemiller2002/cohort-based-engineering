@@ -7,7 +7,7 @@ Worker V1-001 (independent verifier). Outputs: `verdicts.json`, `scripts/` (own 
 | A-F-01 | done | VERIFIED |
 | A-F-03 | done | VERIFIED |
 | A-F-08 | done | PARTIALLY VERIFIED |
-| A-F-07 | pending | |
+| A-F-07 | done | PARTIALLY VERIFIED (app-code conflicts found branch-side) |
 | A-F-12 | pending | |
 | A-F-13 | pending | |
 | A-F-11 | pending | |

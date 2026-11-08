@@ -6,8 +6,15 @@
   "recomputedValue": "533,823,102 tokens (input 6,445; output 2,151,093; cache read 523,097,086; cache write 8,568,478) from 48 of 56 records with token metrics (8 have none); $193.7366 with 5m/1h cache-write split ($190.51 if all cache writes at 5m); per-request ledger pricing gives the identical $193.7366; R3 timed phase $36.0064 -> $36.01",
   "independence": "fully independent recomputation",
   "method": "Own parser over .ros/telemetry/executions/*.json metrics tokens.*; cross-check by summing every requestLedger row (3,100 requests, 48 ledgers, 0 bucket mismatches vs metrics); priced with price table entry claude-opus-5-5 (4/20/0.2/5/8 USD per MTok). R3 priced from its own evidence/telemetry/tokens-final.json timed.all with all cache writes at 5m.",
-  "inputs": ["indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions (56 files)", "indy-init-rehearsal-003@59cf4d2 evidence/telemetry/tokens-final.json", "cohort-based-engineering@adcc914 research/pricing/anthropic.price-table.json tableVersion 2026-10-20.1 (last changed eddbfb8)"],
-  "discrepancies": ["Track A data README says R8 requestLedger covers 49 executions; I find 48 ledgers (48 records with token data) and 3,100 requests. Totals unaffected.", "$193.74 depends on pricing cache writes by their 5m/1h split (almost all R8 cache writes are 1h); a 5m-only basis gives $190.51. R3 had no split, so the 'same method' reproduces R3 only under the 5m fallback, which is what Track A states."],
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions (56 files)",
+   "indy-init-rehearsal-003@59cf4d2 evidence/telemetry/tokens-final.json",
+   "cohort-based-engineering@adcc914 research/pricing/anthropic.price-table.json tableVersion 2026-10-20.1 (last changed eddbfb8)"
+  ],
+  "discrepancies": [
+   "Track A data README says R8 requestLedger covers 49 executions; I find 48 ledgers (48 records with token data) and 3,100 requests. Totals unaffected.",
+   "$193.74 depends on pricing cache writes by their 5m/1h split (almost all R8 cache writes are 1h); a 5m-only basis gives $190.51. R3 had no split, so the 'same method' reproduces R3 only under the 5m fallback, which is what Track A states."
+  ],
   "notes": "The total is a lower bound for R8: coordinator turns after its 23:50:44Z ingest and 8 transcript-less executions are absent (stated in R8 FINAL-REPORT). Cost is a list-price ESTIMATE; no provider bill exists."
  },
  {
@@ -17,7 +24,10 @@
   "recomputedValue": "Coordinator 236,176,431 tokens = 44.24%; $61.0858 of $193.7366 = 31.53%; 566 vs 2,534 requests; mean context/request 416,786.09 vs 116,721.03; peak 897,198; cost/request $0.1079 vs $0.0523",
   "independence": "fully independent recomputation",
   "method": "Coordinator = WI-R8-COORD record; task agents = all other records with a ledger. Context per request = input + cacheRead + cacheWrite from each ledger row; mean over requests.",
-  "inputs": ["indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions", "price table as A-F-01"],
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions",
+   "price table as A-F-01"
+  ],
   "discrepancies": [],
   "notes": "Context definition (input+cache read+cache write) is the natural one and reproduces exactly; excluding cache write would change the means. Coordinator share is understated because its post-ingest turns are missing."
  },
@@ -28,8 +38,33 @@
   "recomputedValue": "Task-agent transcript spans, 350 samples from T0: mean 2.151, peak 5 concurrent agents, 35.9%, 41 zero minutes, 756.75 agent-minutes. But merge freeze is T+379 (23:50:28Z): over 379 samples mean 2.01 (33.6%), 63 zero minutes. Counting distinct lanes (roles) rather than agents: mean 2.11 (350) / 1.97 (379), peak 4. Using Praxis work start->finalize spans instead of transcript spans: mean 1.57 (26%), peak 4.",
   "independence": "fully independent recomputation",
   "method": "Spans = rawTelemetry summary startedAt/endedAt of the 47 task-agent sessions (coordinator excluded); samples at T0 + i minutes; counts of spans covering each sample; also exact time-averaged concurrency and distinct-role counts.",
-  "inputs": ["indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions", "evidence/SCHEDULE-ACTUALS.md:1,54 (T0 17:31:24Z; merge freeze 23:50:28Z)"],
-  "discrepancies": ["350 samples end at 23:21:24Z, not at merge freeze (23:50:28Z, T+379); the label is wrong and the full window gives 2.01 / 33.6%.", "Peak 5 is concurrent agents; two agents shared a lane at the peak (peak distinct lanes = 4). 'Lane utilisation' of 6 lanes is therefore at most 4 at peak.", "Zero-active minutes: 41 (350 samples), not 34.", "Transcript spans include pre-'work start' time (e.g. T18 agent span begins 10 min before its Praxis work start); Praxis spans give 1.57."],
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions",
+   "evidence/SCHEDULE-ACTUALS.md:1,54 (T0 17:31:24Z; merge freeze 23:50:28Z)"
+  ],
+  "discrepancies": [
+   "350 samples end at 23:21:24Z, not at merge freeze (23:50:28Z, T+379); the label is wrong and the full window gives 2.01 / 33.6%.",
+   "Peak 5 is concurrent agents; two agents shared a lane at the peak (peak distinct lanes = 4). 'Lane utilisation' of 6 lanes is therefore at most 4 at peak.",
+   "Zero-active minutes: 41 (350 samples), not 34.",
+   "Transcript spans include pre-'work start' time (e.g. T18 agent span begins 10 min before its Praxis work start); Praxis spans give 1.57."
+  ],
   "notes": "Headline 2.15 / peak 5 reproduces under Track A's exact window and unit (agents). The metric is sensitive to window end, span source and agent-vs-lane counting; range 1.57-2.15 mean, 26-36%."
+ },
+ {
+  "claimId": "A-F-07",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "All 26 R8 merge conflicts touched only Praxis .ros/ state files; no application-code conflicts occurred in this rehearsal",
+  "recomputedValue": "PR-merge level: exactly 26 of 49 PR merge commits conflict on replay, the same 26 PRs the coordinator logged, every one only in .ros/context/current.json and/or .ros/events/events.jsonl (reproduced). Rehearsal level: 60 of 86 merge commits conflict on replay; 4 'merge origin/main into r8/<branch>' commits (branches of PRs #10, #12, #19, #36) conflicted in 6 non-state files: src/Causa.App/Program.fs, src/Causa.Persistence/Classify.fs, src/Causa.Persistence/GitHubRequests.fs, tests/Causa.TestSupport/StatefulFake.fs, tests/Causa.Invariants/Negative/INV22.fs, .github/workflows/live.yml. Git's own '# Conflicts:' trailers in those merge commit messages list the same 6 paths (51 merge commits carry such trailers).",
+  "independence": "fully independent recomputation",
+  "method": "Fresh scratch clone /home/user/sprint-scratch/V1/r8 of indy-init-rehearsal-008@fd8fba9; for every 2-parent merge commit `git merge-tree --write-tree --name-only --no-messages P1 P2`, conflicted paths parsed; branch-side merges of a PR found as merge commits in P1..P2 of its PR merge commit; cross-checked with the '# Conflicts:' block git writes into merge messages and with `git show --cc` (non-empty combined diffs for Program.fs, INV22.fs, live.yml).",
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 git history (86 merge commits)",
+   "evidence/telemetry/merges.jsonl (49 rows)"
+  ],
+  "discrepancies": [
+   "merges.jsonl records conflicts only at the PR-merge step. Application-code conflicts were resolved by the task agents when they merged main into their branches and never reached the log; PRs #12, #19 and #36 are logged as conflict:false although their branches had application/CI conflicts, and #10 is logged with only .ros/context/current.json.",
+   "11 PRs logged conflict:false had branch-side conflicts (mostly .ros)."
+  ],
+  "notes": "The statement '26 conflicts, all .ros' is true of the coordinator's PR merges only. The rehearsal-level inference ('no application-code conflicts occurred') is contradicted: at least 4 merges conflicted in application, test or CI code. The conflict rate depends on what counts as a merge: 26/49 PR merges (53%) vs 60/86 merge commits (70%). Resolution seconds were not re-verified (coordinator-logged)."
  }
 ]
