@@ -500,6 +500,21 @@
   },
   {
    "from": "aegis",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "aegis",
    "to": "conditor",
    "type": "contract/schema",
    "vias": [
@@ -547,15 +562,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "aegis",
@@ -593,15 +610,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "arca",
@@ -639,15 +658,17 @@
    "to": "communication-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:communication-engineering"
+    "conditor-pin:communication-engineering",
+    "installed:communication-engineering"
    ],
    "versions": [
     "1.0.0"
    ],
    "evidence": [
+    ".echelon/communication-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "arca",
@@ -747,15 +768,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "arca",
@@ -965,15 +988,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.20.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "causa",
@@ -981,17 +1006,19 @@
    "type": "contract/schema",
    "vias": [
     "conditor-pin:percepta",
+    "installed:percepta",
     "schema:percepta.specification-preflight/1"
    ],
    "versions": [
     "0.1.0"
    ],
    "evidence": [
+    ".echelon/percepta.json",
     "conditor.json",
     "evidence/t0/spec-preflight.json",
     "evidence/t0/spec-preflight.json.percepta.json"
    ],
-   "count": 3
+   "count": 4
   },
   {
    "from": "causa",
@@ -1174,6 +1201,21 @@
   },
   {
    "from": "chrona",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "chrona",
    "to": "conditor",
    "type": "contract/schema",
    "vias": [
@@ -1299,19 +1341,34 @@
   {
    "from": "chrona",
    "to": "limen",
+   "type": "CLI-invocation",
+   "vias": [
+    "limen verify"
+   ],
+   "versions": [],
+   "evidence": [
+    ".github/workflows/limen-verify.yml"
+   ],
+   "count": 1
+  },
+  {
+   "from": "chrona",
+   "to": "limen",
    "type": "contract/schema",
    "vias": [
     "conditor-pin:limen-fsharp",
+    "installed:limen",
     "limen.config.json"
    ],
    "versions": [
     "0.9.0"
    ],
    "evidence": [
+    ".echelon/limen.json",
     "conditor.json",
     "limen.config.json"
    ],
-   "count": 2
+   "count": 3
   },
   {
    "from": "chrona",
@@ -1338,15 +1395,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.7.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "chrona",
@@ -1420,15 +1479,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "communication-engineering",
@@ -1440,19 +1501,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "communication-engineering",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -1477,30 +1525,49 @@
   {
    "from": "communication-engineering",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "communication-engineering",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "communication-engineering",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "communication-engineering",
@@ -1536,6 +1603,21 @@
   {
    "from": "communication-engineering",
    "to": "tekmerion",
+   "type": "contract/schema",
+   "vias": [
+    "installed:tekmerion"
+   ],
+   "versions": [
+    "0.1.0"
+   ],
+   "evidence": [
+    ".echelon/research-publisher.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "communication-engineering",
+   "to": "tekmerion",
    "type": "package-ref",
    "vias": [
     "npm:@echelon-foundry/research-publisher"
@@ -1553,15 +1635,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "conditor",
@@ -1730,15 +1814,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "conditor",
@@ -1936,15 +2022,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "dokimos",
@@ -1988,13 +2076,30 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
+   ],
+   "count": 2
+  },
+  {
+   "from": "echelon-diagnostic-framework",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
    ],
    "count": 1
   },
@@ -2047,30 +2152,49 @@
   {
    "from": "echelon-diagnostic-framework",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "echelon-diagnostic-framework",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "echelon-diagnostic-framework",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "echelon-diagnostic-framework",
@@ -2108,28 +2232,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
-  },
-  {
-   "from": "echelon-engineering-system",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "echelon-engineering-system",
@@ -2171,6 +2284,21 @@
    "versions": [],
    "evidence": [
     "README.md"
+   ],
+   "count": 1
+  },
+  {
+   "from": "echelon-foundry",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
    ],
    "count": 1
   },
@@ -2238,30 +2366,49 @@
   {
    "from": "echelon-foundry",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "echelon-foundry",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "echelon-foundry",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "echelon-foundry",
@@ -2293,6 +2440,21 @@
     "conditor.json"
    ],
    "count": 2
+  },
+  {
+   "from": "echelon-foundry",
+   "to": "visual-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:visual-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/visual-engineering.json"
+   ],
+   "count": 1
   },
   {
    "from": "echelon-registry",
@@ -2338,15 +2500,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "echelon-registry",
@@ -2455,15 +2619,17 @@
    "to": "communication-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:communication-engineering"
+    "conditor-pin:communication-engineering",
+    "installed:communication-engineering"
    ],
    "versions": [
     "1.0.0"
    ],
    "evidence": [
+    ".echelon/communication-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "fides",
@@ -2541,59 +2707,37 @@
   },
   {
    "from": "fides",
-   "to": "forma",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
-  },
-  {
-   "from": "fides",
-   "to": "limen",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
-  },
-  {
-   "from": "fides",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "fides",
    "to": "percepta",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:percepta"
+    "conditor-pin:percepta",
+    "installed:percepta"
    ],
    "versions": [
     "0.1.0"
    ],
    "evidence": [
+    ".echelon/percepta.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "fides",
@@ -2633,28 +2777,47 @@
    "to": "tutela",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:tutela"
+    "conditor-pin:tutela",
+    "installed:tutela"
    ],
    "versions": [
     "0.1.0"
    ],
    "evidence": [
+    ".echelon/tutela.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "fides",
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
+   ],
+   "count": 2
+  },
+  {
+   "from": "folio",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
    ],
    "count": 1
   },
@@ -2668,19 +2831,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "folio",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -2720,30 +2870,49 @@
   {
    "from": "folio",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "folio",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "folio",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "folio",
@@ -2803,15 +2972,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "forma",
@@ -2828,6 +2999,21 @@
   },
   {
    "from": "forma",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "forma",
    "to": "conditor",
    "type": "contract/schema",
    "vias": [
@@ -2836,19 +3022,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "forma",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -2886,17 +3059,34 @@
   {
    "from": "forma",
    "to": "ordo",
+   "type": "CLI-invocation",
+   "vias": [
+    "ordo verify"
+   ],
+   "versions": [],
+   "evidence": [
+    ".github/workflows/design-system-pilot-validation.yml",
+    ".github/workflows/reconcile-forma-release-notes.yml",
+    ".github/workflows/validate-forma-feature.yml"
+   ],
+   "count": 3
+  },
+  {
+   "from": "forma",
+   "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "forma",
@@ -2944,15 +3134,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "forma-studio",
@@ -2971,6 +3163,21 @@
   },
   {
    "from": "forma-studio",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "forma-studio",
    "to": "conditor",
    "type": "contract/schema",
    "vias": [
@@ -2979,19 +3186,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "forma-studio",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -3044,15 +3238,34 @@
   {
    "from": "forma-studio",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
+    ".github/workflows/bootstrap-echelons.yml",
+    ".github/workflows/engineering-validation.yml",
+    ".github/workflows/limen-verify.yml"
+   ],
+   "count": 3
+  },
+  {
+   "from": "forma-studio",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
     "limen.config.json"
    ],
-   "count": 1
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "forma-studio",
@@ -3072,17 +3285,33 @@
   {
    "from": "forma-studio",
    "to": "ordo",
+   "type": "CLI-invocation",
+   "vias": [
+    "ordo verify"
+   ],
+   "versions": [],
+   "evidence": [
+    ".github/workflows/bootstrap-echelons.yml",
+    ".github/workflows/engineering-validation.yml"
+   ],
+   "count": 2
+  },
+  {
+   "from": "forma-studio",
+   "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "forma-studio",
@@ -3127,28 +3356,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
-  },
-  {
-   "from": "indy-init-rehearsal-010",
-   "to": "Indy-init",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "indy-init-rehearsal-010",
@@ -3308,15 +3526,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.20.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "indy-init-rehearsal-010",
@@ -3324,17 +3544,19 @@
    "type": "contract/schema",
    "vias": [
     "conditor-pin:percepta",
+    "installed:percepta",
     "schema:percepta.specification-preflight/1"
    ],
    "versions": [
     "0.1.0"
    ],
    "evidence": [
+    ".echelon/percepta.json",
     "conditor.json",
     "evidence/t0/spec-preflight.json",
     "evidence/t0/spec-preflight.json.percepta.json"
    ],
-   "count": 3
+   "count": 4
   },
   {
    "from": "indy-init-rehearsal-010",
@@ -3372,6 +3594,21 @@
     "requirements/verification/verification-manifest.json"
    ],
    "count": 3
+  },
+  {
+   "from": "iter",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
   },
   {
    "from": "iter",
@@ -3422,15 +3659,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "iter",
@@ -3466,16 +3705,48 @@
   },
   {
    "from": "iter",
+   "to": "tutela",
+   "type": "contract/schema",
+   "vias": [
+    "installed:tutela"
+   ],
+   "versions": [
+    "0.1.0"
+   ],
+   "evidence": [
+    ".echelon/tutela.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "iter",
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
+   ],
+   "count": 2
+  },
+  {
+   "from": "limen",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
    ],
    "count": 1
   },
@@ -3489,19 +3760,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "limen",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -3528,15 +3786,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "limen",
@@ -3589,30 +3849,34 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "mercatus",
    "to": "communication-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:communication-engineering"
+    "conditor-pin:communication-engineering",
+    "installed:communication-engineering"
    ],
    "versions": [
     "1.0.0"
    ],
    "evidence": [
+    ".echelon/communication-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "mercatus",
@@ -3648,15 +3912,32 @@
   {
    "from": "mercatus",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "mercatus",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "mercatus",
@@ -3678,15 +3959,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "mercatus",
@@ -3726,15 +4009,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "ordo",
@@ -3746,19 +4031,6 @@
    "versions": [],
    "evidence": [
     "docs/observability/rehearsal-metrics.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "ordo",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -3820,19 +4092,6 @@
   },
   {
    "from": "percepta",
-   "to": "Indy-init",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
-  },
-  {
-   "from": "percepta",
    "to": "aegis",
    "type": "package-ref",
    "vias": [
@@ -3856,15 +4115,17 @@
    "to": "communication-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:communication-engineering"
+    "conditor-pin:communication-engineering",
+    "installed:communication-engineering"
    ],
    "versions": [
     "1.0.0"
    ],
    "evidence": [
+    ".echelon/communication-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "percepta",
@@ -3876,19 +4137,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "percepta",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -3943,13 +4191,17 @@
    "to": "limen",
    "type": "contract/schema",
    "vias": [
+    "installed:limen",
     "limen.config.json"
    ],
-   "versions": [],
+   "versions": [
+    "0.9.0"
+   ],
    "evidence": [
+    ".echelon/limen.json",
     "limen.config.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "percepta",
@@ -3971,15 +4223,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "percepta",
@@ -4017,15 +4271,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "praxis",
@@ -4075,19 +4331,6 @@
   },
   {
    "from": "praxis",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
-  },
-  {
-   "from": "praxis",
    "to": "folio",
    "type": "doc-only-claim",
    "vias": [
@@ -4124,6 +4367,21 @@
    ],
    "evidence": [
     "src/Praxis.Application/Praxis.Application.fsproj"
+   ],
+   "count": 1
+  },
+  {
+   "from": "praxis",
+   "to": "ordo",
+   "type": "contract/schema",
+   "vias": [
+    "installed:ordo"
+   ],
+   "versions": [
+    "1.5.0"
+   ],
+   "evidence": [
+    ".echelon/sde.json"
    ],
    "count": 1
   },
@@ -4209,6 +4467,21 @@
     "src/Echelon.Signal.Application/Echelon.Signal.Application.fsproj"
    ],
    "count": 5
+  },
+  {
+   "from": "signal",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
   },
   {
    "from": "signal",
@@ -4337,19 +4610,34 @@
   {
    "from": "signal",
    "to": "limen",
+   "type": "CLI-invocation",
+   "vias": [
+    "limen verify"
+   ],
+   "versions": [],
+   "evidence": [
+    ".github/workflows/limen-verify.yml"
+   ],
+   "count": 1
+  },
+  {
+   "from": "signal",
+   "to": "limen",
    "type": "contract/schema",
    "vias": [
     "conditor-pin:limen-fsharp",
+    "installed:limen",
     "limen.config.json"
    ],
    "versions": [
     "0.9.0"
    ],
    "evidence": [
+    ".echelon/limen.json",
     "conditor.json",
     "limen.config.json"
    ],
-   "count": 2
+   "count": 3
   },
   {
    "from": "signal",
@@ -4377,15 +4665,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.7.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "signal",
@@ -4433,45 +4723,21 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
-  },
-  {
-   "from": "specula",
-   "to": "Indy-init",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "specula",
    "to": "causa",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
-   ],
-   "count": 1
-  },
-  {
-   "from": "specula",
-   "to": "echelon-foundry",
    "type": "doc-only-claim",
    "vias": [
     "README mention without code/config edge"
@@ -4575,15 +4841,17 @@
    "to": "communication-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:communication-engineering"
+    "conditor-pin:communication-engineering",
+    "installed:communication-engineering"
    ],
    "versions": [
     "1.0.0"
    ],
    "evidence": [
+    ".echelon/communication-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "strata",
@@ -4634,30 +4902,49 @@
   {
    "from": "strata",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "strata",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "strata",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "strata",
@@ -4694,6 +4981,21 @@
     "conditor.json"
    ],
    "count": 2
+  },
+  {
+   "from": "strata",
+   "to": "visual-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:visual-engineering"
+   ],
+   "versions": [
+    "1.0.1"
+   ],
+   "evidence": [
+    ".echelon/visual-engineering.json"
+   ],
+   "count": 1
   },
   {
    "from": "summa",
@@ -4760,6 +5062,21 @@
     "tests/Summa.Storage.Tests/Summa.Storage.Tests.fsproj"
    ],
    "count": 6
+  },
+  {
+   "from": "summa",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
   },
   {
    "from": "summa",
@@ -4903,19 +5220,34 @@
   {
    "from": "summa",
    "to": "limen",
+   "type": "CLI-invocation",
+   "vias": [
+    "limen verify"
+   ],
+   "versions": [],
+   "evidence": [
+    ".github/workflows/limen-verify.yml"
+   ],
+   "count": 1
+  },
+  {
+   "from": "summa",
+   "to": "limen",
    "type": "contract/schema",
    "vias": [
     "conditor-pin:limen-fsharp",
+    "installed:limen",
     "limen.config.json"
    ],
    "versions": [
     "0.9.0"
    ],
    "evidence": [
+    ".echelon/limen.json",
     "conditor.json",
     "limen.config.json"
    ],
-   "count": 2
+   "count": 3
   },
   {
    "from": "summa",
@@ -4940,15 +5272,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.8.2"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "summa",
@@ -4991,15 +5325,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "tekmerion",
@@ -5018,6 +5354,21 @@
   },
   {
    "from": "tekmerion",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "tekmerion",
    "to": "conditor",
    "type": "contract/schema",
    "vias": [
@@ -5026,19 +5377,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "tekmerion",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -5078,30 +5416,49 @@
   {
    "from": "tekmerion",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "tekmerion",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.7.1"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "tekmerion",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "tekmerion",
@@ -5142,15 +5499,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "tutela",
@@ -5225,30 +5584,49 @@
   {
    "from": "tutela",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "tutela",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "tutela",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "tutela",
@@ -5315,6 +5693,21 @@
   },
   {
    "from": "vigila",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
+   ],
+   "count": 1
+  },
+  {
+   "from": "vigila",
    "to": "conditor",
    "type": "contract/schema",
    "vias": [
@@ -5377,15 +5770,32 @@
   {
    "from": "vigila",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "vigila",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "vigila",
@@ -5407,15 +5817,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "vigila",
@@ -5455,13 +5867,30 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
+   ],
+   "count": 2
+  },
+  {
+   "from": "visual-engineering",
+   "to": "communication-engineering",
+   "type": "contract/schema",
+   "vias": [
+    "installed:communication-engineering"
+   ],
+   "versions": [
+    "1.0.0"
+   ],
+   "evidence": [
+    ".echelon/communication-engineering.json"
    ],
    "count": 1
   },
@@ -5475,19 +5904,6 @@
    "versions": [],
    "evidence": [
     "conditor.json"
-   ],
-   "count": 1
-  },
-  {
-   "from": "visual-engineering",
-   "to": "echelon-foundry",
-   "type": "doc-only-claim",
-   "vias": [
-    "README mention without code/config edge"
-   ],
-   "versions": [],
-   "evidence": [
-    "README.md"
    ],
    "count": 1
   },
@@ -5512,30 +5928,49 @@
   {
    "from": "visual-engineering",
    "to": "limen",
-   "type": "contract/schema",
+   "type": "CLI-invocation",
    "vias": [
-    "limen.config.json"
+    "limen verify"
    ],
    "versions": [],
    "evidence": [
-    "limen.config.json"
+    ".github/workflows/limen-verify.yml"
    ],
    "count": 1
+  },
+  {
+   "from": "visual-engineering",
+   "to": "limen",
+   "type": "contract/schema",
+   "vias": [
+    "installed:limen",
+    "limen.config.json"
+   ],
+   "versions": [
+    "0.9.0"
+   ],
+   "evidence": [
+    ".echelon/limen.json",
+    "limen.config.json"
+   ],
+   "count": 2
   },
   {
    "from": "visual-engineering",
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "visual-engineering",
@@ -5599,15 +6034,17 @@
    "to": "communication-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:communication-engineering"
+    "conditor-pin:communication-engineering",
+    "installed:communication-engineering"
    ],
    "versions": [
     "1.0.0"
    ],
    "evidence": [
+    ".echelon/communication-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "vitium",
@@ -5702,15 +6139,17 @@
    "to": "ordo",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:ordo"
+    "conditor-pin:ordo",
+    "installed:ordo"
    ],
    "versions": [
     "1.5.0"
    ],
    "evidence": [
+    ".echelon/sde.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   },
   {
    "from": "vitium",
@@ -5764,15 +6203,17 @@
    "to": "visual-engineering",
    "type": "contract/schema",
    "vias": [
-    "conditor-pin:visual-engineering"
+    "conditor-pin:visual-engineering",
+    "installed:visual-engineering"
    ],
    "versions": [
     "1.0.1"
    ],
    "evidence": [
+    ".echelon/visual-engineering.json",
     "conditor.json"
    ],
-   "count": 1
+   "count": 2
   }
  ]
 }
