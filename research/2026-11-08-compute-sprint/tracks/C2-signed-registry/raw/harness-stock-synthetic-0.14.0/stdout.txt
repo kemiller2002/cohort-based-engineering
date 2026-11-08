@@ -1,0 +1,24 @@
+PASS T0 embedded (compiled) trust file pins the TEST-ONLY key :: test-only-c2-001-2026-11-08
+PASS A0 forma 0.14.0 is absent from this build's built-in catalog (qualifiedVersions) :: 0.10.0,0.11.0,0.12.0,0.13.0,0.2.0,0.3.0,0.4.1,0.5.0,0.6.1,0.9.0
+PASS A1 signed entry verifies and attestedSelections contains (forma, 0.14.0); unsigned set does not :: verify=Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1); selected=True; unsignedSelected=False
+PASS A2 Compatibility.validateIn (used by doctor) accepts forma via the signed recorded authority; refuses with the unsigned one :: signed=[]; unsigned=[Component 'forma' version '0.14.0' is not qualified by this Conditor compatibility graph. Qualified versions: 0.10.0, 0.11.0, 0.12.0, 0.13.0, 0.2.0, 0.3.0, 0.4.1, 0.5.0, 0.6.1, 0.9.0.]
+PASS A3 CLI `conditor doctor --json`: COND-DOC-COMPAT findings about forma :: signed(exit 12)=0 ; unsigned(exit 12)=1 {
+      "code": "COND-DOC-COMPAT",
+      "severity": "error",
+      "area": "compatibility",
+      "detail": "Component \u0027forma\u0027 version \u00270.14.0\u0027 is not qualified by this Conditor compatibility graph. Qualified versions: 0.10.0, 0.11.0, 0.12.0, 0.13.0, 0.2.0, 0.3.0, 0.4.1, 0.5.0, 0.6.1, 0.9.0.",
+      "remediation": "Run \u0027conditor compatibility\u0027 and edit conditor.json to a qualified component/version/dependency set."
+    }
+PASS N1 one hex character of the signed releaseManifest.sha256 changed :: NotAttested(the signature does not verify under key 'test-only-c2-001-2026-11-08')
+PASS N2 one byte of the signature changed (low bit flipped) :: NotAttested(the signature does not verify under key 'test-only-c2-001-2026-11-08')
+PASS N3 signed by an untrusted throwaway key under the pinned keyId :: NotAttested(the signature does not verify under key 'test-only-c2-001-2026-11-08')
+PASS N4 signed by an untrusted throwaway key under an unknown keyId :: NotAttested(key 'test-only-untrusted-key' is not pinned by this Conditor build)
+PASS N6 replay: a valid attestation for forma 0.12.0 (its statement) copied onto this entry :: NotAttested(the signature does not verify under key 'test-only-c2-001-2026-11-08')
+PASS N9 attestation claims no web-package contract (claims echelon.other/v1) :: Attested(test-only-c2-001-2026-11-08; echelon.other/v1); selected=False
+PASS S1 one hex character of an UNSIGNED field (artifacts[0].sha256) changed :: Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1)
+PASS S2 attestation carries expiresAt in the past (field not in the format) :: Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1)
+PASS N5 same signed set, trust list marks the key revokedAt (parsed by ReleaseAttestation.parseTrust) :: NotAttested(key 'test-only-c2-001-2026-11-08' was revoked at 2026-11-01T00:00:00.0000000+00:00); selected=False
+PASS N7 forma 1.0.0 (outside qualifiedRange >=0.2.0 <1.0.0), validly signed :: verify=Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1); selected=False
+PASS N8 praxis 3.26.0 (role host-tool, not in catalog), validly signed with the web contract :: verify=Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1); selected=False; praxisRange=
+PASS S3 recorded authority file altered by one byte after its digest was recorded (signature still valid) :: Component 'forma' version '0.14.0' is not qualified by this Conditor compatibility graph. Qualified versions: 0.10.0, 0.11.0, 0.12.0, 0.13.0, 0.2.0, 0.3.0, 0.4.1, 0.5.0, 0.6.1, 0.9.0.
+17 passed, 0 failed
