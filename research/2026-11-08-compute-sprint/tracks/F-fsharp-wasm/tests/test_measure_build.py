@@ -26,3 +26,14 @@ class MeasureBuildTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CleanRootsTests(unittest.TestCase):
+    def test_custom_roots(self):
+        self.assertEqual(mode_spec("publish-cold", "p", "s", "o", ("A", "B"))["clean"], ("A", "B"))
+        self.assertEqual(mode_spec("publish-cold", "p", "s", "o")["clean"], ("src",))
+        self.assertEqual(mode_spec("sln-cold", "p", "s", "o")["clean"], ("src", "tests"))
+
+
+if __name__ == "__main__":
+    unittest.main()

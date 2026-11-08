@@ -1,10 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseArgs, toRow, markerInitScript } from "../scripts/startup.mjs";
+import { parseArgs, toRow, markerInitScript, parseMarker } from "../scripts/startup.mjs";
 
 test("parseArgs defaults and flags", () => {
   const a = parseArgs(["o.jsonl", "r10", "http://x/", "data-ready"]);
-  assert.equal(a.reps, 5); assert.equal(a.warm, false); assert.equal(a.throttle, null);
+  assert.equal(a.reps, 5); assert.equal(a.server, "python-http"); assert.equal(a.warm, false); assert.equal(a.throttle, null);
   const b = parseArgs(["o", "l", "u", "m", "--reps", "7", "--warm", "--throttle", "4g"]);
   assert.equal(b.reps, 7); assert.equal(b.warm, true); assert.equal(b.throttle, "4g");
   assert.throws(() => parseArgs(["o", "l"]));
@@ -26,4 +26,10 @@ test("toRow aggregates bytes by extension", () => {
 
 test("marker script mentions the attribute", () => {
   assert.match(markerInitScript("data-causa-ready"), /data-causa-ready/);
+});
+
+test("parseMarker", () => {
+  assert.deepEqual(parseMarker("data-engine=ready"), { attr: "data-engine", value: "ready" });
+  assert.deepEqual(parseMarker("data-x"), { attr: "data-x", value: null });
+  assert.match(markerInitScript("data-engine=ready"), /"ready"/);
 });
