@@ -6,3 +6,4 @@
 - Task 1 DONE: 24/24 runs, 96/96 trap cells, 36/36 planted cells agree (raw/agreement.json). Verdict SPR-X-03.rescore VERIFIED.
 - Next: stats (Fractions), arm check, prompt derivation, descriptive vs X-02, T5, confounds.
 - 16:40 Task 2 DONE: primary 11/3, p = 1/2178 (392/853776) reproduced exactly; secondaries and Holm reproduced (raw/v5-stats.json). Verdicts SPR-X-03.primary and .secondaries VERIFIED (wording notes). T5 exclusion leaves the stat and p unchanged (all 12 D2b runs violated T5).
+- 16:50 Tasks 3 and 7 DONE: 0 arm mismatches; no fixture modifications, disallowed imports or file access; C < K in every batch (raw/confounds.json). Verdicts .arm-assignment and .confounds VERIFIED.

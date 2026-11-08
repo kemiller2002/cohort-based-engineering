@@ -51,5 +51,38 @@
    "The undocumented measure is structurally biased toward K, since only K was instructed to write QUESTIONS.md. The REPORT acknowledges this."
   ],
   "notes": "All 24 committed per-run.json rows match my recomputed arm, fixture, viol, fp, acc, ctrl, undoc, doc, tok and wall (0 mismatches). usage.json reports model = haiku for all runs (runtime-reported)."
+ },
+ {
+  "claimId": "SPR-X-03.arm-assignment",
+  "verdict": "VERIFIED",
+  "claimedValue": "assignment.json: 12 C / 12 K, 6 per arm per fixture, 4 batches of 3 C + 3 K; QUESTIONS.md and EVIDENCE.md only in K runs",
+  "recomputedValue": "QUESTIONS.md + EVIDENCE.md present in all 12 K workspaces (a04,a06,a07,a09,a10,a12,b02,b03,b06,b09,b10,b12) and absent from all 12 C: 0 mismatches. Each batch 3C+3K. pricing.py mtimes cluster by batch (16:00:43-16:01:07, 16:02:59-16:03:31, 16:05:12-16:05:29, 16:07:16-16:07:46 EST) in assignment-batch order. All runs post-date prereg commit 90f85c1 (15:59:50 EST); lower bound on every start (last write - reported duration) is >= 16:00:07.",
+  "independence": "Read directly from scratch copies (verified byte-identical to the originals, __pycache__ excluded). Seed reproduction not attempted because it would need harness/x03.py.",
+  "method": "scripts/confounds_x03.py",
+  "inputs": [
+   "raw/confounds.json",
+   "spr-x-03/assignment.json",
+   "spr-x-03/results/usage.json"
+  ],
+  "discrepancies": [
+   "PROTOCOL.md says 'Preregistered ... ~16:05 EST, before any run'. The commit is at 15:59:50 EST and batch 1 finished by 16:01:39, so 16:05 is a mislabel (prereg still precedes the runs). This is the same pattern V4 found in X-02.",
+   "Batches are balanced 3C+3K overall but not within fixture (for example batch 1 is D2b C,C,K and D2c C,K,K). Harmless, because the test stratifies by fixture."
+  ],
+  "notes": "The fixture files in the workspaces were created at 15:58:44 EST, about 1 minute before the prereg commit. That is workspace setup, not runs."
+ },
+ {
+  "claimId": "SPR-X-03.confounds",
+  "verdict": "VERIFIED",
+  "claimedValue": "24/24 included, 0 contaminated; fixtures unchanged; exposure.txt shows 0 oracle/other-workspace access",
+  "recomputedValue": "No confound found in workspace artifacts. Imports: only allowed stdlib/workspace modules (AST-parsed). No file/os/sys/subprocess/network use; the only suspect-pattern hit is a04's docstring naming its own SPEC.md path. Fixture files (SPEC, errors and, on D2-03, DECISIONS/NOTES/CHANGELOG) are byte-identical to the templates in all 24 runs. No unexpected files. Batch effect: C < K in every batch (per-batch violation sums C 2/1/2/1 vs K 6/7/4/11). Fixture x batch stratified p = 2/729.",
+  "independence": "My own scan of workspace text. Process-level behaviour (reads outside the workspace, /tmp scratch, session-tool calls) cannot be seen from the workspaces; exposure.txt is the committed harness's transcript scan and I could not independently check it.",
+  "method": "scripts/confounds_x03.py (AST imports, regex for suspect lines, sha256 against fixture templates, batch tables); analyze_x03.py fixture x batch sensitivity.",
+  "inputs": [
+   "raw/confounds.json",
+   "raw/v5-stats.json",
+   "spr-x-03/results/exposure.txt"
+  ],
+  "discrepancies": [],
+  "notes": "SO-01 (off-task session-tool calls in a07, a10, b10 [K] and b04 [C]) is not visible in the workspaces. Those runs score K 5, K 1, K 0 and C 0. Dropping all four leaves C 5 runs on each fixture and K 4 runs on each, and the direction is unchanged (not separately tested). Runs used the same model and day; arms were interleaved within batches, so there is no time-of-day confound."
  }
 ]
