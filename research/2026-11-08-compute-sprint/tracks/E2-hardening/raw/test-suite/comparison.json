@@ -1,0 +1,39 @@
+{
+  "baseline": {
+    "tests": 2513,
+    "passed": 2511,
+    "failed": 2,
+    "seconds": 2035,
+    "failures": [
+      "attested completion: REL-GATE-004 end to end through the real Dokimos: a pinned host verifier completes, PROBE-3 and PROBE-4 are refused",
+      "attested completion: end to end through a Dokimos with attested mode: genuine receipts verify, forged ones are refused by Dokimos too"
+    ]
+  },
+  "patched": {
+    "tests": 2522,
+    "passed": 2513,
+    "failed": 9,
+    "seconds": 1647,
+    "failures": [
+      "attested completion: C3b reproduced: a forged validation result plus a forged validation event is refused in attested mode",
+      "attested completion: F4 end to end: complete-verified --id --token alone, through the real Dokimos",
+      "attested completion: REL-GATE-003: workProtocol.requireVerifiedCompletion alone implies requireAttestedEvidence",
+      "attested completion: REL-GATE-004 end to end through the real Dokimos: a pinned host verifier completes, PROBE-3 and PROBE-4 are refused",
+      "attested completion: a genuine passing receipt completes with a clean worktree and a metadata-only commit on the verified commit",
+      "attested completion: attested mode fails closed on a Dokimos without completion.verify-attested",
+      "attested completion: end to end through a Dokimos with attested mode: genuine receipts verify, forged ones are refused by Dokimos too",
+      "attested completion: the verifier serves over a Unix domain socket and work verify stores compact receipts out of tree",
+      "validation evidence: cli: validate-run with true, false and a dirty worktree in a real Git repository"
+    ]
+  },
+  "newlyFailing": [
+    "attested completion: C3b reproduced: a forged validation result plus a forged validation event is refused in attested mode",
+    "attested completion: F4 end to end: complete-verified --id --token alone, through the real Dokimos",
+    "attested completion: REL-GATE-003: workProtocol.requireVerifiedCompletion alone implies requireAttestedEvidence",
+    "attested completion: a genuine passing receipt completes with a clean worktree and a metadata-only commit on the verified commit",
+    "attested completion: attested mode fails closed on a Dokimos without completion.verify-attested",
+    "attested completion: the verifier serves over a Unix domain socket and work verify stores compact receipts out of tree",
+    "validation evidence: cli: validate-run with true, false and a dirty worktree in a real Git repository"
+  ],
+  "newlyPassing": []
+}
