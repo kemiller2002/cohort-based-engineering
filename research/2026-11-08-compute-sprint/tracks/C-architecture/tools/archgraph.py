@@ -115,6 +115,13 @@ def parse_installed_manifest(name: str, text: str) -> Optional[tuple]:
     return (system, registry_id_system(system), ver)
 
 
+def parse_foundations(text: str) -> tuple:
+    """`.echelon/foundations.json` (Praxis foundations verify): ((capability, version-or-None, required), ...)."""
+    caps = (parse_json(text) or {}).get("capabilities") or {}
+    return tuple(sorted((name, c.get("version"), bool(c.get("required"))) for name, c in caps.items()
+                        if isinstance(c, dict)))
+
+
 def parse_conditor(text: str) -> dict:
     data = parse_json(text) or {}
     authority = data.get("registryAuthority") or {}
@@ -276,6 +283,9 @@ def edges_from_facts(repo: str, facts: Mapping, systems: frozenset) -> tuple:
         out.append(edge(repo, "praxis", "contract/schema", "ros-pin", ".echelon/ros.json", facts["rosInstalled"]))
     for path, system, rid, ver in facts.get("installedManifests", ()):
         out.append(edge(repo, system, "contract/schema", f"installed:{rid}", path, ver))
+    for cap, ver, required in facts.get("foundations", ()):
+        if required and cap in systems | {"aegis", "forma", "ordo", "folio", "limen", "praxis"}:
+            out.append(edge(repo, cap, "contract/schema", f"foundations:{cap}", ".echelon/foundations.json", ver))
     if facts.get("limenConfig"):
         out.append(edge(repo, "limen", "contract/schema", "limen.config.json", "limen.config.json"))
     if facts.get("aegisBoundaries"):
@@ -318,10 +328,10 @@ def pin_skew(edges: Iterable[dict], approved: Mapping[str, str]) -> tuple:
     for e in edges:
         if not e["version"] or e["via"] == "registry-authority":
             continue
-        is_pin = e["via"].startswith(("conditor-pin:", "installed:", "ros-pin", "nuget:", "npm:"))
+        is_pin = e["via"].startswith(("conditor-pin:", "installed:", "foundations:", "ros-pin", "nuget:", "npm:"))
         if not is_pin:
             continue
-        key = e["via"].split(":", 1)[1] if e["via"].startswith(("conditor-pin:", "installed:")) else e["to"]
+        key = e["via"].split(":", 1)[1] if e["via"].startswith(("conditor-pin:", "installed:", "foundations:")) else e["to"]
         if e["via"].startswith("nuget:EchelonFoundry.Limen") or e["via"] == "npm:@echelon-foundry/limen":
             key = "limen-fsharp" if e["via"].startswith("nuget:") else "limen"
         if e["via"].startswith("nuget:EchelonFoundry.Summa"):
@@ -406,6 +416,7 @@ def read_repo_facts(repo: Path, systems: frozenset, set_by_sha: Mapping[str, str
                                     if p.name != "ros.json"
                                     for m in [parse_installed_manifest(p.name, read(repo, f".echelon/{p.name}"))] if m),
         "rosRootVersion": parse_ros_root(read(repo, "ros.json")),
+        "foundations": parse_foundations(read(repo, ".echelon/foundations.json")),
         "limenConfig": bool(read(repo, "limen.config.json")),
         "aegisBoundaries": bool(read(repo, "aegis-boundaries.json")),
         "schemaRefs": tuple(schema_refs), "cliCalls": tuple(cli), "usesRefs": tuple(uses),

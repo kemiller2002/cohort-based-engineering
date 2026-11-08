@@ -105,6 +105,11 @@ class Parsers(unittest.TestCase):
                          ("limen", "limen", "0.9.0"))
         self.assertIsNone(ag.parse_installed_manifest("toolchain.json", '{"ordo":"1.5.0"}'))
 
+    def test_foundations(self):
+        f = ag.parse_foundations('{"capabilities":{"aegis":{"required":true,"version":"1.0.0"},"folio":{"required":false}}}')
+        self.assertEqual(f, (("aegis", "1.0.0", True), ("folio", None, False)))
+        self.assertEqual(ag.parse_foundations("nope"), ())
+
     def test_uses(self):
         self.assertEqual(ag.parse_uses(WORKFLOW), (("praxis", ".github/actions/setup", "v3.25.0"),))
 
