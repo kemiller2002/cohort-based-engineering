@@ -1,0 +1,85 @@
+{
+  "key": "CAUSA-RULES",
+  "rehearsal": "Causa",
+  "blocker": "process-evidence rules bound to indy-init-rehearsal-010",
+  "trackBEvent": "B-E-125",
+  "t0": "2026-11-07T16:10:50Z",
+  "preT0": {
+    "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+    "rev": "dae2347d26d0fb7dccc36484033515bbbaa31675",
+    "sha": "dae2347d26d0fb7dccc36484033515bbbaa31675",
+    "committerTime": "2026-11-07T10:52:45-05:00",
+    "subject": "Merge pull request #194 from kemiller2002/claude/indy-init-competition-launch-vtgdcj"
+  },
+  "preT0IsBeforeT0": true,
+  "toolsRun": [
+    "harness D5 rules-binding check on the lock-pinned process-evidence rules"
+  ],
+  "check": {
+    "preregistered": {
+      "rulesPath": "kickoff/rehearsal-010/process-evidence-rules.json",
+      "rulesRepository": "indy-init-rehearsal-010",
+      "targetIdentities": [
+        "causa"
+      ],
+      "problems": [
+        "process-evidence rules require repository 'indy-init-rehearsal-010'; the target is ['causa']"
+      ],
+      "seconds": 0.048
+    },
+    "postHocWithProjectId": {
+      "rulesPath": "kickoff/rehearsal-010/process-evidence-rules.json",
+      "rulesRepository": "indy-init-rehearsal-010",
+      "targetIdentities": [
+        "causa",
+        "causa-t0"
+      ],
+      "problems": [
+        "process-evidence rules require repository 'indy-init-rehearsal-010'; the target is ['causa', 'causa-t0']"
+      ],
+      "seconds": 0.003
+    }
+  },
+  "falsePositiveCheck": {
+    "fixedRev": {
+      "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+      "rev": "8d63637",
+      "sha": "8d63637ee9875add10d3d36dc366833c6a0896f6",
+      "committerTime": "2026-11-07T17:22:54+00:00",
+      "subject": "Propose ODR-COMP-P17/P18/P19: competition process-evidence rules (repository causa-t0), P10 extension, INV-023 storage"
+    },
+    "preregistered": {
+      "rulesPath": "kickoff/competition/process-evidence-rules.json",
+      "rulesRepository": "causa-t0",
+      "targetIdentities": [
+        "causa"
+      ],
+      "problems": [
+        "process-evidence rules require repository 'causa-t0'; the target is ['causa']"
+      ],
+      "seconds": 0.002
+    },
+    "postHocWithProjectId": {
+      "rulesPath": "kickoff/competition/process-evidence-rules.json",
+      "rulesRepository": "causa-t0",
+      "targetIdentities": [
+        "causa",
+        "causa-t0"
+      ],
+      "problems": [],
+      "seconds": 0.001
+    },
+    "negativeControlR10": {
+      "rulesPath": "kickoff/rehearsal-010/process-evidence-rules.json",
+      "rulesRepository": "indy-init-rehearsal-010",
+      "targetIdentities": [
+        "indy-init-rehearsal-010"
+      ],
+      "problems": [],
+      "seconds": 0.002
+    }
+  },
+  "outcome": "CAUGHT",
+  "matchEvidence": "process-evidence rules require repository 'indy-init-rehearsal-010'; the target is ['causa']",
+  "dryRunSeconds": 0.051
+}
