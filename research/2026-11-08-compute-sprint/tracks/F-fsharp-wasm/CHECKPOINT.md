@@ -16,3 +16,11 @@
 ## CP-F-03 15:55 EST — contamination found and contained
 - An orphaned copy of run_phase2.sh (its wrapper was killed at 15:05 but the child survived) ran concurrently with the restarted one from ~15:29: duplicated r010-wasmtools startup runs, overlapping R10 TrimMode=full suite runs on the same ports (connection refused at the end of run 1; port-in-use for run 2), and an MSBuild-cancelled r008 batch-2 cold build. Orphan killed (own PIDs only). Excluded in scripts/summarize.py (EXCLUDED_STARTUP/EXCLUDED_BUILD); clean reruns queued (run_phase3.sh) with distinct server labels and ports.
 - Suites: R8 110 chromium tests x3, R9 20 x3: all stable-pass; R10 194 x3: 158 stable-pass, 36 stable-fail (17 live/no token, 19 acceptance), 0 flaky.
+
+## CP-F-04 16:20 EST — final
+- All planned measurements complete. Clean reruns replaced the contaminated wasm-tools startup rows and R10 full-trim suite runs.
+- R10 TrimMode=full: identical suite outcome to the untrimmed build (158/36, same failing set), 2 clean runs.
+- Tests: 23 Python unittest + 9 node:test + IlFrame.fsx --self-test, all passing.
+- Outputs: findings.json (20), experiments.json (10), measurements/ (build CSVs, startup.jsonl, summary.json, bundles/, axe/, il-frame.jsonl, limen probes, playwright-stability.json, style-lint.json, ci/, environment.json, loadavg-samples.txt), data/ (commit-signals, transcript builds/errors, curated-ui-defects, limen-claims), scripts/ + tests/.
+- REPORT.md not written as a file (harness refuses subagent report files); full text delivered in the final reply for the Director to commit.
+- Helper servers and the loadavg sampler stopped. Scratch: /home/user/sprint-scratch/F (build copies, isolated SDK copy with wasm-tools at dotnet-wt).
