@@ -66,5 +66,35 @@
    "11 PRs logged conflict:false had branch-side conflicts (mostly .ros)."
   ],
   "notes": "The statement '26 conflicts, all .ros' is true of the coordinator's PR merges only. The rehearsal-level inference ('no application-code conflicts occurred') is contradicted: at least 4 merges conflicted in application, test or CI code. The conflict rate depends on what counts as a merge: 26/49 PR merges (53%) vs 60/86 merge commits (70%). Resolution seconds were not re-verified (coordinator-logged)."
+ },
+ {
+  "claimId": "G-F-07",
+  "verdict": "VERIFIED",
+  "claimedValue": "Praxis 3.25.0 states mandatory verified completion is not enabled across Echelon repositories",
+  "recomputedValue": "Statement present verbatim in praxis@12bf995 (commit 'RELEASE-3-25-0: final checkpoint and completion', 2026-11-03) docs/verified-completion-rollout.md:3. Source implements the flag (src/Praxis.Application/Work/ProtectedCompletionPolicy.fs default RequireVerifiedCompletion = false; CompletionPolicy.fs). Scan of 90 ros.json files across every checked-out repo under /home/user (rehearsals 001-010, Indy-init, praxis, mercatus, ordo, signal, 40 ext/ clones incl. starters): 0 mention requireVerifiedCompletion or requireAttestedEvidence. Repo-wide grep for '\"requireVerifiedCompletion\": true' matches only a sprint E-security test script.",
+  "independence": "fully independent recomputation",
+  "method": "Read Praxis doc and source at HEAD; find all ros.json/praxis config files (excluding sprint worktrees and scratch) and grep each for the flags; repo-wide grep for an enabling value.",
+  "inputs": [
+   "praxis@12bf995",
+   "data/g-f-07-config-scan.tsv (90 config files with each repo HEAD)"
+  ],
+  "discrepancies": [
+   "The sentence was last edited 2026-10-21 (commit 173cae20), before 3.25.0; it is carried in the 3.25.0 tree rather than being a 3.25.0-dated assessment. The scan independently confirms it is still true for every checked-out repo."
+  ],
+  "notes": "Coverage is limited to repositories checked out in this environment; a repository not cloned here could enable the flag. Only HEAD revisions were scanned."
+ },
+ {
+  "claimId": "G-F-08",
+  "verdict": "VERIFIED",
+  "claimedValue": "REL-001 run-02: every arm 39/39; optimized Echelon $0.1555 vs bare $0.1147 per correct requirement (+35.5%)",
+  "recomputedValue": "80 confirmatory non-U6 trials (20 per arm; pilot and U6 excluded per the preregistration): every arm 39/39 correct units; cost per correct requirement bare $0.1147 ($4.4743/39), directives $0.1390, original Echelon $0.1520, optimized Echelon $0.1555 ($6.0646/39); optimized vs bare +35.54%. Tokens per correct 221,834 vs 304,458.",
+  "independence": "partial recomputation",
+  "method": "Own pricing of each trial's token buckets (run02.tokens.byKind: input, output, cacheRead, cacheWrite 5m/1h) with the price table; pooled ratio sum(cost)/sum(correct units) per arm. Correct units from each trial's oracle-scored run02.units. Experiment cost fields used only as a cross-check (max per-trial difference 4e-7 USD); analysis scripts not used.",
+  "inputs": [
+   "cohort-based-engineering@adcc914 research/experiments/REL-001/run-02/observations/{bare,directives,echelon-original,echelon-optimized}/*.json (93 files)",
+   "research/pricing/anthropic.price-table.json 2026-10-20.1"
+  ],
+  "discrepancies": [],
+  "notes": "Partial: token buckets and oracle verdicts are the experiment's own per-trial records; raw transcripts and oracle re-runs were not available/re-executed. Definitional caveat: output tokens are a transcript lower bound in all 80 trials (about 22 tokens per request, streaming-start counts), so output is only 1.3-1.7% of computed cost. True cost per correct requirement is higher in every arm, and the +35.5% gap could move if true output differs between arms; the report discloses the lower bound (REPORT-run-02.md:237) but the headline does not. 39/39 in all arms is a ceiling: the experiment cannot show a quality difference."
  }
 ]

@@ -11,8 +11,8 @@ Worker V1-001 (independent verifier). Outputs: `verdicts.json`, `scripts/` (own 
 | A-F-12 | pending | |
 | A-F-13 | pending | |
 | A-F-11 | pending | |
-| G-F-07 | pending | |
-| G-F-08 | pending | |
+| G-F-07 | done | VERIFIED |
+| G-F-08 | done | VERIFIED (output tokens lower bound caveat) |
 | G-F-10 | pending | |
 
 Tests: `python3 -I scripts/tests/test_v1lib.py`
