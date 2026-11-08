@@ -63,3 +63,17 @@ driver set via `.git/info/attributes` (so the repo tree is not modified) for
 - `actor` metadata divergence: Praxis refuses it; the driver's policy is declared in its source
   (preregistered choice: take the `actor` of the side whose `updatedAt` is later; tie -> ours) and
   the effect is measured against M.
+
+## Amendment 1 (recorded 2026-11-08T14:06-0500, AFTER the v1 replay; deviation, not preregistered)
+- v1 result on the 26 logged R8 merges (raw/replay-r8-logged-v1.jsonl): 16/26 merges fully resolved;
+  10/26 still had `.ros/events/events.jsonl` unmerged because the driver REFUSED with
+  "base history removed, rewritten or reordered". In 5 of those 10 (PR10, 14, 15, 17, 30) Git's plain
+  text merge had merged events.jsonl cleanly, so v1 *added* a conflict there (a regression).
+- Cause (inspected PR10): the incoming branch had earlier merged main with the team's DEV-R8-08 fallback
+  ("ours in order, then theirs' new lines"), which reorders base events. All base events were present and
+  byte-identical; only their relative order differed. Praxis's own resolver has the same strict rule.
+- v2 change: if base events are all present with identical content but reordered, the driver no longer
+  refuses; it emits ours' order followed by theirs-only events in theirs' order (the order DEV-R8-08 used),
+  and logs "relaxed-order" to stderr. Removal, rewrite, duplicate IDs and divergent same-ID content still
+  refuse. v1 and v2 are both reported. The extended replays (all R8 and R10 conflicted merges) use v2 only,
+  and were not run before this amendment.
