@@ -94,12 +94,32 @@ class Parsers(unittest.TestCase):
         self.assertNotIn(("conditor", "praxis"), calls, "tool-name lists are not invocations")
         self.assertFalse(any(sub.startswith("v3") for _, sub in calls), "version strings are not subcommands")
 
+    def test_npx(self):
+        wf = 'run: npx --yes "@echelon-foundry/limen@${{ steps.limen.outputs.version }}" verify --strict'
+        self.assertEqual(ag.parse_npx_invocations(wf), (("limen", "verify"),))
+        self.assertEqual(ag.parse_npx_invocations("npx playwright test"), ())
+
+    def test_installed_manifest(self):
+        self.assertEqual(ag.parse_installed_manifest("sde.json", '{"installedVersion":"1.5.0"}'), ("ordo", "ordo", "1.5.0"))
+        self.assertEqual(ag.parse_installed_manifest("limen.json", '{"installedVersion":"0.9.0"}'),
+                         ("limen", "limen", "0.9.0"))
+        self.assertIsNone(ag.parse_installed_manifest("toolchain.json", '{"ordo":"1.5.0"}'))
+
+    def test_foundations(self):
+        f = ag.parse_foundations('{"capabilities":{"aegis":{"required":true,"version":"1.0.0"},"folio":{"required":false}}}')
+        self.assertEqual(f, (("aegis", "1.0.0", True), ("folio", None, False)))
+        self.assertEqual(ag.parse_foundations("nope"), ())
+
     def test_uses(self):
         self.assertEqual(ag.parse_uses(WORKFLOW), (("praxis", ".github/actions/setup", "v3.25.0"),))
 
     def test_readme_mentions_word_boundary(self):
         self.assertEqual(ag.readme_mentions("Uses Limen and Forma; formality", ["limen", "forma", "folio"]),
                          ("forma", "limen"))
+
+    def test_readme_mentions_ignore_scopes_and_urls(self):
+        text = "npm i @echelon-foundry/limen; see github.com/kemiller2002/forma/blob/x"
+        self.assertEqual(ag.readme_mentions(text, ["echelon-foundry", "limen", "forma"]), ())
 
 
 class PathFilter(unittest.TestCase):
@@ -137,7 +157,8 @@ class Edges(unittest.TestCase):
         "projectRefs": (("a.fsproj", "../../arca/src/Arca.Core/Arca.Core.fsproj"),),
         "conditor": {"components": (("praxis", "3.7.2"), ("limen-fsharp", "0.9.0")), "authoritySha256": "ab"},
         "authoritySet": "1.2.0",
-        "rosInstalled": "3.7.2", "limenConfig": True, "aegisBoundaries": False,
+        "rosInstalled": "3.7.2", "limenConfig": True,
+        "installedManifests": ((".echelon/sde.json", "ordo", "ordo", "1.5.0"),), "aegisBoundaries": False,
         "schemaRefs": (("x.json", "dokimos.completion-verification/1"),),
         "cliCalls": ((".github/workflows/v.yml", "praxis", "validate"),),
         "usesRefs": (),
@@ -178,6 +199,8 @@ class Edges(unittest.TestCase):
         self.assertEqual(by[("aegis", "nuget:EchelonFoundry.Aegis.Core")], "current")
         self.assertEqual(by[("limen", "npm:@echelon-foundry/limen")], "patch-behind")
         self.assertEqual(by[("limen-fsharp", "conditor-pin:limen-fsharp")], "current")
+        rows2 = ag.pin_skew(self.edges(), {"ordo": "1.20.0"})
+        self.assertIn(("ordo", "installed:ordo", "minor-behind"), {(r["component"], r["via"], r["skew"]) for r in rows2})
 
     def test_dot(self):
         dot = ag.to_dot([{"id": "a", "release": "1.0.0"}],

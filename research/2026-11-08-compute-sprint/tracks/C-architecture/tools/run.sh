@@ -11,3 +11,5 @@ python3 -I "$T/tools/archgraph.py" --repos-root /home/user/ext \
   --registry /home/user/ext/echelon-registry \
   --approved-set /home/user/ext/echelon-registry/sets/echelon-current/1.37.0.json \
   --latest "$T/data/latest-releases.json" --out "$T/data"
+cp "$T/data/dependency-graph.json" "$T/data/dependency-graph.dot" "$T/"
+python3 -I "$T/tools/test_build_inventory.py" && python3 -I "$T/tools/build_inventory.py" "$T"

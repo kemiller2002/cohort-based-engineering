@@ -101,6 +101,27 @@ def parse_ros_root(text: str) -> Optional[str]:
     return data.get("rosVersion")
 
 
+INSTALLED_TOOL_SYSTEM = {"sde": "ordo", "ros": "praxis", "research-publisher": "tekmerion"}
+
+
+def parse_installed_manifest(name: str, text: str) -> Optional[tuple]:
+    """`.echelon/<tool>.json` written by a tool's installer -> (registryId, systemId, installedVersion)."""
+    data = parse_json(text) or {}
+    ver = data.get("installedVersion")
+    if not ver:
+        return None
+    tool = name[:-5] if name.endswith(".json") else name
+    system = INSTALLED_TOOL_SYSTEM.get(tool, tool)
+    return (system, registry_id_system(system), ver)
+
+
+def parse_foundations(text: str) -> tuple:
+    """`.echelon/foundations.json` (Praxis foundations verify): ((capability, version-or-None, required), ...)."""
+    caps = (parse_json(text) or {}).get("capabilities") or {}
+    return tuple(sorted((name, c.get("version"), bool(c.get("required"))) for name, c in caps.items()
+                        if isinstance(c, dict)))
+
+
 def parse_conditor(text: str) -> dict:
     data = parse_json(text) or {}
     authority = data.get("registryAuthority") or {}
@@ -171,6 +192,14 @@ def parse_cli_invocations(text: str) -> tuple:
     return tuple(found)
 
 
+NPX_RE = re.compile(r"npx\s+(?:--yes\s+|-y\s+)?[\"']?(@echelon-foundry/[a-z-]+)(?:@(?:\$\{\{[^}]*\}\}|[^\s\"']+))?[\"']?\s+([a-z][a-z0-9-]+)")
+
+
+def parse_npx_invocations(text: str) -> tuple:
+    return tuple((npm_package_system(m.group(1)), m.group(2)) for m in NPX_RE.finditer(text)
+                 if npm_package_system(m.group(1)))
+
+
 USES_RE = re.compile(r"uses:\s*kemiller2002/([A-Za-z0-9_.-]+)(/[^@\s]*)?@(\S+)")
 
 
@@ -186,7 +215,9 @@ def parse_schema_refs(text: str) -> tuple:
 
 
 def readme_mentions(text: str, systems: Iterable[str]) -> tuple:
-    return tuple(sorted(s for s in systems if re.search(rf"\b{re.escape(s)}\b", text, re.IGNORECASE)))
+    # `@echelon-foundry/pkg` and `kemiller2002/name` are package scopes / URLs, not claims of integration.
+    return tuple(sorted(s for s in systems
+                        if re.search(rf"(?<![@/\w-]){re.escape(s)}(?![\w/-])", text, re.IGNORECASE)))
 
 
 # ---------------------------------------------------------------- semver helpers
@@ -250,6 +281,11 @@ def edges_from_facts(repo: str, facts: Mapping, systems: frozenset) -> tuple:
                             "conditor.json", facts.get("authoritySet")))
     if facts.get("rosInstalled"):
         out.append(edge(repo, "praxis", "contract/schema", "ros-pin", ".echelon/ros.json", facts["rosInstalled"]))
+    for path, system, rid, ver in facts.get("installedManifests", ()):
+        out.append(edge(repo, system, "contract/schema", f"installed:{rid}", path, ver))
+    for cap, ver, required in facts.get("foundations", ()):
+        if required and cap in systems | {"aegis", "forma", "ordo", "folio", "limen", "praxis"}:
+            out.append(edge(repo, cap, "contract/schema", f"foundations:{cap}", ".echelon/foundations.json", ver))
     if facts.get("limenConfig"):
         out.append(edge(repo, "limen", "contract/schema", "limen.config.json", "limen.config.json"))
     if facts.get("aegisBoundaries"):
@@ -292,10 +328,10 @@ def pin_skew(edges: Iterable[dict], approved: Mapping[str, str]) -> tuple:
     for e in edges:
         if not e["version"] or e["via"] == "registry-authority":
             continue
-        is_pin = e["via"].startswith(("conditor-pin:", "ros-pin", "nuget:", "npm:"))
+        is_pin = e["via"].startswith(("conditor-pin:", "installed:", "foundations:", "ros-pin", "nuget:", "npm:"))
         if not is_pin:
             continue
-        key = e["via"].split(":", 1)[1] if e["via"].startswith("conditor-pin:") else e["to"]
+        key = e["via"].split(":", 1)[1] if e["via"].startswith(("conditor-pin:", "installed:", "foundations:")) else e["to"]
         if e["via"].startswith("nuget:EchelonFoundry.Limen") or e["via"] == "npm:@echelon-foundry/limen":
             key = "limen-fsharp" if e["via"].startswith("nuget:") else "limen"
         if e["via"].startswith("nuget:EchelonFoundry.Summa"):
@@ -361,7 +397,7 @@ def read_repo_facts(repo: Path, systems: frozenset, set_by_sha: Mapping[str, str
     cli, uses = [], []
     for rel in git_files(repo, [".github/workflows/*.yml", ".github/workflows/*.yaml", ".github/actions/*/action.yml"]):
         text = read(repo, rel)
-        cli += [(rel, t, s) for t, s in parse_cli_invocations(text)]
+        cli += [(rel, t, s) for t, s in parse_cli_invocations(text) + parse_npx_invocations(text)]
         uses += [(rel, *u) for u in parse_uses(text)]
     schema_refs = []
     for rel in git_files(repo, ["*.json"])[:4000]:
@@ -376,7 +412,11 @@ def read_repo_facts(repo: Path, systems: frozenset, set_by_sha: Mapping[str, str
         "nugetSources": parse_nuget_sources(read(repo, "NuGet.config") or read(repo, "nuget.config")),
         "conditor": cond, "authoritySet": authority_set,
         "rosInstalled": parse_ros_installed(read(repo, ".echelon/ros.json")),
+        "installedManifests": tuple((f".echelon/{p.name}", *m) for p in sorted((repo / ".echelon").glob("*.json"))
+                                    if p.name != "ros.json"
+                                    for m in [parse_installed_manifest(p.name, read(repo, f".echelon/{p.name}"))] if m),
         "rosRootVersion": parse_ros_root(read(repo, "ros.json")),
+        "foundations": parse_foundations(read(repo, ".echelon/foundations.json")),
         "limenConfig": bool(read(repo, "limen.config.json")),
         "aegisBoundaries": bool(read(repo, "aegis-boundaries.json")),
         "schemaRefs": tuple(schema_refs), "cliCalls": tuple(cli), "usesRefs": tuple(uses),
