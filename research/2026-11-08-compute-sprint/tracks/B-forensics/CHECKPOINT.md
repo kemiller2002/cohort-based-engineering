@@ -5,3 +5,12 @@
 - Fetched read-only GitHub Actions run lists for indy-init-rehearsal-001..010 (3,222 runs) into raw/actions/ via scripts/fetch_runs.sh.
 - Gaps: causa Actions API not reachable (session not attached; no push access requested); private repos research-documents, causa-acceptance-r10, Indy-init-audits not clonable.
 - Next: ci_metrics script + tests, events.jsonl, findings.
+
+## CP-B-02 (~14:10 EST)
+- Private repos now readable: research-documents@b372a7f (R1 RESULT/ERRATA folded in), indy-init-audits@10aeded (R7 readiness audit, R6 provenance), causa-acceptance-r10@e1e7966 (only README on main; 116 live-probe branches dated 2026-11-06 from ls-remote).
+- Full clones of shallow R3/R4/R5/R6/R8 under /home/user/ext/full for merge replay.
+- Tooling: ci_metrics.py, merge_conflicts.py, events_tool.py (+20 unit/integration tests, all passing).
+- events.jsonl (135 records), taxonomy.json, data/ci-metrics.json, data/merge-conflicts.json, data/event-analysis.json.
+- Verified: R6 imported R5 app (99/99 source files identical); R2 historical ledger recomputes INVALID; R5 conflict list contains all 7 baseline conflicting merges.
+- Note: REPORT.md cannot be written by subagents (harness); its content goes in the final reply.
+- Next: findings.json, rehearsal-summary.csv.
