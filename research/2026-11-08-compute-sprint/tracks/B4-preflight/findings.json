@@ -1,0 +1,130 @@
+[
+  {
+    "id": "B4-F-01",
+    "title": "Indy-init's spec-preflight claim reproduces exactly",
+    "classification": "VERIFIED",
+    "statement": "percepta spec-preflight 0.4.0 (4a53688, the version Indy-init pinned for R9 and the competition) exits 3 on frozen v4.1.1 (R8) in 5/5 runs, median 0.34 s, with exactly the documented findings: 2 blocking likely-contradictions (INV-04 x SM-SAVE T-S31, T-S32), 1 blocking missing-interface (CommandEnvelope cannot discriminate 134 catalog commands; body lost through 7 carrier types), 2 non-blocking missing-specifications ((UnknownOutcome, ReconcileReadFailed) = DEV-R8-12; (UnknownOutcome, CheckAgain)). On v4.1.2, v4.1.5 and v4.1.6 it exits 0 with zero findings of any kind (median 0.26-0.35 s).",
+    "evidence": [
+      "raw/v0.4.0-4a53688/runs.json",
+      "raw/v0.4.0-4a53688/R8-frozen.DOC.json",
+      "results.csv",
+      "Indy-init dae2347 docs/engineering-improvement/R9-READINESS-HANDOFF.md section C",
+      "percepta docs/SPECIFICATION-PREFLIGHT.md"
+    ],
+    "limitations": [
+      "Local rebuild from tagged source (percepta --version: 0.4.0), not the downloaded release archive.",
+      "Wall time includes process start on a host at load 9-11."
+    ]
+  },
+  {
+    "id": "B4-F-02",
+    "title": "R9 pin = HEAD; the first spec-preflight commit gives identical results",
+    "classification": "VERIFIED",
+    "statement": "Indy-init kickoff/rehearsal-009/toolchain.lock.json (bc3c381) expects percepta-semantic 0.4.0; docs/competition-readiness/dependency-lock.json (dae2347) pins tag percepta-semantic-v0.4.0 at commit 4a53688, which is the percepta clone's HEAD. The first spec-preflight commit 0ad2bd3 differs only in one at-limit regex and produces byte-identical reports on all 8 package x condition cells.",
+    "evidence": [
+      "raw/first-0ad2bd3/",
+      "git -C /home/user/ext/percepta diff 0ad2bd3 4a53688 -- src/Percepta.Core/Specification.fs"
+    ],
+    "limitations": [
+      "0ad2bd3 run n=3."
+    ]
+  },
+  {
+    "id": "B4-F-03",
+    "title": "Per-defect agreement with B3: both catch the two R8 blockers and DEV-R8-12; only B3 sees T18<->T20",
+    "classification": "VERIFIED",
+    "statement": "R8-INV04: B3 C1-loop CAUGHT, spec-preflight CAUGHT. R8-CMDBODY: B3 C2 CAUGHT, spec-preflight CAUGHT (DOC condition). DEV-R8-12: B3 C3 (exploratory) FLAGGED, spec-preflight reports it (non-blocking). Causa T18<->T20: B3 C4 DETECTABLE (noisy), spec-preflight cannot see it: it takes no slice/plan input and reports nothing on v4.1.6.",
+    "evidence": [
+      "comparison.json perDefect",
+      "B3 results.csv (worker 82f159b), re-run from scratch copy: identical"
+    ],
+    "limitations": [
+      "The T18<->T20 result for spec-preflight is by construction (out of scope), not a measured miss of a capable rule."
+    ]
+  },
+  {
+    "id": "B4-F-04",
+    "title": "False alarms: spec-preflight 0 on every control; fewer extras on R8 than B3",
+    "classification": "VERIFIED",
+    "statement": "Controls v4.1.2/v4.1.5/v4.1.6: spec-preflight 0 blocking and 0 non-blocking findings each. B3: primary checks 0 each; secondary C1-cycle 6 per control (18 total); C4 one 6-slice cycle group on R10 and Causa. On R8, spec-preflight's only extra is the non-blocking (UnknownOutcome, CheckAgain) pair (documented upstream as plausibly intended); B3 C1-loop adds 3 misattributions to the per-request 'three automatic reads' clause plus T-S47 (judged related-true by B3 post hoc), which spec-preflight does not flag (its effect matcher needs the whole phrase 'reconciliation read'; T-S47 says 'one read on return').",
+    "evidence": [
+      "comparison.json controlFalseAlarms, r8Extras",
+      "raw/*/R8-frozen.DOC.json"
+    ],
+    "limitations": [
+      "Controls share ancestry and were seen by both tool authors; zero false alarms here says little about other specifications."
+    ]
+  },
+  {
+    "id": "B4-F-05",
+    "title": "Indy-init's CI invocation drops the carrier check",
+    "classification": "VERIFIED",
+    "statement": "Indy-init .github/workflows/preflight-tooling.yml (dae2347) runs spec-preflight on v4.1.5 without --catalog and asserts only blocked==false and empty blockingContradictions. Without the catalog the carrier rule has no carrier to test: on R8 that invocation (CI condition) still exits 3 but does not report the CommandEnvelope defect. The r9.fsx wrapper used in STARTUP passes --catalog and refuses on any blocking section, so it is not affected.",
+    "evidence": [
+      "results.csv rows condition=CI",
+      "Indy-init dae2347 .github/workflows/preflight-tooling.yml lines 396-400",
+      "Indy-init bc3c381 tools/r9/r9.fsx specPreflight"
+    ],
+    "limitations": [
+      "Only R8 shows the effect; on controls CI and DOC agree (no findings)."
+    ]
+  },
+  {
+    "id": "B4-F-06",
+    "title": "spec-preflight was built knowing the R8 answer, by the session that also wrote the corrected control",
+    "classification": "VERIFIED",
+    "statement": "R8 ran on 2026-11-01 (rehearsal-008 commits 17:36Z-23:53Z; DEV-R8-09 18:22Z, DEV-R8-11 18:55Z, DEV-R8-12 23:04Z). spec-preflight's first commit 0ad2bd3 is 2026-11-02 01:23Z; its docs present the R8 package as the regression target and state that two false positives seen on it were fixed. Commits 0ad2bd3, 92527ed, the 0.4.0 release (9c671dc) and Indy-init's R9 handoff, v4.1.2 amendment (2dc5a05) and compiled v4.1.2 (f24b167, 19:31Z, after 92527ed) all carry the same Claude-Session trailer. 92527ed was tuned on draft v4.1.2 wording; the frozen v4.1.2 also passes the pre-fix build. v4.1.5 (2026-11-06) and v4.1.6 (2026-11-07) post-date the release, but v4.1.5 was gated by the tool in CI.",
+    "evidence": [
+      "git log percepta src/Percepta.Core/Specification.fs",
+      "git log /home/user/indy-init-rehearsal-008",
+      "Indy-init git log with Claude-Session trailers"
+    ],
+    "limitations": [
+      "Same session trailer shows shared authorship context, not intent to overfit."
+    ]
+  },
+  {
+    "id": "B4-F-07",
+    "title": "Neither tool is shown to be generic; both are lexically tuned",
+    "classification": "SUPPORTED",
+    "statement": "Post-hoc rewrites of R8 that keep each defect: spec-preflight misses INV-04 when the bound says 'no more than ... in any 60-second window' (P1), when the loop is a 2-cycle (P3) or the effect is reworded (P4), and misses the carrier gap when CommandEnvelope gains an irrelevant string field (P5) or the catalog says 'travels in' instead of 'is carried inside' (P6); it survives 'per minute' (P2) and renaming the carrier (P7). B3 C1-loop misses P3 and P4 and on P1 alarms only through the wrong clause; C1-cycle survives P3; B3 C2 survives P5-P7 only because it keys on type and field names containing 'Command'. No requirement id is hard-coded in spec-preflight's rules (grep), but its trigger vocabulary ('at most N X in T seconds', 'carried inside', 'spent', 'already made|sent|used|done') matches this specification family.",
+    "evidence": [
+      "raw/probe.json",
+      "harness/probe.py",
+      "percepta src/Percepta.Core/Specification.fs at 4a53688"
+    ],
+    "limitations": [
+      "Post hoc, adversarially chosen probes on one package; false-alarm behaviour on independent specifications is untested for both tools."
+    ]
+  },
+  {
+    "id": "B4-F-08",
+    "title": "The counter-coverage rule conflates counters, so a finding can disappear without the gap being closed",
+    "classification": "VERIFIED",
+    "statement": "(UnknownOutcome, CheckAgain) has transitions only under 'automatic reads spent' in v4.1.1 and in v4.1.2/v4.1.5 alike, so the side with automatic reads left is unspecified in all of them. spec-preflight reports it on v4.1.1 but not on v4.1.2, because v4.1.2's guards add 'fewer than four reconciliation reads ... in the 60 s' (a different counter), which satisfies the below-limit regex. Whether failing closed there is intended remains an owner question.",
+    "evidence": [
+      "raw/v0.4.0-4a53688/R8-frozen.DOC.json",
+      "SM-SAVE CheckAgain pairs in /home/user/sprint-scratch/B4/inputs/*/state-machine-contracts.json",
+      "Specification.fs belowLimit/atLimit regexes"
+    ],
+    "limitations": [
+      "Single instance; the missing side may well be intended."
+    ]
+  },
+  {
+    "id": "B4-F-09",
+    "title": "Echelon should reuse spec-preflight for C1/C2/C3-class checks rather than build new ones",
+    "classification": "SUPPORTED",
+    "statement": "On the four packages, spec-preflight matches B3's two primary catches and C3, with no control false alarms of any kind, fewer R8 extras, comparable cost (about 0.3 s, no build at use since it ships as a released self-contained CLI), and it is already pinned and wired into Indy-init's r9.fsx/STARTUP gate. B3's C1-loop/C2/C3 duplicate it. B3's distinct value is C4 (slice-dependency cycles), and C1-cycle as a 2-cycle extension; those could be proposed as additions to the percepta module rather than a parallel tool. Indy-init's CI step should pass --catalog and check every blocking section.",
+    "evidence": [
+      "B4-F-01",
+      "B4-F-03",
+      "B4-F-04",
+      "B4-F-05",
+      "B4-F-07"
+    ],
+    "limitations": [
+      "Recommendation, not a measurement; generality of both tools is unproven (B4-F-07)."
+    ]
+  }
+]

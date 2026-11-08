@@ -7,4 +7,5 @@
 - CI condition (no --catalog, as Indy-init preflight-tooling.yml runs it for v4.1.5) cannot detect the carrier defect.
 - Not blind: same Claude session wrote tool, R9 handoff claims, v4.1.2 correction (after R8 records, 2026-11-02).
 - Post-hoc probe: both tools lexically fragile; percepta misses reworded bound, 2-cycle, string tag, reworded catalog.
-- Next: experiments.json, findings.json, final report.
+- experiments.json (2), findings.json (9: B4-F-01..09). Status: COMPLETE; report delivered in hand-back text.
+- Reproduce: see experiments.json reproduction; tests: python3 -m unittest discover -s harness/tests -v (12 pass).
