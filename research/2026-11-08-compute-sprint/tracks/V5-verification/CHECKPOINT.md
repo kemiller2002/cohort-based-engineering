@@ -7,3 +7,4 @@
 - Next: stats (Fractions), arm check, prompt derivation, descriptive vs X-02, T5, confounds.
 - 16:40 Task 2 DONE: primary 11/3, p = 1/2178 (392/853776) reproduced exactly; secondaries and Holm reproduced (raw/v5-stats.json). Verdicts SPR-X-03.primary and .secondaries VERIFIED (wording notes). T5 exclusion leaves the stat and p unchanged (all 12 D2b runs violated T5).
 - 16:50 Tasks 3 and 7 DONE: 0 arm mismatches; no fixture modifications, disallowed imports or file access; C < K in every batch (raw/confounds.json). Verdicts .arm-assignment and .confounds VERIFIED.
+- 16:58 Task 4 DONE: C/K/G_as_delivered reproduce byte for byte from frozen M + G sections before 'Task:' (raw/prompts_check.json). Delivered prompts not verifiable. Verdict .prompt-derivation VERIFIED (templates only).

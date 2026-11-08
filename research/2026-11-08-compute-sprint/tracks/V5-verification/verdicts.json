@@ -84,5 +84,21 @@
   ],
   "discrepancies": [],
   "notes": "SO-01 (off-task session-tool calls in a07, a10, b10 [K] and b04 [C]) is not visible in the workspaces. Those runs score K 5, K 1, K 0 and C 0. Dropping all four leaves C 5 runs on each fixture and K 4 runs on each, and the direction is unchanged (not separately tested). Runs used the same model and day; arms were interleaved within batches, so there is no time-of-day confound."
+ },
+ {
+  "claimId": "SPR-X-03.prompt-derivation",
+  "verdict": "VERIFIED (templates only)",
+  "claimedValue": "C.txt = M + Authority section, K.txt = M + Checklist section, each inserted before the 'Task:' line (C 740cbd20...daf6, K 30229d25...b4b7); sections come from the frozen G block (G.txt 9e6b2256...e309); G_as_delivered 73fccb46...e371",
+  "recomputedValue": "Frozen G.txt sha256 = 9e6b2256...e309 (match). G = M + one contiguous insertion after the 'Task:' line, made of exactly 2 sections (Authority, Checklist). C.txt and K.txt are byte-identical to M with that single section (plus one blank separator line) inserted immediately before 'Task:'. Neither contains the other section. G_as_delivered.txt = M + both sections before 'Task:'. All three sha256 values match PROTOCOL.md. M.txt and G.txt are unchanged since commit 090e876 (D2-01 prereg).",
+  "independence": "Own derivation code (scripts/prompts_check.py, with tests). test_x03.py not used.",
+  "method": "Byte-level reconstruction from frozen M.txt and G.txt.",
+  "inputs": [
+   "arm-prompts/M.txt",
+   "arm-prompts/G.txt",
+   "spr-x-03/arm-prompts/*",
+   "raw/prompts_check.json"
+  ],
+  "discrepancies": [],
+  "notes": "The DELIVERED prompts cannot be verified: they are not in the workspaces and no transcript was provided. This is a template check only, and the X-02 placement deviation shows that templates and delivery can differ. Design note: K's section asks for two extra deliverables (QUESTIONS.md, EVIDENCE.md), so part of K's token and wall overhead is mechanically expected, and the 'documented' measure is only available to K. C's Authority text says to 'Record unsupported interpretations as unresolved questions' without naming a file."
  }
 ]
