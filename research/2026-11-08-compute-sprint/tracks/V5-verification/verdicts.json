@@ -80,10 +80,11 @@
   "inputs": [
    "raw/confounds.json",
    "raw/v5-stats.json",
-   "spr-x-03/results/exposure.txt"
+   "spr-x-03/results/exposure.txt",
+   "raw/sensitivity_extra.json"
   ],
   "discrepancies": [],
-  "notes": "SO-01 (off-task session-tool calls in a07, a10, b10 [K] and b04 [C]) is not visible in the workspaces. Those runs score K 5, K 1, K 0 and C 0. Dropping all four leaves C 5 runs on each fixture and K 4 runs on each, and the direction is unchanged (not separately tested). Runs used the same model and day; arms were interleaved within batches, so there is no time-of-day confound."
+  "notes": "SO-01 (off-task session-tool calls in a07, a10, b10 [K] and b04 [C]) is not visible in the workspaces. Those runs score K 5, K 1, K 0 and C 0. Dropping all four (D2b 6C/4K, D2c 5C/5K) gives stat 83/20, exact p = 1/8820 (raw/sensitivity_extra.json): the primary is robust. Runs used the same model and day; arms were interleaved within batches, so there is no time-of-day confound."
  },
  {
   "claimId": "SPR-X-03.prompt-derivation",
@@ -100,5 +101,43 @@
   ],
   "discrepancies": [],
   "notes": "The DELIVERED prompts cannot be verified: they are not in the workspaces and no transcript was provided. This is a template check only, and the X-02 placement deviation shows that templates and delivery can differ. Design note: K's section asks for two extra deliverables (QUESTIONS.md, EVIDENCE.md), so part of K's token and wall overhead is mechanically expected, and the 'documented' measure is only available to K. C's Authority text says to 'Record unsupported interpretations as unresolved questions' without naming a file."
+ },
+ {
+  "claimId": "SPR-X-03.descriptive-vs-X-02",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "X-F-06: C reaches roughly G's violation level at roughly M's cost; X-F-07: K's D2-02 rate (3.5) is descriptively higher than M's (2.0). Table: M 2.00/1.50, 78.0k/80.1k, 49/52 s; G 0.83/0.50, 82.9k/87.2k, 67/75 s; C 1.00/0.00, 77.6k/81.4k, 47/58 s; K 3.50/1.17, 83.4k/88.4k, 64/84 s",
+  "recomputedValue": "Table reproduced exactly from X-02's committed per-run.json (whose violations match V4's oracle 24/24) and my X-03 re-score. C vs G violations: D2b 1.00 vs 0.83, D2c 0.00 vs 0.50; sum G-C = +0.33, unadjusted exact p = 13/22. C vs M cost: tokens D2b 77.6k vs 78.0k (-0.6%), D2c 81.4k vs 80.1k (+1.6%), sum M-C = -835 (p 0.61); wall D2b 46.9 vs 49.3 s, D2c 57.6 vs 52.0 s (+10.8%). K vs M on D2b: 3.50 vs 2.00, unadjusted p = 47/462 = 0.10; on D2c K 1.17 < M 1.50. Excluding T5: D2b G 0.00, C 0.00, M 1.00, K 2.50.",
+  "independence": "Own code (scripts/descriptive_x02.py). X-02 data from its committed per-run.json, cross-checked against V4's independent scores.",
+  "method": "Means per fixture and arm; exact unadjusted permutation p values as context only.",
+  "inputs": [
+   "raw/descriptive.json",
+   "raw/sensitivity_extra.json",
+   "spr-x-02/results/per-run.json",
+   "V4 raw/v4-scores.json"
+  ],
+  "discrepancies": [
+   "'K is worse than M on D2-02' is a descriptive difference only. It is not distinguishable from noise (unadjusted p = 0.10, even before accounting for non-randomization), it reverses on D2-03 (K 1.17 < M 1.50), and on the undocumented measure K (0) is better than M. X-F-07 as worded ('descriptively higher') is accurate; a stronger reading is not supported.",
+   "'At roughly M's cost' holds for tokens; wall on D2-03 is about 11% above M (57.6 vs 52.0 s)."
+  ],
+  "notes": "NOT randomized: X-02 and X-03 ran in different batches about 15-20 minutes apart (X-02 prereg 15:40 EST, X-03 runs 16:00-16:08). Different workspaces, model sampling and service conditions are confounded with arm. The protocol's interpretation table ('C ~ G and K ~ M => contract carries the effect') is met for C ~ G. K is not ~ M on D2b (descriptively worse) but is ~ M on D2c."
+ },
+ {
+  "claimId": "SPR-X-03.T5 (X-F-08)",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "X-F-08: the contract's residual failure is specific; all 6 C runs silently chose the weekend-clock rule (D2-02 T5); G 5/6 chose it (documented); the device-offset reading may simply look specified (SPEC mentions the device's UTC offset), so T5 may be an ambiguous trap rather than invention",
+  "recomputedValue": "All 6 C runs return the device-local weekday at T5 (Sat local / Fri UTC -> shipping 0). So do all 6 K runs, all 6 X-02 M runs, 5/6 X-02 G runs and the X-01 Haiku run: 24/25 Haiku D2-02 runs; only G s13 and Sonnet s02 raised. Excluding T5: the primary statistic (11/3) and p (1/2178) are UNCHANGED, because T5 is violated in all 12 X-03 D2-02 runs, so it shifts both arms by exactly 1. D2-02 becomes C 0.00 vs K 2.50/run, so C has zero violations in all 12 runs.",
+  "independence": "Own reading of SPEC.md and workspace code; T5 outcomes from V4's oracle (X-02, X-01) and my re-score (X-03).",
+  "method": "SPEC review; T5 tally across experiments (raw/t5_across_experiments.json); primary recomputed on the viol_noT5 outcome.",
+  "inputs": [
+   "SPEC.md (D2-02, D2-03)",
+   "DECISIONS.md D-002",
+   "raw/t5_across_experiments.json",
+   "raw/v5-stats.json"
+  ],
+  "discrepancies": [
+   "'Silently': all 6 C runs state the device-offset reading in a code comment, and a02 lists it under 'Interpretation (implemented, flagged for confirmation)'. It is undocumented only under the QUESTIONS.md rule.",
+   "'May simply look specified' is only partly supported. All 6 K runs listed T5 in QUESTIONS.md as unspecified (for example a10: 'the spec does not say this outright. Alternative reading: UTC, or the store's time zone'), and so did a02 (C). They recognised the gap yet still implemented the device-local default. The better description is a strong natural default (Python's aware-datetime .weekday() gives device-local), not an apparent specification."
+  ],
+  "notes": "Fairness judgment: T5 is a FAIR but LOW-DISCRIMINATION trap. SPEC D2-02 says placed_at carries 'the UTC offset reported by the customer's device' and that 'Customers order from many time zones'. This describes the data, not the rule, and R-08 never says whose calendar decides 'Saturday or Sunday' (device date, UTC date or a store time zone are all plausible). The fixture author treated it as unspecified: D2-03 had to add signed decision D-002 to settle it. Sonnet and one G run detected it. However, the SPEC wording and Python's default both point to device-local, and Haiku chose it in 24/25 runs regardless of arm. T5 therefore contributes nothing to the C-vs-K contrast, and excluding it leaves the primary unchanged."
  }
 ]
