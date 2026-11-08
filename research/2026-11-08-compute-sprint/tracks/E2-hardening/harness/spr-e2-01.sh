@@ -76,3 +76,13 @@ px "$P" "$r" work backlog-transition --id E2-7 --action ready --occurred-at "$(u
 run plain_complete "$r" E2-7; emit C3-complete "start -> plain complete" "exit 0" "$RC" "$OUT"
 run px "$P" "$r" work validate; emit C3 "work validate after legitimate completion" "valid, exit 0 on both builds" "$RC" "$OUT"
 run px "$P" "$r" work backlog-validate; emit C3-backlog "work backlog-validate after legitimate completion" "valid" "$RC" "$OUT"
+
+# ---- C1b: the normal flow with NO commit after the claim (claim marker stays uncommitted until the metadata commit)
+r=$(plain_repo E2-8); printf '#!/bin/sh\ngrep -q E2-8 README.md && echo "1 test passed"\n' > "$r/test.sh"; gitc "$r" add -A; gitc "$r" commit -qm "add test"
+px "$P" "$r" work claim --id E2-8 --token tok-E2-8 --lease-seconds 1800 >/dev/null 2>&1
+run px "$P" "$r" work validate-run --id E2-8 --token tok-E2-8 --generation 1 --validation unit-tests --evidence-id EV-TESTS -- sh test.sh
+ev=$(jq -r '.resultPath // empty' <<<"$OUT" 2>/dev/null); case "$ev" in /*) ;; "") ;; *) ev="$r/$ev";; esac; sha=$(git -C "$r" rev-parse HEAD)
+run px "$P" "$r" work complete-verified --id E2-8 --token tok-E2-8 --generation 1 --commit "$sha" --verification-revision "$sha" \
+  --authority "$H/authority.json" --ordo-contract "$H/contract.json" "${REQS[@]}" --validation unit-tests=passed:EV-TESTS --evidence "EV-TESTS=$ev"
+emit C1b "claim (marker uncommitted) -> validate-run -> complete-verified" "accepted on both builds; patched: marker committed in metadata commit" "$RC" "$OUT" \
+  "status=[$(git -C "$r" status --porcelain | tr '\n' ';')] head-log-types=$(git -C "$r" show HEAD:.ros/events/events.jsonl 2>/dev/null | jq -r .type | tr '\n' ',')"
