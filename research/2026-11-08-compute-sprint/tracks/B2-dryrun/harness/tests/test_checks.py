@@ -26,6 +26,11 @@ class Checks(unittest.TestCase):
 
     def test_classify(self):
         self.assertEqual(c.classify_suite_run("MSBUILD : error MSB1008: Only one project can be specified.", 1), "MSB1008")
+        self.assertEqual(c.classify_suite_run("/scratch/R9-MSB1008/x.dll built", 0), "OK")
+        self.assertEqual(c.suite_findings("[xUnit.net] Skipping: A (could not find dependent assembly 'FSharp.Core')\n"
+                                          "No test matches the given testcase filter `x`", 0),
+                         ["ASSEMBLY_SKIPPED", "NO_TESTS_SELECTED"])
+        self.assertEqual(c.classify_suite_run("Error: No tests found.", 1), "NO_TESTS_SELECTED")
         self.assertEqual(c.classify_suite_run('Error: Project(s) "webkit" not found. Available projects: "chromium"', 1),
                          "UNDEFINED_PLAYWRIGHT_PROJECT")
         self.assertEqual(c.classify_suite_run("Total tests: 1", 0), "OK")

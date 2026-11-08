@@ -46,9 +46,10 @@ def run_plan(indy_rev, package, repo, bootstrap, label):
                         "dotnetTargets": c.dotnet_test_targets(s["runner"]),
                         "playwrightProjects": c.playwright_projects(s["runner"]),
                         "classification": c.classify_suite_run(text, res["exit"]),
+                        "findings": c.suite_findings(text, res["exit"]),
                         "exit": res["exit"], "seconds": res["seconds"],
                         "evidence": [l.strip() for l in text.splitlines()
-                                     if re.search(r"MSB1008|not found|error|Total tests|Passed|Failed", l)][:8]})
+                                     if re.search(r"error MSB1008|not found|Skipping:|No test|Total|error ", l)][:8]})
     return {"plan": f"requirements-compiled/{package}/verification-execution-plan.json",
             "planAt": core.commit_info(core.INDY_FULL, indy_rev), "tree": core.commit_info(repo, bootstrap),
             "globalJson": (tree / "global.json").read_text() if (tree / "global.json").exists() else None,
@@ -57,10 +58,11 @@ def run_plan(indy_rev, package, repo, bootstrap, label):
 
 def replay():
     fixed = run_plan(FIXED["indy"], FIXED["package"], FIXED["repo"], FIXED["bootstrap"], "fixed-r10-v415")
+    labels = {"R8-MSB1008": "r8-pre-v411", "R9-MSB1008": "r9-pre-v412"}
     records = []
     for key, k in CASES.items():
         pre = core.commit_info(core.INDY_FULL, k["indy"])
-        r = run_plan(k["indy"], k["package"], k["repo"], k["bootstrap"], key)
+        r = run_plan(k["indy"], k["package"], k["repo"], k["bootstrap"], labels[key])
         bad = [x for x in r["suites"] if x["classification"] in ("MSB1008", "UNDEFINED_PLAYWRIGHT_PROJECT")]
         records.append({
             "key": key, "rehearsal": k["rehearsal"], "blocker": k["blocker"], "trackBEvent": k["event"], "t0": k["t0"],
@@ -69,7 +71,8 @@ def replay():
             "toolsRun": [f"frozen {k['package']} plan suite commands (list mode), dotnet SDK 10.0.402, @playwright/test 1.63.0"],
             "check": r,
             "falsePositiveCheck": {"fixedPlan": fixed["plan"], "planAt": fixed["planAt"], "tree": fixed["tree"],
-                                   "suites": [{k2: x[k2] for k2 in ("suite", "classification", "exit", "evidence")} for x in fixed["suites"]]},
+                                   "suites": [{k2: x[k2] for k2 in ("suite", "classification", "findings", "exit", "evidence")} for x in fixed["suites"]]},
+            "otherConditions": {x["suite"]: x["findings"] for x in r["suites"] if "ASSEMBLY_SKIPPED" in x["findings"]},
             "outcome": c.outcome(True, bool(bad)),
             "matchEvidence": "; ".join(f"{x['suite']}: {x['classification']}" for x in bad) or
                              "; ".join(f"{x['suite']}: {x['classification']}" for x in r["suites"]),

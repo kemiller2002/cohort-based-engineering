@@ -52,15 +52,24 @@ def playwright_projects(command):
     return re.findall(r"--project[= ](\S+)", command)
 
 
-def classify_suite_run(result_text, exit_code):
-    """Classify one executed suite command from its output."""
-    if "MSB1008" in result_text:
-        return "MSB1008"
+def suite_findings(result_text, exit_code):
+    """All recognised conditions in one executed suite command's output (order: most to least severe)."""
+    found = []
+    if re.search(r"error MSB1008", result_text):
+        found.append("MSB1008")
     if re.search(r'Project\(s\) "?[\w,-]+"? not found', result_text):
-        return "UNDEFINED_PLAYWRIGHT_PROJECT"
-    if re.search(r"could not find dependent assembly|FSharp\.Core", result_text) and "skipp" in result_text.lower():
-        return "ASSEMBLY_SKIPPED"
-    return "OK" if exit_code == 0 else "OTHER_FAILURE"
+        found.append("UNDEFINED_PLAYWRIGHT_PROJECT")
+    if re.search(r"Skipping: .*could not find dependent assembly", result_text):
+        found.append("ASSEMBLY_SKIPPED")
+    if re.search(r"No tests found|No test matches the given testcase filter|Total: 0 tests", result_text):
+        found.append("NO_TESTS_SELECTED")
+    if not found:
+        found.append("OK" if exit_code == 0 else "OTHER_FAILURE")
+    return found
+
+
+def classify_suite_run(result_text, exit_code):
+    return suite_findings(result_text, exit_code)[0]
 
 
 # ---- D4 dependency cycles -----------------------------------------------------------------------------------------
