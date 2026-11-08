@@ -1,7 +1,7 @@
 {
   "schema": "track-h.datasets/1",
   "track": "H-synthesis",
-  "asOf": "2026-11-08T14:11:11-05:00",
+  "asOf": "2026-11-08T15:08:42-05:00",
   "status": "Candidate reusable datasets and benchmarks. NOT cleared for release: every entry has open licensing/visibility questions listed below. Descriptions come from the producing track's files; H-001 checked row counts and field names, not values.",
   "globalCaveats": [
     "VISIBILITY: indy-init-rehearsal-002..010, research-documents, causa-acceptance-r10 and Indy-init-audits are PRIVATE (REPOSITORY-ACCESS.json). Several datasets below are derived from them. The sprint directory lives in cohort-based-engineering, which is PUBLIC. Merging these derived datasets to a pushed branch publishes facts from private repositories (commit SHAs, file paths, defect descriptions, branch names). The owner should decide this before the Director pushes, independent of any later publication decision.",
@@ -15,7 +15,11 @@
       "id": "DS-B-EVENTS",
       "name": "Rehearsal failure-event corpus R1-R10 + Causa",
       "producer": "B-forensics",
-      "files": ["B-forensics/events.jsonl", "B-forensics/taxonomy.json", "B-forensics/data/event-analysis.json"],
+      "files": [
+        "B-forensics/events.jsonl",
+        "B-forensics/taxonomy.json",
+        "B-forensics/data/event-analysis.json"
+      ],
       "size": "135 records (133 MEASURED, 2 ESTIMATE); 16 root-cause codes",
       "schema": {
         "id": "string B-E-NNN",
@@ -35,26 +39,47 @@
       "reproducibility": "PARTIAL. Sources are pinned by SHA and line, so each record can be re-checked, but curation (which events, which root cause) is judgement; B's limitations note minor frictions are under-sampled. No second coder. B's scripts/tests (24 passing) cover aggregation, not curation.",
       "licensingCaveats": "Derived from private rehearsal repositories and private research-documents; descriptions quote defect detail. Not releasable without owner consent and redaction review.",
       "benchmarkPotential": "Candidate labelled corpus for 'agentic delivery failure taxonomy' work; needs inter-rater reliability (FX-08) before any external use.",
-      "supportsFindings": ["B-F-03", "B-F-04", "B-F-05", "B-F-12"]
+      "supportsFindings": [
+        "B-F-03",
+        "B-F-04",
+        "B-F-05",
+        "B-F-12"
+      ]
     },
     {
       "id": "DS-B-SUMMARY",
       "name": "Per-rehearsal outcome summary",
       "producer": "B-forensics",
-      "files": ["B-forensics/rehearsal-summary.csv"],
+      "files": [
+        "B-forensics/rehearsal-summary.csv"
+      ],
       "size": "11 rows x 24 columns",
       "schema": "rehearsal, scope, plannedRequirements, completedRequirements, completedBasis, indyInitVerdict, selfReported, acceptedUnderIndyInit, firstGreenAppCiMin, firstGreenBuildWorkflowMin_actions, firstDeployedAppMin, firstVerifiedE2eMin, ciRunsWindow, ciFailuresWindow, ciCancelledWindow, governanceFailureEvents, contractIncompatibilityEvents, integrationFailureEvents, mergesInWindow, conflictedMerges_source, conflictedMerges_recordsOnly, humanInterventionEvents, topology, sources",
       "provenance": "Mixed: verdicts as recorded by each run; milestone minutes from reports or Actions; merge counts from git merge-tree replay.",
       "reproducibility": "PARTIAL. Units differ per row (completedBasis column says which); T0 definitions differ (B-F-10). Not a comparable series.",
       "licensingCaveats": "As DS-B-EVENTS.",
       "benchmarkPotential": "Low as a benchmark (non-comparable rows). Useful as an index into the runs.",
-      "supportsFindings": ["B-F-01", "B-F-10"]
+      "supportsFindings": [
+        "B-F-01",
+        "B-F-10"
+      ]
     },
     {
       "id": "DS-ACTIONS",
       "name": "GitHub Actions runs/jobs/steps for Indy-init and R1-R10",
       "producer": "A-economics (runs, jobs, steps) and B-forensics (run lists), fetched independently",
-      "files": ["A-economics/data/ci-runs.csv", "A-economics/data/ci-jobs.csv", "A-economics/data/ci-steps.csv", "A-economics/data/ci-step-categories.csv", "A-economics/data/ci-commit-latency.csv", "A-economics/data/ci-red-then-green.csv", "A-economics/data/raw/ci-fetch-manifest.json", "A-economics/data/raw/ci-runs-*.jsonl", "A-economics/data/raw/ci-jobs-timed.jsonl", "B-forensics/raw/actions/indy-init-rehearsal-0NN.jsonl"],
+      "files": [
+        "A-economics/data/ci-runs.csv",
+        "A-economics/data/ci-jobs.csv",
+        "A-economics/data/ci-steps.csv",
+        "A-economics/data/ci-step-categories.csv",
+        "A-economics/data/ci-commit-latency.csv",
+        "A-economics/data/ci-red-then-green.csv",
+        "A-economics/data/raw/ci-fetch-manifest.json",
+        "A-economics/data/raw/ci-runs-*.jsonl",
+        "A-economics/data/raw/ci-jobs-timed.jsonl",
+        "B-forensics/raw/actions/indy-init-rehearsal-0NN.jsonl"
+      ],
       "size": "A: 4,633 runs, 6,013 jobs (timed-window runs only), 58,470 steps; B: 3,222 runs (R1-R10)",
       "schema": {
         "ci-runs.csv": "repo,id,workflow,event,status,conclusion,headBranch,headSha,runAttempt,createdAt,runStartedAt,updatedAt,queueSeconds,spanSeconds,inTimedWindow",
@@ -65,39 +90,74 @@
       "reproducibility": "HIGH for the snapshot (raw JSONL kept; scripts fetch_ci_runs.py, build_ci.py, fetch_ci_jobs.py, analyze_ci.py; 18 tests). Re-fetching will drift: runs can be deleted or expire (GitHub log retention), and runs after the fetch will appear. Two independent fetches (A and B) allow a cross-check that no one has run yet (FX-09).",
       "licensingCaveats": "Most repositories are private. Run IDs, branch names and step names reveal internal process. Public repositories are not billed, so 'billable minutes' is a compute proxy only (A-F-12).",
       "benchmarkPotential": "Good candidate for a 'CI cost of agentic delivery' dataset after redaction: real runs, step-level timing, labelled timed windows (rehearsal-windows.csv).",
-      "supportsFindings": ["A-F-11", "A-F-12", "A-F-13", "A-F-14", "B-F-08", "B-F-16"]
+      "supportsFindings": [
+        "A-F-11",
+        "A-F-12",
+        "A-F-13",
+        "A-F-14",
+        "B-F-08",
+        "B-F-16"
+      ]
     },
     {
       "id": "DS-A-TOKENS",
       "name": "Praxis execution records and per-request token ledger",
       "producer": "A-economics",
-      "files": ["A-economics/data/executions.csv", "A-economics/data/requests.csv", "A-economics/data/rehearsal-tokens.csv", "A-economics/data/r8-workitem-categories.csv", "A-economics/data/r8-by-category.csv", "A-economics/data/rereads.csv", "A-economics/data/tool-calls.csv", "A-economics/data/README.md"],
+      "files": [
+        "A-economics/data/executions.csv",
+        "A-economics/data/requests.csv",
+        "A-economics/data/rehearsal-tokens.csv",
+        "A-economics/data/r8-workitem-categories.csv",
+        "A-economics/data/r8-by-category.csv",
+        "A-economics/data/rereads.csv",
+        "A-economics/data/tool-calls.csv",
+        "A-economics/data/README.md"
+      ],
       "size": "626 execution records (14 repositories); 3,654 request rows (R8 + praxis); token totals for R3, R7, R8 only",
       "schema": "See A-economics/data/README.md (column-level). Empty cell = unavailable; 0 = recorded zero. Columns ending ESTIMATE or LOWERBOUND are not measured.",
       "provenance": "<repo>/.ros/telemetry/executions/*.json at the revisions in A data/README.md; rehearsal telemetry files for R3/R7/R8.",
       "reproducibility": "HIGH for totals: V1 independently recomputed R8 533,823,102 tokens and the coordinator share exactly (V1 A-F-01, A-F-03). V1 found 48 ledgers / 3,100 requests for R8 where A's README says 49 executions (totals unaffected). Category assignment in r8-workitem-categories.csv is judgement with a cited basis per row. wall_ms is not a reliable duration (A-F-10).",
       "licensingCaveats": "Source telemetry in private rehearsal repositories; includes session IDs, agent IDs and a model column (see globalCaveats MODEL IDENTIFIERS).",
       "benchmarkPotential": "Rare real-world multi-agent token dataset with cache buckets per request. Only one rehearsal (R8) has per-request detail, so it is a case study, not a benchmark.",
-      "supportsFindings": ["A-F-01", "A-F-03", "A-F-04", "A-F-05", "A-F-06", "A-F-09", "A-F-10"]
+      "supportsFindings": [
+        "A-F-01",
+        "A-F-03",
+        "A-F-04",
+        "A-F-05",
+        "A-F-06",
+        "A-F-09",
+        "A-F-10"
+      ]
     },
     {
       "id": "DS-A-CONTROLLED",
       "name": "Controlled pilot usage (CONSTRUCT-008, time-entry-expanded-01)",
       "producer": "A-economics",
-      "files": ["A-economics/data/controlled-usage.csv"],
+      "files": [
+        "A-economics/data/controlled-usage.csv"
+      ],
       "size": "21 run rows over 2 experiments: n=3 per arm, plus 3 CONSTRUCT-008 arm-C rows labelled C-P1..C-P3 (apparently preliminary runs; A-F-16 median 730k matches C1-C3 only, so they are excluded from the headline)",
       "schema": "experiment,run,arm,model,requests,input,outputLowerBound,outputEstimateChars4,cacheRead,cacheWrite,cumulativeTotal,finalContextTokens,toolCalls,agentWallSeconds,costUsdListPriceLOWERBOUND,costUsdListPriceESTIMATE",
       "provenance": "research-documents@b372a7f per-run usage (private).",
       "reproducibility": "MEDIUM: output tokens are lower bounds (streaming start), with a chars/4 estimate alongside; arms differ in repair rounds (A-F-16 limitation).",
       "licensingCaveats": "Private source.",
       "benchmarkPotential": "Pilot only; feeds FX-05 power analysis.",
-      "supportsFindings": ["A-F-16"]
+      "supportsFindings": [
+        "A-F-16"
+      ]
     },
     {
       "id": "DS-C-GRAPH",
       "name": "Echelon ecosystem dependency graph and pin-skew table",
       "producer": "C-architecture",
-      "files": ["C-architecture/dependency-graph.json", "C-architecture/dependency-graph.dot", "C-architecture/inventory.json", "C-architecture/data/pin-skew.json", "C-architecture/data/repo-facts.json", "C-architecture/data/source-revisions.tsv"],
+      "files": [
+        "C-architecture/dependency-graph.json",
+        "C-architecture/dependency-graph.dot",
+        "C-architecture/inventory.json",
+        "C-architecture/data/pin-skew.json",
+        "C-architecture/data/repo-facts.json",
+        "C-architecture/data/source-revisions.tsv"
+      ],
       "size": "35 nodes, 380 edges; 375 consumer version pins",
       "schema": {
         "nodes": "{id, kind, head (sha), release, approvedInSet}",
@@ -108,13 +168,27 @@
       "reproducibility": "HIGH: tools/run.sh regenerates everything; 34 passing tests. Point-in-time: pins on main only (C-F-01 limitation).",
       "licensingCaveats": "Mostly public repositories plus private Indy-init-related ones; the graph itself reveals little sensitive detail. Praxis-derived facts are under PolyForm Noncommercial for the source, not for facts about it (owner should confirm).",
       "benchmarkPotential": "Good candidate for a public 'small-ecosystem version skew' case study; lowest release risk of the five.",
-      "supportsFindings": ["C-F-01", "C-F-03", "C-F-06", "C-F-07", "C-F-17"]
+      "supportsFindings": [
+        "C-F-01",
+        "C-F-03",
+        "C-F-06",
+        "C-F-07",
+        "C-F-17"
+      ]
     },
     {
       "id": "DS-E-BYPASS",
       "name": "Governance bypass matrix (Praxis 3.25.0 / Dokimos 0.11.1)",
       "producer": "E-security",
-      "files": ["E-security/data/E-X01-gate-v319-on-praxis-3.25.0.jsonl", "E-security/data/E-X02-bypass-cases-praxis-3.25.0.jsonl", "E-security/data/E-X03-nx1-installed.txt", "E-security/data/E-X10-indy-fabricated-acceptance.json", "E-security/findings.json#bypass_attempts", "E-security/scripts/bypass-cases.sh", "E-security/scripts/indy_fabricated_acceptance.py"],
+      "files": [
+        "E-security/data/E-X01-gate-v319-on-praxis-3.25.0.jsonl",
+        "E-security/data/E-X02-bypass-cases-praxis-3.25.0.jsonl",
+        "E-security/data/E-X03-nx1-installed.txt",
+        "E-security/data/E-X10-indy-fabricated-acceptance.json",
+        "E-security/findings.json#bypass_attempts",
+        "E-security/scripts/bypass-cases.sh",
+        "E-security/scripts/indy_fabricated_acceptance.py"
+      ],
       "size": "17 gate-regression cases (E-X01) + 13 new cases (E-X02) + fabricated-acceptance run; 15 refused / 11 succeeded overall",
       "schema": {
         "E-X01": "{case, intent, mode, expected, outcome, exit, codes[], verifierKeyIds, evidence}",
@@ -124,20 +198,177 @@
       "reproducibility": "MEDIUM-HIGH: scripts are committed with 19 tests; fixtures are regenerated by the scripts, but the scratch fixtures themselves are not committed. Version-specific: results hold only for the listed revisions.",
       "licensingCaveats": "SECURITY SENSITIVE. Contains working bypass procedures against controls the owner relies on, several not yet fixed (E-F-02, E-F-03, E-F-04, E-F-05). Must not be published before fixes or an explicit disclosure decision. The secret-scan output (secret-scan-redacted.json) holds fingerprints only, by design.",
       "benchmarkPotential": "Strong candidate as a regression suite for Praxis release CI (E recommends this). As a public benchmark only after fixes ship.",
-      "supportsFindings": ["E-F-01", "E-F-02", "E-F-03", "E-F-04", "E-F-05", "E-F-06", "E-F-11", "E-F-12"]
+      "supportsFindings": [
+        "E-F-01",
+        "E-F-02",
+        "E-F-03",
+        "E-F-04",
+        "E-F-05",
+        "E-F-06",
+        "E-F-11",
+        "E-F-12"
+      ]
     },
     {
       "id": "DS-MERGES",
       "name": "Merge-conflict replay results",
       "producer": "B-forensics (merge-conflicts.json); V1 and A2 produce independent replays",
-      "files": ["B-forensics/data/merge-conflicts.json", "V1-verification/data/ (pending structure)", "A2-remediation/raw/ (pending)"],
+      "files": [
+        "B-forensics/data/merge-conflicts.json",
+        "V1-verification/data/ (pending structure)",
+        "A2-remediation/raw/ (pending)"
+      ],
       "size": "every two-parent merge in R1-R10 and Causa (B); R8 86-87 merge commits",
       "schema": "per merge: repository, merge sha, parents, conflicted paths (see file)",
       "provenance": "git merge-tree replay with current git defaults (B-F-09 limitation: squash merges and rebases invisible; not the agents' tools).",
       "reproducibility": "HIGH for method, but three replays disagree on some per-run counts (matrix X-02, X-03). Window and ref-set definitions must be fixed before reuse.",
       "licensingCaveats": "Private rehearsal repositories; file paths only.",
       "benchmarkPotential": "Input fixture for the A2 merge-driver experiment and for any .ros format change (ADR-S02).",
-      "supportsFindings": ["A-F-07", "B-F-09"]
+      "supportsFindings": [
+        "A-F-07",
+        "B-F-09"
+      ]
+    },
+    {
+      "id": "DS-F-UI-DEFECTS",
+      "name": "Curated UI/WASM defect patterns, R1-R10 + Causa",
+      "producer": "F-fsharp-wasm",
+      "files": [
+        "F-fsharp-wasm/data/curated-ui-defects.jsonl",
+        "F-fsharp-wasm/data/commit-signals.jsonl",
+        "F-fsharp-wasm/data/transcript-errors.jsonl",
+        "F-fsharp-wasm/data/transcript-builds.jsonl",
+        "F-fsharp-wasm/data/limen-claims.jsonl"
+      ],
+      "size": "29 curated defects in 11 patterns; 1,236 commit signal rows; 202 F# compiler diagnostics from 34 transcripts; 157 build invocations; 8 Limen claims",
+      "schema": {
+        "curated-ui-defects": "{rehearsal, source, defect, pattern, contract, ...} (see file)"
+      },
+      "provenance": "Hand-curated from commit messages, defect files and construction-by-design transcripts (F-F-08, F-F-17).",
+      "reproducibility": "MEDIUM: sources cited per row; curation and pattern assignment are judgement, with selection bias toward well-described fixes (F-F-17 limitation).",
+      "licensingCaveats": "Private rehearsal repositories and private research-documents transcripts.",
+      "benchmarkPotential": "Seed set for UI-contract checks (13 of 29 need a new contract). The transcript-error set is a small but rare dataset of agent F# compile errors.",
+      "supportsFindings": [
+        "F-F-08",
+        "F-F-09",
+        "F-F-17"
+      ]
+    },
+    {
+      "id": "DS-F-PERF",
+      "name": "F# WASM build, bundle, startup and accessibility measurements",
+      "producer": "F-fsharp-wasm",
+      "files": [
+        "F-fsharp-wasm/measurements/startup.jsonl",
+        "F-fsharp-wasm/measurements/build-times.csv",
+        "F-fsharp-wasm/measurements/build-times-batch2.csv",
+        "F-fsharp-wasm/measurements/bundles/",
+        "F-fsharp-wasm/measurements/axe/",
+        "F-fsharp-wasm/measurements/il-frame.jsonl",
+        "F-fsharp-wasm/measurements/environment.json",
+        "F-fsharp-wasm/measurements/loadavg-samples.txt"
+      ],
+      "size": "n=3-7 per condition; 22 axe scans; 6 bundle variants",
+      "schema": "see files; environment.json records host, SDK and browser versions",
+      "provenance": "Measured in this sprint on a shared 4 vCPU container (load average up to 14); 4G is CDP emulation.",
+      "reproducibility": "MEDIUM: scripts committed, but timing is contended; loadavg samples are recorded so readers can judge. Byte sizes are reproducible; times are not portable.",
+      "licensingCaveats": "Builds of private rehearsal apps; measurements only.",
+      "benchmarkPotential": "Useful internal baseline for trimming and caching changes (IM-12). Not a public benchmark (single contended host).",
+      "supportsFindings": [
+        "F-F-01",
+        "F-F-02",
+        "F-F-03",
+        "F-F-04",
+        "F-F-07",
+        "F-F-10",
+        "F-F-15"
+      ]
+    },
+    {
+      "id": "DS-A2-REPLAY",
+      "name": ".ros merge-driver replay over R8 and R10",
+      "producer": "A2-remediation",
+      "files": [
+        "A2-remediation/raw/replay-r8-all86-unshallow-v2.jsonl",
+        "A2-remediation/raw/replay-r10-all-v2.jsonl",
+        "A2-remediation/raw/replay-r8-logged-v1.jsonl",
+        "A2-remediation/tools/ros-merge-driver/",
+        "A2-remediation/tools/replay/",
+        "A2-remediation/raw/failfast-counterfactual.json",
+        "A2-remediation/raw/praxis-release-provenance.json"
+      ],
+      "size": "86 R8 and 34 R10 merges; v1 and v2 driver runs",
+      "schema": "per merge: parents, conflicted paths under each config, driver exit, records lost/duplicated, equivalence to team merge (see files)",
+      "provenance": "Replays in scratch clones (unshallowed after an invalid shallow run, disclosed in A2 CHECKPOINT); preregistered SPR-A2-01 with Amendment 1.",
+      "reproducibility": "HIGH: tools and raw outputs committed; requires full (unshallow) clones of private R8/R10.",
+      "licensingCaveats": "Private rehearsal repositories; file paths and work-item IDs.",
+      "benchmarkPotential": "A ready regression fixture for any Praxis history-merge change (IM-10).",
+      "supportsFindings": [
+        "A2-F-01",
+        "A2-F-02",
+        "A2-F-03",
+        "A2-F-04",
+        "A2-F-05",
+        "A2-F-10"
+      ]
+    },
+    {
+      "id": "DS-B2-DRYRUN",
+      "name": "Pre-T0 dry-run replay results (11 blockers)",
+      "producer": "B2-dryrun (with B3-semantic and B4-preflight extensions)",
+      "files": [
+        "B2-dryrun/results.csv",
+        "B2-dryrun/raw/",
+        "B3-semantic/checks/",
+        "B4-preflight/raw/"
+      ],
+      "size": "11 blocker rows (R4, R8, R9, R10, Causa); B3/B4 add semantic-check rows on 4 packages",
+      "schema": "rehearsal, blocker, preT0Commit, toolsRun, outcome (CAUGHT/NOT CAUGHT), matchEvidence, dryRunSeconds",
+      "provenance": "Replays on T0-era commits of Indy-init and rehearsal repositories; preregistered protocols with deviation addenda.",
+      "reproducibility": "HIGH for mechanics (clean rerun ~199 s); matching rules partly finalised after first runs (B2-F-01), and B3/B4 rules are answer-informed.",
+      "licensingCaveats": "Private repositories.",
+      "benchmarkPotential": "Small labelled benchmark for 'governance artefact preflight' tools. Needs independent specifications to avoid overfitting (FX-14).",
+      "supportsFindings": [
+        "B2-F-01",
+        "B2-F-02",
+        "B2-F-03",
+        "B2-F-04",
+        "B3-F-01",
+        "B3-F-02",
+        "B3-F-06",
+        "B4-F-01"
+      ]
+    },
+    {
+      "id": "DS-D-BENCH",
+      "name": "Build/test cost microbenchmarks and agent-arm usage",
+      "producer": "D-experiments, D2-agent-experiment",
+      "files": [
+        "D-experiments/raw/SPR-D-0{2..7}.jsonl",
+        "D-experiments/reanalysis/outputs/",
+        "D-experiments/protocols/",
+        "D2-agent-experiment/results/usage.json",
+        "D2-agent-experiment/results/results.json",
+        "D2-agent-experiment/results/scores/",
+        "D2-agent-experiment/fixture/",
+        "D2-agent-experiment/arm-prompts/"
+      ],
+      "size": "6 runs per arm (D confirmatory), n=4 per arm (D2)",
+      "schema": "see protocols; D2 usage is runtime-reported tokens per arm agent",
+      "provenance": "Preregistered (D: protocols frozen before runs; D2: two-stage gates). Shared host contention recorded.",
+      "reproducibility": "HIGH for D analysis (seeded bootstrap, tests); D2 depends on the Director's agent tool and model version.",
+      "licensingCaveats": "D2 fixture is sprint-authored; D reanalysis inputs include public cohort-based-engineering and praxis experiment data.",
+      "benchmarkPotential": "D2's fixture plus ceiling results are a useful negative-result package; D's protocols are a reusable template for build-cost experiments.",
+      "supportsFindings": [
+        "D-F-03",
+        "D-F-05",
+        "D-F-09",
+        "D-F-10",
+        "D-F-11",
+        "D2-F-01",
+        "D2-F-02"
+      ]
     }
-  ]
+  ],
+  "pathNote": "Paths for wave-2+ tracks resolve in each track's own worktree until the Director merges them."
 }

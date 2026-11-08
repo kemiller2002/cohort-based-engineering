@@ -48,6 +48,7 @@ In the one rehearsal with full telemetry (R8), most tokens were cache reads of a
 
   **VERIFIED**, B-F-08 + A-F-12 + A-F-11; matrix X-08.
 - Browser suites take 28–51% of step time. Rebuilding the pinned Praxis verifier from source took about 604–607 min, 7.4–8.0% of step time. **VERIFIED+IV**, A-F-13 / V1 PARTIALLY VERIFIED: A's 688 included an unrelated R5 step.
+- Caching or fetching the pinned verifier could save about 550 of ~604 minutes. **ESTIMATE**, A2-F-09. The attested release behaves byte-identically (**SUPPORTED**, A2-F-08).
 - What reuse would buy, on one F# fixture: a no-op build costs ~4% of a clean build's CPU, and an affected-project test run ~4% of the full suite. **SUPPORTED**, D-F-09, D-F-11. Selection safety is NOT TESTED.
 - The billable-minutes figure is a compute proxy. Public repositories are not billed.
 
@@ -57,7 +58,13 @@ In the one rehearsal with full telemetry (R8), most tokens were cache reads of a
 - Replay shows 56 of 60 conflicted R8 merge commits were `.ros`-only. **VERIFIED**, B-F-09.
 - **Correction:** at least 4 branch-side merges conflicted in application, test or CI code. **VERIFIED+IV**, B-F-09 / V1.
   - **[DO NOT STATE]** "no application-code conflicts" (matrix X-02).
-- Remediation prototype (semantic merge driver): results pending. SPR-A2-01; ADR-S02.
+- A semantic merge driver, on replay, removes every `.ros` conflict:
+  - R8: 93% of conflicted merges become clean. R10: 85%.
+  - 0 records lost, and `praxis validate` passes on 92/92.
+  - It found a real team merge error that dropped a live work item.
+
+  **VERIFIED** (replay only), A2-F-01..F-04. V3 pending. Disclose the v2 ordering amendment.
+- **[DO NOT STATE]** "removes all merge conflicts". 9 application-code merges remain (A2-F-04).
 
 ## 5. Parallelism
 
@@ -69,6 +76,9 @@ In the one rehearsal with full telemetry (R8), most tokens were cache reads of a
 - In controlled pilots (n=3 per arm), a construction protocol used 47–93% more tokens at equal acceptance. **SUPPORTED**, A-F-16.
 - Earlier REL-001 results show +35.5% per correct requirement. **VERIFIED+IV**, G-F-08 / V1, with the output-lower-bound caveat.
 - Both sit at a ceiling (every arm correct), so a quality benefit is **NOT TESTED** on harder tasks (FX-05).
+- The sprint's own matched agent experiment: a governance block added +6.1% tokens and +55% wall time at 12/12 vs 12/12 acceptance (**SUPPORTED**, n=4 per arm, D2-F-02; Holm-adjusted p=0.086 for tokens).
+  - Two harder fixtures could not make the ungoverned baseline fail (DECISION-LOG D-027, D-030).
+  - **[DO NOT STATE]** "governance has no benefit". The benefit is untested beyond short tasks.
 
 ## 7. What we cannot measure yet
 

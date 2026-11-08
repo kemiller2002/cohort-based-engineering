@@ -1,7 +1,7 @@
 {
   "schema": "track-h.future-experiments/1",
   "track": "H-synthesis",
-  "asOf": "2026-11-08T14:39:32-05:00",
+  "asOf": "2026-11-08T15:08:01-05:00",
   "status": "Proposals only. Nothing here is scheduled or approved.",
   "costBasis": "ESTIMATE throughout. Agent cost scale: R8, a full 6-lane rehearsal, cost about $194 at list price (A-F-01, V1 VERIFIED). Controlled pilot runs cost $0.37-$2.01 per run (A-economics/data/controlled-usage.csv, costUsdListPriceESTIMATE). REL-001 cost about $0.11-$0.16 per correct requirement on fixtures (G-F-08). Human-hours are the owner's or an engineer's time, also ESTIMATE. None of these is a provider bill.",
   "sections": {
@@ -14,7 +14,8 @@
       "title": "Stop rebuilding the pinned Praxis verifier in every CI run (cache it or use the release binary)",
       "basis": [
         "A-F-13 (VERIFIED; V1 queued)",
-        "A2-remediation CI-cache prototype (pending)"
+        "A2-remediation CI-cache prototype (pending)",
+        "A2-F-07..F-09: compile-bound build; attested v3.9.1 release is source-equivalent with byte-identical output; ESTIMATE ~550 of ~604 min saved"
       ],
       "change": "Cache the verifier keyed on its pinned version, or download the attested release binary.",
       "costEstimate": "ESTIMATE: 0.5-1 engineer-day per shared workflow; no agent compute.",
@@ -134,6 +135,45 @@
       "expectedEffect": "ESTIMATE: inner-loop verification CPU down to ~4-15% of full (D-F-11 0.037; whole-step SPR-D-07 0.143, n=4). Selection safety (missed regressions) is NOT TESTED.",
       "confirmBy": "Track build/test CPU per agent execution and escaped-defect count before and after.",
       "decisionValue": "Medium. Cost evidence is solid for one fixture, but the safety side is unmeasured, so keep full suites at the gate."
+    },
+    {
+      "id": "IM-10",
+      "title": "Ship the .ros history merge driver (interim) and fix Praxis validate gaps",
+      "basis": [
+        "A2-F-01..F-06 (VERIFIED on replay)",
+        "DECISION-LOG D-028 owner follow-ups"
+      ],
+      "change": "Package A2's ros-history driver with Praxis and install it via scaffold (.gitattributes + config) for local merges; make validate detect duplicate event lines; decide the relaxed ordering policy.",
+      "costEstimate": "ESTIMATE: 2-4 engineer-days, mostly porting from dotnet fsi to the Praxis CLI.",
+      "expectedEffect": "R8-like runs: 93% of conflicted merges conflict-free (R10: 85%); catches team merge errors like R10 d8447ed1.",
+      "confirmBy": "Conflicted-merge count and coordinator merge seconds in the next multi-lane rehearsal.",
+      "decisionValue": "High. Evidence is a full replay; does not help GitHub server-side merges (ADR-S02 option 1 does)."
+    },
+    {
+      "id": "IM-11",
+      "title": "Run spec-preflight with --catalog in Indy-init CI and fail on any blocking section",
+      "basis": [
+        "B4-F-05 (VERIFIED)"
+      ],
+      "change": "One-line workflow change plus assertion on all blocking sections.",
+      "costEstimate": "ESTIMATE: under 1 hour.",
+      "expectedEffect": "Restores the carrier rule that caught R8's CommandEnvelope defect.",
+      "confirmBy": "CI run on the R8 package exits 3 with the carrier finding.",
+      "decisionValue": "High, trivial."
+    },
+    {
+      "id": "IM-12",
+      "title": "WASM delivery fixes: per-request cache mode in Limen, trimming",
+      "basis": [
+        "F-F-03 (VERIFIED)",
+        "F-F-04 (SUPPORTED)",
+        "F-F-01 (VERIFIED)"
+      ],
+      "change": "Add a per-request cache mode to Limen HttpEffectRequest so apps stop overriding global fetch with no-store; enable TrimMode partial or full (check %A formatting paths).",
+      "costEstimate": "ESTIMATE: 1-2 engineer-days in Limen; minutes per app for trimming.",
+      "expectedEffect": "R10 warm 4G ready 9.5 s -> ~1.3 s (R9 level); cold transfer 11.1 -> 7.8 MB with full trim.",
+      "confirmBy": "F's startup harness on the next build.",
+      "decisionValue": "Medium for the product; independent of governance questions."
     }
   ],
   "research": [
@@ -161,7 +201,8 @@
         "A2-remediation SPR-A2-01 results"
       ],
       "evidenceGap": "Prototype results pending; GitHub server-side merges cannot run drivers.",
-      "notes": "DECISION-LOG D-019: a .ros driver cannot remove R8's 4 application-code branch merges (V1)."
+      "notes": "DECISION-LOG D-019: a .ros driver cannot remove R8's 4 application-code branch merges (V1).",
+      "status": "LARGELY DONE by A2 (A2-F-01..F-06): the driver resolves all .ros conflicts on R8/R10 replay with 0 lost records. Remaining: the per-lane format arm (option 1) and owner policy on relaxed event ordering (A2-F-05)."
     },
     {
       "id": "FX-03",
@@ -171,7 +212,8 @@
       "costEstimate": "ESTIMATE: 2-4 agent-hours, under $15.",
       "decisionValue": "Sets the severity of E-F-02 for R5's actual pipeline, and therefore the urgency of ADR-S03.",
       "dependsOn": [],
-      "evidenceGap": "E-F-02 limitation: verify-plan was not tested."
+      "evidenceGap": "E-F-02 limitation: verify-plan was not tested.",
+      "notes": "Still open: neither E nor V2 tested verify-plan."
     },
     {
       "id": "FX-04",
@@ -195,7 +237,8 @@
       "dependsOn": [
         "D2-agent-experiment (governed vs minimal, n=4 per arm, exploratory): use its variance for sizing"
       ],
-      "evidenceGap": "n=3 pilots; every published comparison sits at the ceiling (all arms 39/39 or 96/96)."
+      "evidenceGap": "n=3 pilots; every published comparison sits at the ceiling (all arms 39/39 or 96/96).",
+      "status": "SHORT-TASK ARM CONCLUDED by D2 (DECISION-LOG D-024, D-027, D-030): three increasingly adversarial fixtures all hit the ceiling for the ungoverned baseline; governance cost +6.1% tokens, +55% wall (D2-F-02). Further short-fixture search was stopped to avoid searching for a positive. The open question moves to long-horizon designs (D3, launched per D-032)."
     },
     {
       "id": "FX-06",
@@ -260,7 +303,8 @@
       "costEstimate": "ESTIMATE: 4-8 agent-hours, about $20-50.",
       "decisionValue": "ADR-S01 assumes this code path works; it has only been read (C-F-04).",
       "dependsOn": [],
-      "evidenceGap": "Not executed."
+      "evidenceGap": "Not executed.",
+      "status": "DONE by C2 (C2-F-02..F-08): the mechanism works with a trusted key; CR-01's 'ends lockstep' claim CONTRADICTED (2/13 avoidable); the Registry side is missing; set integrity is not covered."
     },
     {
       "id": "FX-12",
@@ -281,6 +325,26 @@
       "decisionValue": "B-F-06 is observational, with no comparison run after R2.",
       "dependsOn": [],
       "evidenceGap": "No run without live checks after R2."
+    },
+    {
+      "id": "FX-14",
+      "title": "Prospective (blind) test of semantic pre-T0 checks",
+      "hypothesis": "percepta spec-preflight (with --catalog) plus a C4 slice-cycle check flags at least half of the semantic package defects in a specification its authors have not seen, with a false-alarm rate below 1 per package.",
+      "design": "Hold out the next frozen package (or seed defects into an independent specification written by someone else); run the checks before anyone looks for defects; adjudicate alarms blind. Include the B4-F-07 paraphrase probes as a robustness arm.",
+      "costEstimate": "ESTIMATE: under $10 compute; 1-2 human-days for seeding and adjudication.",
+      "decisionValue": "B3 and B4 coverage is retrospective and answer-informed (B3-F-03, B4-F-06/F-07). This decides whether semantic checks belong in the mandatory dry run (ADR-S04) or remain advisory.",
+      "dependsOn": [],
+      "evidenceGap": "No blind or independent-specification test."
+    },
+    {
+      "id": "FX-15",
+      "title": "Adoption barriers for existing capabilities",
+      "hypothesis": "Unused capabilities (verified completion, Limen view contracts, Folio, spec-preflight --catalog) are unused mainly because they are not in the scaffold defaults or agent briefs, not because they fail.",
+      "design": "For each capability in matrix X-26: check whether it is in the Conditor scaffold, the AGENTS.md/brief, and the CI template; then run one rehearsal-scale slice with it on by default and record friction.",
+      "costEstimate": "ESTIMATE: 1 day of analysis; $20-80 for a slice run.",
+      "decisionValue": "X-26 is the strongest cross-track pattern; its cause is NOT TESTED (F-F-13 limitation).",
+      "dependsOn": [],
+      "evidenceGap": "Barriers not investigated by any track."
     }
   ]
 }

@@ -37,3 +37,10 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 - New theme X-24: B2-F-07 contradicts B's 'cycle in the frozen slice plan'.
 - Ledger extended to B2 and D: 77 claims, 21 independently checked.
 - New tracks seen (not yet producing findings): B3-semantic, D2-agent-experiment, E2-hardening.
+
+## CP-H-09 (15:09 EST): wave 3/4 integrated (A2, C2, B3, B4, D2, F)
+- Matrix: 27 themes (17 corroborate, 8 contradict, 2 independent). New X-26 (built but not adopted, 6 tracks), X-27 (CR-01 vs C2 prototype). X-24 resolved in favour of B/B3 (B2-F-07 contradicted).
+- ADR-S01 rewritten: host-tool range policy (CON-343) first; signed attestations second; set-integrity and expiry gaps. ADR-S02 carries A2 replay results; ADR-S04 adds B3/B4 semantic checks (spec-preflight with --catalog).
+- Ledger: 105 claims across 11 tracks; V3 verdict loading wired (none yet); contradicted findings listed.
+- Future experiments: FX-02/FX-11 done, FX-05 short-task arm concluded; FX-14 (blind semantic-check test), FX-15 (adoption barriers), IM-10..12 added.
+- Datasets: 13 entries (added F defects, F perf, A2 replay, B2 dry-run, D/D2 benchmarks).

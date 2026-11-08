@@ -2,7 +2,7 @@
   "schema": "track-h.cross-track-matrix/1",
   "track": "H-synthesis",
   "worker": "H-001",
-  "asOf": "2026-11-08T14:38:35-05:00",
+  "asOf": "2026-11-08T15:07:00-05:00",
   "status": "EXPERIMENTAL synthesis. Not a public claim. Each theme links back to track findings; the track finding, not this file, is the evidence.",
   "inputs": {
     "completed": [
@@ -12,16 +12,20 @@
       "E-security",
       "G-market",
       "B2-dryrun",
-      "D-experiments (findings.json present; REPORT pending)"
+      "D-experiments",
+      "A2-remediation",
+      "C2-signed-registry",
+      "B3-semantic",
+      "B4-preflight",
+      "D2-agent-experiment (series concluded, D-030)",
+      "F-fsharp-wasm (findings.json; F-F-16 pending)",
+      "V1-verification"
     ],
     "partial": [
-      "V1-verification (all 10 assigned claims done: A-F-01, A-F-03, A-F-07, A-F-08, A-F-11, A-F-12, A-F-13, G-F-07, G-F-08, G-F-10)",
       "V2-verification (13 verdicts)",
-      "A2-remediation (replays running)",
-      "F-fsharp-wasm (measurements collected, no findings.json)",
-      "E2-hardening (patches; SPR-E2-01 run)",
-      "D2-agent-experiment (running)",
-      "B3-semantic (launched)"
+      "V3-verification (started; verifies A2, C2, B4, D2)",
+      "E2-hardening (patches; no findings.json yet)",
+      "D3 (long-horizon chain experiment; prep)"
     ],
     "notYetAvailable": []
   },
@@ -46,17 +50,20 @@
         "A-F-07",
         "B-F-09",
         "V1:A-F-07",
-        "A2:SPR-A2-01 (pre-scan)"
+        "A2:SPR-A2-01 (pre-scan)",
+        "A2-F-01",
+        "A2-F-04"
       ],
       "agreement": "corroborate",
       "strength": "strong",
-      "notes": "A-F-07 (R8 coordinator log: 26/49 PR merges, all .ros only) and B-F-09 (git merge-tree replay of every two-parent merge: R8 56 of 60 conflicted merges .ros-only, R10 29 of 34) reach the same conclusion from different sources. V1 independently reproduced the 26/49 at PR level. A2's preregistration pre-scan (R8 58/60 touch .ros; R10 34/34 touch .ros) agrees. B ranks this mechanism 8 and recommends taking .ros out of the merge path (B REPORT section 5 item 5); A ranks it recommendation 4. See X-02 for the part of A-F-07 that does NOT hold.",
+      "notes": "A-F-07 (R8 coordinator log: 26/49 PR merges, all .ros only) and B-F-09 (git merge-tree replay of every two-parent merge: R8 56 of 60 conflicted merges .ros-only, R10 29 of 34) reach the same conclusion from different sources. V1 independently reproduced the 26/49 at PR level. A2's preregistration pre-scan (R8 58/60 touch .ros; R10 34/34 touch .ros) agrees. B ranks this mechanism 8 and recommends taking .ros out of the merge path (B REPORT section 5 item 5); A ranks it recommendation 4. See X-02 for the part of A-F-07 that does NOT hold. UPDATE: A2-F-01/F-04 (VERIFIED, replay): the ros-history driver leaves 0 of 170 previously conflicted .ros paths unmerged across R8 (58 merges, incl. all 26 logged PR merges) and R10 (34). R8 56/60 and R10 29/34 conflicted merges become conflict-free, exactly B-F-09's records-only counts. Four tracks now agree (A, B, V1, A2).",
       "evidence": [
         "A-economics/findings.json#A-F-07",
         "B-forensics/findings.json#B-F-09",
         "B-forensics/REPORT.md section 3 item 8",
         "V1-verification/verdicts.json#A-F-07",
-        "A2-remediation/protocols/SPR-A2-01-ros-merge-driver.md (Background)"
+        "A2-remediation/protocols/SPR-A2-01-ros-merge-driver.md (Background)",
+        "A2-remediation/findings.json"
       ]
     },
     {
@@ -65,15 +72,17 @@
       "findings": [
         "A-F-07",
         "B-F-09",
-        "V1:A-F-07"
+        "V1:A-F-07",
+        "A2-F-04"
       ],
       "agreement": "contradict",
       "strength": "strong",
-      "notes": "A-F-07 states 'no application-code conflicts occurred in this rehearsal'. B-F-09 counts R8 as '4 source / 56 records-only of 87' and names Classify.fs and GitHubRequests.fs as conflicting in both R8 and R10. V1 rated A-F-07 PARTIALLY VERIFIED: the 26/49 PR-level count is right, but 4 'merge origin/main into lane' commits conflicted in 6 non-state paths (Program.fs, Classify.fs, GitHubRequests.fs, StatefulFake.fs, INV22.fs, live.yml). Cause: merges.jsonl logs only the coordinator's PR-merge step. Resolution: the .ros finding stands for the PR-merge step; the rehearsal-level 'no app-code conflicts' inference is contradicted by B and V1. Any ADR or outline must not repeat it. Denominator also differs: 26/49 PR merges (53%) vs 60/86-87 merge commits (70%); B says 87, V1 says 86 merge commits (unreconciled, minor).",
+      "notes": "A-F-07 states 'no application-code conflicts occurred in this rehearsal'. B-F-09 counts R8 as '4 source / 56 records-only of 87' and names Classify.fs and GitHubRequests.fs as conflicting in both R8 and R10. V1 rated A-F-07 PARTIALLY VERIFIED: the 26/49 PR-level count is right, but 4 'merge origin/main into lane' commits conflicted in 6 non-state paths (Program.fs, Classify.fs, GitHubRequests.fs, StatefulFake.fs, INV22.fs, live.yml). Cause: merges.jsonl logs only the coordinator's PR-merge step. Resolution: the .ros finding stands for the PR-merge step; the rehearsal-level 'no app-code conflicts' inference is contradicted by B and V1. Any ADR or outline must not repeat it. Denominator also differs: 26/49 PR merges (53%) vs 60/86-87 merge commits (70%); B says 87, V1 says 86 merge commits (unreconciled, minor). UPDATE: A2-F-04 independently lists the same R8 non-.ros paths as V1 (live.yml; Classify.fs+GitHubRequests.fs+StatefulFake.fs; Program.fs; INV22.fs) plus R10's 5. Resolved: the 'no app-code conflicts' inference is contradicted by B, V1 and A2.",
       "evidence": [
         "A-economics/findings.json#A-F-07",
         "B-forensics/findings.json#B-F-09",
-        "V1-verification/verdicts.json#A-F-07"
+        "V1-verification/verdicts.json#A-F-07",
+        "A2-remediation/findings.json#A2-F-04"
       ]
     },
     {
@@ -85,7 +94,7 @@
       ],
       "agreement": "contradict",
       "strength": "weak",
-      "notes": "B-F-09: R3 'no recorded merge commits', R5 17/92 conflicted (all source), R6 1/6 (.ros only). A2 pre-scan: R3 3 conflicts (none .ros), R5 15, R6 0. Both use git merge-tree over two-parent merges 'on all refs'. Likely causes: ref set fetched (B used 420-minute windows; A2 may include all history), merge-tree options. Low consequence for conclusions (both agree conflicts concentrate in multi-lane runs and in .ros for R8/R10), but any published conflict count must state window and ref set. Re-check when A2 publishes results.",
+      "notes": "B-F-09: R3 'no recorded merge commits', R5 17/92 conflicted (all source), R6 1/6 (.ros only). A2 pre-scan: R3 3 conflicts (none .ros), R5 15, R6 0. Both use git merge-tree over two-parent merges 'on all refs'. Likely causes: ref set fetched (B used 420-minute windows; A2 may include all history), merge-tree options. Low consequence for conclusions (both agree conflicts concentrate in multi-lane runs and in .ros for R8/R10), but any published conflict count must state window and ref set. Re-check when A2 publishes results. UPDATE: R8 and R10 counts now reconcile between B and A2 (56/60, 29/34 records-only). The R3, R5 and R6 differences in A2's pre-scan remain unexplained (FX-09).",
       "evidence": [
         "B-forensics/findings.json#B-F-09",
         "A2-remediation/protocols/SPR-A2-01-ros-merge-driver.md (Background, pre-scan)"
@@ -158,11 +167,12 @@
         "C-F-14",
         "C-F-08",
         "G-F-10",
-        "V1:G-F-10"
+        "V1:G-F-10",
+        "F-F-11"
       ],
       "agreement": "corroborate",
       "strength": "moderate",
-      "notes": "Agent level: B-F-04, B-F-16 (R1 RC2-RC5 treated as Accepted while the deploy/accept workflow was red; Actions-confirmed), B-F-02 (R2 recomputes INVALID). Mechanism level: E-F-02 (fabricated acceptance), E-F-05 ('verified' label with zero evidence, labelled unattested), E-F-11, E-F-12. Documentation level: C-F-14 (READMEs contradicted by code), C-F-08 (Aegis 2.0.0 documented, never released). Public level: G-F-10 (site claims 40%+ throughput, 80% reconciliation reduction with no located evidence; INCONCLUSIVE). Moderate, not strong: the layers are different phenomena joined by one theme, and G-F-10 is INCONCLUSIVE (evidence may exist privately). UPDATE: V1 rated G-F-10 VERIFIED (claims present on the live site 2026-11-08; no evidence located in any checked-out repository) and found the '40%+' figure inconsistent with the site's own case study (deployment frequency doubled, unplanned work -50%). These are consulting-engagement outcomes, not Echelon software measurements. The public-level layer of this theme is now verified as 'unsupported by located evidence', not as false.",
+      "notes": "Agent level: B-F-04, B-F-16 (R1 RC2-RC5 treated as Accepted while the deploy/accept workflow was red; Actions-confirmed), B-F-02 (R2 recomputes INVALID). Mechanism level: E-F-02 (fabricated acceptance), E-F-05 ('verified' label with zero evidence, labelled unattested), E-F-11, E-F-12. Documentation level: C-F-14 (READMEs contradicted by code), C-F-08 (Aegis 2.0.0 documented, never released). Public level: G-F-10 (site claims 40%+ throughput, 80% reconciliation reduction with no located evidence; INCONCLUSIVE). Moderate, not strong: the layers are different phenomena joined by one theme, and G-F-10 is INCONCLUSIVE (evidence may exist privately). UPDATE: V1 rated G-F-10 VERIFIED (claims present on the live site 2026-11-08; no evidence located in any checked-out repository) and found the '40%+' figure inconsistent with the site's own case study (deployment frequency doubled, unplanned work -50%). These are consulting-engagement outcomes, not Echelon software measurements. The public-level layer of this theme is now verified as 'unsupported by located evidence', not as false. UPDATE: F-F-11 (CONTRADICTED): Limen docs say a two-root template reports BridgeError; it is silently dropped in 0.9.0/0.9.1, and the defect recurred in R7 and Causa. Another documentation-vs-behaviour gap, alongside C-F-14.",
       "evidence": [
         "B-forensics/findings.json#B-F-04",
         "B-forensics/findings.json#B-F-16",
@@ -171,7 +181,8 @@
         "C-architecture/findings.json#C-F-14",
         "C-architecture/findings.json#C-F-08",
         "G-market/findings.json#G-F-10",
-        "V1-verification/verdicts.json#G-F-10"
+        "V1-verification/verdicts.json#G-F-10",
+        "F-fsharp-wasm/findings.json#F-F-11"
       ]
     },
     {
@@ -184,18 +195,20 @@
         "C-F-09",
         "C-F-16",
         "C-F-18",
-        "B2-F-05"
+        "B2-F-05",
+        "F-F-10"
       ],
       "agreement": "corroborate",
       "strength": "moderate",
-      "notes": "The suggested pairing 'C-F-01 staleness explains B's recurring toolchain defects' only partly holds. The rehearsals that hit the defects (R8, R10, Causa) are on new sets, and C-F-01 says only causa and rehearsal-010 match the approved set; the stale repositories are libraries and tools, not rehearsals. The direct corroboration is narrower: B-F-13's forma-workflow-outside-approved-set (R4, R5, R8, R10) is the same fact as C-F-09 (forma-workflow qualified as a Conditor built-in with no Registry entry) and C-F-03 (two catalogs that disagree). The FSharp.Core central-package-management defect (R8, R10) has no C counterpart. The better causal story is churn plus dual catalogs (C-F-03, C-F-18: 12 owner-approved sets in 13 days), not staleness. Staleness (C-F-01) corroborates instead with X-04 (C-F-02: verified completion unreachable on 3.7.2). UPDATE: B2-F-05 (VERIFIED) reproduced the FSharp.Core central-package-management skip on the R8, R9 and R10 bootstrap trees before any code was written, which corroborates B-F-13's FSharp.Core recurrence from a different method (pre-T0 replay vs post-hoc reports) and shows it was detectable pre-T0. Still no C-side counterpart for FSharp.Core.",
+      "notes": "The suggested pairing 'C-F-01 staleness explains B's recurring toolchain defects' only partly holds. The rehearsals that hit the defects (R8, R10, Causa) are on new sets, and C-F-01 says only causa and rehearsal-010 match the approved set; the stale repositories are libraries and tools, not rehearsals. The direct corroboration is narrower: B-F-13's forma-workflow-outside-approved-set (R4, R5, R8, R10) is the same fact as C-F-09 (forma-workflow qualified as a Conditor built-in with no Registry entry) and C-F-03 (two catalogs that disagree). The FSharp.Core central-package-management defect (R8, R10) has no C counterpart. The better causal story is churn plus dual catalogs (C-F-03, C-F-18: 12 owner-approved sets in 13 days), not staleness. Staleness (C-F-01) corroborates instead with X-04 (C-F-02: verified completion unreachable on 3.7.2). UPDATE: B2-F-05 (VERIFIED) reproduced the FSharp.Core central-package-management skip on the R8, R9 and R10 bootstrap trees before any code was written, which corroborates B-F-13's FSharp.Core recurrence from a different method (pre-T0 replay vs post-hoc reports) and shows it was detectable pre-T0. Still no C-side counterpart for FSharp.Core. UPDATE: F-F-10 makes the R5 WASM interpreter-locals limit (B-F-13's 'fixed upstream after the run' item) statically checkable and shows R8-R10 have >=96.9% headroom.",
       "evidence": [
         "B-forensics/findings.json#B-F-13",
         "C-architecture/findings.json#C-F-01",
         "C-architecture/findings.json#C-F-03",
         "C-architecture/findings.json#C-F-09",
         "C-architecture/findings.json#C-F-18",
-        "B2-dryrun/findings.json#B2-F-05"
+        "B2-dryrun/findings.json#B2-F-05",
+        "F-fsharp-wasm/findings.json#F-F-10"
       ]
     },
     {
@@ -209,11 +222,12 @@
         "B-F-03",
         "V2:R10-gate-deadlock",
         "V1:A-F-11",
-        "V1:A-F-12"
+        "V1:A-F-12",
+        "F-F-09"
       ],
       "agreement": "corroborate",
       "strength": "strong",
-      "notes": "A-F-12 (job-minute measure): R6 85% and R10 88% of CI minutes in failed/cancelled runs; A-F-11: R6 queue p90 912 s; A-F-14: R10 median commit latency 2,470 s. B-F-08 (run-list measure): R6 116/132 build-and-test runs cancelled (per-commit concurrency group plus if: always()); R10 20-minute cap against a ~29-minute browser suite. Different data (A jobs/steps, B run lists) and different units (A job-minutes, B run counts), same two outliers and same mechanisms. Excluding R6 and R10, A gets 38% red/cancelled. V1 is checking A-F-11/A-F-12 (pending). UPDATE: V2 verified the R10 'Verification gate' counts (66 runs: 45 cancelled, 20 failed, 1 success all-time; 44/64 inside the window) but calls 'deadlock' interpretive: 36 of 45 cancellations are consistent with the gate's 40-minute job timeout plus queueing, 9 with pull_request concurrency supersession. This is the same harness-semantics mechanism class as B-F-08, now with a different cap (40 min on the gate vs 20 min on build-and-test). UPDATE: V1 VERIFIED A-F-11 (R6 p90 1,189 s, not 912; R6 median also 3 s) and A-F-12 within sampling error: 65.6% (CI 56.5-71.9%), with definition sensitivity 54.3% (only jobs that themselves failed) to 76.4% (unrounded seconds); excluding R6/R10 36.8%. V1 also notes the fixed T0+420 window does not match activity for R2, R3, R4, R5. DECISION-LOG D-018 adopts 65.6% with its sensitivity range. Use '~2/3 (54-76% by definition)', and never call it 'waste' without the superseded-run caveat.",
+      "notes": "A-F-12 (job-minute measure): R6 85% and R10 88% of CI minutes in failed/cancelled runs; A-F-11: R6 queue p90 912 s; A-F-14: R10 median commit latency 2,470 s. B-F-08 (run-list measure): R6 116/132 build-and-test runs cancelled (per-commit concurrency group plus if: always()); R10 20-minute cap against a ~29-minute browser suite. Different data (A jobs/steps, B run lists) and different units (A job-minutes, B run counts), same two outliers and same mechanisms. Excluding R6 and R10, A gets 38% red/cancelled. V1 is checking A-F-11/A-F-12 (pending). UPDATE: V2 verified the R10 'Verification gate' counts (66 runs: 45 cancelled, 20 failed, 1 success all-time; 44/64 inside the window) but calls 'deadlock' interpretive: 36 of 45 cancellations are consistent with the gate's 40-minute job timeout plus queueing, 9 with pull_request concurrency supersession. This is the same harness-semantics mechanism class as B-F-08, now with a different cap (40 min on the gate vs 20 min on build-and-test). UPDATE: V1 VERIFIED A-F-11 (R6 p90 1,189 s, not 912; R6 median also 3 s) and A-F-12 within sampling error: 65.6% (CI 56.5-71.9%), with definition sensitivity 54.3% (only jobs that themselves failed) to 76.4% (unrounded seconds); excluding R6/R10 36.8%. V1 also notes the fixed T0+420 window does not match activity for R2, R3, R4, R5. DECISION-LOG D-018 adopts 65.6% with its sensitivity range. Use '~2/3 (54-76% by definition)', and never call it 'waste' without the superseded-run caveat. UPDATE: F-F-09 (SUPPORTED): compile errors rarely reach rehearsal commits or CI; of 5 sampled R10 failure logs, 2 were WebKit/apt download timeouts, 1 a missing pinned SDK. Consistent with harness/infrastructure as the CI failure driver.",
       "evidence": [
         "A-economics/findings.json#A-F-12",
         "A-economics/analysis/ci-overhead.json",
@@ -222,7 +236,8 @@
         "B-forensics/raw/actions/",
         "V2-verification/verdicts.json#R10-gate-deadlock",
         "V1-verification/verdicts.json#A-F-11",
-        "V1-verification/verdicts.json#A-F-12"
+        "V1-verification/verdicts.json#A-F-12",
+        "F-fsharp-wasm/findings.json#F-F-09"
       ]
     },
     {
@@ -241,11 +256,16 @@
         "B2-F-04",
         "B2-F-08",
         "B2-F-10",
-        "B2-F-11"
+        "B2-F-11",
+        "B3-F-01",
+        "B3-F-02",
+        "B4-F-01",
+        "B4-F-05",
+        "B4-F-07"
       ],
       "agreement": "corroborate",
       "strength": "moderate",
-      "notes": "B-F-03 is the primary evidence (10 of 11 runs; 29 of 116 failure events; one analyst's curation, so prevalence is ESTIMATE). Supporting angles: A-F-13 (governance tool rebuilt from source in every CI run, 688 min) shows governance cost inside the window; C-F-12 (39k-line parallel toolchain in Indy-init) explains why the gates are new each run; E-F-02 shows the gates that do run are not independent. No other track measured B's 'first exercised inside the window' claim directly. B2-dryrun is the direct test; re-assess when it lands. UPDATE: V2 rated B-F-03 PARTIALLY VERIFIED: governance machinery was the first refusal that ended the governed verdict in R8-Causa, but it was not the dominant blocker in R8 (with valid approvals the ledger is still FAILED: G3, G7, G8, 346/613 P0 obligations not run) and is doubtful for R9 (0/541 executable obligations implemented; agent stopped at ~115 min) and R10 (work items not started, browser failures). B's category is broad (it includes spec contradictions and SDK incompatibility). See X-23. Strength unchanged (moderate) but the claim must be narrowed to 'first blocker'. UPDATE: B2 tested the dry run directly: it catches 4/8 of the brief's blockers (robust 2/8: R9-MSB1008, R10-AUTH), 7/11 on the extended list (robust 5/11), in seconds per rehearsal (B2-F-10). Caught: approvals format (R4, R8), MSB1008 suite commands (R8, R9), R10 authorize-implementation (exact 55/55 causes). Not caught: R8 command body and INV-04 (semantic; B2-F-08), Causa T18-T20 cycle (B2-F-07), R10 gate (hosted-CI causes; B2-F-11). DECISION-LOG D-022 narrows B's recommendation accordingly. Theme now: corroborate for mechanical/format defects, with semantic defects as a separate uncovered class (B3-semantic is testing generic semantic checks).",
+      "notes": "B-F-03 is the primary evidence (10 of 11 runs; 29 of 116 failure events; one analyst's curation, so prevalence is ESTIMATE). Supporting angles: A-F-13 (governance tool rebuilt from source in every CI run, 688 min) shows governance cost inside the window; C-F-12 (39k-line parallel toolchain in Indy-init) explains why the gates are new each run; E-F-02 shows the gates that do run are not independent. No other track measured B's 'first exercised inside the window' claim directly. B2-dryrun is the direct test; re-assess when it lands. UPDATE: V2 rated B-F-03 PARTIALLY VERIFIED: governance machinery was the first refusal that ended the governed verdict in R8-Causa, but it was not the dominant blocker in R8 (with valid approvals the ledger is still FAILED: G3, G7, G8, 346/613 P0 obligations not run) and is doubtful for R9 (0/541 executable obligations implemented; agent stopped at ~115 min) and R10 (work items not started, browser failures). B's category is broad (it includes spec contradictions and SDK incompatibility). See X-23. Strength unchanged (moderate) but the claim must be narrowed to 'first blocker'. UPDATE: B2 tested the dry run directly: it catches 4/8 of the brief's blockers (robust 2/8: R9-MSB1008, R10-AUTH), 7/11 on the extended list (robust 5/11), in seconds per rehearsal (B2-F-10). Caught: approvals format (R4, R8), MSB1008 suite commands (R8, R9), R10 authorize-implementation (exact 55/55 causes). Not caught: R8 command body and INV-04 (semantic; B2-F-08), Causa T18-T20 cycle (B2-F-07), R10 gate (hosted-CI causes; B2-F-11). DECISION-LOG D-022 narrows B's recommendation accordingly. Theme now: corroborate for mechanical/format defects, with semantic defects as a separate uncovered class (B3-semantic is testing generic semantic checks). UPDATE: B3 (semantic checks, VERIFIED but answer-informed) catches both R8 semantic blockers that B2 missed (B3-F-01 INV-04, B3-F-02 command body) in under a second. B4 shows existing percepta spec-preflight 0.4.0, built after R8 and pinned for R9, reproduces the same catches with 0 control false alarms (B4-F-01), but both tools are lexically tuned (B4-F-07) and Indy-init CI runs spec-preflight without --catalog, dropping the carrier rule (B4-F-05). DECISION-LOG D-025/D-029: mechanical plus semantic pre-T0 checks would have flagged most R8-R10/Causa blockers except hosted-CI gate behaviour; reuse spec-preflight rather than build new tooling. Retrospective, answer-informed coverage; prospective generality NOT TESTED.",
       "evidence": [
         "B-forensics/findings.json#B-F-03",
         "B-forensics/data/event-analysis.json",
@@ -253,7 +273,9 @@
         "C-architecture/findings.json#C-F-12",
         "V2-verification/verdicts.json#B-F-03",
         "B2-dryrun/findings.json",
-        "B2-dryrun/results.csv"
+        "B2-dryrun/results.csv",
+        "B3-semantic/findings.json",
+        "B4-preflight/findings.json"
       ]
     },
     {
@@ -287,17 +309,22 @@
         "G-F-08",
         "D:CLAIMS.md (VAC-001 C/D vs B)",
         "D-F-04",
-        "D-F-13"
+        "D-F-13",
+        "D2-F-01",
+        "D2-F-02",
+        "D2-F-03",
+        "D2-F-04"
       ],
       "agreement": "corroborate",
-      "strength": "moderate",
-      "notes": "A-F-16 (new controlled pilots CONSTRUCT-008, time-entry-expanded-01: protocol arm +47%/+93% tokens at equal acceptance) and G-F-08 (REL-001: +35.5% per correct requirement) agree. D's recomputation of VAC-001 controls (Ordo/full Echelon +14% to +31% vs B) is consistent. Caution: A-F-16 also cites REL-001 and ARCH-002, which G-F-08 uses, so part of the corroboration is shared-source. The new pilots are n=3 per arm. Fixtures show ceiling effects (all arms correct), so 'no quality gain' is 'not detectable on these fixtures', not 'no gain'. A-F-05 (48.7k fixed prefix, ~30% of context; ESTIMATE) is the mechanism. UPDATE: D-F-04 VERIFIED: VAC-001 Ordo/full-Echelon overhead +14% to +31%, correctness at ceiling, C vs B CI lower bound near zero (2 chains). D-F-13: matched governed-vs-minimal agent experiments NOT TESTED by D; D2-agent-experiment (n=4 per arm, exploratory) is now running that comparison.",
+      "strength": "strong",
+      "notes": "A-F-16 (new controlled pilots CONSTRUCT-008, time-entry-expanded-01: protocol arm +47%/+93% tokens at equal acceptance) and G-F-08 (REL-001: +35.5% per correct requirement) agree. D's recomputation of VAC-001 controls (Ordo/full Echelon +14% to +31% vs B) is consistent. Caution: A-F-16 also cites REL-001 and ARCH-002, which G-F-08 uses, so part of the corroboration is shared-source. The new pilots are n=3 per arm. Fixtures show ceiling effects (all arms correct), so 'no quality gain' is 'not detectable on these fixtures', not 'no gain'. A-F-05 (48.7k fixed prefix, ~30% of context; ESTIMATE) is the mechanism. UPDATE: D-F-04 VERIFIED: VAC-001 Ordo/full-Echelon overhead +14% to +31%, correctness at ceiling, C vs B CI lower bound near zero (2 chains). D-F-13: matched governed-vs-minimal agent experiments NOT TESTED by D; D2-agent-experiment (n=4 per arm, exploratory) is now running that comparison. UPDATE: D2 (SPR-D2-01, the sprint's own matched agent experiment, n=4 per arm): governance block +6.1% tokens (p=0.029 unadjusted, Holm 0.086), +55% wall, at 12/12 vs 12/12 acceptance and 0 trap violations in both arms (D2-F-01 INCONCLUSIVE, D2-F-02 SUPPORTED). Two harder fixtures (SPR-D2-02 silent traps, SPR-D2-03 planted false authority) stopped at their preregistered gates because the ungoverned baseline did not fail (DECISION-LOG D-027, D-030). Four independent comparisons now show cost without a detectable benefit, always at ceiling. This corroborates the cost side strongly; the benefit side is untestable with short tasks and moves to long-horizon designs (D3).",
       "evidence": [
         "A-economics/findings.json#A-F-16",
         "A-economics/data/controlled-usage.csv",
         "G-market/findings.json#G-F-08",
         "D-experiments/reanalysis/CLAIMS.md",
-        "D-experiments/findings.json"
+        "D-experiments/findings.json",
+        "D2-agent-experiment/findings.json"
       ]
     },
     {
@@ -360,7 +387,7 @@
       ],
       "agreement": "corroborate",
       "strength": "strong",
-      "notes": "G-F-11 (CONTRADICTED hypothesis: managed factory not ready) and B-F-01 (no run R1-Causa accepted) agree on the conclusion. B extends G's three-run basis to eleven runs. One wording inconsistency: G-F-11 says 'Rehearsal 1 passed but with 25 defects'; B records R1 as self-classified PASS predating the ledger contract, with an Actions-confirmed acceptance over-claim (B-F-16). G's wording should be updated to B's. UPDATE: V2 notes R1 classified itself PASS against its own frozen criteria and its deployed accept job was green on the final release; B-F-01 is true but vacuous for 6 of 11 runs with no computed verdict. So G's 'R1 passed' is defensible against R1's own criteria; the correct wording is 'R1 passed its own criteria, predating the computed-verdict contract, after ~2.5 h of over-claimed RCs (B-F-16)'.",
+      "notes": "G-F-11 (CONTRADICTED hypothesis: managed factory not ready) and B-F-01 (no run R1-Causa accepted) agree on the conclusion. B extends G's three-run basis to eleven runs. One wording inconsistency: G-F-11 says 'Rehearsal 1 passed but with 25 defects'; B records R1 as self-classified PASS predating the ledger contract, with an Actions-confirmed acceptance over-claim (B-F-16). G's wording should be updated to B's. UPDATE: V2 notes R1 classified itself PASS against its own frozen criteria and its deployed accept job was green on the final release; B-F-01 is true but vacuous for 6 of 11 runs with no computed verdict. So G's 'R1 passed' is defensible against R1's own criteria; the correct wording is 'R1 passed its own criteria, predating the computed-verdict contract, after ~2.5 h of over-claimed RCs (B-F-16)'. UPDATE: G-F-11's market framing aside, no new evidence.",
       "evidence": [
         "G-market/findings.json#G-F-11",
         "B-forensics/findings.json#B-F-01",
@@ -552,15 +579,18 @@
       "theme": "Was the Causa T18<->T20 cycle a defect in the frozen slice plan?",
       "findings": [
         "B-F-03",
-        "B2-F-07"
+        "B2-F-07",
+        "B3-F-06",
+        "B4-F-03"
       ],
       "agreement": "contradict",
-      "strength": "moderate",
-      "notes": "B (REPORT section 3, B-F-03 instances) lists 'a T18<->T20 dependency cycle in the frozen slice plan' as a pre-T0 governance artefact defect. B2-F-07 (SUPPORTED) finds no variant of the cycle check that yields an SL-T18->SL-T20 edge from pre-T0 artefacts: T18's acceptance spec INV-21.spec.js binding PF-015-O4 was authored at T+94 (causa 1a1c7eb), so the dependency on T20's Connect is not in the frozen package. B2's matching rule was applied after seeing the giant SCC, and a different edge derivation might exist. Implication: this Causa instance is better classed as an in-run specification change than as a frozen-package defect, which weakens one of B's five headline instances and is consistent with V2's narrowing of B-F-03 (X-23).",
+      "strength": "strong",
+      "notes": "B (REPORT section 3, B-F-03 instances) lists 'a T18<->T20 dependency cycle in the frozen slice plan' as a pre-T0 governance artefact defect. B2-F-07 (SUPPORTED) finds no variant of the cycle check that yields an SL-T18->SL-T20 edge from pre-T0 artefacts: T18's acceptance spec INV-21.spec.js binding PF-015-O4 was authored at T+94 (causa 1a1c7eb), so the dependency on T20's Connect is not in the frozen package. B2's matching rule was applied after seeing the giant SCC, and a different edge derivation might exist. Implication: this Causa instance is better classed as an in-run specification change than as a frozen-package defect, which weakens one of B's five headline instances and is consistent with V2's narrowing of B-F-03 (X-23). UPDATE: B3-F-06 (CONTRADICTED B2's claim): the T18->T20 edge is derivable pre-T0 via test -> invariant INV-21 -> sources EXT-DATA-004/005 -> owning slice SL-T20. B2 followed the test's obligations, not the invariant's sources. DECISION-LOG D-025 adopts B3. Resolution: B's original classification (defect present in the frozen package) is supported; B2-F-07 is contradicted. The detector is noisy (other 2-cycles on Causa; a 6-slice SCC on the R10 control). Spec-preflight cannot see it (no slice input; B4-F-03).",
       "evidence": [
         "B-forensics/REPORT.md section 3 item 1",
         "B2-dryrun/findings.json#B2-F-07",
-        "B2-dryrun/results.csv (CAUSA-CYCLE)"
+        "B2-dryrun/results.csv (CAUSA-CYCLE)",
+        "B3-semantic/findings.json#B3-F-06"
       ]
     },
     {
@@ -573,11 +603,16 @@
         "D-F-09",
         "D-F-10",
         "D-F-11",
-        "D-F-12"
+        "D-F-12",
+        "A2-F-07",
+        "A2-F-08",
+        "A2-F-09",
+        "A2-F-10",
+        "F-F-07"
       ],
       "agreement": "corroborate",
       "strength": "moderate",
-      "notes": "A-F-13 (V1 PARTIALLY VERIFIED: about 604-607 min, 7.4-8.0% of step time, not 688; the step runs in every Echelon foundations run, about 27% of in-window runs) shows the pinned Praxis verifier is rebuilt from source with no build cache. D's preregistered confirmatory benchmarks (SUPPORTED: one fixture, one machine, 6 runs per arm) show what reuse buys: a no-op build with outputs kept costs ~4% of clean-build CPU (D-F-09), running one affected test project costs ~4% of the full offline suite (D-F-11), but a public-surface edit to the root project costs about a clean build (D-F-10, 5.7x an internal edit), and warm build servers gave no detectable benefit under contention (D-F-12, INCONCLUSIVE). A-F-15 (verification effort does not scale with change size; INCONCLUSIVE) is consistent with agents running full builds/tests regardless of the edit. Different questions (CI vs local agent loop), so moderate. Supports IM-01 and a new item on affected-test selection; test-selection safety is NOT TESTED (D-F-11 limitation).",
+      "notes": "A-F-13 (V1 PARTIALLY VERIFIED: about 604-607 min, 7.4-8.0% of step time, not 688; the step runs in every Echelon foundations run, about 27% of in-window runs) shows the pinned Praxis verifier is rebuilt from source with no build cache. D's preregistered confirmatory benchmarks (SUPPORTED: one fixture, one machine, 6 runs per arm) show what reuse buys: a no-op build with outputs kept costs ~4% of clean-build CPU (D-F-09), running one affected test project costs ~4% of the full offline suite (D-F-11), but a public-surface edit to the root project costs about a clean build (D-F-10, 5.7x an internal edit), and warm build servers gave no detectable benefit under contention (D-F-12, INCONCLUSIVE). A-F-15 (verification effort does not scale with change size; INCONCLUSIVE) is consistent with agents running full builds/tests regardless of the edit. Different questions (CI vs local agent loop), so moderate. Supports IM-01 and a new item on affected-test selection; test-selection safety is NOT TESTED (D-F-11 limitation). UPDATE: A2-F-07..F-09: the cold verifier build is compile-bound (NuGet caching alone barely helps); a published attested release 2 commits after the pin produces byte-identical foundations-verify output (A2-F-08); caching keyed on pin+SDK+OS+path is safe if the key is complete; ESTIMATE ~550 of ~604 verifier minutes saved (A2-F-09). Fail-fast ordering is INCONCLUSIVE (A2-F-10: 2.6-10.8% of all minutes depending on the definition of 'cheap'). F-F-07: ~10 s fixed WASM/ILLink cost in every edit-publish loop.",
       "evidence": [
         "A-economics/findings.json#A-F-13",
         "V1-verification/verdicts.json#A-F-13",
@@ -585,7 +620,60 @@
         "D-experiments/findings.json#D-F-09",
         "D-experiments/findings.json#D-F-10",
         "D-experiments/findings.json#D-F-11",
-        "D-experiments/findings.json#D-F-12"
+        "D-experiments/findings.json#D-F-12",
+        "A2-remediation/findings.json",
+        "F-fsharp-wasm/findings.json#F-F-07"
+      ]
+    },
+    {
+      "id": "X-26",
+      "theme": "Capabilities are built but not adopted (verified completion, range qualification, contract tooling, spec-preflight options, required components)",
+      "findings": [
+        "E-F-01",
+        "G-F-07",
+        "C-F-04",
+        "C2-F-03",
+        "C-F-07",
+        "F-F-13",
+        "F-F-14",
+        "B4-F-05",
+        "B3-F-09",
+        "C-F-02",
+        "D-025/D-029 (B3 duplicated spec-preflight)"
+      ],
+      "agreement": "corroborate",
+      "strength": "strong",
+      "notes": "Six tracks independently find the same pattern: a capability exists and works, but is off or unused where it would matter. Verified completion is implemented, and works when enabled (E-F-06), but no repository enables it (E-F-01, V2; G-F-07, V1). Conditor range qualification is live code reachable from the CLI but dormant because the trust list is empty (C-F-04, V2; C2-F-03). Limen view-contract tooling and the focus capability went unused in every rehearsal (F-F-13). Folio is declared but not integrated (F-F-14; C-F-07: profile-'required' components not installed). spec-preflight existed and was pinned, yet Indy-init CI invokes it without --catalog (B4-F-05). The sprint itself reproduced the pattern: B3 rebuilt semantic checks that spec-preflight already provided (B3-F-09, B4-F-09; DECISION-LOG D-029), echoing C-F-12's parallel toolchain. Implication for ADRs and future work: prefer enabling and adopting existing capabilities over building new ones; adoption barriers are NOT TESTED anywhere (F-F-13 limitation).",
+      "evidence": [
+        "E-security/findings.json#E-F-01",
+        "V2-verification/verdicts.json#E-F-01",
+        "C2-signed-registry/findings.json#C2-F-03",
+        "F-fsharp-wasm/findings.json#F-F-13",
+        "F-fsharp-wasm/findings.json#F-F-14",
+        "B4-preflight/findings.json#B4-F-05",
+        "B4-preflight/findings.json#B4-F-09",
+        "B3-semantic/findings.json#B3-F-09",
+        "C-architecture/findings.json#C-F-07"
+      ]
+    },
+    {
+      "id": "X-27",
+      "theme": "Signed Registry sets: analytical recommendation (CR-01) vs prototype evidence (C2)",
+      "findings": [
+        "C-F-03",
+        "C-F-04",
+        "C-F-18",
+        "C2-F-02",
+        "C2-F-05",
+        "C2-F-07",
+        "C2-F-08"
+      ],
+      "agreement": "contradict",
+      "strength": "strong",
+      "notes": "C's CR-01 claimed signing Registry sets and trusting a key would end the lockstep Conditor releases and need no new infrastructure. C2's prototype (throwaway key, scratch) shows the mechanism works end to end (C2-F-02, C2-F-03, VERIFIED) but contradicts both parts: only 2 of 13 recent Conditor releases (at most 3) were avoidable, because range qualification applies only to project-binding web packages (3 of 17 entries in 1.37.0), while Praxis/Ordo host-tool exact pins drove 7 releases (CON-343) (C2-F-07, CONTRADICTED). The Registry side (signing keys, workflow, resolver, REG-SIG checks, REG-RU-007 change) does not exist (C2-F-08). The attestation also covers the contract claim, not set integrity (C2-F-05), and has no expiry control (C2-F-04). DECISION-LOG D-031 downgrades CR-01; the real lever is the CON-343 host-tool range policy, an owner decision. ADR-S01 is revised accordingly.",
+      "evidence": [
+        "C-architecture/complexity-reductions.json#CR-01",
+        "C2-signed-registry/findings.json"
       ]
     }
   ],

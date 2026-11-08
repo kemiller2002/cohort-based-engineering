@@ -24,6 +24,24 @@
 - **Existing pieces.** Praxis documents a resolver for after a conflict (`docs/work-history-merge.md`, `HistoryMerge.fs`), but no `.gitattributes` merge driver (A2 protocol, Background).
 - **Scope.** The problem only appears in multi-lane runs (B-F-09). Single-agent runs had none.
 
+## A2 prototype result (SPR-A2-01, replay only)
+
+`A2-remediation/findings.json`; DECISION-LOG D-028.
+
+- **Conflicts.** With the `ros-history` driver (v2), 0 of 170 previously conflicted `.ros` paths remain unmerged:
+  - R8: 105 paths in 58 merges, including all 26 logged PR merges.
+  - R10: 65 paths in 34 merges.
+  - No new conflicts appeared in clean merges (A2-F-01, VERIFIED).
+- **Disclosed amendment.** The relaxed event-order rule was added after v1 resolved only 16/26.
+- **Correctness.** 0 records lost and 0 duplicated. Content equals the team's merge commit except in one file, where the team's merge was wrong. Pinned `praxis validate` passes on 92/92 driver results (A2-F-02, VERIFIED).
+- **A real defect found.** R10 merge d8447ed1 dropped live work item WI-0003, and `praxis validate` fails on that commit. The driver keeps the item (A2-F-03).
+- **Limits found.**
+  - 9 merges still need human resolution because of application-code conflicts (A2-F-04).
+  - Praxis's documented strict ordering rule fails on real histories (A2-F-05).
+  - `praxis validate` does not detect duplicated event lines (A2-F-02 negative control).
+  - The driver runs only for local merges; GitHub's merge button ignores it (A2-F-06).
+- **Speed.** About 6.5 s per merge with no agent turn, against 1,537 s of agent handling across R8's 26 conflicted PR merges (A2-F-06).
+
 ## Decision (proposed)
 
 Make `.ros` history files merge-safe by construction, in order of preference. The final choice depends on the SPR-A2-01 result.
@@ -49,14 +67,14 @@ Make `.ros` history files merge-safe by construction, in order of preference. Th
 |---|---|---|
 | A-F-07 | VERIFIED (A) | V1 PARTIALLY VERIFIED: the `.ros` part reproduced, the no-app-code part contradicted |
 | B-F-09 | VERIFIED (B) | V2 pending; per-run counts differ from A2's pre-scan (theme X-03) |
-| SPR-A2-01 | PREREGISTERED; results pending | — |
+| A2-F-01..F-06 | VERIFIED (A2, replay) | V3 pending |
 | C-F-12 | SUPPORTED (C): direct readers of `.ros` files exist | — |
 
 Files: `A-economics/findings.json#A-F-07`, `B-forensics/findings.json#B-F-09`, `B-forensics/data/merge-conflicts.json`, `V1-verification/verdicts.json#A-F-07`, `A2-remediation/protocols/SPR-A2-01-ros-merge-driver.md`. Matrix themes X-01, X-02, X-03.
 
 ## Open questions
 
-1. Does the semantic driver resolve 26 of 26 R8 conflicts with zero lost or duplicated records (SPR-A2-01 H1/H2)? Does that hold on R10 (H3)?
+1. ~~Does the driver work on replay?~~ Yes: A2-F-01/F-02, with the v2 ordering amendment. Will the Praxis owners accept relaxed event ordering as policy (A2-F-05)? Should `validate` detect duplicate event lines? Both are recorded as owner follow-ups in D-028.
 2. Are the team's own merge results correct? Post-merge edits may make "equivalence to M" a weak oracle (A2 known threats).
 3. Is the faster path to change Praxis's format (option 1) or to ship the driver (option 2)? How many external readers of the files exist?
 4. Is the 1,537 s figure accurate? It is coordinator-logged and V1 did not re-verify it.
