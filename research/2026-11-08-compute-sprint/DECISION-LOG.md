@@ -18,3 +18,4 @@
 | D-014 | 14:00 | Not pursued: live GitHub tests of branch protection or red-check completion | Would require outward-facing actions on live repos, which this sprint does not authorize |
 | D-015 | 14:16 | Accept V2-001's self-reported clean-up of stray `.git/praxis` and `scripts/.ros` | Director confirmed: `.git/praxis` absent, working tree clean, `git fsck` clean, no stray `.ros` in any worktree. The cause (cd inside a command substitution) is fixed by a root-guard in the script |
 | D-016 | 14:16 | Adopt V2 corrections: B-F-03 restated (first refusal, not dominant blocker); B-F-02 INVALID caveated (substantively INCOMPLETE); C-F-01 "9 more" → 8 | Independent verification outranks the originating track |
+| D-017 | 14:17 | Launch E2: hardening prototypes for E-F-01/02/03/11, as patch files only | The highest-severity findings are now independently verified; a tested fix turns a finding into a decision. Nothing is applied to real repos |
