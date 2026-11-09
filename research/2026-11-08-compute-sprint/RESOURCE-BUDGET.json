@@ -1,659 +1,799 @@
 {
-  "schema": "echelon-sprint-budget/1",
-  "asOf": "2026-11-08T13:35:13-05:00",
-  "deadline": "2026-11-08T23:00:00-05:00",
-  "quota": {
-    "computeUnits": {
-      "available": "unavailable",
-      "note": "No quota or token meter is exposed inside the session. Treated as unknown; conservative concurrency."
-    },
-    "tokens": {
-      "available": "unavailable",
-      "consumed": "unavailable",
-      "note": "Runtime reports per-subagent token totals at completion (task-notification usage). Director's own tokens are not observable. Recorded per agent; never estimated."
-    }
+ "schema": "echelon-sprint-budget/1",
+ "asOf": "2026-11-08T13:35:13-05:00",
+ "deadline": "2026-11-08T23:00:00-05:00",
+ "quota": {
+  "computeUnits": {
+   "available": "unavailable",
+   "note": "No quota or token meter is exposed inside the session. Treated as unknown; conservative concurrency."
   },
-  "machine": {
-    "vcpu": 4,
-    "memGiB": 15,
-    "diskWritableGiB": 30
-  },
-  "concurrencyPolicy": {
-    "initialSpecialists": 8,
-    "maxConcurrent": 8,
-    "rationale": "Unknown quota + 4 vCPU host: 8 mostly-I/O-bound analysis agents; heavy builds serialized (dotnet build contention)."
-  },
-  "allocation": {
-    "A-economics": "1 agent, deadline 21:30",
-    "B-forensics": "1 agent, deadline 21:30",
-    "C-architecture": "1 agent, deadline 21:30",
-    "D-experiments": "1 agent, deadline 21:15 (reserved for experiments; stops new runs 21:45 at the latest)",
-    "E-security": "1 agent, deadline 21:30",
-    "F-fsharp-wasm": "1 agent, deadline 21:30; sole user of dotnet builds",
-    "G-market": "1 agent, deadline 21:00",
-    "H-synthesis": "1 agent, launched after first track outputs; deadline 22:15",
-    "verification": "Independent verifier agent(s) from 21:30; deadline 22:30"
-  },
-  "observed": {
-    "agentWallClock": [
-      {
-        "agent": "G-001",
-        "durationMs": 698734,
-        "subagentTokens": 203767,
-        "toolUses": 91
-      },
-      {
-        "agent": "A-001",
-        "durationMs": 1006791,
-        "subagentTokens": 244899,
-        "toolUses": 93
-      },
-      {
-        "agent": "B-001",
-        "durationMs": 1191172,
-        "subagentTokens": 340135,
-        "toolUses": 103
-      },
-      {
-        "agent": "C-001",
-        "durationMs": 1207436,
-        "subagentTokens": 298467,
-        "toolUses": 125
-      },
-      {
-        "agent": "E-001",
-        "durationMs": 1264172,
-        "subagentTokens": 291233,
-        "toolUses": 119
-      },
-      {
-        "agent": "V2-001",
-        "durationMs": 911071,
-        "subagentTokens": 248164,
-        "toolUses": 100
-      },
-      {
-        "agent": "V1-001",
-        "durationMs": 1310664,
-        "subagentTokens": 221386,
-        "toolUses": 97
-      },
-      {
-        "agent": "D-001",
-        "durationMs": 2803692,
-        "subagentTokens": 208406,
-        "toolUses": 81
-      },
-      {
-        "agent": "B2-001",
-        "durationMs": 1801877,
-        "subagentTokens": 297285,
-        "toolUses": 144
-      },
-      {
-        "agent": "D2-PREP",
-        "durationMs": 451014,
-        "subagentTokens": 128375,
-        "toolUses": 20
-      },
-      {
-        "agent": "D2-r2",
-        "durationMs": 63082,
-        "subagentTokens": 73051,
-        "toolUses": 4
-      },
-      {
-        "agent": "D2-r3",
-        "durationMs": 66438,
-        "subagentTokens": 72520,
-        "toolUses": 4
-      },
-      {
-        "agent": "D2-r4",
-        "durationMs": 90368,
-        "subagentTokens": 75675,
-        "toolUses": 6
-      },
-      {
-        "agent": "D2-r6",
-        "durationMs": 89714,
-        "subagentTokens": 76064,
-        "toolUses": 5
-      },
-      {
-        "agent": "D2-r5",
-        "durationMs": 65878,
-        "subagentTokens": 72407,
-        "toolUses": 5
-      },
-      {
-        "agent": "D2-r8",
-        "durationMs": 66338,
-        "subagentTokens": 73319,
-        "toolUses": 4
-      },
-      {
-        "agent": "D2-r1",
-        "durationMs": 92934,
-        "subagentTokens": 76552,
-        "toolUses": 5
-      },
-      {
-        "agent": "D2-r7",
-        "durationMs": 133022,
-        "subagentTokens": 80714,
-        "toolUses": 8
-      },
-      {
-        "agent": "B3-001",
-        "durationMs": 841938,
-        "subagentTokens": 211832,
-        "toolUses": 60
-      },
-      {
-        "agent": "D2-PREP2",
-        "durationMs": 574811,
-        "subagentTokens": 159615,
-        "toolUses": 28
-      },
-      {
-        "agent": "D2b-p1",
-        "durationMs": 63950,
-        "subagentTokens": 73029,
-        "toolUses": 6
-      },
-      {
-        "agent": "D2b-p2",
-        "durationMs": 80440,
-        "subagentTokens": 74385,
-        "toolUses": 7
-      },
-      {
-        "agent": "A2-001",
-        "durationMs": 3689787,
-        "subagentTokens": 255682,
-        "toolUses": 139
-      },
-      {
-        "agent": "B4-001",
-        "durationMs": 675576,
-        "subagentTokens": 187986,
-        "toolUses": 59
-      },
-      {
-        "agent": "D2-PREP3",
-        "durationMs": 407925,
-        "subagentTokens": 155295,
-        "toolUses": 23
-      },
-      {
-        "agent": "C2-001",
-        "durationMs": 879098,
-        "subagentTokens": 199871,
-        "toolUses": 64
-      },
-      {
-        "agent": "D2c-q1",
-        "durationMs": 70372,
-        "subagentTokens": 74245,
-        "toolUses": 6
-      },
-      {
-        "agent": "D2c-q2",
-        "durationMs": 70090,
-        "subagentTokens": 74309,
-        "toolUses": 5
-      },
-      {
-        "agent": "D3-PREP",
-        "durationMs": 806621,
-        "subagentTokens": 187273,
-        "toolUses": 31
-      },
-      {
-        "agent": "V3-001",
-        "durationMs": 1057383,
-        "subagentTokens": 232649,
-        "toolUses": 83
-      },
-      {
-        "agent": "D3-c1",
-        "durationMs": 242289,
-        "subagentTokens": 89308,
-        "toolUses": 14,
-        "note": "cumulative chain value; semantics uncertain"
-      },
-      {
-        "agent": "D4-PREP",
-        "durationMs": 629059,
-        "subagentTokens": 152273,
-        "toolUses": 26
-      },
-      {
-        "agent": "D4-s1",
-        "durationMs": 87945,
-        "subagentTokens": 77055,
-        "toolUses": 10
-      },
-      {
-        "agent": "D4-s2",
-        "durationMs": 83454,
-        "subagentTokens": 75170,
-        "toolUses": 9
-      },
-      {
-        "agent": "SPR-X-01-t02",
-        "durationMs": 29183,
-        "subagentTokens": 71474,
-        "toolUses": 5,
-        "model_alias": "sonnet"
-      },
-      {
-        "agent": "SPR-X-01-s02",
-        "durationMs": 33214,
-        "subagentTokens": 70824,
-        "toolUses": 4,
-        "model_alias": "sonnet"
-      },
-      {
-        "agent": "SPR-X-01-w02",
-        "durationMs": 37521,
-        "subagentTokens": 72390,
-        "toolUses": 6,
-        "model_alias": "sonnet"
-      },
-      {
-        "agent": "SPR-X-01-s01",
-        "durationMs": 47156,
-        "subagentTokens": 78275,
-        "toolUses": 10,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-01-w01",
-        "durationMs": 59544,
-        "subagentTokens": 81549,
-        "toolUses": 11,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-01-t01",
-        "durationMs": 61571,
-        "subagentTokens": 82548,
-        "toolUses": 4,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s11",
-        "durationMs": 50561,
-        "subagentTokens": 76192,
-        "toolUses": 5,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t04",
-        "durationMs": 59204,
-        "subagentTokens": 81590,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s14",
-        "durationMs": 61122,
-        "subagentTokens": 81209,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s08",
-        "durationMs": 61175,
-        "subagentTokens": 81303,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t03",
-        "durationMs": 69669,
-        "subagentTokens": 86695,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t09",
-        "durationMs": 70636,
-        "subagentTokens": 84338,
-        "toolUses": 10,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t10",
-        "durationMs": 41778,
-        "subagentTokens": 77083,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s06",
-        "durationMs": 45962,
-        "subagentTokens": 78149,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s07",
-        "durationMs": 54726,
-        "subagentTokens": 78259,
-        "toolUses": 10,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t13",
-        "durationMs": 68421,
-        "subagentTokens": 87155,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t12",
-        "durationMs": 76110,
-        "subagentTokens": 86087,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s10",
-        "durationMs": 80403,
-        "subagentTokens": 86326,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t06",
-        "durationMs": 46979,
-        "subagentTokens": 78990,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t11",
-        "durationMs": 47519,
-        "subagentTokens": 80545,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s04",
-        "durationMs": 51855,
-        "subagentTokens": 78384,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s03",
-        "durationMs": 60086,
-        "subagentTokens": 81659,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s13",
-        "durationMs": 83172,
-        "subagentTokens": 86793,
-        "toolUses": 11,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t08",
-        "durationMs": 84725,
-        "subagentTokens": 89456,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s05",
-        "durationMs": 37117,
-        "subagentTokens": 75909,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t07",
-        "durationMs": 45989,
-        "subagentTokens": 78240,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s09",
-        "durationMs": 47587,
-        "subagentTokens": 78061,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-s12",
-        "durationMs": 62784,
-        "subagentTokens": 83620,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t14",
-        "durationMs": 74293,
-        "subagentTokens": 86375,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-02-t05",
-        "durationMs": 78469,
-        "subagentTokens": 87628,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "E2-001",
-        "durationMs": 5932976,
-        "subagentTokens": 345485,
-        "toolUses": 165
-      },
-      {
-        "agent": "F-001",
-        "durationMs": 9145943,
-        "subagentTokens": 398406,
-        "toolUses": 260
-      },
-      {
-        "agent": "V4-001",
-        "durationMs": 606226,
-        "subagentTokens": 185469,
-        "toolUses": 44
-      },
-      {
-        "agent": "SPR-X-03-a08",
-        "durationMs": 43143,
-        "subagentTokens": 75965,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a03",
-        "durationMs": 43745,
-        "subagentTokens": 77049,
-        "toolUses": 5,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b08",
-        "durationMs": 54034,
-        "subagentTokens": 81969,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a12",
-        "durationMs": 55421,
-        "subagentTokens": 81068,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b10",
-        "durationMs": 89089,
-        "subagentTokens": 87827,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b09",
-        "durationMs": 89493,
-        "subagentTokens": 89507,
-        "toolUses": 11,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b05",
-        "durationMs": 47759,
-        "subagentTokens": 78790,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a01",
-        "durationMs": 54457,
-        "subagentTokens": 79037,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b07",
-        "durationMs": 58027,
-        "subagentTokens": 81952,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a07",
-        "durationMs": 70907,
-        "subagentTokens": 86459,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a04",
-        "durationMs": 73449,
-        "subagentTokens": 87713,
-        "toolUses": 11,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b12",
-        "durationMs": 76427,
-        "subagentTokens": 86049,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a05",
-        "durationMs": 44063,
-        "subagentTokens": 77316,
-        "toolUses": 5,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a11",
-        "durationMs": 46845,
-        "subagentTokens": 77494,
-        "toolUses": 5,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b11",
-        "durationMs": 55732,
-        "subagentTokens": 80120,
-        "toolUses": 6,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a10",
-        "durationMs": 69865,
-        "subagentTokens": 82533,
-        "toolUses": 7,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b02",
-        "durationMs": 69988,
-        "subagentTokens": 85548,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b06",
-        "durationMs": 89125,
-        "subagentTokens": 90095,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a02",
-        "durationMs": 48973,
-        "subagentTokens": 78777,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a06",
-        "durationMs": 56308,
-        "subagentTokens": 81549,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-a09",
-        "durationMs": 56375,
-        "subagentTokens": 80780,
-        "toolUses": 8,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b04",
-        "durationMs": 63695,
-        "subagentTokens": 81363,
-        "toolUses": 10,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b01",
-        "durationMs": 66420,
-        "subagentTokens": 84195,
-        "toolUses": 9,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "SPR-X-03-b03",
-        "durationMs": 91184,
-        "subagentTokens": 91541,
-        "toolUses": 17,
-        "model_alias": "haiku"
-      },
-      {
-        "agent": "V5-001",
-        "durationMs": 543506,
-        "subagentTokens": 185035,
-        "toolUses": 42
-      },
-      {
-        "agent": "X04-PREP",
-        "durationMs": 665229,
-        "subagentTokens": 168285,
-        "toolUses": 30
-      }
-    ],
-    "ciMinutes": "not consumed by this sprint (no CI runs triggered)",
-    "failedRuns": [],
-    "verifiedFindings": 0,
-    "costPerVerifiedFinding": "unavailable (no cost meter)",
-    "subagentTokensCompletedSoFar": 11056878
+  "tokens": {
+   "available": "unavailable",
+   "consumed": "unavailable",
+   "note": "Runtime reports per-subagent token totals at completion (task-notification usage). Director's own tokens are not observable. Recorded per agent; never estimated."
   }
+ },
+ "machine": {
+  "vcpu": 4,
+  "memGiB": 15,
+  "diskWritableGiB": 30
+ },
+ "concurrencyPolicy": {
+  "initialSpecialists": 8,
+  "maxConcurrent": 8,
+  "rationale": "Unknown quota + 4 vCPU host: 8 mostly-I/O-bound analysis agents; heavy builds serialized (dotnet build contention)."
+ },
+ "allocation": {
+  "A-economics": "1 agent, deadline 21:30",
+  "B-forensics": "1 agent, deadline 21:30",
+  "C-architecture": "1 agent, deadline 21:30",
+  "D-experiments": "1 agent, deadline 21:15 (reserved for experiments; stops new runs 21:45 at the latest)",
+  "E-security": "1 agent, deadline 21:30",
+  "F-fsharp-wasm": "1 agent, deadline 21:30; sole user of dotnet builds",
+  "G-market": "1 agent, deadline 21:00",
+  "H-synthesis": "1 agent, launched after first track outputs; deadline 22:15",
+  "verification": "Independent verifier agent(s) from 21:30; deadline 22:30"
+ },
+ "observed": {
+  "agentWallClock": [
+   {
+    "agent": "G-001",
+    "durationMs": 698734,
+    "subagentTokens": 203767,
+    "toolUses": 91
+   },
+   {
+    "agent": "A-001",
+    "durationMs": 1006791,
+    "subagentTokens": 244899,
+    "toolUses": 93
+   },
+   {
+    "agent": "B-001",
+    "durationMs": 1191172,
+    "subagentTokens": 340135,
+    "toolUses": 103
+   },
+   {
+    "agent": "C-001",
+    "durationMs": 1207436,
+    "subagentTokens": 298467,
+    "toolUses": 125
+   },
+   {
+    "agent": "E-001",
+    "durationMs": 1264172,
+    "subagentTokens": 291233,
+    "toolUses": 119
+   },
+   {
+    "agent": "V2-001",
+    "durationMs": 911071,
+    "subagentTokens": 248164,
+    "toolUses": 100
+   },
+   {
+    "agent": "V1-001",
+    "durationMs": 1310664,
+    "subagentTokens": 221386,
+    "toolUses": 97
+   },
+   {
+    "agent": "D-001",
+    "durationMs": 2803692,
+    "subagentTokens": 208406,
+    "toolUses": 81
+   },
+   {
+    "agent": "B2-001",
+    "durationMs": 1801877,
+    "subagentTokens": 297285,
+    "toolUses": 144
+   },
+   {
+    "agent": "D2-PREP",
+    "durationMs": 451014,
+    "subagentTokens": 128375,
+    "toolUses": 20
+   },
+   {
+    "agent": "D2-r2",
+    "durationMs": 63082,
+    "subagentTokens": 73051,
+    "toolUses": 4
+   },
+   {
+    "agent": "D2-r3",
+    "durationMs": 66438,
+    "subagentTokens": 72520,
+    "toolUses": 4
+   },
+   {
+    "agent": "D2-r4",
+    "durationMs": 90368,
+    "subagentTokens": 75675,
+    "toolUses": 6
+   },
+   {
+    "agent": "D2-r6",
+    "durationMs": 89714,
+    "subagentTokens": 76064,
+    "toolUses": 5
+   },
+   {
+    "agent": "D2-r5",
+    "durationMs": 65878,
+    "subagentTokens": 72407,
+    "toolUses": 5
+   },
+   {
+    "agent": "D2-r8",
+    "durationMs": 66338,
+    "subagentTokens": 73319,
+    "toolUses": 4
+   },
+   {
+    "agent": "D2-r1",
+    "durationMs": 92934,
+    "subagentTokens": 76552,
+    "toolUses": 5
+   },
+   {
+    "agent": "D2-r7",
+    "durationMs": 133022,
+    "subagentTokens": 80714,
+    "toolUses": 8
+   },
+   {
+    "agent": "B3-001",
+    "durationMs": 841938,
+    "subagentTokens": 211832,
+    "toolUses": 60
+   },
+   {
+    "agent": "D2-PREP2",
+    "durationMs": 574811,
+    "subagentTokens": 159615,
+    "toolUses": 28
+   },
+   {
+    "agent": "D2b-p1",
+    "durationMs": 63950,
+    "subagentTokens": 73029,
+    "toolUses": 6
+   },
+   {
+    "agent": "D2b-p2",
+    "durationMs": 80440,
+    "subagentTokens": 74385,
+    "toolUses": 7
+   },
+   {
+    "agent": "A2-001",
+    "durationMs": 3689787,
+    "subagentTokens": 255682,
+    "toolUses": 139
+   },
+   {
+    "agent": "B4-001",
+    "durationMs": 675576,
+    "subagentTokens": 187986,
+    "toolUses": 59
+   },
+   {
+    "agent": "D2-PREP3",
+    "durationMs": 407925,
+    "subagentTokens": 155295,
+    "toolUses": 23
+   },
+   {
+    "agent": "C2-001",
+    "durationMs": 879098,
+    "subagentTokens": 199871,
+    "toolUses": 64
+   },
+   {
+    "agent": "D2c-q1",
+    "durationMs": 70372,
+    "subagentTokens": 74245,
+    "toolUses": 6
+   },
+   {
+    "agent": "D2c-q2",
+    "durationMs": 70090,
+    "subagentTokens": 74309,
+    "toolUses": 5
+   },
+   {
+    "agent": "D3-PREP",
+    "durationMs": 806621,
+    "subagentTokens": 187273,
+    "toolUses": 31
+   },
+   {
+    "agent": "V3-001",
+    "durationMs": 1057383,
+    "subagentTokens": 232649,
+    "toolUses": 83
+   },
+   {
+    "agent": "D3-c1",
+    "durationMs": 242289,
+    "subagentTokens": 89308,
+    "toolUses": 14,
+    "note": "cumulative chain value; semantics uncertain"
+   },
+   {
+    "agent": "D4-PREP",
+    "durationMs": 629059,
+    "subagentTokens": 152273,
+    "toolUses": 26
+   },
+   {
+    "agent": "D4-s1",
+    "durationMs": 87945,
+    "subagentTokens": 77055,
+    "toolUses": 10
+   },
+   {
+    "agent": "D4-s2",
+    "durationMs": 83454,
+    "subagentTokens": 75170,
+    "toolUses": 9
+   },
+   {
+    "agent": "SPR-X-01-t02",
+    "durationMs": 29183,
+    "subagentTokens": 71474,
+    "toolUses": 5,
+    "model_alias": "sonnet"
+   },
+   {
+    "agent": "SPR-X-01-s02",
+    "durationMs": 33214,
+    "subagentTokens": 70824,
+    "toolUses": 4,
+    "model_alias": "sonnet"
+   },
+   {
+    "agent": "SPR-X-01-w02",
+    "durationMs": 37521,
+    "subagentTokens": 72390,
+    "toolUses": 6,
+    "model_alias": "sonnet"
+   },
+   {
+    "agent": "SPR-X-01-s01",
+    "durationMs": 47156,
+    "subagentTokens": 78275,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-01-w01",
+    "durationMs": 59544,
+    "subagentTokens": 81549,
+    "toolUses": 11,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-01-t01",
+    "durationMs": 61571,
+    "subagentTokens": 82548,
+    "toolUses": 4,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s11",
+    "durationMs": 50561,
+    "subagentTokens": 76192,
+    "toolUses": 5,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t04",
+    "durationMs": 59204,
+    "subagentTokens": 81590,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s14",
+    "durationMs": 61122,
+    "subagentTokens": 81209,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s08",
+    "durationMs": 61175,
+    "subagentTokens": 81303,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t03",
+    "durationMs": 69669,
+    "subagentTokens": 86695,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t09",
+    "durationMs": 70636,
+    "subagentTokens": 84338,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t10",
+    "durationMs": 41778,
+    "subagentTokens": 77083,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s06",
+    "durationMs": 45962,
+    "subagentTokens": 78149,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s07",
+    "durationMs": 54726,
+    "subagentTokens": 78259,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t13",
+    "durationMs": 68421,
+    "subagentTokens": 87155,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t12",
+    "durationMs": 76110,
+    "subagentTokens": 86087,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s10",
+    "durationMs": 80403,
+    "subagentTokens": 86326,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t06",
+    "durationMs": 46979,
+    "subagentTokens": 78990,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t11",
+    "durationMs": 47519,
+    "subagentTokens": 80545,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s04",
+    "durationMs": 51855,
+    "subagentTokens": 78384,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s03",
+    "durationMs": 60086,
+    "subagentTokens": 81659,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s13",
+    "durationMs": 83172,
+    "subagentTokens": 86793,
+    "toolUses": 11,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t08",
+    "durationMs": 84725,
+    "subagentTokens": 89456,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s05",
+    "durationMs": 37117,
+    "subagentTokens": 75909,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t07",
+    "durationMs": 45989,
+    "subagentTokens": 78240,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s09",
+    "durationMs": 47587,
+    "subagentTokens": 78061,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-s12",
+    "durationMs": 62784,
+    "subagentTokens": 83620,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t14",
+    "durationMs": 74293,
+    "subagentTokens": 86375,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-02-t05",
+    "durationMs": 78469,
+    "subagentTokens": 87628,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "E2-001",
+    "durationMs": 5932976,
+    "subagentTokens": 345485,
+    "toolUses": 165
+   },
+   {
+    "agent": "F-001",
+    "durationMs": 9145943,
+    "subagentTokens": 398406,
+    "toolUses": 260
+   },
+   {
+    "agent": "V4-001",
+    "durationMs": 606226,
+    "subagentTokens": 185469,
+    "toolUses": 44
+   },
+   {
+    "agent": "SPR-X-03-a08",
+    "durationMs": 43143,
+    "subagentTokens": 75965,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a03",
+    "durationMs": 43745,
+    "subagentTokens": 77049,
+    "toolUses": 5,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b08",
+    "durationMs": 54034,
+    "subagentTokens": 81969,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a12",
+    "durationMs": 55421,
+    "subagentTokens": 81068,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b10",
+    "durationMs": 89089,
+    "subagentTokens": 87827,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b09",
+    "durationMs": 89493,
+    "subagentTokens": 89507,
+    "toolUses": 11,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b05",
+    "durationMs": 47759,
+    "subagentTokens": 78790,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a01",
+    "durationMs": 54457,
+    "subagentTokens": 79037,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b07",
+    "durationMs": 58027,
+    "subagentTokens": 81952,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a07",
+    "durationMs": 70907,
+    "subagentTokens": 86459,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a04",
+    "durationMs": 73449,
+    "subagentTokens": 87713,
+    "toolUses": 11,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b12",
+    "durationMs": 76427,
+    "subagentTokens": 86049,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a05",
+    "durationMs": 44063,
+    "subagentTokens": 77316,
+    "toolUses": 5,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a11",
+    "durationMs": 46845,
+    "subagentTokens": 77494,
+    "toolUses": 5,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b11",
+    "durationMs": 55732,
+    "subagentTokens": 80120,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a10",
+    "durationMs": 69865,
+    "subagentTokens": 82533,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b02",
+    "durationMs": 69988,
+    "subagentTokens": 85548,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b06",
+    "durationMs": 89125,
+    "subagentTokens": 90095,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a02",
+    "durationMs": 48973,
+    "subagentTokens": 78777,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a06",
+    "durationMs": 56308,
+    "subagentTokens": 81549,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-a09",
+    "durationMs": 56375,
+    "subagentTokens": 80780,
+    "toolUses": 8,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b04",
+    "durationMs": 63695,
+    "subagentTokens": 81363,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b01",
+    "durationMs": 66420,
+    "subagentTokens": 84195,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-03-b03",
+    "durationMs": 91184,
+    "subagentTokens": 91541,
+    "toolUses": 17,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "V5-001",
+    "durationMs": 543506,
+    "subagentTokens": 185035,
+    "toolUses": 42
+   },
+   {
+    "agent": "X04-PREP",
+    "durationMs": 665229,
+    "subagentTokens": 168285,
+    "toolUses": 30
+   },
+   {
+    "agent": "SPR-X-04-p2",
+    "durationMs": 116829,
+    "subagentTokens": 96859,
+    "toolUses": 12,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-p1",
+    "durationMs": 116840,
+    "subagentTokens": 99596,
+    "toolUses": 12,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r12",
+    "durationMs": 98612,
+    "subagentTokens": 92144,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r08",
+    "durationMs": 112533,
+    "subagentTokens": 96888,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r10",
+    "durationMs": 130211,
+    "subagentTokens": 103363,
+    "toolUses": 9,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r09",
+    "durationMs": 140561,
+    "subagentTokens": 106864,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r03",
+    "durationMs": 92105,
+    "subagentTokens": 92062,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r04",
+    "durationMs": 97459,
+    "subagentTokens": 93102,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r15",
+    "durationMs": 129909,
+    "subagentTokens": 103807,
+    "toolUses": 15,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r11",
+    "durationMs": 145377,
+    "subagentTokens": 103513,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r16",
+    "durationMs": 92245,
+    "subagentTokens": 92181,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r05",
+    "durationMs": 97430,
+    "subagentTokens": 92386,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r07",
+    "durationMs": 127435,
+    "subagentTokens": 103755,
+    "toolUses": 13,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r02",
+    "durationMs": 141737,
+    "subagentTokens": 103018,
+    "toolUses": 6,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r13",
+    "durationMs": 74290,
+    "subagentTokens": 87531,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r14",
+    "durationMs": 98508,
+    "subagentTokens": 95467,
+    "toolUses": 7,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r06",
+    "durationMs": 137565,
+    "subagentTokens": 102819,
+    "toolUses": 10,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "SPR-X-04-r01",
+    "durationMs": 169032,
+    "subagentTokens": 109363,
+    "toolUses": 20,
+    "model_alias": "haiku"
+   },
+   {
+    "agent": "V6-001",
+    "durationMs": 178981,
+    "subagentTokens": 117651,
+    "toolUses": 19
+   },
+   {
+    "agent": "H-001",
+    "durationMs": 23612475,
+    "subagentTokens": 384387,
+    "toolUses": 138,
+    "note": "final cumulative figure; long-running integrator"
+   }
+  ],
+  "ciMinutes": "not consumed by this sprint (no CI runs triggered)",
+  "failedRuns": [],
+  "verifiedFindings": 0,
+  "costPerVerifiedFinding": "unavailable (no cost meter)",
+  "subagentTokensCompletedSoFar": 13333634
+ },
+ "asOfObserved": "2026-11-08T20:40-05:00"
 }

@@ -4,24 +4,29 @@ Scores 1–5 (higher is better, except cost/time/burden/risk where higher = more
 
 | ID | Investigation | Track | Value | Prob. | Reuse | Cost | Time | Burden | Risk | Priority | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| Q-01 | Normalize R1–R10 rehearsal event history; recurring root causes | B | 5 | 5 | 5 | 2 | 3 | 2 | 2 | 13.9 | ACTIVE |
-| Q-02 | Token/cost/wall-clock dataset from existing telemetry & final reports | A | 5 | 4 | 5 | 2 | 3 | 3 | 2 | 10.0 | ACTIVE |
-| Q-03 | Ecosystem inventory + machine-readable dependency graph | C | 4 | 5 | 5 | 2 | 3 | 2 | 2 | 11.1 | ACTIVE |
-| Q-04 | CI overhead from GitHub Actions run history | A | 4 | 4 | 4 | 2 | 2 | 2 | 2 | 8.0 | ACTIVE (in A) |
-| Q-05 | Governance-bypass fixtures: evidence spoofing, stale evidence, completion falsification | E | 5 | 4 | 5 | 3 | 3 | 3 | 2 | 9.1 | ACTIVE |
-| Q-06 | Controlled matched-task experiment (governed vs minimal; one vs several agents) | D | 5 | 3 | 4 | 4 | 4 | 4 | 4 | 3.8 | ACTIVE (reserved capacity) |
-| Q-07 | Secondary re-analysis of existing VAC/ARCH/A021/A024 data | D | 4 | 5 | 4 | 1 | 2 | 2 | 1 | 13.3 | ACTIVE (in D) |
-| Q-08 | F#/WASM build, bundle, startup, a11y measurements on rehearsal apps | F | 4 | 3 | 4 | 3 | 3 | 3 | 3 | 4.0 | ACTIVE (depends on dotnet install) |
-| Q-09 | F# compile-error and UI-defect mining from rehearsal history | F | 4 | 4 | 4 | 2 | 2 | 2 | 2 | 8.0 | ACTIVE |
-| Q-10 | Market & competitive landscape with sourced citations | G | 4 | 4 | 3 | 2 | 3 | 2 | 1 | 6.0 | ACTIVE |
-| Q-11 | Synthesis: contradictions, claims needing verification, ADRs | H | 4 | 4 | 4 | 2 | 3 | 2 | 2 | 7.1 | ACTIVE (late start) |
-| Q-12 | Independent verification of consequential findings | Director/V | 5 | 4 | 4 | 2 | 2 | 3 | 2 | 8.9 | QUEUED (after first findings) |
+| Q-01 | Normalize R1–R10 rehearsal event history; recurring root causes | B | 5 | 5 | 5 | 2 | 3 | 2 | 2 | 13.9 | DONE |
+| Q-02 | Token/cost/wall-clock dataset from existing telemetry & final reports | A | 5 | 4 | 5 | 2 | 3 | 3 | 2 | 10.0 | DONE |
+| Q-03 | Ecosystem inventory + machine-readable dependency graph | C | 4 | 5 | 5 | 2 | 3 | 2 | 2 | 11.1 | DONE |
+| Q-04 | CI overhead from GitHub Actions run history | A | 4 | 4 | 4 | 2 | 2 | 2 | 2 | 8.0 | DONE |
+| Q-05 | Governance-bypass fixtures: evidence spoofing, stale evidence, completion falsification | E | 5 | 4 | 5 | 3 | 3 | 3 | 2 | 9.1 | DONE |
+| Q-06 | Controlled matched-task experiment (governed vs minimal; one vs several agents) | D | 5 | 3 | 4 | 4 | 4 | 4 | 4 | 3.8 | PARTLY DONE (D2 series: governed vs minimal; agent-count arm NOT TESTED) |
+| Q-07 | Secondary re-analysis of existing VAC/ARCH/A021/A024 data | D | 4 | 5 | 4 | 1 | 2 | 2 | 1 | 13.3 | DONE |
+| Q-08 | F#/WASM build, bundle, startup, a11y measurements on rehearsal apps | F | 4 | 3 | 4 | 3 | 3 | 3 | 3 | 4.0 | DONE |
+| Q-09 | F# compile-error and UI-defect mining from rehearsal history | F | 4 | 4 | 4 | 2 | 2 | 2 | 2 | 8.0 | DONE |
+| Q-10 | Market & competitive landscape with sourced citations | G | 4 | 4 | 3 | 2 | 3 | 2 | 1 | 6.0 | DONE |
+| Q-11 | Synthesis: contradictions, claims needing verification, ADRs | H | 4 | 4 | 4 | 2 | 3 | 2 | 2 | 7.1 | DONE |
+| Q-12 | Independent verification of consequential findings | Director/V | 5 | 4 | 4 | 2 | 2 | 3 | 2 | 8.9 | DONE (V1–V6) |
 
 ## Wave 2 (added 13:57 EST after Track A/G results; see D-012)
 
 | ID | Investigation | Track | Value | Prob. | Reuse | Cost | Time | Burden | Risk | Priority | Status |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| Q-13 | Independent recomputation of A/G consequential findings | V1 | 5 | 5 | 4 | 2 | 2 | 2 | 1 | 14.3 | ACTIVE |
-| Q-14 | Semantic merge driver replayed on all R8 `.ros/` conflicts | A2 | 5 | 4 | 5 | 2 | 2 | 2 | 2 | 12.5 | ACTIVE |
-| Q-15 | Verifier rebuild vs cache/release measurement | A2 | 3 | 5 | 4 | 2 | 1 | 1 | 1 | 12.0 | ACTIVE |
-| Q-16 | Fail-fast CI ordering counterfactual | A2 | 3 | 4 | 4 | 1 | 2 | 2 | 1 | 8.0 | ACTIVE (if time) |
+| Q-13 | Independent recomputation of A/G consequential findings | V1 | 5 | 5 | 4 | 2 | 2 | 2 | 1 | 14.3 | DONE |
+| Q-14 | Semantic merge driver replayed on all R8 `.ros/` conflicts | A2 | 5 | 4 | 5 | 2 | 2 | 2 | 2 | 12.5 | DONE |
+| Q-15 | Verifier rebuild vs cache/release measurement | A2 | 3 | 5 | 4 | 2 | 1 | 1 | 1 | 12.0 | DONE |
+| Q-16 | Fail-fast CI ordering counterfactual | A2 | 3 | 4 | 4 | 1 | 2 | 2 | 1 | 8.0 | DONE (INCONCLUSIVE) |
+
+## Final state (20:40 EST)
+
+- **Status:** all queued investigations are closed. No new work was started after the 20:30 reassessment, apart from verifying X-04 (V6).
+- **Carried forward:** the 24 h / 7 d / 30 d items in FINAL-REPORT.md §G. These include FX-09 (conflict-count reconciliation), the 21 unverified high-priority claims, and the agent-count arm of Q-06.

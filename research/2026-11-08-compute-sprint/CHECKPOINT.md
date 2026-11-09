@@ -19,8 +19,14 @@
 - **Corrections adopted so far:** D-016 (V2), D-018 (V1), D-022 (B2 narrows the dry-run claim), D-025 (B3 contradicts B2 on Causa), D-029 (reuse spec-preflight), D-031 (CR-01 downgraded).
 - **Next:** restart the harvester at about 15:38; run D3 pilot c1 when the fixture is ready; process F, E2 and V3 when they report; 20:30 reassessment.
 
-## 2026-11-08T20:37-05:00 — CP-03 (20:30 reassessment)
-- **Completed since CP-02:** F, E2, V3, V4, V5, SPR-X-01..X-04 (X-04 finished at 20:35, primary not significant, D-051). The D3 and D4 gates stopped (D-034, D-035).
+## 2026-11-08T20:32-05:00 — CP-03 (20:30 reassessment)
+- **Completed since CP-02:** F, E2, V3, V4, V5, SPR-X-01..X-04 (X-04 finished at about 20:30, primary not significant, D-051). The D3 and D4 gates stopped (D-034, D-035).
 - **Active:** H (synthesis, redirected, hand-back by 21:45); V6 (X-04 verification, hand-back by 21:40).
 - **No new experiments** (D-052). Final deliverables are being drafted now (D-053).
 - **Harvesting:** manual after each event; the background harvester was not restarted (D-036).
+
+## 2026-11-08T20:41-05:00 — CP-04 (finalization drafted early)
+- **Completed:** H (final synthesis), V6 (X-04 VERIFIED; one sentence corrected; early-scoring deviation disclosed, D-055).
+- **Written:** FINDINGS.md and EVIDENCE-INDEX.json (generated; 184 findings, 39 independently checked), FINAL-REPORT.md (sections A–H, resources, roadmap). AGENT-REGISTRY, RESOURCE-BUDGET (13.33M subagent tokens over 113 runs) and RESEARCH-QUEUE are final.
+- **Push hold:** the remote is public, and pushes have been held since 20:37 (D-054). All later work is committed locally on the sprint branch, and the owner has been notified.
+- **Active agents:** none.
