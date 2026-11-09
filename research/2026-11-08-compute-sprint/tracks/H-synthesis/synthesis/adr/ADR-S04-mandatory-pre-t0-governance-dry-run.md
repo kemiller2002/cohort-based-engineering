@@ -66,6 +66,8 @@ DECISION-LOG D-022 narrows B's recommendation on this basis.
   - Indy-init's CI runs spec-preflight without `--catalog`, which drops the carrier rule (B4-F-05).
 - **Decisions taken.** DECISION-LOG D-025 and D-029: reuse spec-preflight, and contribute B3's C4 slice-cycle check upstream instead of building a parallel tool (matrix X-26).
 
+**Link to the agent experiments.** In SPR-X-04, prompt-level governance did not stop agents from silently choosing plausible defaults (X4-F-04, X4-F-05; not yet independently verified). That strengthens the case for turning such gaps into explicit owner questions pre-T0, which is spec-preflight's role, rather than relying on agent instructions.
+
 ## Decision (proposed)
 
 Before any timed run, execute the whole governance pipeline end to end:

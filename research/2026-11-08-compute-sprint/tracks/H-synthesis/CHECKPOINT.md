@@ -57,3 +57,8 @@ All outputs are EXPERIMENTAL synthesis, not public claims. Prose report is deliv
 ## CP-H-12 (16:32 EST): V4, V5, SPR-X-03, SO-01
 - SPR-X-02 primary VERIFIED by V4; SPR-X-03 (authority contract carries the benefit; checklist does not) VERIFIED by V5. Ledger supplementary entries updated.
 - New X-30 (artefact-producing procedures are not controls; 4 tracks). X-29 raised to moderate (5 SO-01 incidents). IM-13 refined; IM-14 (subagent tool allowlist); FX-16.
+
+## CP-H-13 (20:33 EST): FINAL. SPR-X-04 integrated; polling stopped per RD-000 20:30
+- X-04 (not yet independently verified; V6 pending): contract effect not significant in a new domain (p=0.077); cost significant (+9.9% tokens, +38% wall); benefit only at visibly open gaps. X-11, X-28, X-30, IM-13 (downgraded to Medium), FX-16 updated; FX-17 added (unresolved-gap review gate). Outline 2 and ADR-S04 updated.
+- Final state: matrix 30 themes (18 corroborate, 10 contradict, 2 independent; 14 strong, 13 moderate, 3 weak); ledger 110 claims plus 4 supplementary (X-01..X-04); 29 of 110 independently checked (24 VERIFIED, 5 PARTIALLY VERIFIED); 3 of 4 supplementary checked.
+- Unfinished: V6 (X-04) verdicts; F-F-16; FX-09 count reconciliation; B/C/E claims never assigned to a verifier (see ledger priorityForVerification).

@@ -1,7 +1,7 @@
 {
   "schema": "track-h.future-experiments/1",
   "track": "H-synthesis",
-  "asOf": "2026-11-08T16:32:54-05:00",
+  "asOf": "2026-11-08T20:32:48-05:00",
   "status": "Proposals only. Nothing here is scheduled or approved.",
   "costBasis": "ESTIMATE throughout. Agent cost scale: R8, a full 6-lane rehearsal, cost about $194 at list price (A-F-01, V1 VERIFIED). Controlled pilot runs cost $0.37-$2.01 per run (A-economics/data/controlled-usage.csv, costUsdListPriceESTIMATE). REL-001 cost about $0.11-$0.16 per correct requirement on fixtures (G-F-08). Human-hours are the owner's or an engineer's time, also ESTIMATE. None of these is a provider bill.",
   "sections": {
@@ -178,18 +178,19 @@
     },
     {
       "id": "IM-13",
-      "title": "Per-model governance calibration gate",
+      "title": "Keep a short Authority contract, gated by per-model calibration; it is not a general authorization control",
       "basis": [
         "SPR-X-01 (V4 VERIFIED)",
         "SPR-X-02 (V4 VERIFIED primary)",
         "SPR-X-03 (V5 VERIFIED; D-046)",
-        "D2-F-02 (V3 VERIFIED)"
+        "D2-F-02 (V3 VERIFIED)",
+        "SPR-X-04 (NOT YET INDEPENDENTLY VERIFIED): no significant benefit in a new domain (p=0.077); +9.9% tokens, +38% wall; reduction only at visibly open gaps"
       ],
-      "change": "Keep the one-paragraph Authority contract in implementation-agent prompts (near-zero token cost per SPR-X-03); drop or relabel the question/evidence checklist as documentation, not control. Calibrate per model with the D2-02/D2-03 fixtures (about 80k tokens and 1 minute per run) to decide whether the contract is needed.",
+      "change": "Keep the one-paragraph Authority contract for models whose calibration baseline fails, and count its wall-clock cost (+38% in X-04) in the calibration decision. Do not present it, or the question/evidence checklist, as an authorization control. For gaps where a plausible default exists, use structural controls instead: pre-T0 spec-preflight that turns such gaps into explicit owner questions (ADR-S04, IM-11), and a review gate that rejects code deciding a gap its own hand-back flags as unresolved (X4-F-05).",
       "costEstimate": "ESTIMATE: about 6 runs × ~80k tokens per model; under $5 per model at list price.",
-      "expectedEffect": "Keeps the measured benefit for weaker models (21 to 0 undocumented inventions for Haiku) and avoids the +6-8% token and +38-55% wall overhead where the baseline is already compliant.",
+      "expectedEffect": "Small-model benefit at visibly open gaps (X-02, X-03, X-04 T3/T5); no benefit expected where defaults look obvious; cost +6-10% tokens and +38-55% wall where applied.",
       "confirmBy": "Calibration results per model, stored with the model id in rehearsal setup.",
-      "decisionValue": "High. Remaining gap: new-domain generality (SPR-X-04 pending)."
+      "decisionValue": "Medium (downgraded from High after X-04). Cheap in tokens, but the benefit is narrow; the structural controls carry more weight."
     },
     {
       "id": "IM-14",
@@ -386,7 +387,18 @@
       "dependsOn": [
         "SPR-X-04"
       ],
-      "evidenceGap": "One model, two fixtures; short tasks only."
+      "evidenceGap": "One model, two fixtures; short tasks only.",
+      "status": "X-04 DONE (D2 worktree): not significant in the new domain (p=0.077), so generality at the X-02/X-03 effect size is not supported. Remaining: a structural 'unresolved-gap review gate' test, and long-horizon capable-model arms."
+    },
+    {
+      "id": "FX-17",
+      "title": "Review gate for code that decides a gap its own hand-back flags as unresolved",
+      "hypothesis": "An automated or reviewer check that compares hand-back 'open questions' with implemented behaviour reduces silent default-choosing (X4-F-05) more than any prompt arm.",
+      "design": "Reuse the X-04 booking and D2-02/D2-03 fixtures; add a post-run gate that parses the hand-back and refuses completion when a flagged gap is implemented without NotSpecified or an owner decision. Compare violations-at-completion with and without the gate, n=8 per arm, Haiku.",
+      "costEstimate": "ESTIMATE: gate build 0.5-1 day; runs about 16 × 100k tokens.",
+      "decisionValue": "Tests the structural alternative D-046/X-04 point to.",
+      "dependsOn": [],
+      "evidenceGap": "No structural control for plausible-default gaps has been tested."
     }
   ]
 }
