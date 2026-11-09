@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- Limen behaviour probe (sprint track F). ?case=NAME selects the engine view; limen/ is a copy of the package's dist/. -->
+<html lang="en"><head><meta charset="utf-8"><title>Limen probe</title></head>
+<body>
+  <main id="root">
+    <template data-if="show.two"><p id="two-a">first root</p><p id="two-b">second root</p></template>
+    <template data-if="show.one"><section id="one"><p>only root</p></section></template>
+    <ul id="list"><template data-each="rows" data-key="id"><li class="row" data-text="label"></li><li class="row-extra">extra root</li></template></ul>
+    <ul id="nested"><template data-each="groups" data-key="id"><li class="group"><span data-text="label"></span>
+      <ul class="inner"><template data-each="items" data-key="id"><li class="inner-item" data-text="label"></li></template></ul></li></template></ul>
+  </main>
+  <script type="module">
+    import { BrowserKernel } from "./limen/index.js";
+    const kase = new URLSearchParams(location.search).get("case");
+    const views = {
+      "two-root-if": { "show.two": true, "show.one": true, rows: [], groups: [] },
+      "two-root-each": { "show.two": false, "show.one": false, rows: [{ id: "r1", label: "Row 1" }, { id: "r2", label: "Row 2" }], groups: [] },
+      "nested-list": { "show.two": false, "show.one": false, rows: [], groups: [{ id: "g1", label: "Group 1", items: [{ id: "i1", label: "Inner 1" }] }] },
+    };
+    const diagnostics = [];
+    window.__probe = { diagnostics, done: false };
+    const transport = { start: async () => {}, dispatch: async () => ({ view: views[kase], effects: [], cancellations: [] }) };
+    const kernel = new BrowserKernel(transport, document, { report: (e) => diagnostics.push(JSON.parse(JSON.stringify(e))) });
+    await kernel.start();
+    await new Promise((r) => setTimeout(r, 200));
+    window.__probe.status = kernel.status;
+    window.__probe.done = true;
+  </script>
+</body></html>

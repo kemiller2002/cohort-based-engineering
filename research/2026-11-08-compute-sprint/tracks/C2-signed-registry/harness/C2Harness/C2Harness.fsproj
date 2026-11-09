@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- SPR-C2-01 harness (EXPERIMENTAL). Build against a scratch Conditor clone:
+       dotnet build -p:ConditorRoot=/home/user/sprint-scratch/C2/conditor-c2 -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ConditorRoot Condition="'$(ConditorRoot)' == ''">/home/user/sprint-scratch/C2/conditor-c2</ConditorRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(ConditorRoot)/src/Conditor.Core/Conditor.Core.fsproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fixtures.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+</Project>

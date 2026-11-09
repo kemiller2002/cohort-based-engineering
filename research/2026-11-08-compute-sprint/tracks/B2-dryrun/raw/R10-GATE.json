@@ -1,0 +1,150 @@
+{
+  "key": "R10-GATE",
+  "rehearsal": "R10",
+  "blocker": "governed gate deadlock (40-min cap, write-once record, Playwright install timeouts, branch-name refusal)",
+  "trackBEvent": "B-E-113",
+  "t0": "2026-11-06T16:40:13Z",
+  "preT0": {
+    "repo": "/home/user/indy-init-rehearsal-010",
+    "rev": "314cc8c",
+    "sha": "314cc8c7243868a668d381e1c8609843e51d6209",
+    "committerTime": "2026-11-06T16:43:53+00:00",
+    "subject": "T10 bootstrap: Rehearsal 010 T0 (2026-11-06T16:40:13Z)"
+  },
+  "preT0IsBeforeT0": false,
+  "toolsRun": [
+    "harness D6 budget check: bootstrap verification-gate.yml verify timeout vs pre-T0 durations"
+  ],
+  "check": {
+    "preT0Runs": 1817,
+    "preT0StepRows": 54053,
+    "buildAndTest": {
+      "cap": 20,
+      "maxByKind": {
+        "dotnet build (step 'Build')": 68.0,
+        "dotnet test (step 'Test')": 13.0,
+        "browser suite chromium ('Verify the pages in a real browser')": 796.0,
+        "browser suite webkit": 502.0,
+        "browser install chromium": 24.0,
+        "browser install webkit": 139.0
+      },
+      "capMinutes": 20,
+      "estimateSeconds": 1542.0,
+      "estimateMinutes": 25.7,
+      "exceedsCap": true,
+      "sensitivity": {
+        "allConclusions": {
+          "capMinutes": 20,
+          "estimateSeconds": 2969.0,
+          "estimateMinutes": 49.5,
+          "exceedsCap": true,
+          "maxByKind": {
+            "dotnet build (step 'Build')": 73.0,
+            "dotnet test (step 'Test')": 13.0,
+            "browser suite chromium ('Verify the pages in a real browser')": 1750.0,
+            "browser suite webkit": 502.0,
+            "browser install chromium": 492.0,
+            "browser install webkit": 139.0
+          }
+        },
+        "successR8R9only": {
+          "capMinutes": 20,
+          "estimateSeconds": 1114.0,
+          "estimateMinutes": 18.6,
+          "exceedsCap": false,
+          "maxByKind": {
+            "dotnet build (step 'Build')": 36.0,
+            "dotnet test (step 'Test')": 7.0,
+            "browser suite chromium ('Verify the pages in a real browser')": 425.0,
+            "browser suite webkit": 502.0,
+            "browser install chromium": 11.0,
+            "browser install webkit": 133.0
+          }
+        }
+      }
+    },
+    "gate": {
+      "cap": 40,
+      "maxByKind": {
+        "plan suites (run-suites)": 0.0,
+        "fault probes": 660.0,
+        "browser install": 139.0
+      },
+      "capMinutes": 40,
+      "estimateSeconds": 799.0,
+      "estimateMinutes": 13.3,
+      "exceedsCap": false,
+      "sensitivity": {
+        "allConclusions": {
+          "capMinutes": 40,
+          "estimateSeconds": 1368.0,
+          "estimateMinutes": 22.8,
+          "exceedsCap": false,
+          "maxByKind": {
+            "plan suites (run-suites)": 216.0,
+            "fault probes": 660.0,
+            "browser install": 492.0
+          }
+        },
+        "successR8R9only": {
+          "capMinutes": 40,
+          "estimateSeconds": 793.0,
+          "estimateMinutes": 13.2,
+          "exceedsCap": false,
+          "maxByKind": {
+            "plan suites (run-suites)": 0.0,
+            "fault probes": 660.0,
+            "browser install": 133.0
+          }
+        }
+      }
+    },
+    "longestPreT0Jobs": [
+      {
+        "job": "indy-init-rehearsal-006:browser",
+        "seconds": 1824.0
+      },
+      {
+        "job": "indy-init-rehearsal-006:provider-conformance",
+        "seconds": 1674.0
+      },
+      {
+        "job": "indy-init-rehearsal-006:wasm-smoke",
+        "seconds": 1586.0
+      },
+      {
+        "job": "indy-init-rehearsal-006:reuse",
+        "seconds": 1586.0
+      },
+      {
+        "job": "indy-init-rehearsal-006:preservation-gate",
+        "seconds": 1586.0
+      },
+      {
+        "job": "indy-init-rehearsal-006:acceptance",
+        "seconds": 1573.0
+      },
+      {
+        "job": "indy-init-rehearsal-006:browser (1)",
+        "seconds": 1564.0
+      },
+      {
+        "job": "indy-init-rehearsal-006:preservation-adversarial",
+        "seconds": 1526.0
+      }
+    ],
+    "seconds": 0.38
+  },
+  "causesCovered": [
+    "40-min cap (time budget)"
+  ],
+  "causesNotReplayable": [
+    "write-once governance record",
+    "Playwright install timeouts on hosted runners",
+    "branch-name refusal",
+    "cancellation by concurrency"
+  ],
+  "outcome": "NOT CAUGHT",
+  "matchEvidence": "gate cap 40 min vs pre-T0 estimate 13.3 min ({'plan suites (run-suites)': 0.0, 'fault probes': 660.0, 'browser install': 139.0}); other causes need hosted Actions runs and were not replayed",
+  "dryRunSeconds": 0.0
+}

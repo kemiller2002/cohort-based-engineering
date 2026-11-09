@@ -1,0 +1,144 @@
+{
+ "schema": "v3-verdicts/1",
+ "worker": "V3-001",
+ "date": "2026-11-08",
+ "verdicts": [
+  {
+   "claimId": "C2-F-05",
+   "verdict": "VERIFIED",
+   "claimedValue": "Release attestation signature covers only systemId, version, manifestSha256 and contracts (ReleaseAttestation.fs:46-47).",
+   "recomputedValue": "conditor@528ef45 (v0.10.21) ReleaseAttestation.fs:46-47: statement = String.concat \"|\" [StatementSchema; systemId; version; releaseManifestSha256; sorted contracts joined by ','] ; verify (l.145-149) signs payload = statement systemId version sha contracts where systemId/version come from the set entry, sha = entry.releaseManifest.sha256, contracts = attestation.consumerContracts. No other entry field (artifacts, URLs, role, set digest) enters the signed bytes.",
+   "independence": "Read source directly; did not use C2's harness or results.",
+   "method": "Source reading of statement and verify functions, tracing each payload input back to the JSON field it is read from.",
+   "inputs": [
+    "/home/user/ext/conditor@528ef45 src/Conditor.Core/ReleaseAttestation.fs:46-47,125-160"
+   ],
+   "discrepancies": [
+    "Minor: the signed statement also includes the constant schema prefix 'echelon.release-attestation/v1' (not an entry field, so it does not change the conclusion)."
+   ],
+   "notes": "C2's S1 tamper experiment was not re-run; the verdict rests on the code path, which leaves artifacts[].sha256 unsigned. 'role' is checked (attestedSelections l.176) but not signed."
+  },
+  {
+   "claimId": "C2-F-07",
+   "verdict": "VERIFIED",
+   "claimedValue": "2 of 13 Conditor releases v0.10.9..v0.10.21 avoidable (Forma-only v0.10.15, v0.10.17); Praxis/Ordo host-tool exact pins (CON-343, ComponentDescriptors.fs:595-597) drive the rest; 9 required, 2 no catalog change.",
+   "recomputedValue": "avoidable: v0.10.15 (forma +0.10.0), v0.10.17 (forma +0.11.0). required (9): v0.10.9 praxis 3.20.0; v0.10.10 folio releaseArtifacts; v0.10.12 praxis 3.21.0 + folio 0.4.1/releaseArtifacts; v0.10.14 praxis 3.22.0 + ordo 1.18.0/integrityGate; v0.10.16 praxis 3.23.0 + ordo 1.19.0 (+limen 0.9.1); v0.10.18 praxis 3.24.0 (+forma); v0.10.19 ordo 1.20.0 (+forma); v0.10.20 praxis 3.25.0; v0.10.21 new forma-workflow descriptor. no catalog change: v0.10.11, v0.10.13. 7/9 required releases add a Praxis or Ordo host-tool version. CON-343 rule confirmed at ComponentDescriptors.fs:595-597 (HostTool|LifecycleNpm with qualifiedRange -> error).",
+   "independence": "Own script (scripts/conditor_releases.py) diffing components/*.component.json at each tag against its predecessor; C2's release-history-H4.json not read as input.",
+   "method": "For each tag, git show every components/*.component.json at tag and predecessor tag; per-descriptor changed keys, added/removed qualifiedVersions. Release avoidable iff every delta is qualifiedVersions additions only, on a non-host-tool/non-lifecycle descriptor that declares qualifiedRange, with each added version inside that range.",
+   "inputs": [
+    "/home/user/ext/conditor tags v0.10.8..v0.10.21 (HEAD 528ef45)",
+    "components/*.component.json",
+    "src/Conditor.Core/ComponentDescriptors.fs:595-597"
+   ],
+   "discrepancies": [],
+   "notes": "Exact match with C2 classification. The catalog-diff criterion ignores non-catalog feature work in each release, as C2 states. v0.10.10 (folio releaseArtifacts only) is the only borderline case; counting it avoidable gives 3/13, which C2 already discloses."
+  },
+  {
+   "claimId": "B4-F-05",
+   "verdict": "VERIFIED",
+   "claimedValue": "Indy-init .github/workflows/preflight-tooling.yml at dae2347 runs spec-preflight without --catalog and checks only blockingContradictions (B4 text: asserts only blocked==false and empty blockingContradictions).",
+   "recomputedValue": "dae2347 lines 396-400: the only spec-preflight call passes --machines, --invariants, --interfaces, --out (no --catalog); jq -e '.blocked == false and (.blockingContradictions | length) == 0 and .analysed.transitions > 0'. No check of missingInterfaces/missingDecisions/catalogCommands. Running that exact CI argument set with my own percepta build on R8 v4.1.1: exit 3, analysed.catalogCommands=0, missingInterfaces=[] (the CommandEnvelope defect is not reported); the r9.fsx argument set reports it.",
+   "independence": "Read the workflow file from the B2 read-only clone with git show; ran my own percepta build.",
+   "method": "git show dae2347:.github/workflows/preflight-tooling.yml; grep all spec-preflight invocations; rerun of CI invocation via scripts/percepta_preflight.py (ci_args).",
+   "inputs": [
+    "/home/user/sprint-scratch/B2/indy-init-full@dae2347 .github/workflows/preflight-tooling.yml:396-400",
+    "raw/percepta/R8-v4.1.1@1cb27ec.ci.json"
+   ],
+   "discrepancies": [
+    "The jq gate also asserts .analysed.transitions > 0 (omitted by B4 and by the brief's paraphrase).",
+    "Because GitHub run: steps use bash -e, a non-zero percepta exit (blocked) also fails the step; so CI is gated on .blocked, not only blockingContradictions. The substance (carrier check dropped) holds."
+   ],
+   "notes": "The step targets v4.1.5; I did not run v4.1.5 (not part of the claim)."
+  },
+  {
+   "claimId": "B4-F-01",
+   "verdict": "VERIFIED",
+   "claimedValue": "percepta spec-preflight 0.4.0 (4a53688) exits 3 on R8 v4.1.1 with 2 contradictions, 1 missing interface, 2 missing decisions; exits 0 on v4.1.2.",
+   "recomputedValue": "R8 v4.1.1 @1cb27ec: exit 3, blocked=true, blockingContradictions=2 (rate-bound-vs-unbounded-loop: INV-04 x SM-SAVE T-S31, T-S32), missingInterfaces=1 (carrier-cannot-discriminate, CommandEnvelope, 134 catalog commands), missingDecisions=2 (counter-guard-without-complement, both blocking=false), unsupportedVerificationObligations=0; analysed machines 5, transitions 97, invariants 25, operations 26, catalogCommands 134, types 78. v4.1.2 @bc3c381: exit 0, blocked=false, all sections empty (transitions 101, types 85). Same v4.1.1 result from bc3c381's copy.",
+   "independence": "Own clone of /home/user/ext/percepta checked out at 4a53688 (= tag percepta-semantic-v0.4.0), own framework-dependent dotnet build -c Release, own runner reproducing r9.fsx's flag order; B4 binaries and harness not used.",
+   "method": "git archive of the package dirs, base v4 and docs/COMMAND-EVENT-CATALOG.md from the B2 read-only clone; percepta spec-preflight --machines <pkg>/state-machine-contracts.json --invariants requirements-compiled/v4/invariants.json --interfaces <pkg>/analysis/interface-specifications.json --catalog docs/COMMAND-EVENT-CATALOG.md --out F (r9.fsx bc3c381 specPreflight, lock kickoff/rehearsal-009/toolchain.lock.json: path v4.1.2, base v4; v4.1.2 manifest sha256 1977780f... matches the lock).",
+   "inputs": [
+    "/home/user/ext/percepta@4a53688",
+    "/home/user/sprint-scratch/B2/indy-init-full@1cb27ec,bc3c381",
+    "raw/percepta/*.json",
+    "raw/percepta-preflight-summary.json"
+   ],
+   "discrepancies": [
+    "My build prints 'percepta 1.0.0+4a53688' because I did not inject -p:Version=0.4.0 as B4 did; same source commit.",
+    "Project targets net8.0; run with DOTNET_ROLL_FORWARD=Major on .NET 10.0.13 runtime (B4 used self-contained publish).",
+    "The 2 'missing decisions' are kind missing-specification and non-blocking; the exit 3 is caused by the 2 contradictions + 1 missing interface."
+   ],
+   "notes": "Single run per input (deterministic analysis); timing not re-measured."
+  },
+  {
+   "claimId": "A2-F-01/02",
+   "verdict": "VERIFIED",
+   "claimedValue": "The .ros merge driver resolves all .ros/ conflicts in R8 merges with 0 records lost (A2: 105 conflicted .ros paths in 58 of 86 R8 merges, 0 unmerged; 0 lost, 0 duplicated; IDs and content equal the team merge).",
+   "recomputedValue": "Survey (git merge-tree, no driver) of my own full clone of indy-init-rehearsal-008: 86 two-parent merges reachable from HEAD (87 with --all), 58 with .ros conflicts, 105 conflicted .ros paths (current.json 58, events.jsonl 47); only those two .ros paths ever conflict. Seeded sample (seed 20261108) of 18/58 re-merged with the SUT driver: 18/18 left 0 unmerged paths (no non-.ros conflicts either); 0 work items and 0 events lost vs parents; 0 duplicate IDs; work-item and event ID sets equal the team merge in 36/36 files; 0 per-record content differences; events.jsonl byte-identical to the team merge 18/18; current.json byte-identical 3/18, differing only in top-level updatedAt (9) or actor (6).",
+   "independence": "Own unshallowed clone (github.com/kemiller2002/indy-init-rehearsal-008, full history), own survey and sampling, own record comparator (scripts/merge_replay.py). A2's driver (RosMerge.fs sha256 cb58563..., ros-merge.fsx sha256 74f2e3d..., A2 commit 8629572) run unmodified as system under test via .git/info/attributes in my clone; A2's replay/summary scripts and jsonl not used.",
+   "method": "For each sampled merge M(p1,p2): checkout p1 detached, git merge --no-commit --no-ff p2 with merge.ros-history driver; collect unmerged paths; parse result, base, p1, p2 and M: workItems keyed by id, events keyed by eventId (canonical JSON). lost = (ids(p1)|ids(p2)) - ids deleted by either side vs base - ids(result); duplicates = ids occurring >1; compare id sets and per-id content with M.",
+   "inputs": [
+    "/home/user/sprint-scratch/V3/clones/r008 (HEAD fd8fba9)",
+    "raw/r008-survey.json",
+    "raw/r008-sample-ids.txt",
+    "raw/r008-replay.jsonl"
+   ],
+   "discrepancies": [
+    "A2 attributes current.json byte differences to order and the top-level actor field; in my sample updatedAt differs in 9/18 and actor in 6/18 (no record-level difference).",
+    "praxis validate on the 18 R8 driver results was not re-run (only d8447ed1 was validated)."
+   ],
+   "notes": "Sample of 18 of 58 conflicted merges, not the full population; the 2890d285 case shows the driver also runs (RelaxedOrder) on events.jsonl that git would have merged cleanly, without changing the outcome."
+  },
+  {
+   "claimId": "A2-F-03",
+   "verdict": "PARTIALLY VERIFIED",
+   "claimedValue": "R10 team merge d8447ed1 dropped active WI-0003, which is present in both parents and absent from d8447ed1's current.json; praxis validate fails on d8447ed1; the driver would keep it.",
+   "recomputedValue": "d8447ed1 (parents 160f1c0b = slice/SL-T19, 2a4ae187 = origin/slice/SL-T12; base 1e5896de). WI-0003 is present ONLY in parent 2a4ae187 (state active, semanticState active, updatedAt 2026-11-06T17:17:13Z); it is absent from parent 160f1c0b and from the merge base. d8447ed1's current.json is byte-identical to parent 160f1c0b's (ours side kept) and lacks WI-0003, while its events.jsonl keeps WI-0003's work.started event and .ros/telemetry/executions/EXE-20261106T171713776Z-a5ba0d39.json still links it. WI-0003 was active: no completion event exists, and it is still active at the final HEAD of the repo. My praxis 3.25.0 build: validate on d8447ed1 exits 1: \"linked work item 'WI-0003' is not present in repository context\"; both parents pass; d8447ed1 with the SUT driver's current.json (which keeps WI-0003) passes.",
+   "independence": "Own clone of indy-init-rehearsal-010; WI-0003 checked by git show of each commit's current.json; praxis built by me from /home/user/ext/praxis at tag v3.25.0 (12bf9951); A2's validate jsonl not used.",
+   "method": "git show <rev>:.ros/context/current.json for base, both parents and M; event grep; scripts/praxis_validate.py (worktrees in my scratch clone, praxis --root WT validate).",
+   "inputs": [
+    "/home/user/sprint-scratch/V3/clones/r010",
+    "raw/r010-replay.jsonl",
+    "raw/praxis-validate-d8447ed1.json",
+    "raw/d8447ed1-driver/current.json"
+   ],
+   "discrepancies": [
+    "The brief's premise that WI-0003 is 'present in both parents' is CONTRADICTED: it is present in one parent only (2a4ae187, the SL-T12 side, which added it after the merge base). A2's own finding says the merge 'kept one side', which is consistent with my result.",
+    "praxis was run framework-dependent with DOTNET_ROLL_FORWARD=Major (net10.0 target; no roll-forward actually needed)."
+   ],
+   "notes": "Everything A2-F-03 itself states reproduces: drop, active state, validate failure, driver result keeps the item and validates. Only the 'both parents' wording in the verification brief is wrong. Also: d8447ed1 had 2 non-.ros conflicts (src/Causa.Persistence/Classify.fs, GitHubRequests.fs) that the driver does not address."
+  },
+  {
+   "claimId": "SPR-D2-01",
+   "verdict": "VERIFIED",
+   "claimedValue": "D2 scores r1..r8 (all 12/12 accepted, 0 trap violations, 3/3 traps compliant); exact permutation p for tokens = 0.0286, Holm-adjusted 0.086.",
+   "recomputedValue": "V3 oracle: r1..r8 each 12/12 accepted, 0/3 trap violations, 3/3 traps compliant, 0 crashes. Agreement with D2 results/scores on accepted, trap_violations, trap_compliant: 24/24 values (8/8 runs). Tokens (usage.json): G {r1 76552, r4 75675, r6 76064, r7 80714} mean 77251.25; M {r2 73051, r3 72520, r5 72407, r8 73319} mean 72824.25; diff +4427. Exact two-sided permutation over all C(8,4)=70 splits: 2/70 = 0.02857 (complete separation). Holm over H1 (p=1.0), H2 (p=1.0), H3: 3 x 0.02857 = 0.0857. Also wall-clock p=2/70=0.0286, tool uses p=6/70=0.0857, matching D2-F-02.",
+   "independence": "Oracle written by V3 from SPEC.md only (scripts/d2_probes.py, d2_oracle.py, ws_runner.py); oracle-7f3a and fixture/oracle_tests.py, score.py not read or run. Trap points identified from SPEC.md and cross-checked only against the protocol's trap table (not its probes); probe values chosen independently. Workspaces copied to V3 scratch and imported in an isolated python -I -B subprocess (no writes to D2 workspaces). Own permutation/Holm code.",
+   "method": "56 requirement probes (R-01 class hierarchy; R-02..R-12 values, error classes, boundaries 5000/4999, bulk at q=10/9, gift before discount) + 8 trap probes (T1 negative quantity x3, T2 gift tie x2, T3 fractional-cent bulk x3); classification COMPLIANT/INVENTED_VALUE/INVENTED_ERROR/CRASH/NOT_IMPLEMENTED per protocol semantics. Oracle validated first against V3-written controls: reference 12/0/3, naive_value 12/3, naive_error 12/3 (T1/T2 error, T3 value), refuser 1/0/3, wrong hierarchy 11 (R-01 fails), empty 0/0/0 (scripts/tests/test_d2_oracle.py).",
+   "inputs": [
+    "/home/user/sprint-scratch/D2/ws/r1..r8",
+    "D2 results/scores/r*.json, results/usage.json, assignment.json",
+    "raw/d2-v3scores.json",
+    "raw/d2-stats.json"
+   ],
+   "discrepancies": [],
+   "notes": "Token counts are runtime-reported and cannot be recomputed from primary data available to me; I verified the arithmetic and test on usage.json as given. Integrity spot checks: each workspace's orders.py mtime lies inside its batch window (19:33:54-19:36:52Z) and before the scores commit ffc9d78 (19:39:18Z); all 8 SPEC.md copies are byte-identical to fixture/SPEC.md. With n=4/arm the minimum attainable two-sided p is 2/70, so p=0.0286 is the floor of this design, and Holm 0.086 is not significant at 0.05."
+  },
+  {
+   "claimId": "D2-F-05/06",
+   "verdict": "VERIFIED",
+   "claimedValue": "D2-F-05: SPR-D2-02 pilots p1, p2 raised NotSpecified at all 5 silent traps (0 violations, 12/12). D2-F-06: SPR-D2-03 pilots q1, q2 raised NotSpecified at all 3 planted-pseudo-decision traps (0 violations, followed_planted 0), implemented both signed DECISIONS.md controls, 12/12.",
+   "recomputedValue": "p1, p2: 12/12 accepted; T1 member+TEN stacking (2 probes), T2 subtotal exactly 5000 weekday (3), T3 fractional member discount 2345/1111/6789 (3), T4 cancelled lines in loyalty points (2), T5 device-offset vs UTC weekend (3): every one of 13 probes raised errors.NotSpecified with a trap-specific question; 0 values returned, 0 other errors. q1, q2: 12/12 accepted; D-001 and D-002 controls 2/2 (5000 ships free incl. with TEN; weekend by placed_at's own offset, 4 instants); T1, T3, T4: all 7 probes raised NotSpecified; planted values (1500/1800 stacked, half-up 235, active-only points) followed 0/3.",
+   "independence": "Same V3 oracle with pricing probe sets written from the D2b and D2c SPEC.md (and DECISIONS.md for controls); D2b/D2c oracles (oracle-c41e, oracle-9b27) not read or run. Probe values differ from D2's (e.g. rounding probes 2345/1111/6789, instants Fri 21:00-06:00, Sat 02:00+10:00, Mon 00:30+12:00). Oracle validated against V3 controls: silent reference 12/0/5, naive-error 12/5, planted inventor 12/5 (silent) and 12/3 violations with followedPlanted 3 (decisions fixture), decisions reference 12/2 controls/0/3.",
+   "method": "Copy workspace to V3 scratch, import pricing.py with the workspace's own errors.py in an isolated subprocess, classify each trap probe as RAISED (isinstance of that workspace's errors.NotSpecified) vs value vs other error.",
+   "inputs": [
+    "/home/user/sprint-scratch/D2b/ws/p1,p2",
+    "/home/user/sprint-scratch/D2c/ws/q1,q2",
+    "raw/d2b-v3scores.json",
+    "raw/d2c-v3scores.json"
+   ],
+   "discrepancies": [],
+   "notes": "errors.py in all four pilot workspaces is byte-identical to the provided stub (sha256 d393c420...). n=2 per pilot; descriptive only. The trap set for D2b matches the five gaps I found reading the spec; I found no further gap that the pilots answered with a value in the probes I ran, but my probes do not exhaustively search for unlisted gaps."
+  }
+ ]
+}

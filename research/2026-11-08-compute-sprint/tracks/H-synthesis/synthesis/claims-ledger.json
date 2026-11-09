@@ -1,0 +1,3239 @@
+{
+ "schema": "track-h.claims-ledger/1",
+ "track": "H-synthesis",
+ "status": "EXPERIMENTAL. A ledger of track claims, not new claims.",
+ "asOf": "2026-11-08T20:32:59-05:00",
+ "selection": "Every VERIFIED or SUPPORTED finding in A, B, C, E, G, B2, D, A2, C2, B3, B4, D2, F whose being wrong would change an ADR, a recommendation, a security posture statement or a candidate public statement. Lower-consequence VERIFIED/SUPPORTED findings are listed under 'omittedLowConsequence'.",
+ "verificationSources": {
+  "V1": "/home/user/sprint-wt/V1-verification/research/2026-11-08-compute-sprint/tracks/V1-verification/verdicts.json",
+  "V2": "/home/user/sprint-wt/V2-verification/research/2026-11-08-compute-sprint/tracks/V2-verification/verdicts.json",
+  "V3": "/home/user/sprint-wt/V3-verification/research/2026-11-08-compute-sprint/tracks/V3-verification/verdicts.json"
+ },
+ "summary": {
+  "claims": 110,
+  "highConsequence": 42,
+  "independentlyVerifiedDone": 29,
+  "verifiedClean": 24,
+  "verificationDiscrepancy": 5,
+  "queued": 0,
+  "notYetIndependentlyVerified": 81,
+  "priorityForVerification": [
+   "A-F-16",
+   "B-F-04",
+   "B-F-09",
+   "B-F-16",
+   "C-F-02",
+   "C-F-03",
+   "C-F-13",
+   "E-F-06",
+   "E-F-14",
+   "G-F-01",
+   "G-F-02",
+   "G-F-06",
+   "B2-F-01",
+   "B2-F-08",
+   "D-F-03",
+   "C2-F-02",
+   "C2-F-08",
+   "B4-F-07",
+   "F-F-03",
+   "E2-F-03",
+   "E2-F-05"
+  ]
+ },
+ "claims": [
+  {
+   "claimId": "A-F-01",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Rehearsal 8 token total reproduces exactly from raw execution records",
+   "measuredOrEstimate": "MEASURED (tokens); list-price cost $193.74 is ESTIMATE",
+   "consequence": "high",
+   "consequenceIfWrong": "Every cost figure in the sprint and any external cost claim inherits this total.",
+   "trackLimitations": "8 R8 executions (coordinator-run CRs, infra) have no transcript; coordinator turns after 23:50:44Z missing. No provider bill exists.",
+   "crossTrackSupport": [
+    "V1:A-F-01"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "fully independent recomputation",
+    "discrepancies": [
+     "Track A data README says R8 requestLedger covers 49 executions; I find 48 ledgers (48 records with token data) and 3,100 requests. Totals unaffected.",
+     "$193.74 depends on pricing cache writes by their 5m/1h split (almost all R8 cache writes are 1h); a 5m-only basis gives $190.51. R3 had no split, so the 'same method' reproduces R3 only under the 5m fallback, which is what Track A states."
+    ],
+    "verifierNotes": "The total is a lower bound for R8: coordinator turns after its 23:50:44Z ingest and 8 transcript-less executions are absent (stated in R8 FINAL-REPORT). Cost is a list-price ESTIMATE; no provider bill exists."
+   },
+   "usedIn": "cost baseline",
+   "flags": [
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-01"
+  },
+  {
+   "claimId": "A-F-03",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Coordinator is 44% of R8 tokens and 32% of cost, driven by context size",
+   "measuredOrEstimate": "MEASURED (tokens, requests, context); cost ESTIMATE",
+   "consequence": "high",
+   "consequenceIfWrong": "Coordinator-context ADR (ADR-S05) and the largest estimated saving rest on it.",
+   "trackLimitations": "Single rehearsal; coordinator session began 10 min before T0.",
+   "crossTrackSupport": [
+    "V1:A-F-03"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "fully independent recomputation",
+    "discrepancies": [],
+    "verifierNotes": "Context definition (input+cache read+cache write) is the natural one and reproduces exactly; excluding cache write would change the means. Coordinator share is understated because its post-ingest turns are missing."
+   },
+   "usedIn": "ADR-S05",
+   "flags": [
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-03"
+  },
+  {
+   "claimId": "A-F-04",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Cache reads are 98% of tokens but 54% of cost; output is 22% of cost",
+   "measuredOrEstimate": "MEASURED buckets; cost shares ESTIMATE",
+   "consequence": "medium",
+   "consequenceIfWrong": "Caching strategy and cost-structure statements would be wrong.",
+   "trackLimitations": "List prices, not billed rates.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-04"
+  },
+  {
+   "claimId": "A-F-05",
+   "track": "A-economics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Fixed startup prefix ~48.7k tokens is ~30-42% of all context processed",
+   "measuredOrEstimate": "ESTIMATE (carry model) from MEASURED per-request context",
+   "consequence": "medium",
+   "consequenceIfWrong": "Fixed-prefix ~30% share drives the 'governance overhead' narrative; carry model is an ESTIMATE.",
+   "trackLimitations": "Carry model assumes the first request's content is never evicted; first request includes the task brief, so it is not purely governance overhead.",
+   "crossTrackSupport": [
+    "D:VAC-001 controls",
+    "A:CONSTRUCT-008"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-05"
+  },
+  {
+   "claimId": "A-F-06",
+   "track": "A-economics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Defect rework is 10% of R8 task-agent tokens; corrective work 26%",
+   "measuredOrEstimate": "tokens MEASURED; category assignment is judgement; cost ESTIMATE",
+   "consequence": "medium",
+   "consequenceIfWrong": "Rework share is cited for review/fix policy; categories are judgement.",
+   "trackLimitations": "Rework inside feature executions (e.g. T15 included T35 fixes) is not separable; 3 CR executions without transcripts are counted at zero tokens.",
+   "crossTrackSupport": [
+    "B-F-11"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-06"
+  },
+  {
+   "claimId": "A-F-07",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "All 26 R8 merge conflicts were in Praxis state files only",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-S02 (.ros out of merge path) scope; the 'no app-code conflicts' half is already contradicted.",
+   "trackLimitations": "Resolution seconds are as logged by the coordinator; no application-code conflicts occurred in this rehearsal.",
+   "crossTrackSupport": [
+    "B-F-09",
+    "V1:A-F-07",
+    "A2:SPR-A2-01"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "PARTIALLY VERIFIED",
+    "independence": "fully independent recomputation",
+    "discrepancies": [
+     "merges.jsonl records conflicts only at the PR-merge step. Application-code conflicts were resolved by the task agents when they merged main into their branches and never reached the log; PRs #12, #19 and #36 are logged as conflict:false although their branches had application/CI conflicts, and #10 is logged with only .ros/context/current.json.",
+     "11 PRs logged conflict:false had branch-side conflicts (mostly .ros)."
+    ],
+    "verifierNotes": "The statement '26 conflicts, all .ros' is true of the coordinator's PR merges only. The rehearsal-level inference ('no application-code conflicts occurred') is contradicted: at least 4 merges conflicted in application, test or CI code. The conflict rate depends on what counts as a merge: 26/49 PR merges (53%) vs 60/86 merge commits (70%). Resolution seconds were not re-verified (coordinator-logged)."
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-07"
+  },
+  {
+   "claimId": "A-F-08",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R8 used on average 2.15 of 6 lanes",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Dispatch/parallelism investment decisions.",
+   "trackLimitations": "Spans include agent idle waiting (e.g. on CI) inside a session; coordinator excluded.",
+   "crossTrackSupport": [
+    "V1:A-F-08"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "PARTIALLY VERIFIED",
+    "independence": "fully independent recomputation",
+    "discrepancies": [
+     "350 samples end at 23:21:24Z, not at merge freeze (23:50:28Z, T+379); the label is wrong and the full window gives 2.01 / 33.6%.",
+     "Peak 5 is concurrent agents; two agents shared a lane at the peak (peak distinct lanes = 4). 'Lane utilisation' of 6 lanes is therefore at most 4 at peak.",
+     "Zero-active minutes: 41 (350 samples), not 34.",
+     "Transcript spans include pre-'work start' time (e.g. T18 agent span begins 10 min before its Praxis work start); Praxis spans give 1.57."
+    ],
+    "verifierNotes": "Headline 2.15 / peak 5 reproduces under Track A's exact window and unit (agents). The metric is sensitive to window end, span source and agent-vs-lane counting; range 1.57-2.15 mean, 26-36%."
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-08"
+  },
+  {
+   "claimId": "A-F-09",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Rereads: 20% of file reads repeat a file already read in the same session",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "low",
+   "consequenceIfWrong": "Reread-reduction tooling priority.",
+   "trackLimitations": "Token cost of rereads is not attributable from summaries (read sizes absent).",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-09"
+  },
+  {
+   "claimId": "A-F-10",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "ROS execution wall time is not a reliable duration measure",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Any duration metric built on Praxis wall_ms.",
+   "trackLimitations": "blocked_ms = 0 is a recorded zero that reflects agents never marking blocks, not evidence of no waiting.",
+   "crossTrackSupport": [
+    "X-22"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "datasets",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-10"
+  },
+  {
+   "claimId": "A-F-11",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Runner queueing is negligible except in R6",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Runner capacity decisions.",
+   "trackLimitations": "Windows are T0+420 min; runs after a rehearsal stopped inside the window are included.",
+   "crossTrackSupport": [
+    "B-F-08"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "sample",
+    "discrepancies": [
+     "The claim's wording ('median 3 s everywhere except R6') could suggest R6's median differs. It does not: R6's median is also 3 s. R6 differs in its tail (p90) and total queued minutes."
+    ],
+    "verifierNotes": "The R6 total is consistent with 7,612 but imprecise from a sample (heavy tail). Run-level queue was not used (created_at = run_started_at)."
+   },
+   "usedIn": null,
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-11"
+  },
+  {
+   "claimId": "A-F-12",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Two-thirds of rehearsal CI minutes were in red or cancelled runs",
+   "measuredOrEstimate": "MEASURED durations; 'billable minutes' is the GitHub rounding rule used as a compute proxy (public repos are not billed)",
+   "consequence": "high",
+   "consequenceIfWrong": "Headline '67% of CI minutes wasted' is the most quotable number in the sprint.",
+   "trackLimitations": "Counts successful jobs inside failed runs; cancelled includes superseded runs whose work was redundant, not necessarily defects.",
+   "crossTrackSupport": [
+    "B-F-08"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "sample",
+    "discrepancies": [
+     "Window: every T0 matches the rehearsal's documented start and the in-window run populations equal Track A's exactly (128/114/135/436/427/54/566/50/281 non-skipped). But the fixed T0+420 window does not match activity: R2 ran to its accepted release at T+721 min (87 runs in the 17 h after the window), R3's timed phase ended at T+127 (09:39Z) yet the window runs to T+420, R4 has 249 runs in the 17 h after the window, R3 had 35 preflight runs in the 2 h before T0, and R5's T0 is defined post hoc as its first green check.",
+     "Definition sensitivity (primary sample): 65.6% with ceil-minutes attributed by run conclusion; 76.4% with unrounded job seconds; 54.3% if only jobs that themselves failed/cancelled count."
+    ],
+    "verifierNotes": "Claim reproduced within sampling error: 67% lies inside the CI and the census strata (R7 59%, R9 28%) match Track A's figures exactly. 'Red' includes cancellations of superseded runs (largely R6, R10) and successful jobs inside failed runs, so it is not a waste or defect measure on its own."
+   },
+   "usedIn": "outline-2",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-12"
+  },
+  {
+   "claimId": "A-F-13",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Browser suites dominate CI step time; the pinned Praxis verifier is rebuilt every run",
+   "measuredOrEstimate": "MEASURED step durations; categories by name regex (heuristic)",
+   "consequence": "high",
+   "consequenceIfWrong": "A2 CI-cache prototype and the 8% saving estimate.",
+   "trackLimitations": "Regex classification; steps run in parallel jobs, so step minutes are compute, not wall time.",
+   "crossTrackSupport": [
+    "A2 (pending)"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "PARTIALLY VERIFIED",
+    "independence": "sample",
+    "discrepancies": [
+     "688 is wrong for the verifier. Track A's own step data puts 604.0 min on 'Build pinned Praxis verifier'; the other 84.5 min is R5's 'Build the candidate and the plan verifier', which builds the application (App.slnx) and Indy-init's requirements compiler, not Praxis. The corrected figure is about 604-607 min, about 7.4% of step time.",
+     "'Every run' means every run of the Echelon foundations workflow (about 27% of in-window runs), not every CI run.",
+     "R6's workflow has a fingerprint cache gate that could skip the build, but the build was never skipped in the sample (inputs changed on every commit).",
+     "R7 has no foundations workflow; its praxis-autonomy.yml also builds Praxis from source (`dotnet build praxis/src/Praxis.Cli/...`, about 33 min, census) under a step name the claim does not count."
+    ],
+    "verifierNotes": "The recommendation (cache or ship a prebuilt pinned verifier) still holds; the size is about 10 job-hours across the nine windows, not 11.5."
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-13"
+  },
+  {
+   "claimId": "A-F-14",
+   "track": "A-economics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Time waiting for CI per commit: median 3-8 min, R10 41 min",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "CI latency statements.",
+   "trackLimitations": "Settled != agent waited: agents may work while CI runs. Agent-side wait time is not recorded anywhere.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-14"
+  },
+  {
+   "claimId": "A-F-16",
+   "track": "A-economics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Process instructions can cost more tokens than they save; effect is task-dependent",
+   "measuredOrEstimate": "MEASURED tokens (output lower bound); list-price costs in controlled-usage.csv are LOWERBOUND/ESTIMATE",
+   "consequence": "high",
+   "consequenceIfWrong": "'Process instructions cost more than they save' would change guidance policy; n=3 pilots.",
+   "trackLimitations": "n=3 pilots; not statistical; repair rounds differ between arms in the expanded task.",
+   "crossTrackSupport": [
+    "G-F-08",
+    "D:VAC-001 controls"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A-economics/findings.json#A-F-16"
+  },
+  {
+   "claimId": "B-F-01",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "No run from R1 to the Causa competition build reached acceptance under Indy-init's computed verdict",
+   "measuredOrEstimate": "MEASURED (verdicts as recorded)",
+   "consequence": "high",
+   "consequenceIfWrong": "'No run reached acceptance' is the sprint's top-line readiness statement.",
+   "trackLimitations": "Only R2's verdict was recomputed by this track (B-F-02). The others are taken from the authoritative records. Requirement baselines, scope and gate strictness differ between runs, so the verdicts are not points on one scale.",
+   "crossTrackSupport": [
+    "G-F-11"
+   ],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Medium-high: verdict artifacts read directly; R2 recomputed; R4/R5/R8 verdict files not recomputed (inputs not reconstructed).",
+    "discrepancies": [],
+    "verifierNotes": "Definitional: the statement is true but vacuous for 6 of 11 runs, which never produced a computed verdict (R1 predates the contract; R3 was self-reported NOT ACCEPTED (blocked); R7 relied on reviews; R9/R10/Causa lacked owner-pinned inputs or a governed gate verdict). R1 classified itself PASS against its own frozen criteria, with its deployed accept job green on the final release; that is not acceptance under Indy-init's later computed verdict, but readers should not read B-F-01 as 'R1 failed its own criteria'.",
+    "scopeNote": "True but vacuous for 6 of 11 runs that never produced a computed verdict (V2 note). Cite as 'no run reached computed acceptance; 5 produced a non-accepting computed verdict, 6 produced none'."
+   },
+   "usedIn": "outline-1",
+   "flags": [
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-01"
+  },
+  {
+   "claimId": "B-F-02",
+   "track": "B-forensics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R2's self-declared acceptance recomputes as INVALID",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "R2 INVALID recomputation underpins the overclaim narrative.",
+   "trackLimitations": "The fixture is Indy-init's copy of the R2 ledger. Byte equality with R2's evidence/acceptance/ledger.json was not checked.",
+   "crossTrackSupport": [
+    "G-F-11"
+   ],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High: verifier re-run by V2 from a git-archive export of dae2347; R2 ledger read directly from the R2 repository; B's scripts not used.",
+    "discrepancies": [
+     "B's limitation (fixture vs R2 ledger byte equality unchecked) is resolved: identical."
+    ],
+    "verifierNotes": "Definitional: INVALID is mostly anachronistic. The R2 ledger predates schema causa.acceptance-ledger/2 and no trusted inputs exist for R2, so 77 of 83 reasons are schema/trust-input absences that any R2-era ledger would trigger. The one substantive, schema-independent reason is 'P0 requirement ADRP-016: NOT_RUN' (the ledger itself records a P0 NOT_RUN while declaring accepted=true), which alone would yield INCOMPLETE, not ACCEPTED. So 'not acceptable' is robust; the specific label INVALID is a property of applying the later contract.",
+    "scopeNote": "Not acceptable is robust; the specific label INVALID is anachronistic (77 of 83 reasons are later-schema absences). Substantive reason ADRP-016 NOT_RUN alone gives INCOMPLETE."
+   },
+   "usedIn": "outline-1",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-02"
+  },
+  {
+   "claimId": "B-F-03",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "The top recurring mechanism is governance and verification artefacts that are first exercised inside the timed run",
+   "measuredOrEstimate": "MEASURED for event counts and Actions counts. Prevalence depends on curation granularity (ESTIMATE).",
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-S04 (mandatory dry run) depends on it; prevalence counts are one analyst's curation.",
+   "trackLimitations": "Event curation was done by one analyst from final reports and deviation logs, so minor governance frictions are under-sampled. 'Terminal blocker' is a judgement from each run's stated blocker list.",
+   "crossTrackSupport": [
+    "A-F-13",
+    "C-F-12",
+    "B2 (pending)"
+   ],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "PARTIALLY VERIFIED",
+    "independence": "Medium: primary final reports read independently; judgment-based, not computed.",
+    "discrepancies": [
+     "'Terminal blocker' holds only as 'first refusal that ended the governed verdict'. As 'dominant blocker' it does not hold for R8 and is doubtful for R9 and R10: governance failures masked large product/verification incompleteness that would independently have prevented acceptance."
+    ],
+    "verifierNotes": "Definitional: B's category is broad. It counts frozen-spec contradictions (INV-04 vs SM-SAVE), an SDK incompatibility of plan suite commands (MSB1008) and CI timeouts as 'governance machinery'. With a narrower definition (approval/process records only), R8 (approvals), Causa (process rules) and part of R10 qualify; R9's blocker is a test-plan/toolchain defect.",
+    "scopeNote": "Holds as 'first refusal that ended the governed verdict'; does NOT hold as 'dominant blocker' for R8 and is doubtful for R9, R10: product and verification incompleteness would independently have prevented acceptance."
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-03"
+  },
+  {
+   "claimId": "B-F-04",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Agent-stated status exceeding the evidence recurs, and moves from acceptance claims to obligation over-tagging once the verdict became computed",
+   "measuredOrEstimate": "MEASURED (counts as recorded)",
+   "consequence": "high",
+   "consequenceIfWrong": "Overclaim narrative; attribution to computed verdict not established (see X-05).",
+   "trackLimitations": "The shift coincides with several other changes: the computed verifier, reviewer briefs and owner rules. Attribution to the computed verdict alone is not established.",
+   "crossTrackSupport": [
+    "E-F-02",
+    "B-F-16"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-1",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-04"
+  },
+  {
+   "claimId": "B-F-05",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Multi-writer persistence invariants are re-violated in each fresh implementation",
+   "measuredOrEstimate": "MEASURED (recorded defects)",
+   "consequence": "medium",
+   "consequenceIfWrong": "Persistence-as-component recommendation.",
+   "trackLimitations": "Persistence scope grew from R3 (no writes) to R7 (46 P0 PERSIST). A recurrence partly reflects stricter tests, not only a repeated mistake.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-05"
+  },
+  {
+   "claimId": "B-F-06",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Fake providers diverge from real GitHub; running live checks early is the one detection change with consistent support",
+   "measuredOrEstimate": "MEASURED (recorded defects)",
+   "consequence": "medium",
+   "consequenceIfWrong": "Live-checks-early recommendation; observational.",
+   "trackLimitations": "Observational. No run without live checks after R2 exists as a comparison.",
+   "crossTrackSupport": [
+    "B-F-14"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-06"
+  },
+  {
+   "claimId": "B-F-07",
+   "track": "B-forensics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R6 did not start from the requirements: it imported R5's application byte for byte",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "Invalidates R5/R6 comparisons; also reproduces an audit verdict of DEVIATION.",
+   "trackLimitations": "R1 also built the real competition application (ER-3), and R8 had a reference PR (#57) mentioned in OD-INDY-22. Neither was blob-compared here.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High: own ls-tree blob comparison script.",
+    "discrepancies": [],
+    "verifierNotes": "R5 has 5 extra .fs files (tools/derive-requirements/*) not imported. b972cb4 is R5's post-run record commit, i.e. the import source is R5's final state, as the commit message states."
+   },
+   "usedIn": "outline-1",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-07"
+  },
+  {
+   "claimId": "B-F-08",
+   "track": "B-forensics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "CI harness semantics repeatedly left CI unable to fail or unable to finish",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Hardened CI template recommendation.",
+   "trackLimitations": "Run lists cover all branches and include post-run maintenance outside the window. The window filter uses created_at. Causa's Actions API was not reachable from this session.",
+   "crossTrackSupport": [
+    "A-F-12",
+    "A-F-11"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-08"
+  },
+  {
+   "claimId": "B-F-09",
+   "track": "B-forensics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Parallel-write conflicts appear only in multi-lane runs, and Praxis's shared .ros state is the hottest conflict surface",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-002 evidence; conflict counts differ from A2's pre-scan (X-03).",
+   "trackLimitations": "Squash merges and rebases are invisible to this method. Replay uses current git merge strategy defaults, not the tools the agents used. Merges on every ref are included (for example main into a lane branch).",
+   "crossTrackSupport": [
+    "A-F-07",
+    "V1:A-F-07"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-09"
+  },
+  {
+   "claimId": "B-F-11",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Fresh independent review is the most productive defect detector, and fix rounds introduce defects",
+   "measuredOrEstimate": "MEASURED (recorded findings)",
+   "consequence": "medium",
+   "consequenceIfWrong": "Review timing policy; no controlled comparison.",
+   "trackLimitations": "No controlled comparison of review timing exists. Reviewers were usually spawned by the implementing session.",
+   "crossTrackSupport": [
+    "A-F-06"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-11"
+  },
+  {
+   "claimId": "B-F-12",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Owner-only prerequisites and in-chat decisions consume window time and leave process obligations unverifiable",
+   "measuredOrEstimate": "MEASURED (documented intervention events; lower bound)",
+   "consequence": "medium",
+   "consequenceIfWrong": "Owner-readiness preflight recommendation.",
+   "trackLimitations": "Interventions are counted as documented events. One event can bundle several owner actions, and undocumented chat steering is invisible.",
+   "crossTrackSupport": [
+    "E-F-07",
+    "E-F-08"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-12"
+  },
+  {
+   "claimId": "B-F-13",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Upstream and toolchain defects recur across runs because local workarounds do not close them upstream before the next run",
+   "measuredOrEstimate": "MEASURED (recorded)",
+   "consequence": "medium",
+   "consequenceIfWrong": "Upstream-closure tracking recommendation.",
+   "trackLimitations": "Whether the Conditor preset was meant to carry the FSharp.Core pin by R10 was not checked in the conditor history.",
+   "crossTrackSupport": [
+    "C-F-09",
+    "C-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-13"
+  },
+  {
+   "claimId": "B-F-14",
+   "track": "B-forensics",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "R10's live-provider tests did run in CI, although the report lists live obligations as BLOCKED in the session",
+   "measuredOrEstimate": "MEASURED (git ls-remote of causa-acceptance-r10)",
+   "consequence": "medium",
+   "consequenceIfWrong": "Contradicts the R10 report's own statement; branch metadata only.",
+   "trackLimitations": "Branch names and timestamps only; branch contents and pass/fail outcomes were not read.",
+   "crossTrackSupport": [
+    "E-F-16"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-14"
+  },
+  {
+   "claimId": "B-F-16",
+   "track": "B-forensics",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R1's acceptance over-claim (R-21) is confirmed by the Actions record: four consecutive deploy/accept failures",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "Actions-confirmed R1 overclaim; publishable example if verified.",
+   "trackLimitations": "Workflow-level conclusions only. That the failing job was 'accept' (rather than build or deploy) is from R1's own record, not from job logs.",
+   "crossTrackSupport": [
+    "G-F-11"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-1",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B-forensics/findings.json#B-F-16"
+  },
+  {
+   "claimId": "C-F-01",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The library and tool ecosystem runs on a release set 35 versions behind the approved one",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "35-version skew drives CR-02 and the ecosystem catch-up wave.",
+   "trackLimitations": "Pins describe what each repository declares on main; a few repositories may run newer tools locally. 'minor-behind' groups every same-major gap (3.7.2 to 3.25.0 counts as one class).",
+   "crossTrackSupport": [
+    "C-F-02",
+    "E-F-01"
+   ],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High: own inventory script over committed HEAD content.",
+    "discrepancies": [
+     "C's finding text also says '9 more to sets 1.3.0-1.24.0'; V2 counts 8, and C's own repo-facts.json also lists 8.",
+     "Denominator: C says 33; V2's universe has 37 (8 with no Praxis install). Numerators are unaffected."
+    ],
+    "verifierNotes": "'Match' for causa and rehearsal-010 is lock-based (neither carries an authority file). causa also locks forma-workflow 1.2.0, which the 1.37.0 set does not name."
+   },
+   "usedIn": "ADR-S01",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-01"
+  },
+  {
+   "claimId": "C-F-02",
+   "track": "C-architecture",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Released Praxis capabilities are unreachable in most repositories",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Explains why verified completion cannot run in most repos; mapping not re-executed.",
+   "trackLimitations": "Capability-to-version mapping taken from CURRENT-STATE and Registry notes, not re-executed.",
+   "crossTrackSupport": [
+    "E-F-01",
+    "G-F-07"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-1",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-02"
+  },
+  {
+   "claimId": "C-F-03",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Two catalogs of qualified versions force a Conditor release for most component releases",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-S01 (signed Registry sets) rests on the dual-catalog/lockstep claim.",
+   "trackLimitations": "Release counts from tag commit dates; some Conditor releases also carried feature work (e.g. ci-policy, unattended-readiness).",
+   "crossTrackSupport": [
+    "C-F-18",
+    "B-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-03"
+  },
+  {
+   "claimId": "C-F-04",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The designed escape from per-version qualification is built but switched off",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-001 assumes the range-qualification path works once a key is trusted; not executed.",
+   "trackLimitations": "Whether range qualification would be acceptable to the owner is a policy question.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High (local clone); remote HEAD not queryable (conditor outside session allowlist).",
+    "discrepancies": [],
+    "verifierNotes": "A later remote commit could have added keys; the local clone is the latest available."
+   },
+   "usedIn": "ADR-S01",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-04"
+  },
+  {
+   "claimId": "C-F-05",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Praxis duplicates Ordo contract admission because it pins an Ordo.Core that predates it",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "CR-04 deletion of 1,043 lines; behavioural equivalence not tested.",
+   "trackLimitations": "Behavioural equivalence of the two implementations not tested; Ordo 1.20.0's package contents not inspected (only source).",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High for the counts; medium for 'duplicate' (vocabulary overlap, not code equivalence).",
+    "discrepancies": [],
+    "verifierNotes": "1,043 counts both files, and Model.fs is the Ordo model, not admission logic alone. 'Duplicate' means re-implementation of the same vocabulary. Behavioural equivalence was not tested, and which came first cannot be fixed from shallow clones (Praxis's addition is recorded 2026-10-19, Ordo's 1.20.0 2026-11-02)."
+   },
+   "usedIn": null,
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-05"
+  },
+  {
+   "claimId": "C-F-07",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Profile-'required' components are not installed on the product path",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "'required' components not enforced.",
+   "trackLimitations": "The Registry may intend 'required' to mean 'part of the environment' rather than per-repository; no spec text defining per-repository enforcement was found.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-07"
+  },
+  {
+   "claimId": "C-F-08",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Aegis 2.0.0 is documented but has never been released",
+   "measuredOrEstimate": null,
+   "consequence": "low",
+   "consequenceIfWrong": "Aegis 2.0.0 unreleased; NuGet not queried directly.",
+   "trackLimitations": "NuGet.org was not queried directly; Registry record used as the release source.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High: own pin scanner plus NuGet.org and ls-remote checks.",
+    "discrepancies": [
+     "The consumer count depends on the definition: 16 (NuGet code consumers, matching C) or 36 (any pin, including rehearsals). No consumer is on 2.0.0 under either."
+    ],
+    "verifierNotes": "C relied on the Registry only; V2 adds NuGet.org, which also has only 1.0.0."
+   },
+   "usedIn": null,
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-08"
+  },
+  {
+   "claimId": "C-F-09",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "forma-workflow is installed and qualified outside the Registry",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Corroborates B-F-13 forma-workflow defect.",
+   "trackLimitations": "None material.",
+   "crossTrackSupport": [
+    "B-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-09"
+  },
+  {
+   "claimId": "C-F-12",
+   "track": "C-architecture",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "The program repository has grown a parallel toolchain",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "CR-07 (move Indy-init tooling behind Praxis/Dokimos).",
+   "trackLimitations": "Function-level overlap not compared; some modules are competition-specific by design.",
+   "crossTrackSupport": [
+    "E-F-02"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S03",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-12"
+  },
+  {
+   "claimId": "C-F-13",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "No repository scans dependencies for known vulnerabilities",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Security posture statement; org-level settings invisible.",
+   "trackLimitations": "GitHub-side default secret scanning or org-level settings are not visible from repository contents.",
+   "crossTrackSupport": [
+    "E-F-13",
+    "E-F-10"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-13"
+  },
+  {
+   "claimId": "C-F-14",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "READMEs misstate responsibility or installed versions",
+   "measuredOrEstimate": null,
+   "consequence": "low",
+   "consequenceIfWrong": "README accuracy.",
+   "trackLimitations": "Only README/top-level docs were compared.",
+   "crossTrackSupport": [
+    "G-F-10"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-14"
+  },
+  {
+   "claimId": "C-F-18",
+   "track": "C-architecture",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Approval churn: 12 owner-approved release sets in 13 days",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Approval-churn cost argument for ADR-001; owner time not measured.",
+   "trackLimitations": "Owner time per approval not measured.",
+   "crossTrackSupport": [
+    "C-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C-architecture/findings.json#C-F-18"
+  },
+  {
+   "claimId": "E-F-01",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "High",
+   "title": "Default work completion accepts any existing file as 'tests' evidence, and no surveyed repository enables verified completion",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "'Every complete state is self-declared' is the strongest governance claim in the sprint.",
+   "trackLimitations": "Tested on the default scaffold policy only. Repository-specific quality policies (QualityEvidencePolicy) can raise the required evidence types, but they do not make the evidence verifiable.",
+   "crossTrackSupport": [
+    "G-F-07",
+    "C-F-02"
+   ],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High: own build, own fixture, own script; survey reads committed HEAD content with own code.",
+    "discrepancies": [
+     "E surveyed 45 ros.json; V2 finds 47 (different repo universe); the conclusion is unchanged."
+    ],
+    "verifierNotes": "The protected-policy path (REL-GATE-004 effectivePolicy) was not separately exercised. With no repo setting the flags, it does not change the outcome for surveyed repos."
+   },
+   "usedIn": "outline-1",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-01"
+  },
+  {
+   "claimId": "E-F-02",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "High",
+   "title": "Indy-init acceptance verifier returns ACCEPTED for a fully fabricated evidence bundle when the manifest digest comes from the bundle's producer, as in rehearsal-005's acceptance.sh",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-S03 (trusted acceptance job) and the 'computed verdict is not independent' conclusion.",
+   "trackLimitations": "Only the ledger verifier was exercised. Rehearsal-005 also runs `requirements-compiler verify-plan`, which checks test identity against result files; those files are candidate-produced too, but I did not test them. Not tested against GitHub (local fixture only).",
+   "crossTrackSupport": [
+    "B-F-04",
+    "C-F-12"
+   ],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High: fabrication script written by V2 from the verifier source (E's script not read or used); full Indy-init history cloned by V2.",
+    "discrepancies": [],
+    "verifierNotes": "Scope: only the ledger verifier. rehearsal-005 also runs requirements-compiler verify-plan, which V2 did not test, so 'the R5 pipeline would have accepted' is not shown. The approvals file has an empty approvals list, so no scope changes were needed. The weakness is that every pin except the baseline and approvals digests is supplied by the candidate's job.",
+    "scopeNote": "Ledger verifier only. requirements-compiler verify-plan untested by E and V2 (FX-03)."
+   },
+   "usedIn": "ADR-S03",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-02"
+  },
+  {
+   "claimId": "E-F-03",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "Medium",
+   "title": "The claim-ownership guard on plain completion is removed by deleting the out-of-tree claim record",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Claim-guard fix.",
+   "trackLimitations": "Requires local write access to the Git directory, which an implementation agent normally has.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High: own script and build.",
+    "discrepancies": [],
+    "verifierNotes": "The claim's acquisition event remains in .git/praxis/events.jsonl (outside tracked history), and nothing consults it on plain completion. This requires local write access to .git, which implementation agents have."
+   },
+   "usedIn": null,
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-03"
+  },
+  {
+   "claimId": "E-F-04",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "Medium",
+   "title": "The 'protected' completion policy is read from local refs: moving refs/remotes/origin/main or rewriting history defeats it",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Documented limit; server-side verification recommendation.",
+   "trackLimitations": "Documented residual risk, so severity is held at Medium. Local fixtures only.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-04"
+  },
+  {
+   "claimId": "E-F-05",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "Medium",
+   "title": "Non-attested verified completion succeeds with zero evidence through a caller-chosen authority",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "'verified' label semantics.",
+   "trackLimitations": "No surveyed repository uses this mode today (E-F-01). The docs already state that unattested mode is forgeable.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-05"
+  },
+  {
+   "claimId": "E-F-06",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "Info",
+   "title": "Regression: Praxis 3.25.0 / Dokimos 0.11.1 refuse every attested-mode forgery and the evidence-binding attacks (controls working)",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Positive control: attested mode works on 3.25.0. If wrong, ADR-S03 fallback (Dokimos attested) fails.",
+   "trackLimitations": "The verifier daemon ran as the same OS user, so key isolation was not tested.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S03",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-06"
+  },
+  {
+   "claimId": "E-F-07",
+   "track": "E-security",
+   "classification": "SUPPORTED",
+   "severity": "High",
+   "title": "No branch protection or CODEOWNERS on the repositories whose protected branch every gate assumes, and the agent credential is reported as admin",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "If branch protection actually exists via rulesets, several E findings drop in severity; rulesets unreadable.",
+   "trackLimitations": "The `protected` flag in the branches API may not reflect every ruleset configuration, and I could not read rulesets or settings (read-only; no settings API). Repositories outside the session allowlist, such as dokimos, were not queryable.",
+   "crossTrackSupport": [
+    "B-F-12"
+   ],
+   "independentVerification": {
+    "by": "V2",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "High for the three queried remotes; conditor and causa were not queryable (session allowlist, 403).",
+    "discrepancies": [],
+    "verifierNotes": "The rules endpoint returning [] strengthens E's 'protected flag may miss rulesets' limitation: no branch ruleset applies to main either. Agent token scope (admin) was not re-verified (E's SUPPORTED part).",
+    "scopeNote": "V2 verified the VERIFIED parts (protected=false, no rulesets via rules/branches endpoint, no CODEOWNERS). The SUPPORTED part (agent token admin, agent holds signing key) was not re-verified."
+   },
+   "usedIn": "ADR-S03",
+   "flags": [
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-07"
+  },
+  {
+   "claimId": "E-F-08",
+   "track": "E-security",
+   "classification": "SUPPORTED",
+   "severity": "Medium",
+   "title": "Rehearsal owner and reviewer attestations identify the owner only by GitHub review login",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Owner attestation by review login; not executed.",
+   "trackLimitations": "Not executed: testing would require submitting reviews on GitHub, which is out of scope.",
+   "crossTrackSupport": [
+    "E-F-07"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-08"
+  },
+  {
+   "claimId": "E-F-09",
+   "track": "E-security",
+   "classification": "SUPPORTED",
+   "severity": "Medium",
+   "title": "Release attestation verification binds only the repository, not the workflow or ref; attest-and-publish can run from any branch via workflow_dispatch",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Release attestation scope; not executed (dispatch prohibited).",
+   "trackLimitations": "No workflow was dispatched (prohibited). Whether the nuget.org trusted-publishing policy restricts the ref was not observable.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-09"
+  },
+  {
+   "claimId": "E-F-13",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "Low",
+   "title": "No NuGet lock files anywhere, and CI installs tools via curl|sh from a mutable branch",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "No lock files; supply-chain posture.",
+   "trackLimitations": "Working trees only; no NuGet vulnerability audit was run.",
+   "crossTrackSupport": [
+    "C-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-13"
+  },
+  {
+   "claimId": "E-F-14",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "Info",
+   "title": "Secret scan of 128,562 history blobs in 59 repositories: no live credential identified",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "'No live credential found' would be dangerous if wrong; heuristic scan; ext/full unscanned.",
+   "trackLimitations": "Regex and entropy heuristics only. ext/full could not be scanned (not a Git repository).",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-14"
+  },
+  {
+   "claimId": "E-F-15",
+   "track": "E-security",
+   "classification": "SUPPORTED",
+   "severity": "Info",
+   "title": "Prompt injection through repository content: none found; agent-isolation gaps recorded by the R7 audit",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "'No prompt injection found'; keyword scan only.",
+   "trackLimitations": "Keyword scan only; obfuscated or semantic injection was not tested.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-15"
+  },
+  {
+   "claimId": "E-F-16",
+   "track": "E-security",
+   "classification": "VERIFIED",
+   "severity": "Info",
+   "title": "causa-acceptance-r10 is a live-persistence data store written by a dedicated GitHub App, not acceptance machinery",
+   "measuredOrEstimate": null,
+   "consequence": "low",
+   "consequenceIfWrong": "causa-acceptance-r10 role.",
+   "trackLimitations": "The R10 acceptance consumers of this store were not audited.",
+   "crossTrackSupport": [
+    "B-F-14"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V2",
+    "note": "not in V2 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E-security/findings.json#E-F-16"
+  },
+  {
+   "claimId": "G-F-01",
+   "track": "G-market",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Agent orchestration plus baseline governance is bundled into existing seats",
+   "measuredOrEstimate": "documented",
+   "consequence": "high",
+   "consequenceIfWrong": "Rules out a standalone governed-agent-platform product.",
+   "trackLimitations": "Several GitHub governance features are public preview; enterprise discounts not visible; control-plane depth not hands-on tested.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-3",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-01"
+  },
+  {
+   "claimId": "G-F-02",
+   "track": "G-market",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Requirements-first (spec-driven) agent development is now a mainstream bundled feature",
+   "measuredOrEstimate": "documented (Kiro) + internal repo (Praxis)",
+   "consequence": "high",
+   "consequenceIfWrong": "Defines the narrow defensible claim; Kiro absence from one docs page.",
+   "trackLimitations": "Absence of traceability features in Kiro is from one docs page, not a hands-on test; Praxis features are released but not yet shown in a customer setting.",
+   "crossTrackSupport": [
+    "E-F-06"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-3",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-02"
+  },
+  {
+   "claimId": "G-F-03",
+   "track": "G-market",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "AI adoption, cost and impact measurement is already a priced, crowded category",
+   "measuredOrEstimate": "documented",
+   "consequence": "medium",
+   "consequenceIfWrong": "Cost telemetry is not a wedge.",
+   "trackLimitations": "Vendor marketing pages; 'cost per accepted requirement' absence among vendors is inferred from pages reviewed, not exhaustive.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-3",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-03"
+  },
+  {
+   "claimId": "G-F-04",
+   "track": "G-market",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Developers report a verification/trust gap with AI output",
+   "measuredOrEstimate": "documented (developer population); demand for a paid Echelon solution is inferred",
+   "consequence": "medium",
+   "consequenceIfWrong": "Problem existence (trust gap); surveys self-selected.",
+   "trackLimitations": "Self-selected developer surveys (SO recruits via its own channels); DORA ~5,000 respondents, correlational. They show the problem exists among developers, not that budget-holders will pay a third party to solve it.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-3",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-04"
+  },
+  {
+   "claimId": "G-F-05",
+   "track": "G-market",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Executives lack evidence that AI investments pay off; cancellations are forecast",
+   "measuredOrEstimate": "documented (surveys/analyst prediction); fit to Echelon inferred",
+   "consequence": "medium",
+   "consequenceIfWrong": "Executive-evidence gap; McKinsey via secondary coverage.",
+   "trackLimitations": "McKinsey primary page returned 503; Gartner press release 403 (content corroborated across outlets). Gartner figure is a prediction, not a measurement.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-3",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-05"
+  },
+  {
+   "claimId": "G-F-06",
+   "track": "G-market",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Regulation is not a 2026 urgency trigger for coding-agent governance",
+   "measuredOrEstimate": "documented (dates); applicability to coding agents is inferred",
+   "consequence": "high",
+   "consequenceIfWrong": "Regulatory timing; legal applicability needs counsel; OJ text not fetched.",
+   "trackLimitations": "Official Journal text not fetched directly; legal applicability to a given client requires counsel. Not legal advice.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-3",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-06"
+  },
+  {
+   "claimId": "G-F-07",
+   "track": "G-market",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Echelon's flagship differentiator is implemented but not in use",
+   "measuredOrEstimate": "internal repository evidence",
+   "consequence": "high",
+   "consequenceIfWrong": "Flagship differentiator not in use; status data as of 2026-10-23.",
+   "trackLimitations": "Status of later releases (Dokimos 0.11.1, Praxis 3.25.0) beyond the rollout doc was not re-inventoried by G; Track C/E may update.",
+   "crossTrackSupport": [
+    "E-F-01",
+    "C-F-02"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "fully independent recomputation",
+    "discrepancies": [
+     "The sentence was last edited 2026-10-21 (commit 173cae20), before 3.25.0; it is carried in the 3.25.0 tree rather than being a 3.25.0-dated assessment. The scan independently confirms it is still true for every checked-out repo."
+    ],
+    "verifierNotes": "Coverage is limited to repositories checked out in this environment; a repository not cloned here could enable the flag. Only HEAD revisions were scanned."
+   },
+   "usedIn": "outline-1",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-07"
+  },
+  {
+   "claimId": "G-F-08",
+   "track": "G-market",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Echelon's own experiments show cost overhead without a measured quality gain on current fixtures",
+   "measuredOrEstimate": "internal experimental evidence",
+   "consequence": "high",
+   "consequenceIfWrong": "'Overhead without measured quality gain'; fixture ceiling effects.",
+   "trackLimitations": "Ceiling effects on fixtures; one model family; quality benefit on harder, real work is untested (Track D).",
+   "crossTrackSupport": [
+    "A-F-16",
+    "D:VAC-001"
+   ],
+   "independentVerification": {
+    "by": "V1",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "partial recomputation",
+    "discrepancies": [],
+    "verifierNotes": "Partial: token buckets and oracle verdicts are the experiment's own per-trial records; raw transcripts and oracle re-runs were not available/re-executed. Definitional caveat: output tokens are a transcript lower bound in all 80 trials (about 22 tokens per request, streaming-start counts), so output is only 1.3-1.7% of computed cost. True cost per correct requirement is higher in every arm, and the +35.5% gap could move if true output differs between arms; the report discloses the lower bound (REPORT-run-02.md:237) but the headline does not. 39/39 in all arms is a ceiling: the experiment cannot show a quality difference."
+   },
+   "usedIn": "outline-2",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-08"
+  },
+  {
+   "claimId": "G-F-12",
+   "track": "G-market",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Coding-agent usage is concentrating on a few platforms that Echelon depends on",
+   "measuredOrEstimate": "documented (usage) + inferred (positioning)",
+   "consequence": "medium",
+   "consequenceIfWrong": "Platform-dependency positioning; SO 2026 editorial highlights only.",
+   "trackLimitations": "SO 2026 published as editorial highlights; full dataset pending; revenue figures company-reported.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": "outline-3",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-12"
+  },
+  {
+   "claimId": "G-F-13",
+   "track": "G-market",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Large AI services spend exists, but its size says nothing about Echelon's addressable market",
+   "measuredOrEstimate": "documented (analyst forecast)",
+   "consequence": "low",
+   "consequenceIfWrong": "Context only; no SAM derived.",
+   "trackLimitations": "Figures via search summary of the release table; methodology proprietary; quoted for context only.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V1",
+    "note": "not in V1 verdicts.json or queue at time of build"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/G-market/findings.json#G-F-13"
+  },
+  {
+   "claimId": "B2-F-01",
+   "track": "B2-dryrun",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "A pre-T0 dry run would have caught half of the brief's blockers and 7 of 11 overall",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Sizes ADR-S04's benefit: 4/8 brief (robust 2/8), 7/11 extended; matching rules partly finalised after first runs.",
+   "trackLimitations": [
+    "11 blockers is a small sample; outcomes depend on matching rules partly finalized after first runs (see B2-F-05/06/07)."
+   ],
+   "crossTrackSupport": [
+    "X-09",
+    "DECISION-LOG D-022"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-01"
+  },
+  {
+   "claimId": "B2-F-02",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R10's authorize-implementation refusal reproduces exactly from pre-T0 inputs in ~6 s",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "R10-AUTH reproduces exactly pre-T0 (55/55 causes).",
+   "trackLimitations": [
+    "The suite-preflight report's root field was relocated to the scratch path; unrelocated run gives 56 causes (one path-only).",
+    "Setup commit is 10 min after T0 but contains no application code."
+   ],
+   "crossTrackSupport": [
+    "B-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-02"
+  },
+  {
+   "claimId": "B2-F-03",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Approvals-format blockers (R4, R8) are caught by the pinned verifier with a stub ledger",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Approvals-format blockers catchable pre-T0.",
+   "trackLimitations": [
+    "Verdict remains INVALID in all runs because the ledger is a stub; only approvals-related problems are matched."
+   ],
+   "crossTrackSupport": [
+    "B-F-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-03"
+  },
+  {
+   "claimId": "B2-F-04",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The frozen plans' suite commands fail on the pinned SDK before any code is written (R8, R9); v4.1.5 does not",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Frozen-plan suite commands fail on pinned SDK pre-T0.",
+   "trackLimitations": [
+    "Stub trees have no tests, so every executable suite also reports NO_TESTS_SELECTED; this is not counted as a failure."
+   ],
+   "crossTrackSupport": [
+    "B-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-04"
+  },
+  {
+   "claimId": "B2-F-05",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The same dry run also exposes the FSharp.Core skip that hit R8 (DEV-R8-04) and R10 (SL-T11)",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "FSharp.Core skip detectable pre-T0; not preregistered.",
+   "trackLimitations": [
+    "By-product observation; matching rule not preregistered for it."
+   ],
+   "crossTrackSupport": [
+    "B-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-05"
+  },
+  {
+   "claimId": "B2-F-08",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R8's semantic contract defects pass the whole pinned package pipeline",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Semantic contract defects pass the whole pinned pipeline: the uncovered class that limits ADR-S04.",
+   "trackLimitations": [
+    "A purpose-built model check of SM-SAVE against INV-04 was not attempted."
+   ],
+   "crossTrackSupport": [
+    "X-23"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-08"
+  },
+  {
+   "claimId": "B2-F-10",
+   "track": "B2-dryrun",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The dry run is cheap",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Dry-run cost is seconds per rehearsal (loaded host).",
+   "trackLimitations": [
+    "Host load avg 11-20 from other tracks; R8/R9 suite times include compiling the bootstrap's stub projects."
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B2-dryrun/findings.json#B2-F-10"
+  },
+  {
+   "claimId": "D-F-03",
+   "track": "D-experiments",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "VAC-001 continuity saving -40.9% recomputes; uncertainty is understated",
+   "measuredOrEstimate": "MEASURED (lower-bound cost per published amendment A4)",
+   "consequence": "high",
+   "consequenceIfWrong": "VAC-001 continuity saving is one of the few positive results and bears on ADR-S05; chain-level p=0.25.",
+   "trackLimitations": "One fixture, one model; output tokens are lower bounds.",
+   "crossTrackSupport": [
+    "X-12",
+    "G-F-08"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S05",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-03"
+  },
+  {
+   "claimId": "D-F-05",
+   "track": "D-experiments",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "VAC-001 fresh-from-verified-state +86% recomputes (one chain)",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Fresh-from-verified +86% (one chain) is the main counter-evidence to a coordinator cap.",
+   "trackLimitations": "n=1 chain; preliminary as published.",
+   "crossTrackSupport": [
+    "X-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S05",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-05"
+  },
+  {
+   "claimId": "D-F-07",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "VAC-002 P3 was underpowered for its realized effect",
+   "measuredOrEstimate": "ESTIMATE (simulation, 4000 sims per n, seed 20261108)",
+   "consequence": "medium",
+   "consequenceIfWrong": "VAC-002 P3 underpowered; affects how its null result is cited.",
+   "trackLimitations": "Assumes observed rates are true; scenario heterogeneity not modelled beyond a within-block concordance parameter.",
+   "crossTrackSupport": [
+    "X-15"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-07"
+  },
+  {
+   "claimId": "D-F-08",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Replicates needed for the cost claims",
+   "measuredOrEstimate": "ESTIMATE",
+   "consequence": "medium",
+   "consequenceIfWrong": "Replicate counts used to size FX experiments; lower bounds.",
+   "trackLimitations": "Observed effects are likely inflated (winner's curse); whole-cohort run variance is unobserved (n=1) and likely larger than unit-level variance, so these are lower bounds.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-08"
+  },
+  {
+   "claimId": "D-F-09",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Keeping build outputs makes a no-change verification build ~4% of a clean build's CPU",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Incremental no-op build ~4% of clean CPU; one fixture.",
+   "trackLimitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced.",
+   "crossTrackSupport": [
+    "X-25",
+    "A-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-09"
+  },
+  {
+   "claimId": "D-F-10",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "A public-surface edit to the root project costs ~5.7x a non-surface edit, about a full clean build",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Surface edits cost ~a clean build.",
+   "trackLimitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced.",
+   "crossTrackSupport": [
+    "X-25"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-10"
+  },
+  {
+   "claimId": "D-F-11",
+   "track": "D-experiments",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Running one test project costs ~4% of the full offline suite's CPU",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Affected-test run ~4% of full suite CPU; selection safety untested.",
+   "trackLimitations": "Single fixture and machine; shared-host contention (wall time noisy, CPU less so); 6 runs per arm; results transfer only to similar F#/.NET solutions. Cost only; safety of selection not assessed. Preregistered hypothesis met its decision rule; classified SUPPORTED rather than VERIFIED because it is one run of one fixture, not independently reproduced.",
+   "crossTrackSupport": [
+    "X-25"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D-experiments/findings.json#D-F-11"
+  },
+  {
+   "claimId": "A2-F-01",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Semantic merge driver removes every .ros/ state conflict in R8 and R10 replays",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "ADR-S02 core result: driver removes every .ros conflict on replay (v2 rule added after v1 16/26).",
+   "trackLimitations": [
+    "v2's relaxed-order rule was added after v1 (16/26) results; disclosed in protocol Amendment 1",
+    "replay only; not deployed"
+   ],
+   "crossTrackSupport": [
+    "A-F-07",
+    "B-F-09"
+   ],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Own unshallowed clone (github.com/kemiller2002/indy-init-rehearsal-008, full history), own survey and sampling, own record comparator (scripts/merge_replay.py). A2's driver (RosMerge.fs sha256 cb58563..., ros-merge.fsx sha256 74f2e3d..., A2 commit 8629572) run unmodified as system under test via .git/info/attributes in my clone; A2's replay/summary scripts and jsonl not used.",
+    "discrepancies": [
+     "A2 attributes current.json byte differences to order and the top-level actor field; in my sample updatedAt differs in 9/18 and actor in 6/18 (no record-level difference).",
+     "praxis validate on the 18 R8 driver results was not re-run (only d8447ed1 was validated)."
+    ],
+    "verifierNotes": "Sample of 18 of 58 conflicted merges, not the full population; the 2890d285 case shows the driver also runs (RelaxedOrder) on events.jsonl that git would have merged cleanly, without changing the outcome.",
+    "coveredVia": "A2-F-01/02"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-01"
+  },
+  {
+   "claimId": "A2-F-02",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Driver output preserves every record and passes praxis validate",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "high",
+   "consequenceIfWrong": "Driver preserves records; validate cannot detect duplicate lines (negative control).",
+   "trackLimitations": [
+    "praxis validate does not detect duplicated event lines (negative control); duplicates are checked by the harness",
+    "byte identity with M is lower: current.json 32/84 (R8), events 76/84; differences are item/event order and the top-level actor field"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Own unshallowed clone (github.com/kemiller2002/indy-init-rehearsal-008, full history), own survey and sampling, own record comparator (scripts/merge_replay.py). A2's driver (RosMerge.fs sha256 cb58563..., ros-merge.fsx sha256 74f2e3d..., A2 commit 8629572) run unmodified as system under test via .git/info/attributes in my clone; A2's replay/summary scripts and jsonl not used.",
+    "discrepancies": [
+     "A2 attributes current.json byte differences to order and the top-level actor field; in my sample updatedAt differs in 9/18 and actor in 6/18 (no record-level difference).",
+     "praxis validate on the 18 R8 driver results was not re-run (only d8447ed1 was validated)."
+    ],
+    "verifierNotes": "Sample of 18 of 58 conflicted merges, not the full population; the 2890d285 case shows the driver also runs (RelaxedOrder) on events.jsonl that git would have merged cleanly, without changing the outcome.",
+    "coveredVia": "A2-F-01/02"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-02"
+  },
+  {
+   "claimId": "A2-F-03",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "One team merge in R10 dropped a live work item; the driver would have kept it",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Real team merge error in R10 (dropped WI-0003); single instance.",
+   "trackLimitations": [
+    "single instance; the item reappears later on main"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "PARTIALLY VERIFIED",
+    "independence": "Own clone of indy-init-rehearsal-010; WI-0003 checked by git show of each commit's current.json; praxis built by me from /home/user/ext/praxis at tag v3.25.0 (12bf9951); A2's validate jsonl not used.",
+    "discrepancies": [
+     "The brief's premise that WI-0003 is 'present in both parents' is CONTRADICTED: it is present in one parent only (2a4ae187, the SL-T12 side, which added it after the merge base). A2's own finding says the merge 'kept one side', which is consistent with my result.",
+     "praxis was run framework-dependent with DOTNET_ROLL_FORWARD=Major (net10.0 target; no roll-forward actually needed)."
+    ],
+    "verifierNotes": "Everything A2-F-03 itself states reproduces: drop, active state, validate failure, driver result keeps the item and validates. Only the 'both parents' wording in the verification brief is wrong. Also: d8447ed1 had 2 non-.ros conflicts (src/Causa.Persistence/Classify.fs, GitHubRequests.fs) that the driver does not address."
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-03"
+  },
+  {
+   "claimId": "A2-F-04",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "A .ros driver cannot remove application-code conflicts",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Bounds ADR-S02: 9 merges still need humans.",
+   "trackLimitations": [],
+   "crossTrackSupport": [
+    "X-02"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-04"
+  },
+  {
+   "claimId": "A2-F-05",
+   "track": "A2-remediation",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Strict Praxis ordering rule fails on real rehearsal histories",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Praxis documented ordering rule fails on real histories: policy change needed.",
+   "trackLimitations": [
+    "relaxed ordering is a policy decision for Praxis owners"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S02",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-05"
+  },
+  {
+   "claimId": "A2-F-08",
+   "track": "A2-remediation",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "A published, attested release is source-equivalent to the pin and behaves identically",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "medium",
+   "consequenceIfWrong": "Release binary output byte-identical to source-built verifier; attestation not verified.",
+   "trackLimitations": [
+    "version string differs (3.9.1); attestation itself not verified with gh attestation verify",
+    "fetch timed through sandbox proxy"
+   ],
+   "crossTrackSupport": [
+    "E-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-08"
+  },
+  {
+   "claimId": "A2-F-09",
+   "track": "A2-remediation",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Caching the verifier keyed on the pinned commit is safe if the key is complete",
+   "measuredOrEstimate": "ESTIMATE (savings); MEASURED (determinism probe)",
+   "consequence": "medium",
+   "consequenceIfWrong": "~550 min saving ESTIMATE from caching; single determinism probe.",
+   "trackLimitations": [
+    "single determinism probe",
+    "savings assume CI restore ~= local fetch time",
+    "V1 puts verifier minutes at 607 (CI 580-632), consistent with 604 from step data"
+   ],
+   "crossTrackSupport": [
+    "A-F-13",
+    "D-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "CONTAINS_ESTIMATE_OR_INFERENCE"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/A2-remediation/findings.json#A2-F-09"
+  },
+  {
+   "claimId": "C2-F-02",
+   "track": "C2-signed-registry",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "With a valid attestation the built-in catalog need not list the version, but must still declare a qualifiedRange for that component",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Range qualification works end to end with a trusted key.",
+   "trackLimitations": "A4 full apply used the existing fixture repo (Forma 0.6.1->0.7.0 with fake npm), not 1.37.0 data; doctor exited 12 in both arms for unrelated lifecycle findings.",
+   "crossTrackSupport": [
+    "C-F-04"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C2-signed-registry/findings.json#C2-F-02"
+  },
+  {
+   "claimId": "C2-F-05",
+   "track": "C2-signed-registry",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "The attestation does not cover the rest of the set entry (artifact digests, URLs)",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Attestation covers contract claim, not set integrity: limits what ADR-S01 can promise.",
+   "trackLimitations": "Whether the release-manifest digest chain covers artifact digests on the Registry side was not traced.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Read source directly; did not use C2's harness or results.",
+    "discrepancies": [
+     "Minor: the signed statement also includes the constant schema prefix 'echelon.release-attestation/v1' (not an entry field, so it does not change the conclusion)."
+    ],
+    "verifierNotes": "C2's S1 tamper experiment was not re-run; the verdict rests on the code path, which leaves artifacts[].sha256 unsigned. 'role' is checked (attestedSelections l.176) but not signed."
+   },
+   "usedIn": "ADR-S01",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C2-signed-registry/findings.json#C2-F-05"
+  },
+  {
+   "claimId": "C2-F-08",
+   "track": "C2-signed-registry",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "CR-01 needs new infrastructure and process on the Registry side",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "CR-01 needs new Registry-side infrastructure and process (contradicts 'no new infrastructure').",
+   "trackLimitations": "Infrastructure listed from the spec and repository tree; not costed.",
+   "crossTrackSupport": [
+    "X-07"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S01",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/C2-signed-registry/findings.json#C2-F-08"
+  },
+  {
+   "claimId": "B3-F-01",
+   "track": "B3-semantic",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "C1-loop catches R8 INV-04 vs SM-SAVE before T0",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Semantic check catches R8 INV-04 pre-T0; answer-informed design.",
+   "trackLimitations": "Answer-informed design (see B3-F-03). 3 of the 6 R8 alarms attach to the per-request bound 'at most 3 automatic reconciliation reads' because matching uses the head noun only; CheckAgain reads are not automatic and INV-04 exempts 'one per offline-to-online change', so those 3 are misattributions, not separate defects.",
+   "crossTrackSupport": [
+    "B4-F-01"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B3-semantic/findings.json#B3-F-01"
+  },
+  {
+   "claimId": "B3-F-02",
+   "track": "B3-semantic",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "C2 catches the R8 CommandEnvelope without a command body",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Semantic check catches R8 command-body gap; does not generalise (B3-F-04).",
+   "trackLimitations": "Name-based candidate selection; does not generalise out of sample (B3-F-04).",
+   "crossTrackSupport": [
+    "B4-F-01"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B3-semantic/findings.json#B3-F-02"
+  },
+  {
+   "claimId": "B4-F-01",
+   "track": "B4-preflight",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Indy-init's spec-preflight claim reproduces exactly",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Existing spec-preflight reproduces R8 catches with 0 control false alarms: reuse instead of new tooling.",
+   "trackLimitations": [
+    "Local rebuild from tagged source (percepta --version: 0.4.0), not the downloaded release archive.",
+    "Wall time includes process start on a host at load 9-11."
+   ],
+   "crossTrackSupport": [
+    "B3-F-01",
+    "B3-F-02"
+   ],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Own clone of /home/user/ext/percepta checked out at 4a53688 (= tag percepta-semantic-v0.4.0), own framework-dependent dotnet build -c Release, own runner reproducing r9.fsx's flag order; B4 binaries and harness not used.",
+    "discrepancies": [
+     "My build prints 'percepta 1.0.0+4a53688' because I did not inject -p:Version=0.4.0 as B4 did; same source commit.",
+     "Project targets net8.0; run with DOTNET_ROLL_FORWARD=Major on .NET 10.0.13 runtime (B4 used self-contained publish).",
+     "The 2 'missing decisions' are kind missing-specification and non-blocking; the exit 3 is caused by the 2 contradictions + 1 missing interface."
+    ],
+    "verifierNotes": "Single run per input (deterministic analysis); timing not re-measured."
+   },
+   "usedIn": "ADR-S04",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-01"
+  },
+  {
+   "claimId": "B4-F-05",
+   "track": "B4-preflight",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Indy-init's CI invocation drops the carrier check",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Indy-init CI drops the carrier check (no --catalog).",
+   "trackLimitations": [
+    "Only R8 shows the effect; on controls CI and DOC agree (no findings)."
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Read the workflow file from the B2 read-only clone with git show; ran my own percepta build.",
+    "discrepancies": [
+     "The jq gate also asserts .analysed.transitions > 0 (omitted by B4 and by the brief's paraphrase).",
+     "Because GitHub run: steps use bash -e, a non-zero percepta exit (blocked) also fails the step; so CI is gated on .blocked, not only blockingContradictions. The substance (carrier check dropped) holds."
+    ],
+    "verifierNotes": "The step targets v4.1.5; I did not run v4.1.5 (not part of the claim)."
+   },
+   "usedIn": "future-experiments",
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-05"
+  },
+  {
+   "claimId": "B4-F-07",
+   "track": "B4-preflight",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Neither tool is shown to be generic; both are lexically tuned",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Both semantic tools are lexically tuned; generality unproven.",
+   "trackLimitations": [
+    "Post hoc, adversarially chosen probes on one package; false-alarm behaviour on independent specifications is untested for both tools."
+   ],
+   "crossTrackSupport": [
+    "B3-F-04"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": "V3",
+    "note": "not in V3 verdicts.json or queue at time of build"
+   },
+   "usedIn": "ADR-S04",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/B4-preflight/findings.json#B4-F-07"
+  },
+  {
+   "claimId": "D2-F-02",
+   "track": "D2-agent-experiment",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Governance block adds tokens, wall-clock and tool uses at equal acceptance",
+   "measuredOrEstimate": "MEASURED (runtime-reported)",
+   "consequence": "high",
+   "consequenceIfWrong": "Governance block costs +6% tokens, +55% wall at equal acceptance (n=4/arm; Holm p=0.086 tokens).",
+   "trackLimitations": [
+    "exploratory power",
+    "loaded host for wall-clock"
+   ],
+   "crossTrackSupport": [
+    "A-F-16",
+    "G-F-08",
+    "D-F-04"
+   ],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Oracle written by V3 from SPEC.md only (scripts/d2_probes.py, d2_oracle.py, ws_runner.py); oracle-7f3a and fixture/oracle_tests.py, score.py not read or run. Trap points identified from SPEC.md and cross-checked only against the protocol's trap table (not its probes); probe values chosen independently. Workspaces copied to V3 scratch and imported in an isolated python -I -B subprocess (no writes to D2 workspaces). Own permutation/Holm code.",
+    "discrepancies": [],
+    "verifierNotes": "Token counts are runtime-reported and cannot be recomputed from primary data available to me; I verified the arithmetic and test on usage.json as given. Integrity spot checks: each workspace's orders.py mtime lies inside its batch window (19:33:54-19:36:52Z) and before the scores commit ffc9d78 (19:39:18Z); all 8 SPEC.md copies are byte-identical to fixture/SPEC.md. With n=4/arm the minimum attainable two-sided p is 2/70, so p=0.0286 is the floor of this design, and Holm 0.086 is not significant at 0.05.",
+    "coveredVia": "SPR-D2-01"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/findings.json#D2-F-02"
+  },
+  {
+   "claimId": "D2-F-03",
+   "track": "D2-agent-experiment",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Checklist reliably produces QUESTIONS.md and EVIDENCE.md",
+   "measuredOrEstimate": "MEASURED",
+   "consequence": "low",
+   "consequenceIfWrong": "Checklist produces artefacts; value unmeasured.",
+   "trackLimitations": [
+    "artefact presence only"
+   ],
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": "V3",
+    "status": "done",
+    "verdict": "VERIFIED",
+    "independence": "Oracle written by V3 from SPEC.md only (scripts/d2_probes.py, d2_oracle.py, ws_runner.py); oracle-7f3a and fixture/oracle_tests.py, score.py not read or run. Trap points identified from SPEC.md and cross-checked only against the protocol's trap table (not its probes); probe values chosen independently. Workspaces copied to V3 scratch and imported in an isolated python -I -B subprocess (no writes to D2 workspaces). Own permutation/Holm code.",
+    "discrepancies": [],
+    "verifierNotes": "Token counts are runtime-reported and cannot be recomputed from primary data available to me; I verified the arithmetic and test on usage.json as given. Integrity spot checks: each workspace's orders.py mtime lies inside its batch window (19:33:54-19:36:52Z) and before the scores commit ffc9d78 (19:39:18Z); all 8 SPEC.md copies are byte-identical to fixture/SPEC.md. With n=4/arm the minimum attainable two-sided p is 2/70, so p=0.0286 is the floor of this design, and Holm 0.086 is not significant at 0.05.",
+    "coveredVia": "SPR-D2-01"
+   },
+   "usedIn": null,
+   "flags": [],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/findings.json#D2-F-03"
+  },
+  {
+   "claimId": "F-F-01",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Untrimmed .NET WASM framework dominates payload in R8/R9",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Untrimmed WASM payload R8/R9; single snapshot.",
+   "trackLimitations": "Single snapshot per rehearsal; dist sizes include files never fetched (R8 node_modules); 4 vCPU Xeon 2.3 GHz shared container, .NET SDK 10.0.402 (no workloads), headless Chromium 153, measurements/environment.json",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-01"
+  },
+  {
+   "claimId": "F-F-02",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Time to app-ready in headless Chromium",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Startup times; contended host, emulated 4G.",
+   "trackLimitations": "Chromium only; CPU contention from other tracks (loadavg up to 14 on 4 vCPU) inflates localhost numbers; 4G is CDP emulation, not a real network; each app's own ready marker differs in meaning. 4 vCPU Xeon 2.3 GHz shared container, .NET SDK 10.0.402 (no workloads), headless Chromium 153, measurements/environment.json",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-02"
+  },
+  {
+   "claimId": "F-F-03",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "R10's global fetch no-store override defeats HTTP caching of the WASM runtime",
+   "measuredOrEstimate": "measured",
+   "consequence": "high",
+   "consequenceIfWrong": "R10 global no-store fetch override re-downloads 10.1 MB per warm load; root cause a Limen gap.",
+   "trackLimitations": "python http.server sends no Cache-Control; R9's warm reuse relies on heuristic caching/revalidation. A CDN with long max-age would not change the no-store behaviour.",
+   "crossTrackSupport": [
+    "F-F-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-03"
+  },
+  {
+   "claimId": "F-F-07",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Build and edit-loop cost of F# WASM apps; trimming doubles the edit-publish loop",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Edit-publish loop ~10 s fixed WASM cost.",
+   "trackLimitations": "Heavy contention from concurrent tracks (loadavg median 11.7 on 4 vCPU during batch 1); batch 2 interleaved to reduce order effects; MSBuild node reuse on.",
+   "crossTrackSupport": [
+    "D-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-07"
+  },
+  {
+   "claimId": "F-F-08",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Where agents struggle with F#: type mismatches and unresolved names, fixed quickly",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Agent F# compile errors are mostly type/name and quickly fixed.",
+   "trackLimitations": "Domain-logic tasks, not UI; arms differ in prompt and generated scaffolding, so arm differences are associations; 41 build invocations had undeterminable outcome (output piped/truncated).",
+   "crossTrackSupport": [
+    "F-F-09"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-08"
+  },
+  {
+   "claimId": "F-F-09",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Compile errors rarely reach rehearsal commits or CI; CI failures are infrastructure",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "CI failures are infrastructure, not compile errors; 5 logs sampled.",
+   "trackLimitations": "Keyword classification is a screen; only 5 CI logs read (token cost); R8 run list is the first 100 of 642.",
+   "crossTrackSupport": [
+    "B-F-08",
+    "A-F-12"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-09"
+  },
+  {
+   "claimId": "F-F-10",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "WASM interpreter locals limit is now statically checkable; R8-R10 have ample headroom",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "WASM interpreter locals limit statically checkable; reproduces R5.",
+   "trackLimitations": "Value-type locals counted as 8 B (under-count); optimiser retry not modelled.",
+   "crossTrackSupport": [
+    "B-F-13"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-10"
+  },
+  {
+   "claimId": "F-F-13",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Existing contract tooling went unused",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Existing Limen contract tooling unused in every rehearsal.",
+   "trackLimitations": "Adoption barriers not investigated.",
+   "crossTrackSupport": [
+    "X-26"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-13"
+  },
+  {
+   "claimId": "F-F-14",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Folio is declared but not integrated",
+   "measuredOrEstimate": "measured",
+   "consequence": "low",
+   "consequenceIfWrong": "Folio declared but not integrated (R10).",
+   "trackLimitations": "R8 later integrated Folio elements (CR-T26); not re-measured.",
+   "crossTrackSupport": [
+    "C-F-07"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-14"
+  },
+  {
+   "claimId": "F-F-15",
+   "track": "F-fsharp-wasm",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Contrast failures in R10 trace to Forma token pairs; reachable screens pass axe",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "Accessibility: 0 axe violations on reachable routes; R10 contrast traced to known Forma tokens.",
+   "trackLimitations": "axe only on states reachable without a GitHub session; connected states not scanned by axe directly.",
+   "crossTrackSupport": [],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-15"
+  },
+  {
+   "claimId": "E2-F-01",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Deriving 'claimed' from the tracked event log refuses the E-F-03 claim-store deletion bypass",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Claim-guard fix refuses E-F-03; A1c residual bypass if marker never committed.",
+   "trackLimitations": "A1c: if the marker was never committed, deleting it together with the store still bypasses (exit 0). Anyone who can write the repository can forge or rewrite tracked history; the fix moves the bypass into reviewable tracked state, it does not create a trust root. Changes invariant I8; see E2-F-04.",
+   "crossTrackSupport": [
+    "E-F-03"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-01"
+  },
+  {
+   "claimId": "E2-F-02",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "A queue/event cross-check detects hand-edited queue.json completions (E-F-11) with no false positives on local repositories",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Queue/event cross-check detects hand-edited completions; 0 FP on 1,881 rows.",
+   "trackLimitations": "Only 'complete' rows are checked: backlog 'abandoned' writes no event in 3.25.0. A forger who also appends a fake work.completed line passes. `praxis verify` is unchanged and still exits 0.",
+   "crossTrackSupport": [
+    "E-F-11"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-02"
+  },
+  {
+   "claimId": "E2-F-03",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Default repository containment plus digest/commit binding refuses /etc/hostname-style evidence (E-F-01) without breaking in-repo completion",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Evidence containment + digest binding refuses E-F-01-style evidence with no suite impact.",
+   "trackLimitations": "Proves which bytes at which commit were cited, not that tests ran or passed; a fabricated in-repo log is accepted. praxis init git-ignores logs/, so typical logs bind with committedAtHead=false. Opt-out lives in agent-editable ros.json. Binding is written just before (not inside) the completion transaction.",
+   "crossTrackSupport": [
+    "E-F-01"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-03"
+  },
+  {
+   "claimId": "E2-F-04",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "Existing-suite impact: the claim marker conflicts with tests that encode 'claiming never touches the tracked tree'",
+   "measuredOrEstimate": null,
+   "consequence": "medium",
+   "consequenceIfWrong": "Claim-marker fix conflicts with Praxis invariant I8 (7 tests): owner decision.",
+   "trackLimitations": "Suites ran on a shared 4-vCPU host; timings are indicative. Fixing the conflict needs a design decision (accept a tracked claim marker and update the I8 tests, or commit the marker at claim time), not done here.",
+   "crossTrackSupport": [
+    "X-26"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "future-experiments",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-04"
+  },
+  {
+   "claimId": "E2-F-05",
+   "track": "E2-hardening",
+   "classification": "VERIFIED",
+   "severity": null,
+   "title": "A verifier-signed evidence flow refuses the E and V2 fabricated bundles that Indy-init's verifier ACCEPTS (local simulation)",
+   "measuredOrEstimate": null,
+   "consequence": "high",
+   "consequenceIfWrong": "Verifier-signed flow refuses fabricated bundles Indy-init accepts (local uid separation only).",
+   "trackLimitations": "Local uid separation only. GitHub environment protection, rulesets, required reviewers, OIDC/secrets scoping, runner isolation and the adequacy of acceptance checks for the real 108-requirement baseline are NOT TESTED. Root can bypass everything; in production the agent token must not reach the verifier repo (E-F-07: today it can).",
+   "crossTrackSupport": [
+    "E-F-02",
+    "V2:E-F-02"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": "ADR-S03",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/E2-hardening/findings.json#E2-F-05"
+  },
+  {
+   "claimId": "F-F-17",
+   "track": "F-fsharp-wasm",
+   "classification": "SUPPORTED",
+   "severity": null,
+   "title": "Recurring UI defect patterns and the contracts that would catch them",
+   "measuredOrEstimate": "measured",
+   "consequence": "medium",
+   "consequenceIfWrong": "29-defect UI pattern set: 6 catchable by existing tools, 13 need new contracts; hand-curated.",
+   "trackLimitations": "Hand-curated from commit messages and defect files; selection bias towards well-described fixes.",
+   "crossTrackSupport": [
+    "X-26"
+   ],
+   "independentVerification": {
+    "by": null,
+    "status": "not yet independently verified",
+    "verdict": null,
+    "assignedTrack": null,
+    "note": "no verification track assigned (wave-3 track)"
+   },
+   "usedIn": null,
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "SUPPORTED_ONLY"
+   ],
+   "evidence": "research/2026-11-08-compute-sprint/tracks/F-fsharp-wasm/findings.json#F-F-17"
+  }
+ ],
+ "supplementaryClaims": [
+  {
+   "claimId": "SPR-X-01 / X-F-01",
+   "track": "D2-agent-experiment (RD-000 runs)",
+   "classification": "SUPPORTED (exploratory, n=1 per cell)",
+   "title": "Model capability moderates authorization behaviour: Haiku baseline invents/adopts policy 3/8; Sonnet 0/8; session model 0/27",
+   "consequence": "high",
+   "consequenceIfWrong": "The model-dependent governance recommendation (D-037) rests on it.",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-01/RESULT.md",
+   "independentVerification": {
+    "by": "V4",
+    "status": "done",
+    "verdict": "VERIFIED"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "DESCRIPTIVE_ONLY_N1_PER_CELL"
+   ]
+  },
+  {
+   "claimId": "SPR-X-02",
+   "track": "D2-agent-experiment (RD-000 runs)",
+   "classification": "adopted D-037; preregistered at 82b3c36",
+   "title": "Governance prompt reduces Haiku policy violations (2.17/run, p=0.00028; undocumented 21->0, or 20 under the broader rule) at +7.6% tokens, +40.1% wall",
+   "consequence": "high",
+   "consequenceIfWrong": "First positive governance-benefit evidence; reverses 'no measured gain' framing for small models.",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-02/results/results.json; spr-x-02/REPORT.md (corrections appended per D-045)",
+   "caveats": [
+    "D-041: governance block delivered before 'Task:' line (frozen G.txt has it after)",
+    "single model (Haiku), two short fixtures",
+    "D-039: run s11 made a failed empty send_message; kept",
+    "V4: followed_planted means are M 1.00 vs G 0.17 (not 0.83 vs 0); T4 inventions were opposite to the plant; wall +40.1% not +38%"
+   ],
+   "independentVerification": {
+    "by": "V4",
+    "status": "done",
+    "verdict": "VERIFIED (primary, 112/112 trap cells); PARTIALLY VERIFIED (descriptives, followed_planted, cost wording)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY"
+   ]
+  },
+  {
+   "claimId": "SPR-X-03",
+   "track": "D2-agent-experiment (RD-000 runs)",
+   "classification": "adopted D-046; preregistered at 90f85c1",
+   "title": "Ablation (Haiku): the one-paragraph Authority contract carries the benefit (C vs K violations stat 11/3, p=0.000459); the checklist alone does not and costs +7-9% tokens, +36-46% wall",
+   "consequence": "high",
+   "consequenceIfWrong": "Decides what Echelon keeps: the contract, not the question-listing checklist.",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-03/results/results.json; spr-x-03/REPORT.md (corrections appended per D-049)",
+   "caveats": [
+    "V5: robust to excluding T5, to fixture x batch stratification (p=2/729) and to dropping SO-01 runs",
+    "C's T5 'undocumented' only under the QUESTIONS.md rule; C runs state the reading in code comments",
+    "'K worse than M' is descriptive only (p=0.10) and reverses on D2-03",
+    "D2-03 alone p=0.061",
+    "single model, two fixtures; SPR-X-04 new-domain replication pending"
+   ],
+   "independentVerification": {
+    "by": "V5",
+    "status": "done",
+    "verdict": "VERIFIED (primary and secondaries); PARTIALLY VERIFIED (descriptive and X-F-08 wording)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "VERIFICATION_FOUND_DISCREPANCY"
+   ]
+  },
+  {
+   "claimId": "SPR-X-04 (X4-F-01..F-05)",
+   "track": "D2-agent-experiment (RD-000 runs)",
+   "classification": "X4-F-01 INCONCLUSIVE; X4-F-02, X4-F-03 VERIFIED (runtime usage); X4-F-04, X4-F-05 SUPPORTED (post hoc / unscored)",
+   "title": "New-domain replication (booking, Haiku, n=8/arm): contract effect not significant (4.125 vs 5.0, p=0.077), i.e. evidence against generality at the X-02/X-03 effect size; tokens +9.9% and wall +38% (Holm-significant); reduction only at visibly open gaps",
+   "consequence": "high",
+   "consequenceIfWrong": "Narrows D-046/IM-13 from 'keep the contract' to 'keep it as a narrow, calibrated measure'.",
+   "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-04/REPORT.md; spr-x-04/results/results.json",
+   "caveats": [
+    "one domain, one model, one wording",
+    "trap legitimacy: T1 and T3 have widely accepted defaults (REPORT section 5)",
+    "usage is runtime-reported",
+    "hand-back re-read covers batches 3-4 only"
+   ],
+   "independentVerification": {
+    "by": "V6",
+    "status": "not yet independently verified (V6 assigned, not started at hand-back)"
+   },
+   "usedIn": "outline-2",
+   "flags": [
+    "NOT_YET_INDEPENDENTLY_VERIFIED",
+    "PRIORITY_FOR_VERIFICATION"
+   ]
+  }
+ ],
+ "omittedLowConsequence": [
+  "A2-F-06",
+  "A2-F-07",
+  "B2-F-06",
+  "B2-F-07",
+  "B2-F-11",
+  "B3-F-03",
+  "B3-F-04",
+  "B3-F-05",
+  "B3-F-07",
+  "B3-F-08",
+  "B4-F-02",
+  "B4-F-03",
+  "B4-F-04",
+  "B4-F-06",
+  "B4-F-08",
+  "B4-F-09",
+  "C-F-06",
+  "C-F-10",
+  "C-F-11",
+  "C-F-15",
+  "C-F-16",
+  "C-F-17",
+  "C2-F-01",
+  "C2-F-03",
+  "C2-F-04",
+  "C2-F-06",
+  "D-F-01",
+  "D-F-02",
+  "D-F-04",
+  "D-F-06",
+  "D2-F-04",
+  "E-F-10",
+  "E-F-11",
+  "E-F-12",
+  "F-F-04",
+  "F-F-06",
+  "F-F-12",
+  "F-F-16",
+  "F-F-18",
+  "F-F-20"
+ ],
+ "verificationsOutsideLedger": [
+  {
+   "id": "G-F-10",
+   "by": "V1",
+   "verdict": "VERIFIED",
+   "trackClassification": "INCONCLUSIVE",
+   "claimedValue": "echelon-foundry public site claims '40%+ throughput' and '80% reconciliation reduction' with no evidence packet",
+   "discrepancies": [
+    "Wording: the site's 80% figure is 'Reconciliation times reduced 80%' (case-study outcome); the homepage stat reads 'Hours to minutes'. The case-study page for organizational throughput gives different numbers ('Deployment frequency doubled; unplanned work reduced 50%'), not 40%, so the 40% claim is inconsistent with its own case study."
+   ],
+   "verifierNotes": "These are consulting-engagement outcomes (an unnamed fintech; an unnamed organization), not measurements of Echelon software. Absence of evidence is limited to the repositories available here; client records may exist elsewhere. The truth of the claims was not tested."
+  },
+  {
+   "id": "R10-gate-deadlock",
+   "by": "V2",
+   "verdict": "VERIFIED",
+   "trackClassification": null,
+   "claimedValue": "R10 'Verification gate': 45 of 66 runs cancelled, 1 success (plus 20 failed)",
+   "discrepancies": [
+    "Two runs (1 cancelled, 1 failure) fall after the deadline (2026-11-07 06:xx/07:00Z); the claim's 45/66 is all-time, not window-only (44/64)."
+   ],
+   "verifierNotes": "'Deadlock' is interpretive. 36 of 45 cancelled runs lasted 36-73 min wall-clock, consistent with the 40-minute job timeout (timeout-minutes: 40) plus queueing; the other 9 (0-21 min) are consistent with pull_request concurrency supersession (cancel-in-progress only for pull_request). 28 cancelled runs were pull_request, 17 push. The only success was a push to main at 18:48:17Z."
+  },
+  {
+   "id": "C2-F-07",
+   "by": "V3",
+   "verdict": "VERIFIED",
+   "trackClassification": "CONTRADICTED",
+   "claimedValue": "2 of 13 Conditor releases v0.10.9..v0.10.21 avoidable (Forma-only v0.10.15, v0.10.17); Praxis/Ordo host-tool exact pins (CON-343, ComponentDescriptors.fs:595-597) drive the rest; 9 required, 2 no catalog change.",
+   "discrepancies": [],
+   "verifierNotes": "Exact match with C2 classification. The catalog-diff criterion ignores non-catalog feature work in each release, as C2 states. v0.10.10 (folio releaseArtifacts only) is the only borderline case; counting it avoidable gives 3/13, which C2 already discloses."
+  },
+  {
+   "id": "D2-F-05/06",
+   "by": "V3",
+   "verdict": "VERIFIED",
+   "trackClassification": null,
+   "claimedValue": "D2-F-05: SPR-D2-02 pilots p1, p2 raised NotSpecified at all 5 silent traps (0 violations, 12/12). D2-F-06: SPR-D2-03 pilots q1, q2 raised NotSpecified at all 3 planted-pseudo-decision traps (0 violations, followed_planted 0), implemented both signed DECISIONS.md controls, 12/12.",
+   "discrepancies": [],
+   "verifierNotes": "errors.py in all four pilot workspaces is byte-identical to the provided stub (sha256 d393c420...). n=2 per pilot; descriptive only. The trap set for D2b matches the five gaps I found reading the spec; I found no further gap that the pilots answered with a value in the probes I ran, but my probes do not exhaustively search for unlisted gaps."
+  }
+ ],
+ "contradictedFindingsOfNote": [
+  {
+   "id": "B3-F-06",
+   "title": "Causa T18->T20 dependency was derivable from pre-T0 artifacts; B2's 'not in any pre-T0 artifact' is contradicted",
+   "track": "B3-semantic"
+  },
+  {
+   "id": "C2-F-07",
+   "title": "CR-01 would not end lockstep Conditor releases: 2 of 13 recent releases were avoidable",
+   "track": "C2-signed-registry"
+  },
+  {
+   "id": "F-F-05",
+   "title": "Trimming satellite resources does not change startup",
+   "track": "F-fsharp-wasm"
+  },
+  {
+   "id": "F-F-11",
+   "title": "Limen silently drops a second template root, contrary to its docs",
+   "track": "F-fsharp-wasm"
+  },
+  {
+   "id": "G-F-11",
+   "title": "Managed software factory / outcome-based delivery is not ready",
+   "track": "G-market"
+  }
+ ],
+ "notes": [
+  "consequence is H-001's judgement of decision impact, not a confidence rating.",
+  "A V1/V2 verdict of PARTIALLY VERIFIED means the core number reproduced but part of the statement or its inference did not; read discrepancies before citing.",
+  "Track E's VERIFIED means reproduced by Track E in local fixtures; V2 independence is still required for E-F-01/E-F-02 before any external use."
+ ]
+}

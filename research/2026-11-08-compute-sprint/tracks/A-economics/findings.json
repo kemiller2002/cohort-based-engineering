@@ -1,0 +1,222 @@
+[
+ {
+  "id": "A-F-01",
+  "title": "Rehearsal 8 token total reproduces exactly from raw execution records",
+  "classification": "VERIFIED",
+  "statement": "Summing the four token buckets over R8's 56 Praxis execution records gives 533,823,102 tokens, equal to FINAL-REPORT.md; request-ledger sums match execution metrics for 49/49 executions. Same pricing method reproduces R3's own $36.01.",
+  "measuredOrEstimate": "MEASURED (tokens); list-price cost $193.74 is ESTIMATE",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/executions.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/requests.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json",
+   "indy-init-rehearsal-008/evidence/FINAL-REPORT.md:159-193",
+   "indy-init-rehearsal-003/docs/REHEARSAL-003-REPORT.md:153"
+  ],
+  "limitations": "8 R8 executions (coordinator-run CRs, infra) have no transcript; coordinator turns after 23:50:44Z missing. No provider bill exists."
+ },
+ {
+  "id": "A-F-02",
+  "title": "Cost per verified requirement rose from R3 to R8; units differ",
+  "classification": "INCONCLUSIVE",
+  "statement": "Timed-window list-price cost per verified unit: R3 $0.71 per passing criterion (51/56), R7 $1.02 per VERIFIED P0 requirement (73/161), R8 $3.80 per fully verified P0 requirement (51/161) or $0.73 per verified obligation (266/613). Tokens per verified unit 2.29M / 3.57M / 10.47M.",
+  "measuredOrEstimate": "tokens MEASURED; cost ESTIMATE (list price; R3/R7 cache writes priced at 5m rate)",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/rehearsal-tokens.csv"
+  ],
+  "limitations": "Scope, plan, verification units and agent topology all differ; R7 traceability not re-assessed after fixes; R8 ledger INVALID. Not a controlled comparison. R1, R2, R4-R6, R9, R10 have no token telemetry."
+ },
+ {
+  "id": "A-F-03",
+  "title": "Coordinator is 44% of R8 tokens and 32% of cost, driven by context size",
+  "classification": "VERIFIED",
+  "statement": "WI-R8-COORD consumed 236.2M tokens (44.2%) and ~$61.09 list price (31.5%) over 566 requests. Its mean context per request was 416,786 tokens vs 116,721 for task agents (3.6x), peaking at 897,198 with 2 compactions; cost per request $0.108 vs $0.052.",
+  "measuredOrEstimate": "MEASURED (tokens, requests, context); cost ESTIMATE",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json#coordinator",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/requests.csv"
+  ],
+  "limitations": "Single rehearsal; coordinator session began 10 min before T0."
+ },
+ {
+  "id": "A-F-04",
+  "title": "Cache reads are 98% of tokens but 54% of cost; output is 22% of cost",
+  "classification": "VERIFIED",
+  "statement": "R8: cache_read 97.99% of tokens; list-price cost split cache read 54.0%, cache write 23.7% (5m 19.3%, 1h 4.4%), output 22.2%, input ~0%. Output per request 694 tokens, so R8 telemetry records final output (earlier REL-001 data had only streaming-start lower bounds, 1-2% of cost).",
+  "measuredOrEstimate": "MEASURED buckets; cost shares ESTIMATE",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json#totals",
+   "cohort-based-engineering/research/token-efficiency/OVERHEAD-ANALYSIS.md:63-71"
+  ],
+  "limitations": "List prices, not billed rates."
+ },
+ {
+  "id": "A-F-05",
+  "title": "Fixed startup prefix ~48.7k tokens is ~30-42% of all context processed",
+  "classification": "SUPPORTED",
+  "statement": "Median first-request context across R8 executions is 48,681 tokens (system prompt, tools, startup documents, brief). Assuming it is carried by every later request, it accounts for 30.4% of all context tokens (41.8% for task agents). Controlled CONSTRUCT-008 independently measured a 46.5-47.1k fixed base, ~60% of final context.",
+  "measuredOrEstimate": "ESTIMATE (carry model) from MEASURED per-request context",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json#fixedPrefix",
+   "research-documents@b372a7f research/construction-by-design/CONSTRUCT-008/token-attribution.md \u00a72"
+  ],
+  "limitations": "Carry model assumes the first request's content is never evicted; first request includes the task brief, so it is not purely governance overhead."
+ },
+ {
+  "id": "A-F-06",
+  "title": "Defect rework is 10% of R8 task-agent tokens; corrective work 26%",
+  "classification": "SUPPORTED",
+  "statement": "Work items whose purpose was fixing defects found by CI/review/acceptance (9 items) used 30.2M tokens = 10.1% of task-agent tokens (5.7% of all), $13.73 list price. Adding cross-lane change requests and test back-fill gives 26.4% of task-agent tokens. Reviews used 4.6% of all tokens; feature work 28.5%.",
+  "measuredOrEstimate": "tokens MEASURED; category assignment is judgement; cost ESTIMATE",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/r8-by-category.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/r8-workitem-categories.csv"
+  ],
+  "limitations": "Rework inside feature executions (e.g. T15 included T35 fixes) is not separable; 3 CR executions without transcripts are counted at zero tokens."
+ },
+ {
+  "id": "A-F-07",
+  "title": "All 26 R8 merge conflicts were in Praxis state files only",
+  "classification": "VERIFIED",
+  "statement": "26 of 49 R8 merges (53%) conflicted, every one only in .ros/ state (.ros/context/current.json, .ros/events/events.jsonl), resolved by `praxis work history merge --apply`; conflicted merges took 1,537 s of 2,791 s total merge handling.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "indy-init-rehearsal-008/evidence/telemetry/merges.jsonl",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json#merges"
+  ],
+  "limitations": "Resolution seconds are as logged by the coordinator; no application-code conflicts occurred in this rehearsal."
+ },
+ {
+  "id": "A-F-08",
+  "title": "R8 used on average 2.15 of 6 lanes",
+  "classification": "VERIFIED",
+  "statement": "From task-agent transcript spans, T0 to merge freeze (350 one-minute samples): peak 5 concurrent task agents, mean 2.15, 34 minutes with none active; lane-slot utilisation 35.9% of 6. Total task agent time 756.8 min over 379 min elapsed.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json#concurrency",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/executions.csv (agentStartedAt, agentEndedAt)"
+  ],
+  "limitations": "Spans include agent idle waiting (e.g. on CI) inside a session; coordinator excluded."
+ },
+ {
+  "id": "A-F-09",
+  "title": "Rereads: 20% of file reads repeat a file already read in the same session",
+  "classification": "VERIFIED",
+  "statement": "R8: 262 of 1,286 file reads (20.4%) were repeats within a session; 46/47 task executions reread at least one file. Hot files are reread across sessions: Session.fs read 48 times across 12 executions. Governance documents were reread rarely (23 governance reads total; AGENTS.md was the only repeated governance path).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/rereads.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json#rereads"
+  ],
+  "limitations": "Token cost of rereads is not attributable from summaries (read sizes absent)."
+ },
+ {
+  "id": "A-F-10",
+  "title": "ROS execution wall time is not a reliable duration measure",
+  "classification": "VERIFIED",
+  "statement": "In R8, 13 of 47 task executions have time.wall_ms below half of the agent transcript span (work started late); summed 563.6 vs 756.8 min. Elsewhere unclosed executions inflate it (praxis 1,944 h across 342 records, 7 still active; R10 22/22 records never finalized). time.blocked_ms is 0 in every rehearsal record.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/executions.csv"
+  ],
+  "limitations": "blocked_ms = 0 is a recorded zero that reflects agents never marking blocks, not evidence of no waiting."
+ },
+ {
+  "id": "A-F-11",
+  "title": "Runner queueing is negligible except in R6",
+  "classification": "VERIFIED",
+  "statement": "Job-level queue (started_at - created_at) median 3 s in every rehearsal R2-R10; p90 <= 4 s except R6 (p90 912 s, 7,612 queued job-minutes over 2,002 jobs) and R10 (p90 31 s). Run-level created_at = run_started_at for ~all runs, so run-level queue is uninformative.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/ci-jobs.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/ci-overhead.json"
+  ],
+  "limitations": "Windows are T0+420 min; runs after a rehearsal stopped inside the window are included."
+ },
+ {
+  "id": "A-F-12",
+  "title": "Two-thirds of rehearsal CI minutes were in red or cancelled runs",
+  "classification": "VERIFIED",
+  "statement": "Across R2-R10 timed windows, 10,458 of 15,568 ceil-minute job-minutes (67%) belonged to runs concluding failure/cancelled/timed_out. Range: R3 17%, R2 22%, R8 25%, R9 28%, R5 45%, R4 48%, R7 59%, R6 85%, R10 88% (R10 build-and-test cancelled by its 20-minute limit on every PR). Excluding R6 and R10: 38%.",
+  "measuredOrEstimate": "MEASURED durations; 'billable minutes' is the GitHub rounding rule used as a compute proxy (public repos are not billed)",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/ci-overhead.json",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/ci-jobs.csv",
+   "indy-init-rehearsal-010/evidence/FINAL-REPORT.md:137"
+  ],
+  "limitations": "Counts successful jobs inside failed runs; cancelled includes superseded runs whose work was redundant, not necessarily defects."
+ },
+ {
+  "id": "A-F-13",
+  "title": "Browser suites dominate CI step time; the pinned Praxis verifier is rebuilt every run",
+  "classification": "VERIFIED",
+  "statement": "Browser test steps are 28-51% of step time in R2-R8 and R10. 'Build pinned Praxis verifier' (governance tool compiled from source per run) took 688 min across R2-R10 (8.4% of all step time; 10-15% in R2-R6, R8). Toolchain/dependency/browser installs, checkout and runner setup took 1,433 min (17.5%).",
+  "measuredOrEstimate": "MEASURED step durations; categories by name regex (heuristic)",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/ci-step-categories.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/ci-steps.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/scripts/econ.py STEP_CATEGORIES"
+  ],
+  "limitations": "Regex classification; steps run in parallel jobs, so step minutes are compute, not wall time."
+ },
+ {
+  "id": "A-F-14",
+  "title": "Time waiting for CI per commit: median 3-8 min, R10 41 min",
+  "classification": "VERIFIED",
+  "statement": "Per head SHA, first run created to last run settled: median R8 173 s, R4 218 s, R3 239 s, R2 325 s, R5 404 s, R6 476 s, R7 520 s, R9 867 s, R10 2,470 s. A red run took median 224 s (R8) to 1,017 s (R7, R9) to be followed by a green run of the same workflow/branch; 0 of 65 red->green events were same-SHA re-runs (all needed a new commit).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/ci-commit-latency.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/ci-red-then-green.csv"
+  ],
+  "limitations": "Settled != agent waited: agents may work while CI runs. Agent-side wait time is not recorded anywhere."
+ },
+ {
+  "id": "A-F-15",
+  "title": "Verification effort does not scale with change size in R8 feature tasks",
+  "classification": "INCONCLUSIVE",
+  "statement": "Across 21 R8 feature executions, agent test executions vs lines added: Spearman 0.08; tokens vs lines added 0.63; build executions vs agent wall 0.53. 208 agent test runs and 190 builds across task agents.",
+  "measuredOrEstimate": "MEASURED counts; correlation computed",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/analysis/r8-economics.json#verificationVsSize"
+  ],
+  "limitations": "n=21, observational, lines added is a weak complexity proxy."
+ },
+ {
+  "id": "A-F-16",
+  "title": "Process instructions can cost more tokens than they save; effect is task-dependent",
+  "classification": "SUPPORTED",
+  "statement": "Controlled pilots (n=3/arm): CONSTRUCT-008 mechanical-first arm C used median 730k cumulative tokens vs 834k (A, plain) and 1,225k (B, construction protocol) with equal 3/3 acceptance; on the larger time-entry-expanded-01 task C used 3.79M vs A 2.86M and B 5.52M, all reaching 96/96 after errata. The protocol arm B cost +47% (pilot) and +93% (expanded) vs plain. Prior CBE evidence: optimized Echelon +35.5% vs bare (REL-001), four-tier guidance reduced violations 29/68->0/71 and cost per accepted requirement $0.556->$0.437 (ARCH-002).",
+  "measuredOrEstimate": "MEASURED tokens (output lower bound); list-price costs in controlled-usage.csv are LOWERBOUND/ESTIMATE",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/controlled-usage.csv",
+   "research-documents@b372a7f research/construction-by-design/CONSTRUCT-008/results.md",
+   "research-documents@b372a7f research/construction-by-design/time-entry-expanded-01/results.md:76-80",
+   "cohort-based-engineering/research/consolidation/2026-10-24/engineering-findings.md:175-187"
+  ],
+  "limitations": "n=3 pilots; not statistical; repair rounds differ between arms in the expanded task."
+ },
+ {
+  "id": "A-F-17",
+  "title": "Tokens per agent run vs agent count cannot be separated from scope",
+  "classification": "NOT TESTED",
+  "statement": "No dataset varies agent count with fixed scope. R3 (lead + subagents, 12% subagent tokens), R7 (1 main + 3 reviewers) and R8 (coordinator + 47 lane executions) differ in scope and plan. Prior A021 (grouped vs independent: $9.48 vs $21.51) is the only controlled datum on work partitioning.",
+  "measuredOrEstimate": "n/a",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/rehearsal-tokens.csv",
+   "cohort-based-engineering/research/consolidation/2026-10-24/engineering-findings.md:114"
+  ],
+  "limitations": "Needs a controlled experiment."
+ },
+ {
+  "id": "A-F-18",
+  "title": "Time waiting for approvals is unmeasurable from existing telemetry",
+  "classification": "NOT TESTED",
+  "statement": "No rehearsal record carries approval wait: time.blocked_ms is 0 everywhere, agent.approvals_requested appears once (praxis). R8's coordinator asked the owner once (AskUserQuestion = 1).",
+  "measuredOrEstimate": "MEASURED absence",
+  "evidence": [
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/executions.csv",
+   "research/2026-11-08-compute-sprint/tracks/A-economics/data/tool-calls.csv"
+  ],
+  "limitations": "Owner chat directions are recorded as prose in DEVIATIONS.md, without timestamps of request vs answer."
+ }
+]

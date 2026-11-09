@@ -1,0 +1,55 @@
+PASS  M.txt sha256 equals frozen SPR-D2-01 hash
+PASS  M.txt byte-identical to ../arm-prompts/M.txt (SPR-D2-01)
+PASS  G.txt sha256 equals frozen SPR-D2-01 hash
+PASS  G.txt byte-identical to ../arm-prompts/G.txt (SPR-D2-01)
+PASS  exactly one change
+PASS  change is a pure insertion
+PASS  block contains contract verbatim
+PASS  contract sha256 matches frozen VAC-002 P3 text
+PASS  removing block from G yields M byte for byte
+PASS  both name {WS} placeholder and SPEC.md
+PASS  M has no governance words
+PASS  step messages present for steps 2..6 and no others
+PASS  step-2.txt equals the frozen template
+PASS  step-2.txt names only STEP-2.md
+PASS  step-2.txt keeps {WS} placeholder
+PASS  step-2.txt has no governance language
+PASS  step-3.txt equals the frozen template
+PASS  step-3.txt names only STEP-3.md
+PASS  step-3.txt keeps {WS} placeholder
+PASS  step-3.txt has no governance language
+PASS  step-4.txt equals the frozen template
+PASS  step-4.txt names only STEP-4.md
+PASS  step-4.txt keeps {WS} placeholder
+PASS  step-4.txt has no governance language
+PASS  step-5.txt equals the frozen template
+PASS  step-5.txt names only STEP-5.md
+PASS  step-5.txt keeps {WS} placeholder
+PASS  step-5.txt has no governance language
+PASS  step-6.txt equals the frozen template
+PASS  step-6.txt names only STEP-6.md
+PASS  step-6.txt keeps {WS} placeholder
+PASS  step-6.txt has no governance language
+sha256 M.txt 525d50e1e7c796fe87d4aa095d1f78c77d922cefa1297df7505628ff464b2efd
+sha256 G.txt 9e6b22568c8045f6695b54ce32d69379988ac9825dc192f02fff1fd2b79ce309
+sha256 step-2.txt 4564e2ea38e9fadff6d0ba93de9a7f5b62a130aa535412ba91bfda14be189d4e
+sha256 step-3.txt 523c1f5251661bc5e180ae4f8ce760edaa1facbdf3464f03a96df6df9c174d01
+sha256 step-4.txt 94d9eaf30336d92d9876ee3e5f269a5ffef4fdc6efbe63085977c3bee8102a00
+sha256 step-5.txt 5518ab693356269bc7db2ec11ee71a14ffb3b1781a4587c4b3b820714a93266d
+sha256 step-6.txt a9daa117e1da5b8ad44668e77edbfecc29cda0f543ce07d493031ffa452d6a3c
+unified diff M -> G:
+--- M.txt
++++ G.txt
+@@ -8,4 +8,12 @@
+ 
+ Task: implement the specification in {WS}/SPEC.md. Implement it; tests are your responsibility.
+ 
++## Authority
++Implement only behavior supported by requirements or accepted decisions. Do not invent exceptions, precedence rules, or business policies. Record unsupported interpretations as unresolved questions. Do not treat your own proposed decisions as authorized.
++
++## Checklist
++- Map each requirement ID in SPEC.md to the code that implements it and the test that checks it.
++- Write {WS}/QUESTIONS.md listing anything the specification leaves unspecified.
++- Write {WS}/EVIDENCE.md listing the test command you ran and its result.
++
+ When you are done, finish with a short summary of what you did.

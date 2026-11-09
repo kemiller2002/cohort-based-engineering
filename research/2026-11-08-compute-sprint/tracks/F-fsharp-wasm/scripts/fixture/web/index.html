@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Fixture</title></head>
+<body><main><h1>Fixture counter</h1><p id="out" role="status">Loading…</p><button type="button" id="inc" disabled>Increment</button></main>
+<script type="module">
+  import { dotnet } from "./_framework/dotnet.js";
+  const runtime = await dotnet.create();
+  const exports = await runtime.getAssemblyExports(runtime.getConfig().mainAssemblyName);
+  const render = (json) => { document.getElementById("out").textContent = JSON.parse(json).label; };
+  render(exports.Fixture.Host.Host.Dispatch("init"));
+  const b = document.getElementById("inc"); b.disabled = false; b.onclick = () => render(exports.Fixture.Host.Host.Dispatch("increment"));
+  document.documentElement.dataset.fixtureReady = "1";
+</script></body></html>

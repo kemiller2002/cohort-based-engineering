@@ -1,0 +1,169 @@
+[
+ {
+  "claimId": "A-F-01",
+  "verdict": "VERIFIED",
+  "claimedValue": "R8 tokens 533,823,102 from 56 records; list-price $193.74; method reproduces R3 $36.01",
+  "recomputedValue": "533,823,102 tokens (input 6,445; output 2,151,093; cache read 523,097,086; cache write 8,568,478) from 48 of 56 records with token metrics (8 have none); $193.7366 with 5m/1h cache-write split ($190.51 if all cache writes at 5m); per-request ledger pricing gives the identical $193.7366; R3 timed phase $36.0064 -> $36.01",
+  "independence": "fully independent recomputation",
+  "method": "Own parser over .ros/telemetry/executions/*.json metrics tokens.*; cross-check by summing every requestLedger row (3,100 requests, 48 ledgers, 0 bucket mismatches vs metrics); priced with price table entry claude-opus-5-5 (4/20/0.2/5/8 USD per MTok). R3 priced from its own evidence/telemetry/tokens-final.json timed.all with all cache writes at 5m.",
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions (56 files)",
+   "indy-init-rehearsal-003@59cf4d2 evidence/telemetry/tokens-final.json",
+   "cohort-based-engineering@adcc914 research/pricing/anthropic.price-table.json tableVersion 2026-10-20.1 (last changed eddbfb8)"
+  ],
+  "discrepancies": [
+   "Track A data README says R8 requestLedger covers 49 executions; I find 48 ledgers (48 records with token data) and 3,100 requests. Totals unaffected.",
+   "$193.74 depends on pricing cache writes by their 5m/1h split (almost all R8 cache writes are 1h); a 5m-only basis gives $190.51. R3 had no split, so the 'same method' reproduces R3 only under the 5m fallback, which is what Track A states."
+  ],
+  "notes": "The total is a lower bound for R8: coordinator turns after its 23:50:44Z ingest and 8 transcript-less executions are absent (stated in R8 FINAL-REPORT). Cost is a list-price ESTIMATE; no provider bill exists."
+ },
+ {
+  "claimId": "A-F-03",
+  "verdict": "VERIFIED",
+  "claimedValue": "Coordinator 44% tokens, 32% cost; mean context 416,786 vs 116,721",
+  "recomputedValue": "Coordinator 236,176,431 tokens = 44.24%; $61.0858 of $193.7366 = 31.53%; 566 vs 2,534 requests; mean context/request 416,786.09 vs 116,721.03; peak 897,198; cost/request $0.1079 vs $0.0523",
+  "independence": "fully independent recomputation",
+  "method": "Coordinator = WI-R8-COORD record; task agents = all other records with a ledger. Context per request = input + cacheRead + cacheWrite from each ledger row; mean over requests.",
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions",
+   "price table as A-F-01"
+  ],
+  "discrepancies": [],
+  "notes": "Context definition (input+cache read+cache write) is the natural one and reproduces exactly; excluding cache write would change the means. Coordinator share is understated because its post-ingest turns are missing."
+ },
+ {
+  "claimId": "A-F-07",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "All 26 R8 merge conflicts touched only Praxis .ros/ state files; no application-code conflicts occurred in this rehearsal",
+  "recomputedValue": "PR-merge level: exactly 26 of 49 PR merge commits conflict on replay, the same 26 PRs the coordinator logged, every one only in .ros/context/current.json and/or .ros/events/events.jsonl (reproduced). Rehearsal level: 60 of 86 merge commits conflict on replay; 4 'merge origin/main into r8/<branch>' commits (branches of PRs #10, #12, #19, #36) conflicted in 6 non-state files: src/Causa.App/Program.fs, src/Causa.Persistence/Classify.fs, src/Causa.Persistence/GitHubRequests.fs, tests/Causa.TestSupport/StatefulFake.fs, tests/Causa.Invariants/Negative/INV22.fs, .github/workflows/live.yml. Git's own '# Conflicts:' trailers in those merge commit messages list the same 6 paths (51 merge commits carry such trailers).",
+  "independence": "fully independent recomputation",
+  "method": "Fresh scratch clone /home/user/sprint-scratch/V1/r8 of indy-init-rehearsal-008@fd8fba9; for every 2-parent merge commit `git merge-tree --write-tree --name-only --no-messages P1 P2`, conflicted paths parsed; branch-side merges of a PR found as merge commits in P1..P2 of its PR merge commit; cross-checked with the '# Conflicts:' block git writes into merge messages and with `git show --cc` (non-empty combined diffs for Program.fs, INV22.fs, live.yml).",
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 git history (86 merge commits)",
+   "evidence/telemetry/merges.jsonl (49 rows)"
+  ],
+  "discrepancies": [
+   "merges.jsonl records conflicts only at the PR-merge step. Application-code conflicts were resolved by the task agents when they merged main into their branches and never reached the log; PRs #12, #19 and #36 are logged as conflict:false although their branches had application/CI conflicts, and #10 is logged with only .ros/context/current.json.",
+   "11 PRs logged conflict:false had branch-side conflicts (mostly .ros)."
+  ],
+  "notes": "The statement '26 conflicts, all .ros' is true of the coordinator's PR merges only. The rehearsal-level inference ('no application-code conflicts occurred') is contradicted: at least 4 merges conflicted in application, test or CI code. The conflict rate depends on what counts as a merge: 26/49 PR merges (53%) vs 60/86 merge commits (70%). Resolution seconds were not re-verified (coordinator-logged)."
+ },
+ {
+  "claimId": "A-F-08",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "R8 lane utilisation mean 2.15 of 6 (36%), peak 5; 350 one-minute samples 'T0 to merge freeze'; 34 minutes with none active",
+  "recomputedValue": "Task-agent transcript spans, 350 samples from T0: mean 2.151, peak 5 concurrent agents, 35.9%, 41 zero minutes, 756.75 agent-minutes. But merge freeze is T+379 (23:50:28Z): over 379 samples mean 2.01 (33.6%), 63 zero minutes. Counting distinct lanes (roles) rather than agents: mean 2.11 (350) / 1.97 (379), peak 4. Using Praxis work start->finalize spans instead of transcript spans: mean 1.57 (26%), peak 4.",
+  "independence": "fully independent recomputation",
+  "method": "Spans = rawTelemetry summary startedAt/endedAt of the 47 task-agent sessions (coordinator excluded); samples at T0 + i minutes; counts of spans covering each sample; also exact time-averaged concurrency and distinct-role counts.",
+  "inputs": [
+   "indy-init-rehearsal-008@fd8fba9 .ros/telemetry/executions",
+   "evidence/SCHEDULE-ACTUALS.md:1,54 (T0 17:31:24Z; merge freeze 23:50:28Z)"
+  ],
+  "discrepancies": [
+   "350 samples end at 23:21:24Z, not at merge freeze (23:50:28Z, T+379); the label is wrong and the full window gives 2.01 / 33.6%.",
+   "Peak 5 is concurrent agents; two agents shared a lane at the peak (peak distinct lanes = 4). 'Lane utilisation' of 6 lanes is therefore at most 4 at peak.",
+   "Zero-active minutes: 41 (350 samples), not 34.",
+   "Transcript spans include pre-'work start' time (e.g. T18 agent span begins 10 min before its Praxis work start); Praxis spans give 1.57."
+  ],
+  "notes": "Headline 2.15 / peak 5 reproduces under Track A's exact window and unit (agents). The metric is sensitive to window end, span source and agent-vs-lane counting; range 1.57-2.15 mean, 26-36%."
+ },
+ {
+  "claimId": "A-F-12",
+  "verdict": "VERIFIED",
+  "claimedValue": "67% of CI job-minutes in R2-R10 timed windows were in failed/cancelled/timed_out runs (10,458 of 15,568 ceil-minutes)",
+  "recomputedValue": "Primary sample (100 runs per repo; census for R7, R9): 65.6% (bootstrap 95% CI 56.5%-71.9%); estimated 13,722 job-minutes (CI 11,225-16,401), 9,000 red (CI 6,409-11,661). Per repo: R2 22.0%, R3 19.4%, R4 46.5%, R5 39.8%, R6 81.2%, R7 58.7% (census), R8 30.0%, R9 28.0% (census), R10 89.2%; excluding R6 and R10 36.8%. Replicate sample (40 per repo, independent draw): 58.2% (CI 42.3%-70.1%).",
+  "independence": "sample",
+  "method": "Own read-only fetch of the Actions API (curl GET via session proxy): every run created in [T0, T0+420 min) listed with the server-side created filter; stratified simple random sample per repository (seed 20261108, conclusion != skipped); jobs fetched with filter=all (all attempts). Job-minutes = per-job ceil(minutes); a run is red if its conclusion is failure/cancelled/timed_out/startup_failure/action_required; expansion estimator per stratum, summed; 2,000-rep stratified bootstrap.",
+  "inputs": [
+   "GitHub Actions API, fetched 2026-11-08 19:01-19:15Z (data/ci-sample-100/manifest.json, data/ci-sample/manifest.json, sampled run ids listed)",
+   "T0 per rehearsal read from each repo's own evidence (scripts/fetch_ci_sample.py WINDOWS)"
+  ],
+  "discrepancies": [
+   "Window: every T0 matches the rehearsal's documented start and the in-window run populations equal Track A's exactly (128/114/135/436/427/54/566/50/281 non-skipped). But the fixed T0+420 window does not match activity: R2 ran to its accepted release at T+721 min (87 runs in the 17 h after the window), R3's timed phase ended at T+127 (09:39Z) yet the window runs to T+420, R4 has 249 runs in the 17 h after the window, R3 had 35 preflight runs in the 2 h before T0, and R5's T0 is defined post hoc as its first green check.",
+   "Definition sensitivity (primary sample): 65.6% with ceil-minutes attributed by run conclusion; 76.4% with unrounded job seconds; 54.3% if only jobs that themselves failed/cancelled count."
+  ],
+  "notes": "Claim reproduced within sampling error: 67% lies inside the CI and the census strata (R7 59%, R9 28%) match Track A's figures exactly. 'Red' includes cancellations of superseded runs (largely R6, R10) and successful jobs inside failed runs, so it is not a waste or defect measure on its own."
+ },
+ {
+  "claimId": "A-F-13",
+  "verdict": "PARTIALLY VERIFIED",
+  "claimedValue": "CI rebuilds the pinned Praxis verifier from source on every run: 688 job-minutes (8.4% of step time) across R2-R10",
+  "recomputedValue": "Rebuild-from-source is confirmed: echelon-foundations.yml in R2-R6 and R8-R10 calls kemiller2002/praxis foundations-verify.yml (@aa7c7ca, R6 @398af6d), which checks out praxis at the pinned commit and runs `dotnet build` with no build cache; the step ran in 197/197 sampled foundations runs. Minutes are lower: post-stratified estimate 607 min (95% CI 580-632; replicate sample 618, CI 591-645), about 1 min per foundations run x 594 foundations runs, roughly 7.4-8.0% of step time (unstratified sample share 7.2%, CI 5.6%-9.2%).",
+  "independence": "sample",
+  "method": "Workflow YAML read in every rehearsal repo and in the pinned Praxis reusable workflow (read from a scratch clone); step durations of the step named 'Build pinned Praxis verifier' from V1's sample; post-stratified by workflow: population count of Echelon foundations runs per repo x mean verifier minutes per sampled foundations run; bootstrap CI.",
+  "inputs": [
+   "indy-init-rehearsal-002..010 .github/workflows/*.yml at the revisions checked out",
+   "praxis commits aa7c7ca6a6e2 and 398af6dd1509 .github/workflows/foundations-verify.yml",
+   "V1 Actions samples (as A-F-12)"
+  ],
+  "discrepancies": [
+   "688 is wrong for the verifier. Track A's own step data puts 604.0 min on 'Build pinned Praxis verifier'; the other 84.5 min is R5's 'Build the candidate and the plan verifier', which builds the application (App.slnx) and Indy-init's requirements compiler, not Praxis. The corrected figure is about 604-607 min, about 7.4% of step time.",
+   "'Every run' means every run of the Echelon foundations workflow (about 27% of in-window runs), not every CI run.",
+   "R6's workflow has a fingerprint cache gate that could skip the build, but the build was never skipped in the sample (inputs changed on every commit).",
+   "R7 has no foundations workflow; its praxis-autonomy.yml also builds Praxis from source (`dotnet build praxis/src/Praxis.Cli/...`, about 33 min, census) under a step name the claim does not count."
+  ],
+  "notes": "The recommendation (cache or ship a prebuilt pinned verifier) still holds; the size is about 10 job-hours across the nine windows, not 11.5."
+ },
+ {
+  "claimId": "A-F-11",
+  "verdict": "VERIFIED",
+  "claimedValue": "Median job queue 3 s in every rehearsal except R6 (7,612 queued job-minutes)",
+  "recomputedValue": "Median job queue (started_at - created_at) is 3.0 s in all nine repositories in both samples (1,516 jobs in the 100-run sample). R6 p90 1,189 s (claimed 912 s); estimated R6 queued job-minutes 8,093 (95% CI 3,500-13,629; replicate sample 7,352, CI 1,222-15,345), against 30-95 for every other repo. R10 p90 49 s (claimed 31 s); all others p90 3-4 s.",
+  "independence": "sample",
+  "method": "Job-level queue from V1's sampled jobs (all attempts, jobs with nonzero duration); median and nearest-rank p90; expansion estimate of queued minutes with bootstrap CI (scripts/queue_ci.py).",
+  "inputs": [
+   "V1 Actions samples (as A-F-12)"
+  ],
+  "discrepancies": [
+   "The claim's wording ('median 3 s everywhere except R6') could suggest R6's median differs. It does not: R6's median is also 3 s. R6 differs in its tail (p90) and total queued minutes."
+  ],
+  "notes": "The R6 total is consistent with 7,612 but imprecise from a sample (heavy tail). Run-level queue was not used (created_at = run_started_at)."
+ },
+ {
+  "claimId": "G-F-07",
+  "verdict": "VERIFIED",
+  "claimedValue": "Praxis 3.25.0 states mandatory verified completion is not enabled across Echelon repositories",
+  "recomputedValue": "Statement present verbatim in praxis@12bf995 (commit 'RELEASE-3-25-0: final checkpoint and completion', 2026-11-03) docs/verified-completion-rollout.md:3. Source implements the flag (src/Praxis.Application/Work/ProtectedCompletionPolicy.fs default RequireVerifiedCompletion = false; CompletionPolicy.fs). Scan of 90 ros.json files across every checked-out repo under /home/user (rehearsals 001-010, Indy-init, praxis, mercatus, ordo, signal, 40 ext/ clones incl. starters): 0 mention requireVerifiedCompletion or requireAttestedEvidence. Repo-wide grep for '\"requireVerifiedCompletion\": true' matches only a sprint E-security test script.",
+  "independence": "fully independent recomputation",
+  "method": "Read Praxis doc and source at HEAD; find all ros.json/praxis config files (excluding sprint worktrees and scratch) and grep each for the flags; repo-wide grep for an enabling value.",
+  "inputs": [
+   "praxis@12bf995",
+   "data/g-f-07-config-scan.tsv (90 config files with each repo HEAD)"
+  ],
+  "discrepancies": [
+   "The sentence was last edited 2026-10-21 (commit 173cae20), before 3.25.0; it is carried in the 3.25.0 tree rather than being a 3.25.0-dated assessment. The scan independently confirms it is still true for every checked-out repo."
+  ],
+  "notes": "Coverage is limited to repositories checked out in this environment; a repository not cloned here could enable the flag. Only HEAD revisions were scanned."
+ },
+ {
+  "claimId": "G-F-08",
+  "verdict": "VERIFIED",
+  "claimedValue": "REL-001 run-02: every arm 39/39; optimized Echelon $0.1555 vs bare $0.1147 per correct requirement (+35.5%)",
+  "recomputedValue": "80 confirmatory non-U6 trials (20 per arm; pilot and U6 excluded per the preregistration): every arm 39/39 correct units; cost per correct requirement bare $0.1147 ($4.4743/39), directives $0.1390, original Echelon $0.1520, optimized Echelon $0.1555 ($6.0646/39); optimized vs bare +35.54%. Tokens per correct 221,834 vs 304,458.",
+  "independence": "partial recomputation",
+  "method": "Own pricing of each trial's token buckets (run02.tokens.byKind: input, output, cacheRead, cacheWrite 5m/1h) with the price table; pooled ratio sum(cost)/sum(correct units) per arm. Correct units from each trial's oracle-scored run02.units. Experiment cost fields used only as a cross-check (max per-trial difference 4e-7 USD); analysis scripts not used.",
+  "inputs": [
+   "cohort-based-engineering@adcc914 research/experiments/REL-001/run-02/observations/{bare,directives,echelon-original,echelon-optimized}/*.json (93 files)",
+   "research/pricing/anthropic.price-table.json 2026-10-20.1"
+  ],
+  "discrepancies": [],
+  "notes": "Partial: token buckets and oracle verdicts are the experiment's own per-trial records; raw transcripts and oracle re-runs were not available/re-executed. Definitional caveat: output tokens are a transcript lower bound in all 80 trials (about 22 tokens per request, streaming-start counts), so output is only 1.3-1.7% of computed cost. True cost per correct requirement is higher in every arm, and the +35.5% gap could move if true output differs between arms; the report discloses the lower bound (REPORT-run-02.md:237) but the headline does not. 39/39 in all arms is a ceiling: the experiment cannot show a quality difference."
+ },
+ {
+  "claimId": "G-F-10",
+  "verdict": "VERIFIED",
+  "claimedValue": "echelon-foundry public site claims '40%+ throughput' and '80% reconciliation reduction' with no evidence packet",
+  "recomputedValue": "Claims exist: kemiller2002/echelon-foundry@8c6b453 (= remote HEAD, 2026-10-13) src/pages/index.html:14 '40%+ throughput gains', :15 'Hours to minutes' (reconciliation); src/data/case-studies.json:41 (status published) 'Reconciliation times reduced 80%'; src/pages/about.html:16 'engineering productivity improvements exceeding 40%'. The live site https://echelonfoundry.com/ (CNAME) served all three strings on 2026-11-08. No supporting evidence found: echelon-foundry research/evidence is empty; a grep of research-documents, cohort-based-engineering, indy-init-audits, Indy-init, praxis and 40 ext/ repos finds the strings only in the site, in copies in ext/forma (hero pattern, facts component, example marketing site) and in sprint G-track files.",
+  "independence": "fully independent recomputation",
+  "method": "Fresh read-only clone to /home/user/sprint-scratch/V1/echelon-foundry, checked against git ls-remote HEAD; GET of the live homepage; repo-wide grep for the claim strings, case-study slugs and related phrases.",
+  "inputs": [
+   "kemiller2002/echelon-foundry@8c6b45358fb1",
+   "https://echelonfoundry.com/ fetched 2026-11-08",
+   "all repositories checked out under /home/user"
+  ],
+  "discrepancies": [
+   "Wording: the site's 80% figure is 'Reconciliation times reduced 80%' (case-study outcome); the homepage stat reads 'Hours to minutes'. The case-study page for organizational throughput gives different numbers ('Deployment frequency doubled; unplanned work reduced 50%'), not 40%, so the 40% claim is inconsistent with its own case study."
+  ],
+  "notes": "These are consulting-engagement outcomes (an unnamed fintech; an unnamed organization), not measurements of Echelon software. Absence of evidence is limited to the repositories available here; client records may exist elsewhere. The truth of the claims was not tested."
+ }
+]

@@ -1,0 +1,255 @@
+[
+ {
+  "id": "F-F-01",
+  "title": "Untrimmed .NET WASM framework dominates payload in R8/R9",
+  "classification": "VERIFIED",
+  "statement": "Cold-start transfer (uncompressed static server): R8 37.0 MB, R9 27.8 MB, R10 11.1 MB, minimal F# fixture 8.1 MB. R8/R9 set PublishTrimmed=false (BCL assemblies 20.3 MB on disk); R10 uses TrimMode=partial (BCL 2.9 MB).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/startup.jsonl",
+   "measurements/bundles/*.json",
+   "r008/r009/r010 src/Causa.Host/Causa.Host.csproj"
+  ],
+  "limitations": "Single snapshot per rehearsal; dist sizes include files never fetched (R8 node_modules); 4 vCPU Xeon 2.3 GHz shared container, .NET SDK 10.0.402 (no workloads), headless Chromium 153, measurements/environment.json"
+ },
+ {
+  "id": "F-F-02",
+  "title": "Time to app-ready in headless Chromium",
+  "classification": "VERIFIED",
+  "statement": "Localhost cold ready (engine-set marker): fixture 412 ms (n=7, range 296-476), R8 1440 ms (n=7, range 1262-1619), R9 1272 ms (n=7, range 1098-1384), R10 921 ms (n=7, range 756-1082). Emulated 4G with gzip: fixture 3248 ms (n=5, range 3213-3467), R8 13169 ms (n=5, range 13080-13230), R9 9838 ms (n=5, range 9788-9956), R10 5073 ms (n=5, range 4988-5269). Without compression 4G: R8 32003 ms (n=5, range 31950-32141), R10 10294 ms (n=5, range 10210-10444).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/startup.jsonl",
+   "measurements/summary.json",
+   "scripts/startup.mjs"
+  ],
+  "limitations": "Chromium only; CPU contention from other tracks (loadavg up to 14 on 4 vCPU) inflates localhost numbers; 4G is CDP emulation, not a real network; each app's own ready marker differs in meaning. 4 vCPU Xeon 2.3 GHz shared container, .NET SDK 10.0.402 (no workloads), headless Chromium 153, measurements/environment.json"
+ },
+ {
+  "id": "F-F-03",
+  "title": "R10's global fetch no-store override defeats HTTP caching of the WASM runtime",
+  "classification": "VERIFIED",
+  "statement": "R10 boundary.js wraps globalThis.fetch so every GET uses cache: 'no-store' (to keep GitHub reads fresh). The .NET runtime loads _framework assets through fetch, so a warm reload re-downloads 10.1 MB (R9: 0.0 MB, R8: 0.1 MB). Warm 4G ready: R10 9527 ms (n=5, range 9325-9633) vs R9 1291 ms (n=5, range 1048-1300). Root cause: Limen's HttpEffectRequest has no per-request cache mode (0.9.1 and HEAD), so the app patched fetch globally.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/startup.jsonl (mode=warm)",
+   "indy-init-rehearsal-010/web/boundary.js:9-15",
+   "limen src/generated/core.ts HttpEffectRequest"
+  ],
+  "limitations": "python http.server sends no Cache-Control; R9's warm reuse relies on heuristic caching/revalidation. A CDN with long max-age would not change the no-store behaviour."
+ },
+ {
+  "id": "F-F-04",
+  "title": "Full trimming including FSharp.Core cuts R10 payload by about a third",
+  "classification": "SUPPORTED",
+  "statement": "TrimMode=full (+SatelliteResourceLanguages=en) on R10: cold transfer 7.8 MB vs 11.1 MB; FSharp.Core 2.40 -> 0.29 MB; 4G gzip ready 3825 ms (n=5, range 3662-3915) vs 5073 ms (n=5, range 4988-5269). Functional check: R10's own Chromium suite (194 tests, stateful GitHub fake) against the full-trim build, 2 clean runs: 158 pass / 36 fail, the identical failing set as the untrimmed build (3 runs) - no regression detected.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/bundles/r010-full.json",
+   "measurements/startup.jsonl",
+   "measurements/playwright-stability.json"
+  ],
+  "limitations": "R10 comment warns that F# reflection formatting (%A) may break under trimming; only paths exercised by the suite are checked."
+ },
+ {
+  "id": "F-F-05",
+  "title": "Trimming satellite resources does not change startup",
+  "classification": "CONTRADICTED",
+  "statement": "Hypothesis 'removing FSharp.Core satellite resources (0.32 MB, 13 cultures) speeds startup' is contradicted: they are not fetched at startup (cold transfer 11.1 MB vs 11.1 MB); only deploy size changes.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/bundles/r010-sat.json",
+   "measurements/startup.jsonl"
+  ],
+  "limitations": "Invariant-globalization apps only."
+ },
+ {
+  "id": "F-F-06",
+  "title": "wasm-tools workload relinking halves the native runtime but is not needed to build",
+  "classification": "SUPPORTED",
+  "statement": "All publishes succeeded without any workload. With wasm-tools installed (isolated SDK copy), R10 publish relinks dotnet.native.wasm 3.00 -> 1.50 MB (total _framework 10.8 -> 9.4 MB); one publish took 83 s vs 34-42 s without (n=1, contended). Startup (clean rerun): localhost 575 ms (n=7, range 528-647) vs R10 921 ms (n=7, range 756-1082); 4G gzip 4086 ms (n=5, range 4053-4127) vs 5073 ms (n=5, range 4988-5269).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/bundles/r010-wasmtools.json",
+   "measurements/startup.jsonl"
+  ],
+  "limitations": "Workload manifest band 10.0.114 may pull a newer runtime pack than 10.0.13; n=1 build."
+ },
+ {
+  "id": "F-F-07",
+  "title": "Build and edit-loop cost of F# WASM apps; trimming doubles the edit-publish loop",
+  "classification": "SUPPORTED",
+  "statement": "Release publish of the WASM host (warm NuGet cache). Batch 2 (interleaved, loadavg ~5): cold R8 38.0 s (n=2, range 37.6-38.4), R9 41.4 s (n=3, range 37.7-44.6), R10 36.4 s (n=3, range 36.3-36.7); edit+publish R8 8.2 s (n=2, range 7.9-8.5), R9 5.7 s (n=3, range 5.6-5.9), R10 16.1 s (n=3, range 16.0-16.8). Batch 1 (sequential, loadavg ~12): cold R8 58.1 s (n=3, range 56.7-61.3), R9 46.4 s (n=3, range 39.3-49.1), R10 37.2 s (n=3, range 33.8-42.3); Debug solution build cold R8 32.8 s (n=3, range 30.8-33.0), R9 16.0 s (n=3, range 16.0-21.9), R10 44.6 s (n=3, range 36.7-53.3). All batches pooled: cold R8 56.7 s (n=5, range 37.6-61.3), R9 43.0 s (n=6, range 37.7-49.1), R10 36.6 s (n=6, range 33.8-42.3), fixture 23.2 s (n=3, range 20.4-27.8); no-op 2.5-3.1 s; one-line F# edit then publish: R8 10.2 s (n=5, range 7.9-12.2), R9 6.5 s (n=6, range 5.6-7.5), R10 16.9 s (n=6, range 16.0-17.9), fixture 10.6 s (n=3, range 10.5-12.0). Trimmed apps (R10, fixture: TrimMode=partial) re-run ILLink on every publish, so a one-line edit costs 10.6-16 s versus 5.7-8.2 s for untrimmed R8/R9: the trimming that cuts payload 3-4x (F-F-01) roughly doubles the edit-publish loop; a Debug/no-trim dev loop with Release-only trimming avoids paying both. First-ever publish incl. runtime-pack download: 51.3 s (n=1).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/build-times.csv",
+   "measurements/build-times-batch2.csv",
+   "measurements/summary.json"
+  ],
+  "limitations": "Heavy contention from concurrent tracks (loadavg median 11.7 on 4 vCPU during batch 1); batch 2 interleaved to reduce order effects; MSBuild node reuse on."
+ },
+ {
+  "id": "F-F-08",
+  "title": "Where agents struggle with F#: type mismatches and unresolved names, fixed quickly",
+  "classification": "SUPPORTED",
+  "statement": "34 agent transcripts (construction-by-design experiments): 123 dotnet build/test/run invocations, 30 failed with F# compiler errors; 202 distinct diagnostics: FS0001 type mismatch 70 (35%), FS0039 undefined name 51 (25%, mostly a module alias used before/without definition), FS0003 value applied as function 22, FS0041 overload resolution 16, FS0072 needs type annotation 11, syntax/offside (FS0010/0058/0604) 13. 18 recovery streaks, median ~0.45 min, max 3.5 min. Conventional arm A: median 7.5 distinct errors/run (0-45, n=12); agent plan arm B: 2 (1-7, n=6); mechanical-first arm C: 0.5 (0-7, n=12).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "data/transcript-builds.jsonl",
+   "data/transcript-errors.jsonl",
+   "scripts/mine_transcripts.py"
+  ],
+  "limitations": "Domain-logic tasks, not UI; arms differ in prompt and generated scaffolding, so arm differences are associations; 41 build invocations had undeterminable outcome (output piped/truncated)."
+ },
+ {
+  "id": "F-F-09",
+  "title": "Compile errors rarely reach rehearsal commits or CI; CI failures are infrastructure",
+  "classification": "SUPPORTED",
+  "statement": "Across 1,236 commits (R1-R10 + causa) only 6 non-merge commits match compile-error terms; FS codes in commit messages appear only in R3 (FS3261 nullness from a leaked Directory.Build.props) and R10 (FS1093 negative-contract tests). R10 Actions: 289 runs, 171 success, 82 cancelled (28%), 36 failed; of 5 sampled failure logs: 2 WebKit/apt download timeouts (15 min each), 1 pinned SDK not installed (exit 155), 1 WebKit-only smoke failure, 1 unidentified.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "data/commit-signals.jsonl",
+   "measurements/ci/runs.csv",
+   "measurements/ci/sampled-failure-logs.csv"
+  ],
+  "limitations": "Keyword classification is a screen; only 5 CI logs read (token cost); R8 run list is the first 100 of 642."
+ },
+ {
+  "id": "F-F-10",
+  "title": "WASM interpreter locals limit is now statically checkable; R8-R10 have ample headroom",
+  "classification": "VERIFIED",
+  "statement": "scripts/IlFrame.fsx estimates the Mono interpreter tier-0 frame (8 x (args+locals), 16-aligned). It reproduces R5's start failure: View.project 12,683 locals = 101,472 B (limit 65,535) at 5d8888f, max 4,160 B after the fix a0e7d4a. R8/R9/R10 Causa.App max frames 432 / 1,536 / 2,000 B (>=96.9% headroom). R5 lost about 90 min with a non-starting page while CoreCLR unit tests stayed green.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/il-frame.jsonl",
+   "scripts/IlFrame.fsx",
+   "Indy-init docs/engineering-improvement/investigations/wasm.md"
+  ],
+  "limitations": "Value-type locals counted as 8 B (under-count); optimiser retry not modelled."
+ },
+ {
+  "id": "F-F-11",
+  "title": "Limen silently drops a second template root, contrary to its docs",
+  "classification": "CONTRADICTED",
+  "statement": "Docs (11-api-reference) say a template with more than one root reports BridgeError{phase: binding}. Probe in Chromium with limen 0.9.0 and 0.9.1: data-if and data-each templates with two element roots mount only the first root, kernel 'running', no diagnostic. The same defect recurred in R7 (D-05, hidden relate form) and causa fda2056.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/limen-probe-0.9.0.json",
+   "measurements/limen-probe-0.9.1.json",
+   "scripts/limen-probe/",
+   "data/limen-claims.jsonl LC-07"
+  ],
+  "limitations": "HEAD (743cdb9) source shows the same firstElementChild check; HEAD not executed."
+ },
+ {
+  "id": "F-F-12",
+  "title": "Limen limitations claimed by rehearsal teams: mostly real, two misreadings",
+  "classification": "VERIFIED",
+  "statement": "Of 6 rehearsal claims: real gaps - no redirect:'manual' on HTTP effects; nested lists not representable (ViewItem primitives; the JS kernel nevertheless renders nested data when fed untyped JSON); measure does not await fonts.ready. Real by design - no beforeunload (bfcache). Misread - 'no LocationChanged for own navigation' is documented behaviour; 'Limen does not manage focus' ignores the optional focus capability shipped in 0.9.0. New: no per-request cache mode (F-F-03).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "data/limen-claims.jsonl"
+  ],
+  "limitations": "fonts.ready claim by code inspection only."
+ },
+ {
+  "id": "F-F-13",
+  "title": "Existing contract tooling went unused",
+  "classification": "VERIFIED",
+  "statement": "Limen 0.9.1 ships view-contract tooling (checkPage/checkProjection/checkEvent, docs/28) that rejects unknown keys, nested lists and non-template data-if; 0 *.view.json files exist in R1-R10 or causa. The Limen focus capability was likewise available but R2 hand-wrote focus handling.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "data/limen-claims.jsonl LC-03, LC-08"
+  ],
+  "limitations": "Adoption barriers not investigated."
+ },
+ {
+  "id": "F-F-14",
+  "title": "Folio is declared but not integrated",
+  "classification": "VERIFIED",
+  "statement": "R10 locks @echelon-foundry/print-components 0.4.1 and lists it in Administration, but its dist ships no Folio asset; the report's print view is hand-written @media print CSS; only the bootstrap print.html uses <ef-print-document>. R8's T30 review recorded the same (Folio only in bootstrap print.html; Report.fs 2 lines).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "r010 dist listing",
+   "indy-init-rehearsal-010/web/screens/workspace-report.css",
+   "indy-init-rehearsal-008/evidence/reviews/T30-pre-rc.md"
+  ],
+  "limitations": "R8 later integrated Folio elements (CR-T26); not re-measured."
+ },
+ {
+  "id": "F-F-15",
+  "title": "Contrast failures in R10 trace to Forma token pairs; reachable screens pass axe",
+  "classification": "VERIFIED",
+  "statement": "axe-core 4.14 (WCAG 2.0/2.1 A+AA) on landing/disconnected routes at 1280x800 and 390x844: 0 violations in 22 scans (R8 8, R9 2, R10 10, fixture 2). R10's own suite reports contrast 4.00:1 and 4.39:1 in workspace states (our run reproduces these messages); Forma's catalog/known-issues.json documents exactly --ef-color-text-secondary on --ef-color-surface-secondary 4.0:1 and accent 4.38:1.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/axe/*.json",
+   "/home/user/sprint-scratch pw logs summarised in measurements/playwright-stability.json",
+   "ext/forma catalog/known-issues.json"
+  ],
+  "limitations": "axe only on states reachable without a GitHub session; connected states not scanned by axe directly."
+ },
+ {
+  "id": "F-F-16",
+  "title": "Playwright suite stability (Chromium)",
+  "classification": "SUPPORTED",
+  "statement": "r008: 110 chromium tests x 3 runs -> {'stable-pass': 110}; r009: 20 chromium tests x 3 runs -> {'stable-pass': 20}; r010: 194 chromium tests x 3 runs -> {'stable-pass': 158, 'stable-fail': 36}; r010-trimfull: 194 chromium tests x 2 runs -> {'stable-pass': 158, 'stable-fail': 36}. No flaky test in any app. R10's 36 stable failures = 17 live-provider tests (no CAUSA_GITHUB_TOKEN, fail as BLOCKED by design) + 19 acceptance obligations, matching the R10 FINAL-REPORT's list of ~20 known Chromium failures (contrast, save-flow re-read, wording/selector mismatches); PERSIST-031-O19, which R10 called timing-sensitive, passed in all 5 runs. Wall time per R10 run 509-743 s.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/playwright-stability.json",
+   "measurements/playwright-runs.csv"
+  ],
+  "limitations": "WebKit project unavailable (R8 config includes webkit; excluded). 3 runs per app, serial, under contention."
+ },
+ {
+  "id": "F-F-17",
+  "title": "Recurring UI defect patterns and the contracts that would catch them",
+  "classification": "SUPPORTED",
+  "statement": "29 curated defects (R1-R10, causa) in 11 patterns: contrast/theme 6, focus management 4, responsive/target size 3, Limen template roots 2, WASM interpreter limits 2, build provenance 2, state presentation not derived 2, duplicate structure 2, Folio not integrated 2, test-harness timing 2, F# build config 2. 6/29 were catchable by tools already available (axe 4, Limen focus capability 2), 10/29 partially, 13/29 need a new contract.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "data/curated-ui-defects.jsonl"
+  ],
+  "limitations": "Hand-curated from commit messages and defect files; selection bias towards well-described fixes."
+ },
+ {
+  "id": "F-F-18",
+  "title": "Time lost to WASM runtime and deployment issues (estimate)",
+  "classification": "SUPPORTED",
+  "statement": "R4: 19 of 86 commits (22%) are D-HIST-WASM work over 6.2 h of a 13.8 h commit span; R5: ~90 min with a non-starting page; R10: two 15-min WebKit download timeouts and build-and-test cancelled by its 20-min limit once browser suites took ~29 min (R10 final report).",
+  "measuredOrEstimate": "estimate",
+  "evidence": [
+   "git log indy-init-rehearsal-004",
+   "Indy-init wasm.md",
+   "measurements/ci/sampled-failure-logs.csv",
+   "indy-init-rehearsal-010/evidence/FINAL-REPORT.md:137"
+  ],
+  "limitations": "Commit spans overlap other work; lower/upper bounds not separable."
+ },
+ {
+  "id": "F-F-19",
+  "title": "Styling rules worth enforcing automatically",
+  "classification": "INCONCLUSIVE",
+  "statement": "Heuristic lint over app-owned CSS (R1-R10, causa): raw colour literals outside custom properties in R2 (14), R4/R5 (4), R9 (25); rules overriding Forma .ef-* classes 0-25 per app; !important up to 10 (R3); focus outline suppressed 0-2. Forma 0.13 itself hides 9 native controls with opacity 0 (source of causa 3ae3ac9).",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "measurements/style-lint.json",
+   "scripts/style_lint.py"
+  ],
+  "limitations": "Counts are candidates, not confirmed defects; no causal link measured between lint counts and defects."
+ },
+ {
+  "id": "F-F-20",
+  "title": "Every app invents its own app-ready signal",
+  "classification": "VERIFIED",
+  "statement": "R8 sets html[data-engine=ready], R9 html[data-causa-ready=running], R10 html[data-causa-started-ms] while its suites wait for the 'Loading Causa' status to hide and the title to change. Suites mostly use role locators (R10: 297 getByRole vs 73 CSS locators; R8 168 vs 265; R9 uses 25 test ids) and 3-10 fixed waitForTimeout calls each.",
+  "measuredOrEstimate": "measured",
+  "evidence": [
+   "r008/web/boundary.js",
+   "r009/web/main.js",
+   "r010/web/boundary.js",
+   "tests/browser/** grep counts"
+  ],
+  "limitations": "Static counts only."
+ }
+]

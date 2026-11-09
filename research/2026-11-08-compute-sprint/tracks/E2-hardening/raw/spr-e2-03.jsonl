@@ -1,0 +1,19 @@
+{"case":"P1-job","expected":"job runs on correct commit","exit":0,"verdict":null,"reasons":null,"notes":null,"statuses":{"R-ADD":"PASS","R-MUL":"PASS","R-REV":"PASS","R-ERR":"PASS"},"raw":null,"note":""}
+{"case":"P1","expected":"ACCEPTED","exit":0,"verdict":"ACCEPTED","reasons":[],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"N1-job","expected":"job runs on buggy commit","exit":0,"verdict":null,"reasons":null,"notes":null,"statuses":{"R-ADD":"PASS","R-MUL":"FAIL","R-REV":"PASS","R-ERR":"PASS"},"raw":null,"note":""}
+{"case":"N1","expected":"FAILED","exit":3,"verdict":"FAILED","reasons":["requirement R-MUL did not pass"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"N2-job","expected":"job runs on cheating commit","exit":0,"verdict":null,"reasons":null,"notes":null,"statuses":{"R-ADD":"FAIL","R-MUL":"FAIL","R-REV":"FAIL","R-ERR":"FAIL"},"raw":null,"note":"candidate stdout is judged, not trusted"}
+{"case":"N2","expected":"FAILED","exit":3,"verdict":"FAILED","reasons":["requirement R-ADD did not pass","requirement R-ERR did not pass","requirement R-MUL did not pass","requirement R-REV did not pass"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"T1-old-verifier","expected":"baseline reproduction: Indy verifier ACCEPTED","exit":0,"verdict":"ACCEPTED","reasons":[],"notes":null,"statuses":null,"raw":null,"note":""}
+{"case":"T1","expected":"REFUSED","exit":4,"verdict":"REFUSED","reasons":["manifest carries no verifier signature (not produced by the trusted verifier job)"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"T2-old-verifier","expected":"baseline reproduction: Indy verifier ACCEPTED","exit":0,"verdict":"ACCEPTED","reasons":null,"notes":null,"statuses":null,"raw":null,"note":""}
+{"case":"T2","expected":"REFUSED","exit":4,"verdict":"REFUSED","reasons":["manifest carries no verifier signature (not produced by the trusted verifier job)"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"T3-forge","expected":"candidate builds forged bundle as uid 65534","exit":0,"verdict":null,"reasons":null,"notes":null,"statuses":null,"raw":null,"note":""}
+{"case":"T3","expected":"REFUSED","exit":4,"verdict":"REFUSED","reasons":["manifest signature does not verify under the pinned verifier key"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"T4-read-key","expected":"EACCES","exit":1,"verdict":null,"reasons":null,"notes":null,"statuses":null,"raw":"cat: /home/user/sprint-scratch/E2/tac/verifier/keys/signing.pem: Permission denied","note":""}
+{"case":"T4-write-evidence","expected":"EACCES","exit":2,"verdict":null,"reasons":null,"notes":null,"statuses":null,"raw":"_: 1: cannot create /home/user/sprint-scratch/E2/tac/runs/N1/entries/R-MUL.json: Permission denied","note":""}
+{"case":"T5","expected":"REFUSED","exit":4,"verdict":"REFUSED","reasons":["manifest is for source 1e940d1f2a3cfe7b0ca195cce8db3b4dd4e6acc0, not the pinned 85b9392f7dec653721bf416207f656c545a332e3"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"T6a","expected":"REFUSED","exit":4,"verdict":"REFUSED","reasons":["evidence entry entries/R-MUL.json does not match the signed manifest digest","requirement R-MUL has no trusted evidence"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"T6b","expected":"REFUSED","exit":4,"verdict":"REFUSED","reasons":["manifest signature does not verify under the pinned verifier key"],"notes":[],"statuses":null,"raw":null,"note":""}
+{"case":"T7","expected":"ACCEPTED (unchanged) with ignored-digest note","exit":0,"verdict":"ACCEPTED","reasons":[],"notes":["caller-supplied manifest digest ignored (differs from the digest computed by the verifier)"],"statuses":null,"raw":null,"note":""}
+{"case":"T8","expected":"REFUSED","exit":4,"verdict":"REFUSED","reasons":["evidence entry entries/R-REV.json is missing","requirement R-REV has no trusted evidence"],"notes":[],"statuses":null,"raw":null,"note":""}

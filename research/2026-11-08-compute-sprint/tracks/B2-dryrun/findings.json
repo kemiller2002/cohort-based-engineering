@@ -1,0 +1,148 @@
+[
+  {
+    "id": "B2-F-01",
+    "title": "A pre-T0 dry run would have caught half of the brief's blockers and 7 of 11 overall",
+    "classification": "SUPPORTED",
+    "statement": "Executed on T0-era artefacts, the dry run reports CAUGHT for 4/8 blockers on the brief's list (0.50), 5/9 including R4, 7/11 on the extended list. Discounting the non-discriminating CAUSA-RULES check and the estimator-sensitive R10-JOBCAP leaves 2/8 robust catches on the brief list (R9-MSB1008, R10-AUTH) and 5/11 extended.",
+    "evidence": [
+      "results.csv",
+      "raw/*.json",
+      "harness/dryrun/summarize.py"
+    ],
+    "limitations": [
+      "11 blockers is a small sample; outcomes depend on matching rules partly finalized after first runs (see B2-F-05/06/07)."
+    ]
+  },
+  {
+    "id": "B2-F-02",
+    "title": "R10's authorize-implementation refusal reproduces exactly from pre-T0 inputs in ~6 s",
+    "classification": "VERIFIED",
+    "statement": "Pinned r9.fsx authorize-implementation (Indy-init 89f5840) with Praxis 3.25.0 on R10's pre-implementation setup state 33fd372 exits 4 with 55 causes (37 step-3, 18 step-4), identical line-for-line to evidence/t0/authorize-implementation.refused.log. The repaired r9.fsx (669fe04) on the same state exits 0 (37 items, 890 obligations).",
+    "evidence": [
+      "raw/R10-AUTH.json",
+      "indy-init-rehearsal-010@95b3ed4 evidence/t0/authorize-implementation.refused.log"
+    ],
+    "limitations": [
+      "The suite-preflight report's root field was relocated to the scratch path; unrelocated run gives 56 causes (one path-only).",
+      "Setup commit is 10 min after T0 but contains no application code."
+    ]
+  },
+  {
+    "id": "B2-F-03",
+    "title": "Approvals-format blockers (R4, R8) are caught by the pinned verifier with a stub ledger",
+    "classification": "VERIFIED",
+    "statement": "compute-acceptance-verdict.py at the pre-T0 commit flags 'unsupported schema' for R4's praxis.requirements-approvals/1 file and 'lacks an immutable authority source' / 'invalid change identity' for R8's pinned approvals. The later verifier-format files (1ede27f, 81b5461) produce zero approvals problems.",
+    "evidence": [
+      "raw/R4-APPROVALS.json",
+      "raw/R8-APPROVALS.json"
+    ],
+    "limitations": [
+      "Verdict remains INVALID in all runs because the ledger is a stub; only approvals-related problems are matched."
+    ]
+  },
+  {
+    "id": "B2-F-04",
+    "title": "The frozen plans' suite commands fail on the pinned SDK before any code is written (R8, R9); v4.1.5 does not",
+    "classification": "VERIFIED",
+    "statement": "On the T0 bootstrap trees, SDK 10.0.402 refuses SU-OWN-DOTNET and SU-DOTNET-LIVE with 'error MSB1008: Only one project can be specified' and Playwright refuses SU-BROWSER-WEBKIT ('Project(s) \"webkit\" not found') for both v4.1.1 (R8) and v4.1.2 (R9). The v4.1.5 plan on the R10 bootstrap shows neither.",
+    "evidence": [
+      "raw/R8-MSB1008.json",
+      "raw/R9-MSB1008.json"
+    ],
+    "limitations": [
+      "Stub trees have no tests, so every executable suite also reports NO_TESTS_SELECTED; this is not counted as a failure."
+    ]
+  },
+  {
+    "id": "B2-F-05",
+    "title": "The same dry run also exposes the FSharp.Core skip that hit R8 (DEV-R8-04) and R10 (SL-T11)",
+    "classification": "VERIFIED",
+    "statement": "In all three bootstrap trees (R8 616ec62, R9 8001e7c, R10 314cc8c) xunit skips the Causa test assemblies: 'could not find dependent assembly FSharp.Core, Version=10.1.0'. This was not on the replay list, so it is not in the catch rate.",
+    "evidence": [
+      "raw/R8-MSB1008.json otherConditions",
+      "raw/R9-MSB1008.json",
+      "falsePositiveCheck in both"
+    ],
+    "limitations": [
+      "By-product observation; matching rule not preregistered for it."
+    ]
+  },
+  {
+    "id": "B2-F-06",
+    "title": "CAUSA-RULES is caught, but the obvious binding check also fails on the fix",
+    "classification": "VERIFIED",
+    "statement": "The lock-pinned rules require repository indy-init-rehearsal-010 while the lock names competition repository causa: CAUGHT. The proposed fix (8d63637) binds causa-t0, the Praxis project id, which also differs from the GitHub repo name, so the preregistered check fails on it too. Comparing against the bootstrap's ros.json project id (post hoc) fails the original and passes the fix; R10's own rules pass as a negative control.",
+    "evidence": [
+      "raw/CAUSA-RULES.json"
+    ],
+    "limitations": [
+      "The project id comes from the T0 bootstrap, so a dry run must bootstrap with the same project id to evaluate the binding correctly."
+    ]
+  },
+  {
+    "id": "B2-F-07",
+    "title": "The Causa T18<->T20 cycle is not detectable from pre-T0 artefacts",
+    "classification": "SUPPORTED",
+    "statement": "No variant of the cycle check finds an SL-T18 -> SL-T20 edge: declared dependsOn (V1) is acyclic; test-owner edges (V2) and assertion-merge-needs edges (V3) produce a 27-30 slice SCC driven by cross-cutting praxis:* record tests but give T18 out-edges only to T10/T21/T22/T31/T34/T36; restricting to executable tests (post hoc) still leaves an 18-21 slice SCC and no T18->T20 edge. T18's acceptance spec INV-21.spec.js binds PF-015-O4 and was authored at 17:45Z (T+94, causa 1a1c7eb); its dependence on T20's Connect is not in the frozen package.",
+    "evidence": [
+      "raw/CAUSA-CYCLE.json",
+      "causa@97c0a98 git log of tests/browser/invariants/INV-21.spec.js"
+    ],
+    "limitations": [
+      "Mechanism-match rule applied after seeing the giant SCC; a different edge derivation could exist that I did not test."
+    ]
+  },
+  {
+    "id": "B2-F-08",
+    "title": "R8's semantic contract defects pass the whole pinned package pipeline",
+    "classification": "VERIFIED",
+    "statement": "requirements-compiler v41 --check on v4.1.1 at 1cb27ec passes X01-X20 (exit 0), the frozen contracts typecheck (ContractCheck exit 0) and stub suites raise nothing mentioning CommandEnvelope/command body or INV-04/SM-SAVE. The INV-04 statement (4 reads per 60 s under total failure) is already in the frozen invariants, so the contradiction was latent pre-T0 but needs semantic analysis or an implementation to surface.",
+    "evidence": [
+      "raw/R8-CMDBODY.json",
+      "raw/R8-INV04.json"
+    ],
+    "limitations": [
+      "A purpose-built model check of SM-SAVE against INV-04 was not attempted."
+    ]
+  },
+  {
+    "id": "B2-F-09",
+    "title": "Time-budget blockers are only weakly predictable from pre-T0 history",
+    "classification": "INCONCLUSIVE",
+    "statement": "R10's 20-min build-and-test cap vs pre-T0 successful step maxima: 25.7 min (exceeds; CAUGHT) across R2-R9, but 18.6 min using only R8-R9 (the same plan family) and 49.5 min including cancelled steps. The 40-min gate cap vs 13.3 min pre-T0 estimate: NOT CAUGHT (R10's gate suites later took up to 38 min). Stub runs cannot measure suite time.",
+    "evidence": [
+      "raw/R10-JOBCAP.json",
+      "raw/R10-GATE.json",
+      "Track A data/ci-steps.csv, ci-jobs.csv"
+    ],
+    "limitations": [
+      "Estimator chosen after a first run; job composition is approximated by step-name kinds."
+    ]
+  },
+  {
+    "id": "B2-F-10",
+    "title": "The dry run is cheap",
+    "classification": "VERIFIED",
+    "statement": "With tools built, pre-T0 tool time per rehearsal was 0.1 s (R4), 45 s (R8), 39 s (R9), 6 s (R10), 0.02 s (Causa) on a loaded shared host. Builds: requirements-compiler + ContractCheck 28 s; Praxis 3.25.0 152 s. A full clean rerun of all replays including fixed-version controls took ~199 s wall-clock.",
+    "evidence": [
+      "results.csv dryRunSeconds",
+      "raw/full-rerun-timing.txt",
+      "/home/user/sprint-scratch/B2/build/praxis-build.time"
+    ],
+    "limitations": [
+      "Host load avg 11-20 from other tracks; R8/R9 suite times include compiling the bootstrap's stub projects."
+    ]
+  },
+  {
+    "id": "B2-F-11",
+    "title": "Several blockers are only partly replayable offline",
+    "classification": "SUPPORTED",
+    "statement": "R10's gate deadlock has four cited causes; only the time budget can be checked offline. The write-once governance record, Playwright install timeouts on hosted runners, branch-name refusal and cancellations need GitHub Actions and were not replayed.",
+    "evidence": [
+      "raw/R10-GATE.json causesNotReplayable"
+    ],
+    "limitations": [
+      "A dry run that includes one hosted CI run of the gate workflow might cover more; not tested."
+    ]
+  }
+]

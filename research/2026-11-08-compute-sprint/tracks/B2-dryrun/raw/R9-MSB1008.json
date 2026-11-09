@@ -1,0 +1,339 @@
+{
+  "key": "R9-MSB1008",
+  "rehearsal": "R9",
+  "blocker": "frozen v4.1.2 suite commands fail on pinned SDK (MSB1008) and name an undefined webkit project",
+  "trackBEvent": "B-E-106",
+  "t0": "2026-11-04T00:30:01Z",
+  "preT0": {
+    "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+    "rev": "bc3c381",
+    "sha": "bc3c381df2840187a46799ea59f425ffe1b1ceed",
+    "committerTime": "2026-11-03T19:24:34-05:00",
+    "subject": "Merge pull request #100 from kemiller2002/claude/rehearsal-009-preflight-smoke-c69xgt"
+  },
+  "preT0IsBeforeT0": true,
+  "dryRunRepo": "/home/user/indy-init-rehearsal-009@8001e7c (T0 bootstrap, no application code)",
+  "toolsRun": [
+    "frozen v4.1.2 plan suite commands (list mode), dotnet SDK 10.0.402, @playwright/test 1.63.0"
+  ],
+  "check": {
+    "plan": "requirements-compiled/v4.1.2/verification-execution-plan.json",
+    "planAt": {
+      "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+      "rev": "bc3c381",
+      "sha": "bc3c381df2840187a46799ea59f425ffe1b1ceed",
+      "committerTime": "2026-11-03T19:24:34-05:00",
+      "subject": "Merge pull request #100 from kemiller2002/claude/rehearsal-009-preflight-smoke-c69xgt"
+    },
+    "tree": {
+      "repo": "/home/user/indy-init-rehearsal-009",
+      "rev": "8001e7c",
+      "sha": "8001e7c0493ee457c6a93086dde08a67e3fe0cf5",
+      "committerTime": "2026-11-04T00:32:11+00:00",
+      "subject": "T0 bootstrap: conditor init, v4.1.2 bootstrap, r9 governance"
+    },
+    "globalJson": "{\n  \"sdk\": {\n    \"version\": \"10.0.402\",\n    \"rollForward\": \"disable\"\n  }\n}\n",
+    "suites": [
+      {
+        "suite": "SU-OWN-DOTNET",
+        "command": "dotnet test tests/Causa.Contract.Tests tests/Causa.Domain.Tests tests/Causa.Persistence.Tests tests/Causa.App.Tests",
+        "listCommand": "dotnet test tests/Causa.Contract.Tests tests/Causa.Domain.Tests tests/Causa.Persistence.Tests tests/Causa.App.Tests --list-tests",
+        "dotnetTargets": [
+          "tests/Causa.Contract.Tests",
+          "tests/Causa.Domain.Tests",
+          "tests/Causa.Persistence.Tests",
+          "tests/Causa.App.Tests"
+        ],
+        "playwrightProjects": [],
+        "classification": "MSB1008",
+        "findings": [
+          "MSB1008"
+        ],
+        "exit": 1,
+        "seconds": 0.3,
+        "evidence": [
+          "MSBUILD : error MSB1008: Only one project can be specified."
+        ]
+      },
+      {
+        "suite": "SU-OWN-BROWSER",
+        "command": "npx playwright test --project=chromium tests/browser/contract",
+        "listCommand": "npx playwright test --project=chromium tests/browser/contract --list",
+        "dotnetTargets": [],
+        "playwrightProjects": [
+          "chromium"
+        ],
+        "classification": "NO_TESTS_SELECTED",
+        "findings": [
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 1,
+        "seconds": 1.4,
+        "evidence": [
+          "Total: 0 tests in 0 files",
+          "Error: No tests found."
+        ]
+      },
+      {
+        "suite": "SU-DOTNET-DETERMINISTIC",
+        "command": "dotnet test tests/Causa.Acceptance --filter FullyQualifiedName~Causa.Acceptance.Deterministic.",
+        "listCommand": "dotnet test tests/Causa.Acceptance --filter FullyQualifiedName~Causa.Acceptance.Deterministic. --list-tests",
+        "dotnetTargets": [
+          "tests/Causa.Acceptance"
+        ],
+        "playwrightProjects": [],
+        "classification": "ASSEMBLY_SKIPPED",
+        "findings": [
+          "ASSEMBLY_SKIPPED",
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 0,
+        "seconds": 23.04,
+        "evidence": [
+          "[xUnit.net 00:00:00.09] Skipping: Causa.Acceptance (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Acceptance.Deterministic.` in /home/user/sprint-scratch/B2/suites/r9-pre-v412/tests/Causa.Acceptance/bin/Debug/net10.0/Causa.Acceptance.dll"
+        ]
+      },
+      {
+        "suite": "SU-DOTNET-INVARIANTS",
+        "command": "dotnet test tests/Causa.Invariants --filter \"FullyQualifiedName~Causa.Invariants.&FullyQualifiedName!~Causa.Invariants.Live.\"",
+        "listCommand": "dotnet test tests/Causa.Invariants --filter \"FullyQualifiedName~Causa.Invariants.&FullyQualifiedName!~Causa.Invariants.Live.\" --list-tests",
+        "dotnetTargets": [
+          "tests/Causa.Invariants"
+        ],
+        "playwrightProjects": [],
+        "classification": "ASSEMBLY_SKIPPED",
+        "findings": [
+          "ASSEMBLY_SKIPPED",
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 0,
+        "seconds": 10.64,
+        "evidence": [
+          "[xUnit.net 00:00:00.14] Skipping: Causa.Invariants (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Invariants.&FullyQualifiedName!~Causa.Invariants.Live.` in /home/user/sprint-scratch/B2/suites/r9-pre-v412/tests/Causa.Invariants/bin/Debug/net10.0/Causa.Invariants.dll"
+        ]
+      },
+      {
+        "suite": "SU-BROWSER-CHROMIUM",
+        "command": "npx playwright test --project=chromium tests/browser/acceptance tests/browser/invariants",
+        "listCommand": "npx playwright test --project=chromium tests/browser/acceptance tests/browser/invariants --list",
+        "dotnetTargets": [],
+        "playwrightProjects": [
+          "chromium"
+        ],
+        "classification": "NO_TESTS_SELECTED",
+        "findings": [
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 1,
+        "seconds": 1.16,
+        "evidence": [
+          "Total: 0 tests in 0 files",
+          "Error: No tests found."
+        ]
+      },
+      {
+        "suite": "SU-BROWSER-WEBKIT",
+        "command": "npx playwright test --project=webkit tests/browser/acceptance tests/browser/invariants",
+        "listCommand": "npx playwright test --project=webkit tests/browser/acceptance tests/browser/invariants --list",
+        "dotnetTargets": [],
+        "playwrightProjects": [
+          "webkit"
+        ],
+        "classification": "UNDEFINED_PLAYWRIGHT_PROJECT",
+        "findings": [
+          "UNDEFINED_PLAYWRIGHT_PROJECT"
+        ],
+        "exit": 1,
+        "seconds": 1.22,
+        "evidence": [
+          "Error: Project(s) \"webkit\" not found. Available projects: \"chromium\""
+        ]
+      },
+      {
+        "suite": "SU-DOTNET-LIVE",
+        "command": "dotnet test tests/Causa.Acceptance tests/Causa.Invariants --filter \"FullyQualifiedName~Causa.Acceptance.Live.|FullyQualifiedName~Causa.Invariants.Live.\"",
+        "listCommand": "dotnet test tests/Causa.Acceptance tests/Causa.Invariants --filter \"FullyQualifiedName~Causa.Acceptance.Live.|FullyQualifiedName~Causa.Invariants.Live.\" --list-tests",
+        "dotnetTargets": [
+          "tests/Causa.Acceptance",
+          "tests/Causa.Invariants"
+        ],
+        "playwrightProjects": [],
+        "classification": "MSB1008",
+        "findings": [
+          "MSB1008"
+        ],
+        "exit": 1,
+        "seconds": 0.23,
+        "evidence": [
+          "MSBUILD : error MSB1008: Only one project can be specified."
+        ]
+      },
+      {
+        "suite": "SU-BROWSER-LIVE",
+        "command": "npx playwright test --project=chromium tests/browser/live",
+        "listCommand": "npx playwright test --project=chromium tests/browser/live --list",
+        "dotnetTargets": [],
+        "playwrightProjects": [
+          "chromium"
+        ],
+        "classification": "NO_TESTS_SELECTED",
+        "findings": [
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 1,
+        "seconds": 1.11,
+        "evidence": [
+          "Total: 0 tests in 0 files",
+          "Error: No tests found."
+        ]
+      }
+    ],
+    "seconds": 39.1
+  },
+  "falsePositiveCheck": {
+    "fixedPlan": "requirements-compiled/v4.1.5/verification-execution-plan.json",
+    "planAt": {
+      "repo": "/home/user/sprint-scratch/B2/indy-init-full",
+      "rev": "89f5840",
+      "sha": "89f5840523b9e1185a5dbcd2a29d0799fe728598",
+      "committerTime": "2026-11-06T10:50:32-05:00",
+      "subject": "Merge pull request #173 from kemiller2002/claude/lp09-shards"
+    },
+    "tree": {
+      "repo": "/home/user/indy-init-rehearsal-010",
+      "rev": "314cc8c",
+      "sha": "314cc8c7243868a668d381e1c8609843e51d6209",
+      "committerTime": "2026-11-06T16:43:53+00:00",
+      "subject": "T10 bootstrap: Rehearsal 010 T0 (2026-11-06T16:40:13Z)"
+    },
+    "suites": [
+      {
+        "suite": "SU-OWN-DOTNET",
+        "classification": "ASSEMBLY_SKIPPED",
+        "findings": [
+          "ASSEMBLY_SKIPPED",
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 0,
+        "evidence": [
+          "[xUnit.net 00:00:00.06] Skipping: Causa.Acceptance (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Contract.Tests.|FullyQualifiedName~Causa.Domain.Tests.|FullyQualifiedName~Causa.Persistence.Tests.|FullyQualifiedName~Causa.App.Tests.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Acceptance/bin/Debug/net10.0/Causa.Acceptance.dll",
+          "[xUnit.net 00:00:00.15] Skipping: Causa.App.Tests (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Contract.Tests.|FullyQualifiedName~Causa.Domain.Tests.|FullyQualifiedName~Causa.Persistence.Tests.|FullyQualifiedName~Causa.App.Tests.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.App.Tests/bin/Debug/net10.0/Causa.App.Tests.dll",
+          "[xUnit.net 00:00:00.37] Skipping: Causa.Persistence.Tests (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Contract.Tests.|FullyQualifiedName~Causa.Domain.Tests.|FullyQualifiedName~Causa.Persistence.Tests.|FullyQualifiedName~Causa.App.Tests.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Persistence.Tests/bin/Debug/net10.0/Causa.Persistence.Tests.dll",
+          "[xUnit.net 00:00:00.08] Skipping: Causa.Contract.Tests (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Contract.Tests.|FullyQualifiedName~Causa.Domain.Tests.|FullyQualifiedName~Causa.Persistence.Tests.|FullyQualifiedName~Causa.App.Tests.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Contract.Tests/bin/Debug/net10.0/Causa.Contract.Tests.dll"
+        ]
+      },
+      {
+        "suite": "SU-OWN-BROWSER",
+        "classification": "NO_TESTS_SELECTED",
+        "findings": [
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 1,
+        "evidence": [
+          "Total: 0 tests in 0 files",
+          "Error: No tests found."
+        ]
+      },
+      {
+        "suite": "SU-DOTNET-DETERMINISTIC",
+        "classification": "ASSEMBLY_SKIPPED",
+        "findings": [
+          "ASSEMBLY_SKIPPED",
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 0,
+        "evidence": [
+          "[xUnit.net 00:00:00.05] Skipping: Causa.Acceptance (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Acceptance.Deterministic.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Acceptance/bin/Debug/net10.0/Causa.Acceptance.dll"
+        ]
+      },
+      {
+        "suite": "SU-DOTNET-INVARIANTS",
+        "classification": "ASSEMBLY_SKIPPED",
+        "findings": [
+          "ASSEMBLY_SKIPPED",
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 0,
+        "evidence": [
+          "[xUnit.net 00:00:00.07] Skipping: Causa.Invariants (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Invariants.&FullyQualifiedName!~Causa.Invariants.Live.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Invariants/bin/Debug/net10.0/Causa.Invariants.dll"
+        ]
+      },
+      {
+        "suite": "SU-BROWSER-CHROMIUM",
+        "classification": "NO_TESTS_SELECTED",
+        "findings": [
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 1,
+        "evidence": [
+          "Total: 0 tests in 0 files",
+          "Error: No tests found."
+        ]
+      },
+      {
+        "suite": "SU-BROWSER-WEBKIT",
+        "classification": "NO_TESTS_SELECTED",
+        "findings": [
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 1,
+        "evidence": [
+          "Total: 0 tests in 0 files",
+          "Error: No tests found."
+        ]
+      },
+      {
+        "suite": "SU-DOTNET-LIVE",
+        "classification": "ASSEMBLY_SKIPPED",
+        "findings": [
+          "ASSEMBLY_SKIPPED",
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 0,
+        "evidence": [
+          "[xUnit.net 00:00:00.16] Skipping: Causa.Invariants (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Acceptance.Live.|FullyQualifiedName~Causa.Invariants.Live.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Invariants/bin/Debug/net10.0/Causa.Invariants.dll",
+          "[xUnit.net 00:00:00.24] Skipping: Causa.App.Tests (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Acceptance.Live.|FullyQualifiedName~Causa.Invariants.Live.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.App.Tests/bin/Debug/net10.0/Causa.App.Tests.dll",
+          "[xUnit.net 00:00:00.13] Skipping: Causa.Persistence.Tests (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Acceptance.Live.|FullyQualifiedName~Causa.Invariants.Live.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Persistence.Tests/bin/Debug/net10.0/Causa.Persistence.Tests.dll",
+          "[xUnit.net 00:00:00.27] Skipping: Causa.Contract.Tests (could not find dependent assembly 'FSharp.Core, Version=10.1.0')",
+          "No test matches the given testcase filter `FullyQualifiedName~Causa.Acceptance.Live.|FullyQualifiedName~Causa.Invariants.Live.` in /home/user/sprint-scratch/B2/suites/fixed-r10-v415/tests/Causa.Contract.Tests/bin/Debug/net10.0/Causa.Contract.Tests.dll"
+        ]
+      },
+      {
+        "suite": "SU-BROWSER-LIVE",
+        "classification": "NO_TESTS_SELECTED",
+        "findings": [
+          "NO_TESTS_SELECTED"
+        ],
+        "exit": 1,
+        "evidence": [
+          "Total: 0 tests in 0 files",
+          "Error: No tests found."
+        ]
+      }
+    ]
+  },
+  "otherConditions": {
+    "SU-DOTNET-DETERMINISTIC": [
+      "ASSEMBLY_SKIPPED",
+      "NO_TESTS_SELECTED"
+    ],
+    "SU-DOTNET-INVARIANTS": [
+      "ASSEMBLY_SKIPPED",
+      "NO_TESTS_SELECTED"
+    ]
+  },
+  "outcome": "CAUGHT",
+  "matchEvidence": "SU-OWN-DOTNET: MSB1008; SU-BROWSER-WEBKIT: UNDEFINED_PLAYWRIGHT_PROJECT; SU-DOTNET-LIVE: MSB1008",
+  "dryRunSeconds": 39.1
+}

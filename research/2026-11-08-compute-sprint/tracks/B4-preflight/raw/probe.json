@@ -1,0 +1,242 @@
+[
+  {
+    "probe": "P0-identity",
+    "description": "unchanged R8 inputs (sanity)",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": true,
+      "R8-CMDBODY": true,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": true
+    },
+    "perceptaFindings": [
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S31",
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S32",
+      "carrier-cannot-discriminate:CommandEnvelope/IF41-DOMAIN.Decide",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": true,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": true,
+      "R8-INV04 (C1-cycle, B3 criterion)": true,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 6,
+      "C1-cycle": 8,
+      "C2": 5,
+      "C3": 1
+    }
+  },
+  {
+    "probe": "P1-bound-reworded",
+    "description": "INV-04 window clause says 'no more than four ... in any 60-second window'",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": false,
+      "R8-CMDBODY": true,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": true
+    },
+    "perceptaFindings": [
+      "carrier-cannot-discriminate:CommandEnvelope/IF41-DOMAIN.Decide",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": true,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": false,
+      "R8-INV04 (C1-cycle, B3 criterion)": true,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 3,
+      "C1-cycle": 4,
+      "C2": 5,
+      "C3": 1
+    }
+  },
+  {
+    "probe": "P2-bound-per-minute",
+    "description": "INV-04 window clause says 'at most ... per minute' (inside percepta's documented form)",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": true,
+      "R8-CMDBODY": true,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": true
+    },
+    "perceptaFindings": [
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S31",
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S32",
+      "carrier-cannot-discriminate:CommandEnvelope/IF41-DOMAIN.Decide",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": true,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": true,
+      "R8-INV04 (C1-cycle, B3 criterion)": true,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 6,
+      "C1-cycle": 8,
+      "C2": 5,
+      "C3": 1
+    }
+  },
+  {
+    "probe": "P3-two-cycle",
+    "description": "T-S31/T-S32 loop through an intermediate Reading state (2-cycle) instead of a self-loop",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": false,
+      "R8-CMDBODY": true,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": true
+    },
+    "perceptaFindings": [
+      "carrier-cannot-discriminate:CommandEnvelope/IF41-DOMAIN.Decide",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": false,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": false,
+      "R8-INV04 (C1-cycle, B3 criterion)": true,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 2,
+      "C1-cycle": 8,
+      "C2": 5,
+      "C3": 1
+    }
+  },
+  {
+    "probe": "P4-effect-synonym",
+    "description": "T-S31/T-S32 effect says 'query the server once more for the save's outcome'",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": false,
+      "R8-CMDBODY": true,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": true
+    },
+    "perceptaFindings": [
+      "carrier-cannot-discriminate:CommandEnvelope/IF41-DOMAIN.Decide",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": false,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": false,
+      "R8-INV04 (C1-cycle, B3 criterion)": false,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 2,
+      "C1-cycle": 4,
+      "C2": 5,
+      "C3": 1
+    }
+  },
+  {
+    "probe": "P5-carrier-string-tag",
+    "description": "CommandEnvelope gains an irrelevant `CorrelationTag: string` (still no command body)",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": true,
+      "R8-CMDBODY": false,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": false
+    },
+    "perceptaFindings": [
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S31",
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S32",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": true,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": true,
+      "R8-INV04 (C1-cycle, B3 criterion)": true,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 6,
+      "C1-cycle": 8,
+      "C2": 5,
+      "C3": 1
+    }
+  },
+  {
+    "probe": "P6-catalog-reworded",
+    "description": "catalog says 'Every command travels in CommandEnvelope' instead of 'is carried inside'",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": true,
+      "R8-CMDBODY": false,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": false
+    },
+    "perceptaFindings": [
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S31",
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S32",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": true,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": true,
+      "R8-INV04 (C1-cycle, B3 criterion)": true,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 6,
+      "C1-cycle": 8,
+      "C2": 5,
+      "C3": 1
+    }
+  },
+  {
+    "probe": "P7-carrier-renamed",
+    "description": "CommandEnvelope renamed RequestEnvelope everywhere (stubs, interfaces, catalog)",
+    "perceptaExit": 3,
+    "percepta": {
+      "R8-INV04": true,
+      "R8-CMDBODY": false,
+      "DEV-R8-12": true,
+      "R8-CMDBODY (any carrier name)": true
+    },
+    "perceptaFindings": [
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S31",
+      "rate-bound-vs-unbounded-loop:INV-04/SM-SAVE/T-S32",
+      "carrier-cannot-discriminate:RequestEnvelope/IF41-DOMAIN.Decide",
+      "counter-guard-without-complement:SM-SAVE/T-S29",
+      "counter-guard-without-complement:SM-SAVE/T-S31"
+    ],
+    "b3": {
+      "R8-INV04 (C1-loop, B3 criterion)": true,
+      "R8-INV04 (C1-loop, against the 4-reads clause)": true,
+      "R8-INV04 (C1-cycle, B3 criterion)": true,
+      "R8-CMDBODY (C2)": true,
+      "DEV-R8-12 (C3)": true
+    },
+    "b3Counts": {
+      "C1-loop": 6,
+      "C1-cycle": 8,
+      "C2": 4,
+      "C3": 1
+    }
+  }
+]

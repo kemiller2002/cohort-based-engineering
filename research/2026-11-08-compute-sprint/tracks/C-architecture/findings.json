@@ -1,0 +1,153 @@
+{
+ "schema": "track-c.findings/1",
+ "track": "C-architecture",
+ "asOf": "2026-11-08",
+ "approvedSet": "echelon-current 1.37.0 (echelon-registry sets/echelon-current/1.37.0.json, owner approval commit 89db708, 2026-11-05)",
+ "sourceRevisions": "data/source-revisions.tsv",
+ "findings": [
+  {
+   "id": "C-F-01",
+   "title": "The library and tool ecosystem runs on a release set 35 versions behind the approved one",
+   "classification": "VERIFIED",
+   "statement": "23 of 33 inspected repositories install Praxis 3.7.2 (.echelon/ros.json) and 23 carry the Ordo 1.5.0 .sde payload; 15 bind Conditor authority to echelon-current 1.2.0 and 9 more to sets 1.3.0-1.24.0. The approved set is 1.37.0 (Praxis 3.25.0, Ordo 1.20.0). The Registry, Dokimos, Limen, Forma, Percepta, Aegis and Tutela repositories, which produce the approved set, are themselves on 1.2.0. Only causa and indy-init-rehearsal-010 match the approved set. Of 375 consumer version pins, 169 match the approved selection, 200 are behind, 3 are ahead (unqualified) and 3 have no approved counterpart.",
+   "evidence": ["data/repo-facts.json (rosInstalled, authoritySet)", "data/pin-skew.json", "mercatus:.conditor/authority/resolved-release-set.json (profile echelon-current 1.2.0, sha256 ea1b39a0...)", "echelon-registry:sets/echelon-current/1.37.0.json"],
+   "limitations": "Pins describe what each repository declares on main; a few repositories may run newer tools locally. 'minor-behind' groups every same-major gap (3.7.2 to 3.25.0 counts as one class)."
+  },
+  {
+   "id": "C-F-02",
+   "title": "Released Praxis capabilities are unreachable in most repositories",
+   "classification": "SUPPORTED",
+   "statement": "Because 23 repositories run Praxis 3.7.2 in CI (./praxis installs the pinned version: praxis-validation.yml), features released in 3.8-3.25 (inbox claim lifecycle 3.8.0, work finish / attested completion 3.20.0, requirements manifest 3.25.0) cannot run there. The program builds capabilities faster than the ecosystem adopts them.",
+   "evidence": ["indy-init-rehearsal-010:.github/workflows/praxis-validation.yml:28-31", "cohort-based-engineering:program/CURRENT-STATE.md §1 (claim CLI first shipped in 3.8.0), §6 A3", "data/repo-facts.json"],
+   "limitations": "Capability-to-version mapping taken from CURRENT-STATE and Registry notes, not re-executed."
+  },
+  {
+   "id": "C-F-03",
+   "title": "Two catalogs of qualified versions force a Conditor release for most component releases",
+   "classification": "VERIFIED",
+   "statement": "Conditor embeds its own component registry (components/*.component.json: 11 descriptors with qualifiedVersions and defaultVersion; src/Conditor.Core/Registry.fs) alongside the echelon-registry catalog (17 systems). REG-RU-007 requires a released Conditor to qualify each set, so 13 Conditor releases (v0.10.9-v0.10.21) accompanied 12 approved sets (1.26.0-1.37.0) in 14 days; commits for 0.10.15-0.10.20 are literally 'Request Conditor 0.10.X (qualifies echelon-current 1.Y.0) - RELEASE TRIGGER'. The catalogs disagree: Conditor has forma-workflow (not in the Registry); the Registry has dokimos, arca, fides, strata, summa-contracts, limen-fsharp, percepta-semantic (no Conditor descriptor).",
+   "evidence": ["conditor:src/Conditor.Core/Registry.fs:1-34", "conditor:components/", "conditor: git log 2026-10-24..2026-11-06 (e.g. 59d4f3a, 316d086, bc6db34, 6cdfc44, daa864e, c4d79cf)", "echelon-registry:snapshots/echelon-current.catalog.json", "echelon-registry:spec/ecosystem-distribution-readiness.md:28"],
+   "limitations": "Release counts from tag commit dates; some Conditor releases also carried feature work (e.g. ci-policy, unattended-readiness)."
+  },
+  {
+   "id": "C-F-04",
+   "title": "The designed escape from per-version qualification is built but switched off",
+   "classification": "VERIFIED",
+   "statement": "Conditor implements attested range qualification (Registry.attestedQualification, src/Conditor.Core/Registry.fs:21-26) but trusts no Registry release-attestation key (trust/registry-release-keys.json:4 'keys': []), so every project binding stays exact-version qualified. CURRENT-STATE (2026-10-23) already noted empty trust keys; nothing changed.",
+   "evidence": ["conditor:src/Conditor.Core/Registry.fs:21-26", "conditor:trust/registry-release-keys.json:4", "cohort-based-engineering:program/CURRENT-STATE.md §2 A6"],
+   "limitations": "Whether range qualification would be acceptable to the owner is a policy question."
+  },
+  {
+   "id": "C-F-05",
+   "title": "Praxis duplicates Ordo contract admission because it pins an Ordo.Core that predates it",
+   "classification": "VERIFIED",
+   "statement": "Praxis.Domain references EchelonFoundry.Ordo.Core 1.8.2 from vendor/nuget (Praxis.Domain.fsproj:6-9) and carries its own 1,043-line Ordo model and contract admission that reproduce Ordo's ORDO.CONTRACT.* vocabulary (ContractAdmission.fs:7-9). Ordo 1.20.0 source defines that module (src/Ordo.Core/ConstructibilityContract.fs:77). The vendored 1.8.2 DLL contains no 'Constructibility' type names (strings scan of lib/*/Ordo.Core.dll).",
+   "evidence": ["praxis:src/Praxis.Domain/Praxis.Domain.fsproj:6-9", "praxis:src/Praxis.Domain/Ordo/ContractAdmission.fs:7-9", "praxis:vendor/nuget/ordo-core.lock", "ordo:src/Ordo.Core/ConstructibilityContract.fs:77"],
+   "limitations": "Behavioural equivalence of the two implementations not tested; Ordo 1.20.0's package contents not inspected (only source)."
+  },
+  {
+   "id": "C-F-06",
+   "title": "Iter is an unused duplicate of Limen.Routing",
+   "classification": "VERIFIED",
+   "statement": "Iter (typed F# routing, unreleased, Registry readiness 'not-ready') has zero incoming edges in the dependency graph. EchelonFoundry.Limen.Routing provides F# routing and URL state, is released in limen-fsharp 0.9.0 and is consumed by praxis, chrona, signal and summa.",
+   "evidence": ["iter:README.md:1-10", "limen:docs/31-routing.md:1-30", "echelon-registry:spec/ecosystem-distribution-readiness.md:86", "dependency-graph.json (no edge to iter)"],
+   "limitations": "Iter's design intent (application-side primitives beyond routing) is broader than routing; only routing exists."
+  },
+  {
+   "id": "C-F-07",
+   "title": "Profile-'required' components are not installed on the product path",
+   "classification": "VERIFIED",
+   "statement": "echelon-current marks 12 components required, including dokimos, tutela, visual-engineering, communication-engineering and percepta-semantic. causa and indy-init-rehearsal-010 (the only repositories on the approved set) pin none of these in conditor.json. Tutela is installed in only fides and iter; Dokimos is pinned only by fides (0.2.0) and reaches CI through three different routes. 'required' is therefore descriptive, not enforced.",
+   "evidence": ["echelon-registry:profiles/echelon-current.profile.json:50,74 (12 'required': true)", "causa:conditor.json", "indy-init-rehearsal-010:conditor.json", "fides:.echelon/tutela.json", "iter:.echelon/tutela.json"],
+   "limitations": "The Registry may intend 'required' to mean 'part of the environment' rather than per-repository; no spec text defining per-repository enforcement was found."
+  },
+  {
+   "id": "C-F-08",
+   "title": "Aegis 2.0.0 is documented but has never been released",
+   "classification": "VERIFIED",
+   "statement": "Aegis source is 2.0.0 ('Release 2.0.0: fail-closed store queries', ec0e876, 2026-10-05) and docs/aegis/README.md:203 describes it as a major release, but the repository has no tags, the Registry knows only 1.0.0 (nuget), and all 16 consumers use 1.0.0. Unchanged since the 2026-10-23 inventory; the repository's last commit is 2026-10-16.",
+   "evidence": ["aegis:docs/aegis/README.md:203", "aegis:src/Aegis.Core/Aegis.Core.fsproj", "git ls-remote --tags kemiller2002/aegis (0 tags)", "echelon-registry:releases/aegis/1.0.0.release.json"],
+   "limitations": "NuGet.org was not queried directly; Registry record used as the release source."
+  },
+  {
+   "id": "C-F-09",
+   "title": "forma-workflow is installed and qualified outside the Registry",
+   "classification": "VERIFIED",
+   "statement": "Causa pins forma-workflow 1.2.0 in conditor.json without a registryAuthority; Conditor qualifies it as a built-in component (8313de7, 2026-11-06); the Registry catalog has no forma-workflow system. Forma Studio separately vendors Forma.Workflow source at 1.1.0.",
+   "evidence": ["causa:conditor.json", "conditor:components/forma-workflow.component.json", "conditor:src/Conditor.Core/Compatibility.fs:26", "echelon-registry:snapshots/echelon-current.catalog.json", "forma-studio:vendor/forma/workflow/src/Forma.Workflow.fsproj"],
+   "limitations": "None material."
+  },
+  {
+   "id": "C-F-10",
+   "title": "Unqualified Limen F# 0.9.1 is in use",
+   "classification": "VERIFIED",
+   "statement": "Specula references EchelonFoundry.Limen.Contract and Limen.Guest 0.9.1; the Registry states 'Limen F# stays at 0.9.0 (its 0.9.1 was not qualified)'. Specula has no conditor.json, so no governance check sees it.",
+   "evidence": ["specula:src/Specula.Engine/Specula.Engine.fsproj:33-34", "echelon-registry:spec/ecosystem-distribution-readiness.md:28"],
+   "limitations": "Specula is an application; using an unqualified library may be a deliberate choice."
+  },
+  {
+   "id": "C-F-11",
+   "title": "Arca's breaking 0.6.0 strands three applications on old sets",
+   "classification": "VERIFIED",
+   "statement": "Chrona, Signal and Summa pin Arca 0.5.0; the Registry records that Chrona does not compile against 0.6.0+ and stays on echelon-current 1.31.0. Fides.Arca still targets Arca.Core 0.1.0.",
+   "evidence": ["echelon-registry:sets/echelon-current/1.37.0.json:484,490", "chrona:Directory.Packages.props", "signal:Directory.Packages.props", "summa:Directory.Packages.props", "fides:src/Fides.Arca/Fides.Arca.fsproj:24"],
+   "limitations": "Signal and Summa compile status against 0.7.0 not tested."
+  },
+  {
+   "id": "C-F-12",
+   "title": "The program repository has grown a parallel toolchain",
+   "classification": "SUPPORTED",
+   "statement": "Indy-init holds about 39,000 lines of tooling under tools/; requirements-compiler alone is 16,040 lines of F# with Ledger, Continuation, TokenEconomics, Observer, VerificationPlan and Graph modules, reading Praxis's on-disk event logs and execution records directly. Those concerns overlap Praxis telemetry/continuation and Dokimos verification.",
+   "evidence": ["Indy-init:tools/requirements-compiler/src/Program.fs:1-10,572-573,932-942", "Indy-init: wc -l over tools/*.fs,*.fsx,*.py (39,035)"],
+   "limitations": "Function-level overlap not compared; some modules are competition-specific by design."
+  },
+  {
+   "id": "C-F-13",
+   "title": "No repository scans dependencies for known vulnerabilities",
+   "classification": "VERIFIED",
+   "statement": "Across the workflows of 31 Echelon repositories plus Indy-init and rehearsal-010 there is no CodeQL, dependency review, npm audit, `dotnet list package --vulnerable`, OSV or Dependabot configuration. Nine repositories attest build provenance; Tutela (security engineering) is installed in two.",
+   "evidence": ["data/code-counts.json (securityWorkflowSignals, dependabot)"],
+   "limitations": "GitHub-side default secret scanning or org-level settings are not visible from repository contents."
+  },
+  {
+   "id": "C-F-14",
+   "title": "READMEs misstate responsibility or installed versions",
+   "classification": "VERIFIED",
+   "statement": "Summa's README describes a 'project-administration hub' while the code is an invoicing ledger (CONTRADICTED by code). Dokimos says security is owned by 'Aegis/Tutors' (Aegis is fault handling; no 'Tutors' exists). Ordo, Signal, Chrona, Vigila, Folio, Communication Engineering and echelon-foundry READMEs state ROS/Praxis versions 1.2.1-3.7.1 that differ from what .echelon/ros.json installs. Aegis docs describe an unreleased 2.0.0.",
+   "evidence": ["summa:README.md:3", "summa:src/Summa.Contracts/README.md:1-12", "dokimos:README.md:13", "ordo:README.md:3", "signal:README.md:3", "chrona:README.md:3", "vigila:README.md:5", "folio:README.md:13", "communication-engineering:README.md:5", "echelon-foundry:README.md:3"],
+   "limitations": "Only README/top-level docs were compared."
+  },
+  {
+   "id": "C-F-15",
+   "title": "Several repositories are empty, proposal-only or overlapping",
+   "classification": "SUPPORTED",
+   "statement": "observer is empty; census (financial ledger, AWS/PostgreSQL) and armamentarium (signed build kit) are documentation-only; vitium is a proposed baseline with unconsumed preview packages. Census's ledger overlaps Summa.Ledger, armamentarium overlaps Conditor plus Registry, and Vitium overlaps Dokimos/Specula by stated scope. Limen.Outbox overlaps Arca's offline queue.",
+   "evidence": ["git clone kemiller2002/observer (empty)", "census:README.md", "armamentarium:README.md:1-10", "vitium:README.md", "limen:libraries/fsharp/Limen.Outbox/Outbox.fs:1-10", "arca:README.md:7-17"],
+   "limitations": "Overlap judged from stated scope, not from code (none exists for census/armamentarium/observer)."
+  },
+  {
+   "id": "C-F-16",
+   "title": "Conditor's default versions are 15-19 minor versions old",
+   "classification": "SUPPORTED",
+   "statement": "defaultVersion is praxis 3.6.0, ordo 1.4.0, forma 0.5.0, folio 0.3.0 (components/*.component.json:7) and is used when a scaffold or status request omits a version (Scaffolding.fs:49,114; Status.fs:24). Presets pin explicit versions, so the risk is latent.",
+   "evidence": ["conditor:components/praxis.component.json:7", "conditor:src/Conditor.Core/Scaffolding.fs:49,114", "conditor:src/Conditor.Core/Status.fs:24"],
+   "limitations": "Not executed; the indy-init preset pins the approved set, so no observed failure."
+  },
+  {
+   "id": "C-F-17",
+   "title": "Every repository carries about 53 copied tool-owned files",
+   "classification": "VERIFIED",
+   "statement": "Each Praxis/Ordo/VE/CE-governed repository holds copies of .sde (20 files), praxis framework/ros/templates (20), .visual-engineering (8) and .communication-engineering (5). 23 repositories share the identical Ordo 1.5.0 .sde tree (hash 66fb60ac). These copies are what drift when pins lag (C-F-01).",
+   "evidence": ["mercatus, iter, limen, forma: git ls-files counts", ".sde tree hash comparison across /home/user/ext/*"],
+   "limitations": "Whether agents read these copies (versus the upstream source) was not measured."
+  },
+  {
+   "id": "C-F-18",
+   "title": "Approval churn: 12 owner-approved release sets in 13 days",
+   "classification": "VERIFIED",
+   "statement": "echelon-current advanced from 1.26.0 (2026-10-24) to 1.37.0 (2026-11-05), almost one owner approval per day, mostly to admit one or two component bumps for the next Indy rehearsal. Combined with C-F-03, a single component release costs a component release, a Conditor release, a Registry set and an owner approval.",
+   "evidence": ["echelon-registry:spec/ecosystem-distribution-readiness.md:28", "echelon-registry: git log (WI-0072..WI-0077 commits 7b35b15, de79ba7, 8d40380, 0cec857, 89db708)"],
+   "limitations": "Owner time per approval not measured."
+  }
+ ]
+}

@@ -1,0 +1,121 @@
+[
+ {
+  "id": "SPR-F-01",
+  "question": "How long do cold, no-op and incremental builds/publishes of F# WASM apps take?",
+  "procedure": "scripts/measure_build.py on git clones of R8/R9/R10 and a minimal fixture under /home/user/sprint-scratch/F: publish-cold (remove bin/obj under src), publish-noop, publish-incr (append a comment to Causa.App/View.fs), sln-cold/noop (dotnet build Causa.slnx Debug). Batch 1: modes in sequence, n=3. Batch 2: publish-cold and publish-incr interleaved across repos, n=3.",
+  "rawResults": [
+   "measurements/build-times.csv",
+   "measurements/build-times-batch2.csv",
+   "measurements/summary.json#build"
+  ],
+  "limitations": "Shared host with concurrent heavy jobs from other tracks (loadavg samples in measurements/loadavg-samples.txt); NuGet cache warm; MSBuild node reuse on.",
+  "reproduction": "python3 scripts/measure_build.py OUT.csv REPO LABEL --reps 3 --modes publish-cold,publish-noop,publish-incr,sln-cold,sln-noop",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-02",
+  "question": "What is the publish/bundle size, total and per asset type?",
+  "procedure": "scripts/bundle_sizes.mjs over each dist/ (build.fsx output; fixture: publish wwwroot/_framework + index.html; variants: R10 with SatelliteResourceLanguages=en, TrimMode=full, wasm-tools relink). Raw, gzip -9 and brotli q11 bytes per category; .br/.gz siblings ignored.",
+  "rawResults": [
+   "measurements/bundles/*.json"
+  ],
+  "limitations": "Includes files never requested at runtime (see SPR-F-03 transferBytes for what loads).",
+  "reproduction": "node scripts/bundle_sizes.mjs LABEL DIST_DIR > out.json",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-03",
+  "question": "How long until the app is ready in headless Chromium (cold, warm, emulated 4G, with/without compression)?",
+  "procedure": "scripts/startup.mjs: fresh browser context per cold rep (warm: one primed context, timed reloads); init script records performance.now() when the app's own ready attribute appears (R8 data-engine=ready, R9 data-causa-ready=running, R10 data-causa-started-ms, fixture data-fixture-ready); also DOMContentLoaded, FCP, resource transfer bytes. Servers: python http.server and scripts/static_gzip_server.mjs. 4G = CDP 9 Mbit/s / 60 ms. n=7 (cold/warm localhost), n=5 (4G, gzip).",
+  "rawResults": [
+   "measurements/startup.jsonl",
+   "measurements/summary.json#startup"
+  ],
+  "limitations": "Chromium only; CPU contention; ready markers are app-defined and not strictly equivalent.",
+  "reproduction": "node scripts/startup.mjs OUT.jsonl LABEL URL MARKER [--reps N] [--warm] [--throttle 4g] [--server gzip]",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-04",
+  "question": "Are the existing Playwright suites stable across repeated runs?",
+  "procedure": "Repo suites run 3x serially per app with repo-pinned @playwright/test 1.63.0, --trace off, JSON reporter; R8/R9 via copies of their configs with a private port; R10 playwright.config.ts --project chromium with the stateful GitHub fake on a private port; R10 TrimMode=full build run 2x. Summarised with scripts/playwright_stability.py --project chromium.",
+  "rawResults": [
+   "measurements/playwright-stability.json",
+   "measurements/playwright-runs.csv"
+  ],
+  "limitations": "WebKit unavailable; live-provider tests have no token (BLOCKED/fail by design in R10).",
+  "reproduction": "see /home/user/sprint-scratch/F/run_suites.sh (copied to scripts/run_suites.sh)",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-05",
+  "question": "Does axe-core find WCAG 2.1 A/AA violations on the apps' reachable screens?",
+  "procedure": "scripts/axe_scan.mjs: wait for ready marker, inject the repo's axe-core 4.14.0, run tags wcag2a/2aa/21a/21aa on each hash route at 1280x800 and 390x844.",
+  "rawResults": [
+   "measurements/axe/*.json"
+  ],
+  "limitations": "Only unauthenticated/disconnected states; workspace states need a GitHub session or fake.",
+  "reproduction": "node scripts/axe_scan.mjs OUT LABEL URL MARKER AXE_JS ROUTES",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-06",
+  "question": "Does Limen behave as documented for multi-root templates and nested lists?",
+  "procedure": "scripts/limen-probe/probe.html with a fake transport (Legacy handshake) and three view cases, served next to limen 0.9.0 (npm) and 0.9.1 (R10 node_modules) dist/; run_probe.mjs records kernel status, BridgeErrors and DOM.",
+  "rawResults": [
+   "measurements/limen-probe-0.9.0.json",
+   "measurements/limen-probe-0.9.1.json"
+  ],
+  "limitations": "HEAD not executed (source inspected).",
+  "reproduction": "serve probe.html + limen/ (package dist) ; node scripts/limen-probe/run_probe.mjs BASE_URL",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-07",
+  "question": "Can the WASM interpreter 'locals size too big' failure be predicted statically, and how close are R8-R10?",
+  "procedure": "dotnet fsi scripts/IlFrame.fsx over Release Causa.*.dll of R8/R9/R10 and R5 at 5d8888f (failing) and a0e7d4a (fixed); self-test reproduces wasm.md boundary values.",
+  "rawResults": [
+   "measurements/il-frame.jsonl"
+  ],
+  "limitations": "Value types counted as 8 B.",
+  "reproduction": "dotnet fsi scripts/IlFrame.fsx --self-test ; dotnet fsi scripts/IlFrame.fsx --top 3 ASSEMBLY.dll",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-08",
+  "question": "Which F# compile errors do agents hit, how often, and how fast do they recover?",
+  "procedure": "scripts/mine_transcripts.py over 34 Claude Code transcripts in research-documents/research/construction-by-design (CONSTRUCT-008, its validation, time-entry-expanded-01): pair Bash dotnet invocations with results, extract FS diagnostics, recovery streaks.",
+  "rawResults": [
+   "data/transcript-builds.jsonl",
+   "data/transcript-errors.jsonl"
+  ],
+  "limitations": "Domain tasks rather than UI; small n per arm.",
+  "reproduction": "python3 scripts/mine_transcripts.py data/transcript $(find research-documents -name 'transcript*.jsonl')",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-09",
+  "question": "Which defect classes recur in rehearsal history?",
+  "procedure": "scripts/mine_defects.py keyword screen over 1,236 commits (R1-R10, causa) -> data/commit-signals.jsonl; hand curation of 29 defects with sources and contract mapping (scripts/curated_defects.py -> data/curated-ui-defects.jsonl); Limen claim verification (data/limen-claims.jsonl); CI run index via GitHub MCP actions_list and 5 sampled failure logs.",
+  "rawResults": [
+   "data/commit-signals.jsonl",
+   "data/curated-ui-defects.jsonl",
+   "data/limen-claims.jsonl",
+   "measurements/ci/"
+  ],
+  "limitations": "Keyword screen is noisy (e.g. 'token' = design token or credential).",
+  "reproduction": "python3 scripts/mine_defects.py OUT.jsonl REPO... ; python3 scripts/curated_defects.py OUT.jsonl",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ },
+ {
+  "id": "SPR-F-10",
+  "question": "Do candidate automatic styling rules fire on app CSS?",
+  "procedure": "scripts/style_lint.py over app-owned CSS of R1-R10, causa HEAD, causa before 3ae3ac9 and Forma 0.13 all.css.",
+  "rawResults": [
+   "measurements/style-lint.json"
+  ],
+  "limitations": "Heuristic; no ground truth.",
+  "reproduction": "python3 scripts/style_lint.py OUT LABEL=FILES...",
+  "environment": "measurements/environment.json (4 vCPU Xeon 2.3 GHz shared, 15 GiB, .NET SDK 10.0.402, node 22, Chromium 153 headless)"
+ }
+]

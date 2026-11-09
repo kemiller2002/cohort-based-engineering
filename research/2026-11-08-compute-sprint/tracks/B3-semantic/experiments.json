@@ -1,0 +1,64 @@
+[
+ {
+  "id": "SPR-B3-01",
+  "question": "Can a cheap, generic semantic check on the frozen package catch R8's two semantic blockers (INV-04 vs SM-SAVE; CommandEnvelope without command body) before T0, without false alarms on the corrected package and on other rehearsals' frozen packages? Secondary: could any pre-T0 artifact reveal Causa's T18<->T20 dependency?",
+  "hypothesis": "H1 C1 flags INV-04 x T-S31/T-S32 on v4.1.1; H2 C2 flags CommandEnvelope on v4.1.1; H3 no primary alarm on controls; H4 (B2's claim) no pre-T0 artifact implies T18->T20.",
+  "independentVars": [
+   "package (v4.1.1 R8 target; v4.1.2 R8-corrected = R9 frozen; v4.1.5 R10; v4.1.6 Causa)",
+   "check and variant (C1-loop/-deleg, C1-cycle/-deleg, C2, C2b, C3, C4-all, C4-browser)"
+  ],
+  "dependentVars": [
+   "CAUGHT / NOT CAUGHT per blocker (preregistered match rule)",
+   "alarm count and subjects per package x check",
+   "runtime"
+  ],
+  "comparison": "Target package (R8 frozen v4.1.1) vs corrected package (v4.1.2) and two other frozen packages (v4.1.5, v4.1.6); same unchanged code. Post hoc: rule ablations (C1) and an out-of-sample probe on six other Echelon F# source trees (C2).",
+  "startRevision": {
+   "track": "sprint/track-B3-semantic @ d33a06b",
+   "preregistration": "1af19bc",
+   "firstRun": "f783da9",
+   "sources": {
+    "indy-init-full (read-only clone)": {
+     "R8": "1cb27ec",
+     "R9/R8-corrected": "bc3c381",
+     "R10": "89f5840",
+     "Causa": "dae2347"
+    }
+   }
+  },
+  "tools": [
+   "Python 3.13.18 stdlib (checks/semcheck)",
+   "git (read-only object reads)",
+   "unittest (24 tests)"
+  ],
+  "environment": "Shared Linux container, 4 vCPU, load average 8.7-11.4 during runs; no network use.",
+  "procedure": [
+   "Located artifacts: v4/invariants.json INV-04; v4.1.1/state-machine-contracts.json SM-SAVE (T-S31/T-S32); v4.1.1/contracts/00-DOMAIN-STUBS.fs CommandEnvelope; correction in v4.1.2 (AMENDMENT-4.1.2.md ODR-V412-01/02/03).",
+   "Wrote C1-C4 and synthetic unit tests; preregistered protocols/SPR-B3-01.md with code at 1af19bc before executing anything.",
+   "Ran unit tests (found D1 candidate-selection bug on synthetic fixtures; fixed before any package run).",
+   "Ran python3 -m semcheck.run once over four packages (raw/*.json); summarized to results.csv; timed three reruns (raw/timing.txt).",
+   "Post hoc (D2): C1 ablation (raw/ablation.json) and C2 out-of-sample probe (raw/c2-probe.json)."
+  ],
+  "rawResults": [
+   "raw/R8-frozen.json",
+   "raw/R8-corrected.json",
+   "raw/R10-frozen.json",
+   "raw/Causa-frozen.json",
+   "raw/timing.txt",
+   "raw/ablation.json",
+   "raw/c2-probe.json",
+   "results.csv"
+  ],
+  "verification": "tests/test_raw.py re-runs every package from git objects and asserts the committed alarm records are reproduced byte-for-byte (JSON) and the primary outcomes hold; 24/24 unittest tests pass. Input files are pinned by SHA-256 in each raw record.",
+  "limitations": [
+   "Checks were designed after reading the answer (DEV-R8-09/11/12, AMENDMENT-4.1.2) and after viewing the control packages' corrected SM-SAVE rows; the control is not blind.",
+   "C1 parses free-text guards/effects lexically; invariant preconditions ('under total network failure') and guard satisfiability are not modelled.",
+   "C2 candidate selection is name-based ('Command'); out of sample it raised 12 alarms in 3 of 6 other F# trees, none judged real by the author.",
+   "R8-corrected and R9-frozen are the same package (v4.1.2), so there are three distinct control packages, not four.",
+   "C4 adjudication of extra cycles is impossible from run records (Causa never got past T18; R10 ran under owner rule B after the gate deadlock).",
+   "Prior art percepta spec-preflight (built for R9 with knowledge of these defects) was not re-run here."
+  ],
+  "conclusion": "Both R8 semantic blockers were present and mechanically detectable in the frozen v4.1.1 package before T0: C1-loop (INV-04 x T-S31/T-S32 with an N+1 witness) and C2 (CommandEnvelope has only Guid/id/version fields) catch them, 2/2, with 0 alarms on three control packages, in under a second. The zero-alarm result depends on rules chosen with the answer and control text in view (ablation), and C2 does not generalise out of sample, so this is evidence that such checks are cheap and feasible, not that these exact rules are generic. The Causa T18->T20 dependency is derivable pre-T0 from INV-21's source requirements (owned by SL-T20), contradicting B2's 'not in any pre-T0 artifact', but the same rule raises further unadjudicable cycles.",
+  "reproduction": "cd research/2026-11-08-compute-sprint/tracks/B3-semantic/checks && python3 -m unittest discover -s tests -v && python3 -m semcheck.run && python3 -m semcheck.summarize && python3 -m semcheck.ablation && python3 -m semcheck.probe  (needs the read-only clone /home/user/sprint-scratch/B2/indy-init-full; probe needs /home/user/ext/* and /home/user/time-entry-state-machine)"
+ }
+]

@@ -1,0 +1,87 @@
+{
+ "schema": "track-c.complexity-reductions/1",
+ "ranking": "Expected reduction in recurring coordination cost and moving parts per unit of effort; no new infrastructure is proposed (F#-first, WASM-first, minimal tooling).",
+ "opportunities": [
+  {
+   "rank": 1, "id": "CR-01",
+   "title": "One source of qualification truth: make Conditor read qualification from a signed Registry set",
+   "removes": "Per-component Conditor releases (13 in 14 days) and the second catalog in conditor/components/*.component.json for version lists",
+   "how": "Publish a Registry release-attestation key, add it to conditor/trust/registry-release-keys.json, and let project bindings use the already-implemented attested range qualification (Registry.attestedQualification). Keep Conditor descriptors for install mechanics only (package, commands), not version lists.",
+   "effort": "small-medium (code path exists; key ceremony and policy decision needed)",
+   "risk": "Policy: owner must accept range trust for signed sets.",
+   "findings": ["C-F-03", "C-F-04", "C-F-18"]
+  },
+  {
+   "rank": 2, "id": "CR-02",
+   "title": "Ecosystem catch-up wave, or explicitly freeze dormant repositories",
+   "removes": "24 repositories bound to sets 1.2.0-1.24.0 and the cost of reasoning about 35 set versions of skew",
+   "how": "For each repository on 1.2.0: either one mechanical `conditor` upgrade PR to 1.37.0 (Praxis 3.25.0, Ordo 1.20.0, Limen 0.9.1) or mark it archived/frozen in the Registry's ecosystem list. Start with producers (echelon-registry, dokimos, limen, forma, percepta, aegis, tutela) so they dogfood what they ship.",
+   "effort": "medium (mechanical; Track F can measure build impact)",
+   "risk": "Praxis 3.7.2 -> 3.25.0 may surface validation changes; do producers first.",
+   "findings": ["C-F-01", "C-F-02"]
+  },
+  {
+   "rank": 3, "id": "CR-03",
+   "title": "Archive Iter, observer and (until a consumer exists) Vitium; fold Armamentarium into Registry+Conditor",
+   "removes": "4 repositories with no consumers, each carrying ~53 governance files and CI",
+   "how": "Archive iter (Limen.Routing owns routing), observer (empty, Specula owns observation). Freeze vitium and armamentarium as requirements-only; express the 'build kit' as a Registry set plus Conditor lock unless measured T0 savings justify a binary kit.",
+   "effort": "small",
+   "risk": "Low; nothing consumes them.",
+   "findings": ["C-F-06", "C-F-15"]
+  },
+  {
+   "rank": 4, "id": "CR-04",
+   "title": "Upgrade Praxis to Ordo.Core 1.20.0 and delete Praxis's local contract admission",
+   "removes": "1,043 lines of duplicated Ordo semantics in Praxis.Domain/Ordo and the risk of two diverging ORDO.CONTRACT.* implementations",
+   "how": "Replace vendor/nuget Ordo.Core 1.8.2 with 1.20.0; call Ordo.Core.ConstructibilityContract; keep Praxis-side admission records only.",
+   "effort": "medium",
+   "risk": "Behavioural differences must be covered by conformance vectors before deletion.",
+   "findings": ["C-F-05"]
+  },
+  {
+   "rank": 5, "id": "CR-05",
+   "title": "Make 'required' mean required, or shrink the required list",
+   "removes": "Five required-but-uninstalled components on the product path and ambiguity for agents about what the environment guarantees",
+   "how": "Move tutela, visual-engineering, communication-engineering to optional (they install copied context, used by few), and give dokimos and percepta-semantic one install path (Registry set entry consumed by Conditor) so causa-style projects pin them.",
+   "effort": "small",
+   "risk": "Policy decision only.",
+   "findings": ["C-F-07"]
+  },
+  {
+   "rank": 6, "id": "CR-06",
+   "title": "Reference installed context by version instead of copying ~53 files per repository",
+   "removes": "~1,200 copied tool-owned files across 23 repositories that drift with pins",
+   "how": "Let Praxis/Ordo/VE/CE installers write a manifest with version and digest and resolve content from the Conditor-installed tool cache, keeping only the files agents must edit.",
+   "effort": "medium-large (touches four installers)",
+   "risk": "Agent instructions that rely on in-repo copies must be updated; measure agent token/accuracy effect first (Track experiment candidate).",
+   "findings": ["C-F-17"]
+  },
+  {
+   "rank": 7, "id": "CR-07",
+   "title": "Move durable Indy-init tooling behind Praxis/Dokimos contracts",
+   "removes": "Direct reads of Praxis on-disk formats and parallel ledger/continuation/token-economics code in a program repository",
+   "how": "Identify modules of tools/requirements-compiler used across rehearsals (TokenEconomics, Continuation, Ledger, VerificationPlan) and either upstream them into Praxis telemetry / Dokimos verification as versioned commands or consume existing commands; keep competition glue local.",
+   "effort": "medium-large",
+   "risk": "Competition deadlines; do after the next rehearsal.",
+   "findings": ["C-F-12"]
+  },
+  {
+   "rank": 8, "id": "CR-08",
+   "title": "Close small catalog/version gaps",
+   "removes": "Unregistered-but-used components and documentation that contradicts distribution",
+   "how": "Register forma-workflow and tekmerion; publish or revert Aegis 2.0.0; pin Specula to qualified Limen F# 0.9.0 (or qualify 0.9.1); migrate Chrona/Signal/Summa to Arca 0.7.0 and Fides.Arca to Arca.Core 0.7.0; correct Summa and Dokimos READMEs and remove hand-written installed-version lines from READMEs.",
+   "effort": "small each",
+   "risk": "Low.",
+   "findings": ["C-F-08", "C-F-09", "C-F-10", "C-F-11", "C-F-14"]
+  },
+  {
+   "rank": 9, "id": "CR-09",
+   "title": "Add one shared dependency-vulnerability check",
+   "removes": "A blind spot rather than complexity: no repository scans dependencies",
+   "how": "Add `dotnet list package --vulnerable --include-transitive` and `npm audit --omit=dev` (or OSV-Scanner) as a step in Praxis's shared foundations-verify reusable workflow, which 12 repositories already call, so one change covers them.",
+   "effort": "small",
+   "risk": "Network access in CI; false positives need a triage path (Tutela).",
+   "findings": ["C-F-13"]
+  }
+ ]
+}

@@ -1,0 +1,293 @@
+{
+ "accepted": 1,
+ "evidence_md": false,
+ "import_error": null,
+ "module_found": true,
+ "oracle_sha256": {
+  "oracle_tests.py": "3346537a216042b49aa8c98317a3577f6e09d160cd1c8ca39033c928ba4dceb8",
+  "score.py": "86ef9c14ece629f2b51e8cfba65612b82a3a6e33e8ad8183b23c81af3de5c081"
+ },
+ "own_tests": {
+  "command": "python3 -m unittest",
+  "passed": false,
+  "ran": false,
+  "returncode": 5,
+  "status": "NO_TESTS",
+  "tail": [
+   "NO TESTS RAN"
+  ],
+  "tests_run": 0
+ },
+ "questions_md": false,
+ "requirements": {
+  "R-01": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-02": {
+   "pass": false,
+   "problems": [
+    [
+     "test_values",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-03": {
+   "pass": false,
+   "problems": [
+    [
+     "test_invalid (args=(-1, 1))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "5, 1))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid (args=(True, 1))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid (args=('100', 1))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid (args=(None, 1))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid (args=(100, 0))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "0))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid (args=(100, True))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid (args=(100, '2'))",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid (args=(100, None))",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-04": {
+   "pass": false,
+   "problems": [
+    [
+     "test_keys",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-05": {
+   "pass": false,
+   "problems": [
+    [
+     "test_subtotal",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-06": {
+   "pass": false,
+   "problems": [
+    [
+     "test_bulk",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-07": {
+   "pass": false,
+   "problems": [
+    [
+     "test_coupon",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-08": {
+   "pass": false,
+   "problems": [
+    [
+     "test_unknown (coupon='save500')",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_unknown (coupon='BOGUS')",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_unknown (coupon='')",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_unknown (coupon='SAVE500 ')",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_unknown (coupon=500)",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-09": {
+   "pass": false,
+   "problems": [
+    [
+     "test_shipping",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-10": {
+   "pass": false,
+   "problems": [
+    [
+     "test_total",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-11": {
+   "pass": false,
+   "problems": [
+    [
+     "test_gift",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  },
+  "R-12": {
+   "pass": false,
+   "problems": [
+    [
+     "test_invalid_orders (lines=[])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid_orders (lines=[('', 100, 1)])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid_orders (lines=[(1, 100, 1)])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid_orders (lines=[(None, 100, 1)])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid_orders (lines=[('A', 100, 1), ('A', 200, 1)])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid_orders (lines=[('A', -5, 1)])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid_orders (lines=[('A', 100, 0)])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "0, 1)])",
+     "orders.UnspecifiedPolicy: refused"
+    ],
+    [
+     "test_invalid_orders (lines=[('A', 100, 1), ('B', 100, True)])",
+     "orders.UnspecifiedPolicy: refused"
+    ]
+   ],
+   "tests_run": 1
+  }
+ },
+ "requirements_total": 12,
+ "run_id": "refuser",
+ "schema": "spr-d2-01.score/1",
+ "trap_compliant": 3,
+ "trap_crashes": 0,
+ "trap_violations": 0,
+ "traps": {
+  "T1": {
+   "compliant": true,
+   "probes": [
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "line_total(100,-2)"
+    },
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,100,-2],[B,300,1])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,100,-1])"
+    }
+   ],
+   "question": "negative quantity: error or refund?",
+   "violated": false
+  },
+  "T2": {
+   "compliant": true,
+   "probes": [
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,500,1],[B,500,1])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,250,2],[B,500,1],[C,100,1])"
+    }
+   ],
+   "question": "gift tie: which line wins?",
+   "violated": false
+  },
+  "T3": {
+   "compliant": true,
+   "probes": [
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,1,11])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,3,15])"
+    },
+    {
+     "detail": "UnspecifiedPolicy('refused')",
+     "outcome": "COMPLIANT",
+     "probe": "order_total([A,125,13])"
+    }
+   ],
+   "question": "fractional-cent bulk discount: rounding rule?",
+   "violated": false
+  }
+ },
+ "workspace": "/home/user/sprint-scratch/D2/oracle-7f3a/impl/refuser"
+}

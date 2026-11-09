@@ -1,0 +1,107 @@
+[
+ {
+  "id": "B3-F-01",
+  "title": "C1-loop catches R8 INV-04 vs SM-SAVE before T0",
+  "classification": "VERIFIED",
+  "statement": "On the R8 frozen package (indy-init@1cb27ec, v4.1.1 state-machine-contracts.json + v4/invariants.json), the preregistered primary C1-loop check raises alarms for INV-04 'at most 4 reconciliation reads in 60 s' against SM-SAVE T-S31 (CheckAgain, guard 'automatic reads spent') and T-S32 (WentOnline, guard 'true'), with witness Edit, SaveRequested, AnswerLost, then 5 x the event at 0 s stated delay. It also flags T-S47 (WentOffline: 'one read on return'), which v4.1.2 ODR-V412-01 replaced for the same reason (post-hoc adjudication: related true positive). Matching criterion met: CAUGHT.",
+  "evidence": [
+   "raw/R8-frozen.json results.C1-loop",
+   "results.csv rows R8-frozen C1-*",
+   "indy-init-rehearsal-008@fd8fba9 evidence/DEVIATIONS.md DEV-R8-11",
+   "indy-init-full:requirements-compiled/v4.1.2/AMENDMENT-4.1.2.md ODR-V412-01"
+  ],
+  "limitations": "Answer-informed design (see B3-F-03). 3 of the 6 R8 alarms attach to the per-request bound 'at most 3 automatic reconciliation reads' because matching uses the head noun only; CheckAgain reads are not automatic and INV-04 exempts 'one per offline-to-online change', so those 3 are misattributions, not separate defects."
+ },
+ {
+  "id": "B3-F-02",
+  "title": "C2 catches the R8 CommandEnvelope without a command body",
+  "classification": "VERIFIED",
+  "statement": "C2 flags 'type CommandEnvelope' in v4.1.1 contracts (fields CommandId: Guid, Investigation: InvestigationId of Guid, ExpectedVersion: AggregateVersion option; no part can discriminate commands) and four carriers that inherit the gap: RefusedCommand, field RefusedCommand.Command, case SaveEffect.ExportCommands, case Msg.DomainCommand (the last is CR-T17-01). C2b flags EventPayload of kind: string (the second half of DEV-R8-09). Matching criterion met: CAUGHT.",
+  "evidence": [
+   "raw/R8-frozen.json results.C2, C2b, C2-examined",
+   "indy-init-full@1cb27ec requirements-compiled/v4.1.1/contracts/00-DOMAIN-STUBS.fs",
+   "DEVIATIONS.md DEV-R8-09, CR-T17-01"
+  ],
+  "limitations": "Name-based candidate selection; does not generalise out of sample (B3-F-04)."
+ },
+ {
+  "id": "B3-F-03",
+  "title": "Zero false alarms on three control packages, but the zero depends on answer-informed rules",
+  "classification": "SUPPORTED",
+  "statement": "Primary checks C1-loop and C2, plus C2b and C3, raise 0 alarms on v4.1.2 (R8-corrected = R9 frozen, @bc3c381), v4.1.5 (R10, @89f5840) and v4.1.6 (Causa, @dae2347). Post-hoc ablation: the R8-INV04 catch survives all five C1 variants, but a naive emission rule adds a T-S47 'automatic reads pause' false alarm on every control, and dropping the remaining-budget repeatability rule adds T-S14 and T-S65 alarms on every control. Both rules were chosen after viewing those control rows.",
+  "evidence": [
+   "results.csv control rows",
+   "raw/ablation.json",
+   "protocols/SPR-B3-01.md 'Contamination disclosure'"
+  ],
+  "limitations": "Three control packages share ancestry with the target (successive amendments of one specification); no independent specification was available. Not a blind control."
+ },
+ {
+  "id": "B3-F-04",
+  "title": "C2's name-based rule does not generalise out of sample",
+  "classification": "SUPPORTED",
+  "statement": "Post-hoc probe over six other Echelon F# source trees (causa src @97c0a98, time-entry f-sharp @c120ada, vigila, signal, strata, ordo): 12 alarms in 3 trees, none judged a real defect by the author: 5 per-command records in time-entry (the type itself names the command), a capability descriptor in causa, and 6 CLI/receipt cases in ordo carrying command names as strings. A generic version must restrict candidates to the parameter type of an operation that must accept several commands (e.g. Decide), which was not tested.",
+  "evidence": [
+   "raw/c2-probe.json"
+  ],
+  "limitations": "Author adjudication, unreviewed; the trees are implementation code, not frozen packages."
+ },
+ {
+  "id": "B3-F-05",
+  "title": "Cycle-level C1 (secondary) is noisy because invariant preconditions are not modelled",
+  "classification": "VERIFIED",
+  "statement": "C1-cycle raises 6 alarms on each control package and 2 extra on R8: the cycle T-S19/T-S58/T-S59 (schedule read 1) -> T-S22 (ReconcileMarkerBytesMatch) -> T-S04 (SaveRequested) emits a read per save. That cycle needs a successful read, so it cannot occur 'under total network failure', which C1 does not evaluate. The self-loop restriction of the primary variant is what removes them.",
+  "evidence": [
+   "raw/*.json results.C1-cycle",
+   "results.csv"
+  ],
+  "limitations": "18 control alarms counted as false positives per the preregistration."
+ },
+ {
+  "id": "B3-F-06",
+  "title": "Causa T18->T20 dependency was derivable from pre-T0 artifacts; B2's 'not in any pre-T0 artifact' is contradicted",
+  "classification": "CONTRADICTED",
+  "statement": "In the pre-T0 Causa inputs (@dae2347, before T0 2026-11-07T16:10:50Z), SL-T18's acceptance tests include playwright:invariants/INV-21.spec.js; v4/invariants.json INV-21 lists sources EXT-DATA-004 and EXT-DATA-005; the slice manifest assigns both to SL-T20 ('Connect flow and GitHub provider'), which declares dependsOn SL-T18. C4 (implied edge test -> invariant -> source requirement -> owning slice) therefore yields SL-T18->SL-T20 and the 2-cycle T18<->T20 that Causa's FINAL-REPORT names (INV-21.spec.js drives Connect, wired only by T20). B2 checked the test's obligations (PF-015-O4, owned by T18) rather than the invariant's sources. Classification refers to B2's claim (contradicted); the dependency link is VERIFIED from the artifacts.",
+  "evidence": [
+   "raw/Causa-frozen.json results.C4-browser.edgeEvidence['SL-T18->SL-T20']",
+   "indy-init-full@dae2347 docs/competition-readiness/slice-execution-manifest.json",
+   "indy-init-full@dae2347 requirements-compiled/v4/invariants.json INV-21",
+   "causa@97c0a98 evidence/FINAL-REPORT.md lines 70-75"
+  ],
+  "limitations": "As a detector it is noisy: the same SCC on Causa also holds T16<->T22 and T19<->T22 two-cycles (INV-24/INV-13/INV-25), and the R10 control yields a 6-slice SCC (T16, T17, T19, T22, WI-GEN-EXT-DATA, WI-GEN-UI). Neither can be adjudicated: Causa never got past T18, and R10 merged under owner rule B after its gate deadlock. C4-all gives 25-29-slice SCCs. Designed after knowing the answer."
+ },
+ {
+  "id": "B3-F-07",
+  "title": "C3 (exploratory) flags the DEV-R8-12 missing transition on R8 only",
+  "classification": "SUPPORTED",
+  "statement": "C3 flags (UnknownOutcome, ReconcileReadFailed) in v4.1.1, whose only transition T-S29 is guarded 'fewer than three automatic reads made' and has no exhausted-budget transition (the stall DEV-R8-12 recorded). 0 alarms on all controls, where T-S64 covers it.",
+  "evidence": [
+   "raw/R8-frozen.json results.C3",
+   "DEVIATIONS.md DEV-R8-12"
+  ],
+  "limitations": "Not in the brief's blocker list; answer-informed; lexical guard classification."
+ },
+ {
+  "id": "B3-F-08",
+  "title": "Cost: under one second for all four packages",
+  "classification": "VERIFIED",
+  "statement": "Loading and running every check on four packages takes 0.26-0.63 s in-process (0.33-0.72 s process wall) on the shared host at load average 9-11; each check is <=0.02 s per package. No build is needed.",
+  "evidence": [
+   "raw/timing.txt",
+   "raw/*.json timing"
+  ],
+  "limitations": "Excludes design effort, which here was guided by the known answer."
+ },
+ {
+  "id": "B3-F-09",
+  "title": "Prior art already covers these defects",
+  "classification": "NOT TESTED",
+  "statement": "Indy-init records that 'percepta spec-preflight', introduced for R9 after R8, exits 3 on v4.1.1 in 0.3 s, finding INV-04 x T-S31/T-S32, the CommandEnvelope discrimination gap and the (UnknownOutcome, ReconcileReadFailed) gap, and passes on v4.1.2; it is wired into preflight-tooling.yml for v4.1.5. B3 did not re-run it. Like B3's checks it was built knowing the answer.",
+  "evidence": [
+   "indy-init-full@dae2347 docs/engineering-improvement/R9-READINESS-HANDOFF.md lines 70-85",
+   "indy-init-full@dae2347 requirements-compiled/v4.1.2/AMENDMENT-4.1.2.md 'Specification preflight'",
+   ".github/workflows/preflight-tooling.yml:398"
+  ],
+  "limitations": "Documentary only."
+ }
+]

@@ -1,0 +1,402 @@
+[
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "R8-frozen",
+    "commit": "1cb27ec",
+    "packageDir": "v4.1.1",
+    "role": "target",
+    "condition": "DOC",
+    "inputs": {
+      "machines": {
+        "source": "1cb27ec:requirements-compiled/v4.1.1/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/state-machine-contracts.json",
+        "sha256": "e007be75fe551d45d8466eb4f425b7e7db0bbdd430bee0b788f7348fc5baed3a"
+      },
+      "invariants": {
+        "source": "1cb27ec:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "1cb27ec:requirements-compiled/v4.1.1/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/interface-specifications.json",
+        "sha256": "6330b31a39626c1da289ccfe5ad0ac34c2401d0a17615acc020a321087e5e040"
+      },
+      "catalog": {
+        "source": "1cb27ec:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/R8-frozen/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/R8-frozen/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/R8-frozen/interface-specifications.json --catalog /home/user/sprint-scratch/B4/inputs/R8-frozen/COMMAND-EVENT-CATALOG.md --out raw/v0.4.0-4a53688/R8-frozen.DOC.json",
+    "env": {},
+    "exits": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "seconds": [
+      0.6707,
+      0.3096,
+      0.5038,
+      0.3359,
+      0.3198
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 134,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 26,\n    \"transitions\": 97,\n    \"types\": 78\n  },\n  \"blocked\": true,\n  \"blockingContradictions\": [\n    {\n      \"blocking\": true,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"(steps that make \\u0027automatic reads spent\\u0027 hold come first; they add reconciliation reads, never remove one)\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #1]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #2]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #3]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #4]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #5]\",\n        \"5 reconciliation reads with no time between them: exceeds 4 in 60 s\"\n      ],\n      \"detail\": \"INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S31 (UnknownOutcome x CheckAgain, guard \\u0027automatic reads spent\\u0027) emits a reconciliation read on every repetition, and no guard on it limits repetition or references a clock.\",\n      \"kind\": \"likely-contradiction\",\n      \"ownerAction\": \"decide which governs: bound T-S31 (a clock, a count or a rate in its guard) or amend INV-04\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"rate-bound-vs-unbounded-loop\",\n      \"subjects\": [\n        \"INV-04\",\n        \"SM-SAVE\",\n        \"T-S31\"\n      ]\n    },\n    {\n      \"blocking\": true,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #1]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #2]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #3]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #4]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #5]\",\n        \"5 reconciliation reads with no time between them: exceeds 4 in 60 s\"\n      ],\n      \"detail\": \"INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S32 (UnknownOutcome x WentOnline, guard \\u0027true\\u0027) emits a reconciliation read on every repetition, and no guard on it limits repetition or references a clock.\",\n      \"kind\": \"likely-contradiction\",\n      \"ownerAction\": \"decide which governs: bound T-S32 (a clock, a count or a rate in its guard) or amend INV-04\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"rate-bound-vs-unbounded-loop\",\n      \"subjects\": [\n        \"INV-04\",\n        \"SM-SAVE\",\n        \"T-S32\"\n      ]\n    }\n  ],\n  \"missingDecisions\": [\n    {\n      \"blocking\": false,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"UnknownOutcome x ReconcileReadFailed with the counter at its limit: no legal transition\"\n      ],\n      \"detail\": \"SM-SAVE (UnknownOutcome, ReconcileReadFailed) is specified only when \\u0027fewer than three automatic reads made\\u0027; no transition covers the counter at its limit, so that input fails closed without a stated outcome.\",\n      \"kind\": \"missing-specification\",\n      \"ownerAction\": \"state the transition for (UnknownOutcome, ReconcileReadFailed) with the counter at its limit, or record that failing closed is intended\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"counter-guard-without-complement\",\n      \"subjects\": [\n        \"SM-SAVE\",\n        \"T-S29\"\n      ]\n    },\n    {\n      \"blocking\": false,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"UnknownOutcome x CheckAgain with the counter still below its limit: no legal transition\"\n      ],\n      \"detail\": \"SM-SAVE (UnknownOutcome, CheckAgain) is specified only when \\u0027automatic reads spent\\u0027; no transition covers the counter still below its limit, so that input fails closed without a stated outcome.\",\n      \"kind\": \"missing-specification\",\n      \"ownerAction\": \"state the transition for (UnknownOutcome, CheckAgain) with the counter still below its limit, or record that failing closed is intended\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"counter-guard-without-complement\",\n      \"subjects\": [\n        \"SM-SAVE\",\n        \"T-S31\"\n      ]\n    }\n  ],\n  \"missingInterfaces\": [\n    {\n      \"blocking\": true,\n      \"counterexample\": [\n        \"two different commands (e.g. StartInvestigation and RenameInvestigation) with the same identities and version are the same CommandEnvelope value\",\n        \"the body is therefore also lost wherever DomainKernel carries CommandEnvelope (Decide)\",\n        \"the body is therefore also lost wherever RefusedCommand carries CommandEnvelope (Command)\",\n        \"the body is therefore also lost wherever ConflictInput carries CommandEnvelope (ReapplyDone)\",\n        \"the body is therefore also lost wherever SaveInput carries CommandEnvelope (Edit, ConflictResolvedReapplied)\",\n        \"the body is therefore also lost wherever SaveEffect carries CommandEnvelope (ExportCommands)\",\n        \"the body is therefore also lost wherever InvestigationSession carries CommandEnvelope (Unsaved, AfterInFlight)\",\n        \"the body is therefore also lost wherever Msg carries CommandEnvelope (DomainCommand)\"\n      ],\n      \"detail\": \"The catalog carries all 134 commands (StartInvestigation, RenameInvestigation, ActivateInvestigation, MarkAwaitingEvidence, ...) inside CommandEnvelope, but \\u0060CommandEnvelope = { CommandId: Guid; Investigation: InvestigationId; ExpectedVersion: AggregateVersion option }\\u0060 holds only identities and versions: no field can say which command it is or carry its body. IF41-DOMAIN.Decide must distinguish them from that value alone.\",\n      \"kind\": \"missing-interface\",\n      \"ownerAction\": \"add the command (a union of the catalog commands, with payloads) to CommandEnvelope, or name the out-of-band source consumers must read it from\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"carrier-cannot-discriminate\",\n      \"subjects\": [\n        \"CommandEnvelope\",\n        \"IF41-DOMAIN.Decide\"\n      ]\n    }\n  ],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [\n    \"decide which governs: bound T-S31 (a clock, a count or a rate in its guard) or amend INV-04\",\n    \"decide which governs: bound T-S32 (a clock, a count or a rate in its guard) or amend INV-04\",\n    \"state the transition for (UnknownOutcome, ReconcileReadFailed) with the counter at its limit, or record that failing closed is intended\",\n    \"state the transition for (UnknownOutcome, CheckAgain) with the counter still below its limit, or record that failing closed is intended\",\n    \"add the command (a union of the catalog commands, with payloads) to CommandEnvelope, or name the out-of-band source consumers must read it from\"\n  ],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/R8-frozen.DOC.json"
+  },
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "R8-frozen",
+    "commit": "1cb27ec",
+    "packageDir": "v4.1.1",
+    "role": "target",
+    "condition": "CI",
+    "inputs": {
+      "machines": {
+        "source": "1cb27ec:requirements-compiled/v4.1.1/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/state-machine-contracts.json",
+        "sha256": "e007be75fe551d45d8466eb4f425b7e7db0bbdd430bee0b788f7348fc5baed3a"
+      },
+      "invariants": {
+        "source": "1cb27ec:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "1cb27ec:requirements-compiled/v4.1.1/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/interface-specifications.json",
+        "sha256": "6330b31a39626c1da289ccfe5ad0ac34c2401d0a17615acc020a321087e5e040"
+      },
+      "catalog": {
+        "source": "1cb27ec:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-frozen/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/R8-frozen/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/R8-frozen/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/R8-frozen/interface-specifications.json --out raw/v0.4.0-4a53688/R8-frozen.CI.json",
+    "env": {},
+    "exits": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "seconds": [
+      0.4197,
+      0.3678,
+      0.3439,
+      0.2598,
+      0.4055
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 0,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 26,\n    \"transitions\": 97,\n    \"types\": 78\n  },\n  \"blocked\": true,\n  \"blockingContradictions\": [\n    {\n      \"blocking\": true,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"(steps that make \\u0027automatic reads spent\\u0027 hold come first; they add reconciliation reads, never remove one)\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #1]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #2]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #3]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #4]\",\n        \"T-S31: UnknownOutcome --CheckAgain [automatic reads spent]--\\u003E UnknownOutcome  [reconciliation read #5]\",\n        \"5 reconciliation reads with no time between them: exceeds 4 in 60 s\"\n      ],\n      \"detail\": \"INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S31 (UnknownOutcome x CheckAgain, guard \\u0027automatic reads spent\\u0027) emits a reconciliation read on every repetition, and no guard on it limits repetition or references a clock.\",\n      \"kind\": \"likely-contradiction\",\n      \"ownerAction\": \"decide which governs: bound T-S31 (a clock, a count or a rate in its guard) or amend INV-04\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"rate-bound-vs-unbounded-loop\",\n      \"subjects\": [\n        \"INV-04\",\n        \"SM-SAVE\",\n        \"T-S31\"\n      ]\n    },\n    {\n      \"blocking\": true,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #1]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #2]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #3]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #4]\",\n        \"T-S32: UnknownOutcome --WentOnline [true]--\\u003E UnknownOutcome  [reconciliation read #5]\",\n        \"5 reconciliation reads with no time between them: exceeds 4 in 60 s\"\n      ],\n      \"detail\": \"INV-04 allows at most 4 reconciliation read(s) in 60 s (under total network failure), but SM-SAVE T-S32 (UnknownOutcome x WentOnline, guard \\u0027true\\u0027) emits a reconciliation read on every repetition, and no guard on it limits repetition or references a clock.\",\n      \"kind\": \"likely-contradiction\",\n      \"ownerAction\": \"decide which governs: bound T-S32 (a clock, a count or a rate in its guard) or amend INV-04\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"rate-bound-vs-unbounded-loop\",\n      \"subjects\": [\n        \"INV-04\",\n        \"SM-SAVE\",\n        \"T-S32\"\n      ]\n    }\n  ],\n  \"missingDecisions\": [\n    {\n      \"blocking\": false,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"UnknownOutcome x ReconcileReadFailed with the counter at its limit: no legal transition\"\n      ],\n      \"detail\": \"SM-SAVE (UnknownOutcome, ReconcileReadFailed) is specified only when \\u0027fewer than three automatic reads made\\u0027; no transition covers the counter at its limit, so that input fails closed without a stated outcome.\",\n      \"kind\": \"missing-specification\",\n      \"ownerAction\": \"state the transition for (UnknownOutcome, ReconcileReadFailed) with the counter at its limit, or record that failing closed is intended\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"counter-guard-without-complement\",\n      \"subjects\": [\n        \"SM-SAVE\",\n        \"T-S29\"\n      ]\n    },\n    {\n      \"blocking\": false,\n      \"counterexample\": [\n        \"T-S01: Saved --Edit [online]--\\u003E Unsaved\",\n        \"T-S04: Unsaved --SaveRequested [online and no other mutation in flight in this tab]--\\u003E Saving\",\n        \"T-S19: Saving --AnswerLost [current]--\\u003E UnknownOutcome\",\n        \"UnknownOutcome x CheckAgain with the counter still below its limit: no legal transition\"\n      ],\n      \"detail\": \"SM-SAVE (UnknownOutcome, CheckAgain) is specified only when \\u0027automatic reads spent\\u0027; no transition covers the counter still below its limit, so that input fails closed without a stated outcome.\",\n      \"kind\": \"missing-specification\",\n      \"ownerAction\": \"state the transition for (UnknownOutcome, CheckAgain) with the counter still below its limit, or record that failing closed is intended\",\n      \"requiresOwnerDecision\": true,\n      \"rule\": \"counter-guard-without-complement\",\n      \"subjects\": [\n        \"SM-SAVE\",\n        \"T-S31\"\n      ]\n    }\n  ],\n  \"missingInterfaces\": [],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [\n    \"decide which governs: bound T-S31 (a clock, a count or a rate in its guard) or amend INV-04\",\n    \"decide which governs: bound T-S32 (a clock, a count or a rate in its guard) or amend INV-04\",\n    \"state the transition for (UnknownOutcome, ReconcileReadFailed) with the counter at its limit, or record that failing closed is intended\",\n    \"state the transition for (UnknownOutcome, CheckAgain) with the counter still below its limit, or record that failing closed is intended\"\n  ],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/R8-frozen.CI.json"
+  },
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "R8-corrected",
+    "commit": "bc3c381",
+    "packageDir": "v4.1.2",
+    "role": "control",
+    "condition": "DOC",
+    "inputs": {
+      "machines": {
+        "source": "bc3c381:requirements-compiled/v4.1.2/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/state-machine-contracts.json",
+        "sha256": "9dc917dd815fdb2da30e2c2bce3baee9ce197357d5756a1c552b41fa6fc221d1"
+      },
+      "invariants": {
+        "source": "bc3c381:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "bc3c381:requirements-compiled/v4.1.2/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/interface-specifications.json",
+        "sha256": "4095c5a2bedb353152df27c131fea0d1e219342c2b7e9c202fe7ab74d39f4340"
+      },
+      "catalog": {
+        "source": "bc3c381:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/R8-corrected/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/R8-corrected/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/R8-corrected/interface-specifications.json --catalog /home/user/sprint-scratch/B4/inputs/R8-corrected/COMMAND-EVENT-CATALOG.md --out raw/v0.4.0-4a53688/R8-corrected.DOC.json",
+    "env": {},
+    "exits": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "seconds": [
+      0.3465,
+      0.2487,
+      0.3597,
+      0.2599,
+      0.2955
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 134,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 26,\n    \"transitions\": 101,\n    \"types\": 85\n  },\n  \"blocked\": false,\n  \"blockingContradictions\": [],\n  \"missingDecisions\": [],\n  \"missingInterfaces\": [],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/R8-corrected.DOC.json"
+  },
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "R8-corrected",
+    "commit": "bc3c381",
+    "packageDir": "v4.1.2",
+    "role": "control",
+    "condition": "CI",
+    "inputs": {
+      "machines": {
+        "source": "bc3c381:requirements-compiled/v4.1.2/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/state-machine-contracts.json",
+        "sha256": "9dc917dd815fdb2da30e2c2bce3baee9ce197357d5756a1c552b41fa6fc221d1"
+      },
+      "invariants": {
+        "source": "bc3c381:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "bc3c381:requirements-compiled/v4.1.2/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/interface-specifications.json",
+        "sha256": "4095c5a2bedb353152df27c131fea0d1e219342c2b7e9c202fe7ab74d39f4340"
+      },
+      "catalog": {
+        "source": "bc3c381:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/R8-corrected/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/R8-corrected/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/R8-corrected/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/R8-corrected/interface-specifications.json --out raw/v0.4.0-4a53688/R8-corrected.CI.json",
+    "env": {},
+    "exits": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "seconds": [
+      0.4071,
+      0.4178,
+      0.5059,
+      0.3724,
+      0.3912
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 0,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 26,\n    \"transitions\": 101,\n    \"types\": 85\n  },\n  \"blocked\": false,\n  \"blockingContradictions\": [],\n  \"missingDecisions\": [],\n  \"missingInterfaces\": [],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/R8-corrected.CI.json"
+  },
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "R10-frozen",
+    "commit": "89f5840",
+    "packageDir": "v4.1.5",
+    "role": "control",
+    "condition": "DOC",
+    "inputs": {
+      "machines": {
+        "source": "89f5840:requirements-compiled/v4.1.5/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/state-machine-contracts.json",
+        "sha256": "d58d21f9c11b23238402727c39ce6045a960dbf248fe0f58bf3a30a2bc4a8bc2"
+      },
+      "invariants": {
+        "source": "89f5840:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "89f5840:requirements-compiled/v4.1.5/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/interface-specifications.json",
+        "sha256": "b10e13cc64750fc4100bd877f17bbd288d20d8fad573fa73555445b8f8ec403c"
+      },
+      "catalog": {
+        "source": "89f5840:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/R10-frozen/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/R10-frozen/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/R10-frozen/interface-specifications.json --catalog /home/user/sprint-scratch/B4/inputs/R10-frozen/COMMAND-EVENT-CATALOG.md --out raw/v0.4.0-4a53688/R10-frozen.DOC.json",
+    "env": {},
+    "exits": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "seconds": [
+      0.3577,
+      0.4159,
+      0.3476,
+      0.2527,
+      0.3399
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 134,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 35,\n    \"transitions\": 101,\n    \"types\": 171\n  },\n  \"blocked\": false,\n  \"blockingContradictions\": [],\n  \"missingDecisions\": [],\n  \"missingInterfaces\": [],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/R10-frozen.DOC.json"
+  },
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "R10-frozen",
+    "commit": "89f5840",
+    "packageDir": "v4.1.5",
+    "role": "control",
+    "condition": "CI",
+    "inputs": {
+      "machines": {
+        "source": "89f5840:requirements-compiled/v4.1.5/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/state-machine-contracts.json",
+        "sha256": "d58d21f9c11b23238402727c39ce6045a960dbf248fe0f58bf3a30a2bc4a8bc2"
+      },
+      "invariants": {
+        "source": "89f5840:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "89f5840:requirements-compiled/v4.1.5/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/interface-specifications.json",
+        "sha256": "b10e13cc64750fc4100bd877f17bbd288d20d8fad573fa73555445b8f8ec403c"
+      },
+      "catalog": {
+        "source": "89f5840:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/R10-frozen/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/R10-frozen/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/R10-frozen/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/R10-frozen/interface-specifications.json --out raw/v0.4.0-4a53688/R10-frozen.CI.json",
+    "env": {},
+    "exits": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "seconds": [
+      0.3069,
+      0.2539,
+      0.2286,
+      0.2988,
+      0.255
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 0,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 35,\n    \"transitions\": 101,\n    \"types\": 171\n  },\n  \"blocked\": false,\n  \"blockingContradictions\": [],\n  \"missingDecisions\": [],\n  \"missingInterfaces\": [],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/R10-frozen.CI.json"
+  },
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "Causa-frozen",
+    "commit": "dae2347",
+    "packageDir": "v4.1.6",
+    "role": "control",
+    "condition": "DOC",
+    "inputs": {
+      "machines": {
+        "source": "dae2347:requirements-compiled/v4.1.6/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/state-machine-contracts.json",
+        "sha256": "d58d21f9c11b23238402727c39ce6045a960dbf248fe0f58bf3a30a2bc4a8bc2"
+      },
+      "invariants": {
+        "source": "dae2347:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "dae2347:requirements-compiled/v4.1.6/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/interface-specifications.json",
+        "sha256": "c7ec05e1bbec7c82d5c2a8c281c2d5d23d52379067d77f3dda4cbce1ec480d0e"
+      },
+      "catalog": {
+        "source": "dae2347:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/Causa-frozen/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/Causa-frozen/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/Causa-frozen/interface-specifications.json --catalog /home/user/sprint-scratch/B4/inputs/Causa-frozen/COMMAND-EVENT-CATALOG.md --out raw/v0.4.0-4a53688/Causa-frozen.DOC.json",
+    "env": {},
+    "exits": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "seconds": [
+      0.3039,
+      0.2568,
+      0.2203,
+      0.2502,
+      0.3671
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 134,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 35,\n    \"transitions\": 101,\n    \"types\": 171\n  },\n  \"blocked\": false,\n  \"blockingContradictions\": [],\n  \"missingDecisions\": [],\n  \"missingInterfaces\": [],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/Causa-frozen.DOC.json"
+  },
+  {
+    "version": "v0.4.0-4a53688",
+    "package": "Causa-frozen",
+    "commit": "dae2347",
+    "packageDir": "v4.1.6",
+    "role": "control",
+    "condition": "CI",
+    "inputs": {
+      "machines": {
+        "source": "dae2347:requirements-compiled/v4.1.6/state-machine-contracts.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/state-machine-contracts.json",
+        "sha256": "d58d21f9c11b23238402727c39ce6045a960dbf248fe0f58bf3a30a2bc4a8bc2"
+      },
+      "invariants": {
+        "source": "dae2347:requirements-compiled/v4/invariants.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/invariants.json",
+        "sha256": "0c1b59e02ab16b36ca91f1b390390943677e9735f5371903d9a08ddddc960cad"
+      },
+      "interfaces": {
+        "source": "dae2347:requirements-compiled/v4.1.6/analysis/interface-specifications.json",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/interface-specifications.json",
+        "sha256": "c7ec05e1bbec7c82d5c2a8c281c2d5d23d52379067d77f3dda4cbce1ec480d0e"
+      },
+      "catalog": {
+        "source": "dae2347:docs/COMMAND-EVENT-CATALOG.md",
+        "file": "/home/user/sprint-scratch/B4/inputs/Causa-frozen/COMMAND-EVENT-CATALOG.md",
+        "sha256": "785a649ddb35b0da2cce198a2646b78b797d57cf03f746e4f57933731ab09604"
+      }
+    },
+    "command": "percepta spec-preflight --machines /home/user/sprint-scratch/B4/inputs/Causa-frozen/state-machine-contracts.json --invariants /home/user/sprint-scratch/B4/inputs/Causa-frozen/invariants.json --interfaces /home/user/sprint-scratch/B4/inputs/Causa-frozen/interface-specifications.json --out raw/v0.4.0-4a53688/Causa-frozen.CI.json",
+    "env": {},
+    "exits": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "seconds": [
+      0.3433,
+      0.3103,
+      0.3741,
+      0.5612,
+      0.3377
+    ],
+    "stdout": "{\n  \"analysed\": {\n    \"catalogCommands\": 0,\n    \"invariants\": 25,\n    \"machines\": 5,\n    \"operations\": 35,\n    \"transitions\": 101,\n    \"types\": 171\n  },\n  \"blocked\": false,\n  \"blockingContradictions\": [],\n  \"missingDecisions\": [],\n  \"missingInterfaces\": [],\n  \"schema\": \"percepta.specification-preflight/1\",\n  \"suggestedOwnerActions\": [],\n  \"unsupportedVerificationObligations\": [],\n  \"warnings\": []\n}\n",
+    "stderr": "",
+    "reportsIdentical": true,
+    "report": "/home/user/sprint-wt/B4-preflight/research/2026-11-08-compute-sprint/tracks/B4-preflight/raw/v0.4.0-4a53688/Causa-frozen.CI.json"
+  }
+]

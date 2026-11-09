@@ -1,0 +1,404 @@
+{
+  "schema": "track-h.future-experiments/1",
+  "track": "H-synthesis",
+  "asOf": "2026-11-08T20:32:48-05:00",
+  "status": "Proposals only. Nothing here is scheduled or approved.",
+  "costBasis": "ESTIMATE throughout. Agent cost scale: R8, a full 6-lane rehearsal, cost about $194 at list price (A-F-01, V1 VERIFIED). Controlled pilot runs cost $0.37-$2.01 per run (A-economics/data/controlled-usage.csv, costUsdListPriceESTIMATE). REL-001 cost about $0.11-$0.16 per correct requirement on fixtures (G-F-08). Human-hours are the owner's or an engineer's time, also ESTIMATE. None of these is a provider bill.",
+  "sections": {
+    "implementation": "Work where the evidence is already sufficient to act. It needs engineering, not more research. Each item still states how to confirm the effect after shipping.",
+    "research": "Questions where the current evidence is SUPPORTED-only, INCONCLUSIVE, NOT TESTED or contradicted across tracks. Decisions should wait for these."
+  },
+  "implementation": [
+    {
+      "id": "IM-01",
+      "title": "Stop rebuilding the pinned Praxis verifier in every CI run (cache it or use the release binary)",
+      "basis": [
+        "A-F-13 (VERIFIED; V1 queued)",
+        "A2-remediation CI-cache prototype (pending)",
+        "A2-F-07..F-09: compile-bound build; attested v3.9.1 release is source-equivalent with byte-identical output; ESTIMATE ~550 of ~604 min saved"
+      ],
+      "change": "Cache the verifier keyed on its pinned version, or download the attested release binary.",
+      "costEstimate": "ESTIMATE: 0.5-1 engineer-day per shared workflow; no agent compute.",
+      "expectedEffect": "ESTIMATE: about 604-607 job-minutes across R2-R10 (V1 correction of A-F-13's 688; 7.4-8.0% of step time). The step runs in every Echelon foundations run (about 27% of in-window runs). D-F-09 measured a no-op incremental build at ~4% of clean-build CPU on a similar F# fixture.",
+      "confirmBy": "Compare 'Build pinned Praxis verifier' step minutes before and after across the next 2 rehearsals.",
+      "decisionValue": "Low risk, measurable. Ship once A2 shows the cache is correct; the binary route needs E-F-09's attestation caveat addressed (verify signer workflow and ref)."
+    },
+    {
+      "id": "IM-02",
+      "title": "Hardened CI template",
+      "basis": [
+        "B-F-08 (VERIFIED)",
+        "A-F-12 (VERIFIED)",
+        "A-F-11 (VERIFIED)",
+        "E-F-10 (VERIFIED)"
+      ],
+      "change": "pipefail on every shell step; !cancelled() instead of if: always(); concurrency with cancel-in-progress set per branch, not per commit; job time caps sized to the measured suite durations; a live test branch per run; explicit permissions blocks; no ${{ inputs.* }} interpolated into run scripts.",
+      "costEstimate": "ESTIMATE: 1-2 engineer-days.",
+      "expectedEffect": "Removes the two mechanisms behind R6 (85%) and R10 (88%) red or cancelled CI minutes. Excluding those runs, 38% is still red or cancelled, so this is not the whole of the waste.",
+      "confirmBy": "Share of red or cancelled job-minutes in the next rehearsal, measured with A's analyze_ci.py.",
+      "decisionValue": "High. Two tracks agree on the cause, from independent data (matrix X-08)."
+    },
+    {
+      "id": "IM-03",
+      "title": "Close cheap Praxis completion gaps",
+      "basis": [
+        "E-F-01",
+        "E-F-03",
+        "E-F-05",
+        "E-F-11",
+        "E-F-12 (all VERIFIED by E; V2 pending)",
+        "E2 patches (D-038): evidence containment + digest binding VERIFIED with no test impact (E2-F-03); queue cross-check VERIFIED, 0 FP (E2-F-02); claim guard VERIFIED but conflicts with invariant I8 in 7 tests (E2-F-01, E2-F-04), which needs an owner decision"
+      ],
+      "change": "Reject evidence paths outside the repository and record a digest and commit for each evidence file. Make the claim guard check the tracked event log. Detect a queue.json status that has no transition. Refuse an authority that requires nothing. Show 'self-declared' or 'unattested' wherever 'complete' or 'verified' is displayed.",
+      "costEstimate": "ESTIMATE: patches exist (E2-hardening/patches); 1-2 engineer-days to review and merge, plus an owner decision on I8.",
+      "expectedEffect": "The bypass cases NX-1, NX-2b, NX-7 and NX-9 become refused. Re-run E's bypass-cases.sh to confirm.",
+      "confirmBy": "E-security/scripts/bypass-cases.sh plus the gate-v319 regression on the new release.",
+      "decisionValue": "High for integrity. Wait for V2 to independently confirm E-F-01 before announcing anything externally."
+    },
+    {
+      "id": "IM-04",
+      "title": "Add E's bypass matrix and the REL-001 gate script to Praxis release CI",
+      "basis": [
+        "E-F-06 (VERIFIED)",
+        "DS-E-BYPASS"
+      ],
+      "change": "Run gate-v319 plus E-X02 as release-blocking tests.",
+      "costEstimate": "ESTIMATE: 1 engineer-day.",
+      "expectedEffect": "Prevents regression of the controls that work today.",
+      "confirmBy": "Tests present and blocking in Praxis release workflow.",
+      "decisionValue": "High, cheap."
+    },
+    {
+      "id": "IM-05",
+      "title": "Branch protection, CODEOWNERS and agent credential separation on governance-critical repositories",
+      "basis": [
+        "E-F-07 (SUPPORTED with VERIFIED parts)",
+        "E-F-04",
+        "E-F-08"
+      ],
+      "change": "Owner action: protect main on praxis, Indy-init, the rehearsal repositories and acceptance stores; add CODEOWNERS for workflows and ros.json; give agents a non-admin credential that is distinct from the owner's login.",
+      "costEstimate": "ESTIMATE: 2-4 owner-hours.",
+      "expectedEffect": "Prerequisite for ADR-S03. It does not fix E-F-02 by itself.",
+      "confirmBy": "list_branches shows protected=true; a test push by the agent credential to a protected branch is refused (performed by the owner, not by an agent).",
+      "decisionValue": "High. Note that rulesets were unreadable here, so first check whether protection already exists at org level."
+    },
+    {
+      "id": "IM-06",
+      "title": "Telemetry fixes: execution clock, block reasons and CI waits",
+      "basis": [
+        "A-F-10 (VERIFIED)",
+        "A-F-18 (NOT TESTED: unmeasurable)",
+        "B-F-12"
+      ],
+      "change": "Start time.wall_ms at transcript start; require a timestamped block reason; record CI waits and owner requests and answers as events.",
+      "costEstimate": "ESTIMATE: 2-3 engineer-days.",
+      "expectedEffect": "Makes approval and CI wait measurable. Several research items below (FX-04, FX-06) need this first.",
+      "confirmBy": "blocked_ms non-zero and approval events present in the next rehearsal.",
+      "decisionValue": "Enabling. Without it, the next sprint will hit the same NOT TESTED wall (matrix X-22)."
+    },
+    {
+      "id": "IM-07",
+      "title": "Supply-chain baseline: vulnerability scan step and NuGet lock files",
+      "basis": [
+        "C-F-13 (VERIFIED)",
+        "E-F-13 (VERIFIED)",
+        "C CR-09"
+      ],
+      "change": "Add one dependency-vulnerability step to the shared foundations-verify workflow, which 12 repositories already call; enable RestorePackagesWithLockFile; pin curl|sh installers to a release tag and verify attestation.",
+      "costEstimate": "ESTIMATE: 1-2 engineer-days.",
+      "expectedEffect": "Known-vulnerability visibility; hash-pinned transitive dependencies.",
+      "confirmBy": "Workflow step present; packages.lock.json committed.",
+      "decisionValue": "Medium. Hygiene; independent of the rehearsal outcome."
+    },
+    {
+      "id": "IM-08",
+      "title": "Compact structured notifications to the coordinator (ADR-S05 option 1)",
+      "basis": [
+        "A-F-03 (V1 VERIFIED)",
+        "A-F-04"
+      ],
+      "change": "Sub-agents report a fixed small status record (work item, SHA, gate result, blocking issue) instead of transcripts or long tool output.",
+      "costEstimate": "ESTIMATE: 1 day of brief/prompt changes.",
+      "expectedEffect": "Slower coordinator context growth, without the restart risk that FX-04 tests.",
+      "confirmBy": "Coordinator mean context per request in the next rehearsal (R8 baseline 416,786).",
+      "decisionValue": "Medium. Low downside."
+    },
+    {
+      "id": "IM-09",
+      "title": "Affected-project test selection and kept build outputs in agent and CI loops",
+      "basis": [
+        "D-F-09, D-F-10, D-F-11 (SUPPORTED; preregistered confirmatory, one fixture)",
+        "A-F-15 (INCONCLUSIVE)",
+        "matrix X-25"
+      ],
+      "change": "Keep build outputs between runs; run only the affected test projects in the inner loop and full suites at merge or gate; avoid public-surface edits to root projects where possible, because they rebuild the cone (D-F-10).",
+      "costEstimate": "ESTIMATE: 1-3 engineer-days for a selection script plus CI wiring.",
+      "expectedEffect": "ESTIMATE: inner-loop verification CPU down to ~4-15% of full (D-F-11 0.037; whole-step SPR-D-07 0.143, n=4). Selection safety (missed regressions) is NOT TESTED.",
+      "confirmBy": "Track build/test CPU per agent execution and escaped-defect count before and after.",
+      "decisionValue": "Medium. Cost evidence is solid for one fixture, but the safety side is unmeasured, so keep full suites at the gate."
+    },
+    {
+      "id": "IM-10",
+      "title": "Ship the .ros history merge driver (interim) and fix Praxis validate gaps",
+      "basis": [
+        "A2-F-01..F-06 (VERIFIED on replay)",
+        "DECISION-LOG D-028 owner follow-ups"
+      ],
+      "change": "Package A2's ros-history driver with Praxis and install it via scaffold (.gitattributes + config) for local merges; make validate detect duplicate event lines; decide the relaxed ordering policy.",
+      "costEstimate": "ESTIMATE: 2-4 engineer-days, mostly porting from dotnet fsi to the Praxis CLI.",
+      "expectedEffect": "R8-like runs: 93% of conflicted merges conflict-free (R10: 85%); catches team merge errors like R10 d8447ed1.",
+      "confirmBy": "Conflicted-merge count and coordinator merge seconds in the next multi-lane rehearsal.",
+      "decisionValue": "High. Evidence is a full replay; does not help GitHub server-side merges (ADR-S02 option 1 does)."
+    },
+    {
+      "id": "IM-11",
+      "title": "Run spec-preflight with --catalog in Indy-init CI and fail on any blocking section",
+      "basis": [
+        "B4-F-05 (VERIFIED)"
+      ],
+      "change": "One-line workflow change plus assertion on all blocking sections.",
+      "costEstimate": "ESTIMATE: under 1 hour.",
+      "expectedEffect": "Restores the carrier rule that caught R8's CommandEnvelope defect.",
+      "confirmBy": "CI run on the R8 package exits 3 with the carrier finding.",
+      "decisionValue": "High, trivial."
+    },
+    {
+      "id": "IM-12",
+      "title": "WASM delivery fixes: per-request cache mode in Limen, trimming",
+      "basis": [
+        "F-F-03 (VERIFIED)",
+        "F-F-04 (SUPPORTED)",
+        "F-F-01 (VERIFIED)"
+      ],
+      "change": "Add a per-request cache mode to Limen HttpEffectRequest so apps stop overriding global fetch with no-store; enable TrimMode partial or full (check %A formatting paths).",
+      "costEstimate": "ESTIMATE: 1-2 engineer-days in Limen; minutes per app for trimming.",
+      "expectedEffect": "R10 warm 4G ready 9.5 s -> ~1.3 s (R9 level); cold transfer 11.1 -> 7.8 MB with full trim.",
+      "confirmBy": "F's startup harness on the next build.",
+      "decisionValue": "Medium for the product; independent of governance questions."
+    },
+    {
+      "id": "IM-13",
+      "title": "Keep a short Authority contract, gated by per-model calibration; it is not a general authorization control",
+      "basis": [
+        "SPR-X-01 (V4 VERIFIED)",
+        "SPR-X-02 (V4 VERIFIED primary)",
+        "SPR-X-03 (V5 VERIFIED; D-046)",
+        "D2-F-02 (V3 VERIFIED)",
+        "SPR-X-04 (NOT YET INDEPENDENTLY VERIFIED): no significant benefit in a new domain (p=0.077); +9.9% tokens, +38% wall; reduction only at visibly open gaps"
+      ],
+      "change": "Keep the one-paragraph Authority contract for models whose calibration baseline fails, and count its wall-clock cost (+38% in X-04) in the calibration decision. Do not present it, or the question/evidence checklist, as an authorization control. For gaps where a plausible default exists, use structural controls instead: pre-T0 spec-preflight that turns such gaps into explicit owner questions (ADR-S04, IM-11), and a review gate that rejects code deciding a gap its own hand-back flags as unresolved (X4-F-05).",
+      "costEstimate": "ESTIMATE: about 6 runs × ~80k tokens per model; under $5 per model at list price.",
+      "expectedEffect": "Small-model benefit at visibly open gaps (X-02, X-03, X-04 T3/T5); no benefit expected where defaults look obvious; cost +6-10% tokens and +38-55% wall where applied.",
+      "confirmBy": "Calibration results per model, stored with the model id in rehearsal setup.",
+      "decisionValue": "Medium (downgraded from High after X-04). Cheap in tokens, but the benefit is narrow; the structural controls carry more weight."
+    },
+    {
+      "id": "IM-14",
+      "title": "Minimal tool allowlist for implementation subagents (no session-lifecycle tools)",
+      "basis": [
+        "SO-01: DECISION-LOG D-039, D-042, D-043, D-044 (5 off-task remote-tool calls, all Haiku, none effective)",
+        "E-F-15",
+        "matrix X-29"
+      ],
+      "change": "Owner decision: implementation subagents get file and shell tools only; no send_message, create_session, list_sessions or archive_session.",
+      "costEstimate": "ESTIMATE: configuration change; under 1 hour.",
+      "expectedEffect": "Removes a class of destructive off-task calls by design rather than relying on argument validation.",
+      "confirmBy": "Audit subagent transcripts for remote-tool calls in the next run (as in D-039).",
+      "decisionValue": "High (Director rated HIGH priority); cheap."
+    }
+  ],
+  "research": [
+    {
+      "id": "FX-01",
+      "title": "Does a pre-T0 governance dry run catch the in-window governance defects?",
+      "hypothesis": "A stub-implementation dry run of the exact frozen package detects at least 70% of the governance-artefact defects that B-F-03 records for R8, R9, R10 and Causa before T0.",
+      "design": "Replay. For each of those runs, check out the frozen package and lock as they were at T0; run authorize-implementation, suite preflight, the cycle check and the release gate against a stub; score each recorded B-F-03 event as caught, missed or not applicable. B2-dryrun is doing a version of this now. Extend it to all four runs, with a second coder.",
+      "costEstimate": "ESTIMATE: 4-8 agent-hours of tooling time, about $20-60 list price; 1-2 human-hours for scoring review.",
+      "decisionValue": "Decides ADR-S04. If the catch rate is high, the dry run becomes mandatory. If it is low, the problem is the design of the gates, not their timing.",
+      "dependsOn": [
+        "B2-dryrun results"
+      ],
+      "evidenceGap": "B-F-03 is SUPPORTED, from one analyst, and no track measured catchability.",
+      "status": "DONE by B2-dryrun (B2-F-01..F-11): 4/8 brief-list blockers caught (robust 2/8), 7/11 extended; semantic defects, the Causa cycle and hosted-CI causes not caught. Follow-up is B3-semantic (generic semantic checks), plus a hosted-CI dry-run variant (B2-F-11, NOT TESTED)."
+    },
+    {
+      "id": "FX-02",
+      "title": "Merge driver vs per-lane record format for .ros state",
+      "hypothesis": "H1-H3 of SPR-A2-01. Additionally: a per-lane append-only format produces zero .ros conflicts by construction, with no information loss compared with the team's merges.",
+      "design": "Use A2's replay harness on R8 and R10. Add an arm that rewrites history into a per-lane event layout and replays it.",
+      "costEstimate": "ESTIMATE: 1-2 engineer-days for the format arm; replay compute is negligible.",
+      "decisionValue": "Chooses between ADR-S02 option 1 and option 2.",
+      "dependsOn": [
+        "A2-remediation SPR-A2-01 results"
+      ],
+      "evidenceGap": "Prototype results pending; GitHub server-side merges cannot run drivers.",
+      "notes": "DECISION-LOG D-019: a .ros driver cannot remove R8's 4 application-code branch merges (V1).",
+      "status": "LARGELY DONE by A2 (A2-F-01..F-06): the driver resolves all .ros conflicts on R8/R10 replay with 0 lost records. Remaining: the per-lane format arm (option 1) and owner policy on relaxed event ordering (A2-F-05)."
+    },
+    {
+      "id": "FX-03",
+      "title": "Does requirements-compiler verify-plan catch the fabricated acceptance bundle?",
+      "hypothesis": "verify-plan, like the ledger verifier, accepts candidate-produced fabricated result files.",
+      "design": "Extend E's indy_fabricated_acceptance.py to also fabricate the result files verify-plan reads; run rehearsal-005's full acceptance.sh locally.",
+      "costEstimate": "ESTIMATE: 2-4 agent-hours, under $15.",
+      "decisionValue": "Sets the severity of E-F-02 for R5's actual pipeline, and therefore the urgency of ADR-S03.",
+      "dependsOn": [],
+      "evidenceGap": "E-F-02 limitation: verify-plan was not tested.",
+      "notes": "Still open: neither E nor V2 tested verify-plan."
+    },
+    {
+      "id": "FX-04",
+      "title": "Coordinator context cap: controlled comparison",
+      "hypothesis": "A coordinator that refreshes from a structured checkpoint whenever context exceeds about 200k tokens uses fewer total tokens than an uncapped coordinator on the same scope, with no increase in coordination errors.",
+      "design": "Fixed scope: a reduced Causa slice of 10-15 work items across 3 lanes. 2 arms (capped vs uncapped) × n=3 or more; the same task-agent brief. Measure total tokens, coordinator tokens, coordination errors (wrong merge, lost change request, duplicate dispatch) and wall time. Preregister. Sample size: D-F-08 suggests about 5 paired blocks if effects resemble VAC-001; whole-run variance is unobserved, so plan n=6 per arm and treat as exploratory below that.",
+      "costEstimate": "ESTIMATE: about $25-60 per run (scaled from R8's coordinator plus task agents at reduced scope) × 6 runs = $150-360; 1 day of human analysis.",
+      "decisionValue": "Decides ADR-S05. Resolves the X-12 tension between A-F-03 and VAC-001's continuity result.",
+      "dependsOn": [
+        "IM-06 (telemetry)"
+      ],
+      "evidenceGap": "A's saving is an ESTIMATE; VAC-001 points the other way for implementers."
+    },
+    {
+      "id": "FX-05",
+      "title": "Process-protocol overhead on tasks without a ceiling effect",
+      "hypothesis": "On a task where the plain arm fails at least 20% of requirements, a construction protocol improves acceptance enough to offset its +47-93% token overhead.",
+      "design": "Pick or build a harder fixture (pilot until the plain arm is below 80% acceptance). 3 arms (plain, protocol, mechanical-first), n=8 per arm, chosen from a power calculation on the CONSTRUCT-008 variance. Use final output tokens, not streaming lower bounds (V1 G-F-08 caveat). Grade acceptance with an independent verifier, not the agent's own.",
+      "costEstimate": "ESTIMATE: about $1-3 per run × 24 = $25-75, plus fixture-building time of 1-2 days.",
+      "decisionValue": "Decides whether Echelon process guidance is net-negative (A-F-16, G-F-08) or only ceiling-masked. Also shapes the commercial claim in outline 3.",
+      "dependsOn": [
+        "D2-agent-experiment (governed vs minimal, n=4 per arm, exploratory): use its variance for sizing"
+      ],
+      "evidenceGap": "n=3 pilots; every published comparison sits at the ceiling (all arms 39/39 or 96/96).",
+      "status": "SHORT-TASK ARM CONCLUDED by D2 (DECISION-LOG D-024, D-027, D-030): three increasingly adversarial fixtures all hit the ceiling for the ungoverned baseline; governance cost +6.1% tokens, +55% wall (D2-F-02). Further short-fixture search was stopped to avoid searching for a positive. The open question moves to long-horizon designs (D3, launched per D-032). UPDATE 16:05: a model-dependent benefit was found with Haiku (SPR-X-02). The SPR-X-03 ablation (authority-only vs checklist-only) is running. The long-horizon question for capable models remains open."
+    },
+    {
+      "id": "FX-06",
+      "title": "Agent count vs fixed scope",
+      "hypothesis": "With scope held fixed, going from 1 to 3 to 6 lanes reduces wall time sublinearly and raises total tokens through coordination and conflicts.",
+      "design": "The same reduced scope as FX-04, with 1, 3 and 6 lanes, n=2-3 each. Measure tokens, wall time, conflicts and defects.",
+      "costEstimate": "ESTIMATE: $200-500 total.",
+      "decisionValue": "Topology choice for future rehearsals; A-F-17 is NOT TESTED.",
+      "dependsOn": [
+        "IM-06",
+        "FX-02 (or the conflicts will dominate)"
+      ],
+      "evidenceGap": "No dataset varies agent count at fixed scope."
+    },
+    {
+      "id": "FX-07",
+      "title": "Review timing: early-and-after-every-fix vs end-of-run",
+      "hypothesis": "Independent review at the first release candidate and after every fix round leaves fewer open defects at the deadline than a single review near the end.",
+      "design": "Seeded-defect fixture, 2 arms, n=4 or more; reviewers spawned from a separate session with no implementer context.",
+      "costEstimate": "ESTIMATE: $50-150.",
+      "decisionValue": "B-F-11 is SUPPORTED and observational. This would justify making review timing a rule.",
+      "dependsOn": [],
+      "evidenceGap": "No controlled comparison of review timing."
+    },
+    {
+      "id": "FX-08",
+      "title": "Inter-rater reliability of the B event corpus",
+      "hypothesis": "A second coder assigns the same root-cause code to at least 80% of B's 135 events (Cohen's kappa ≥ 0.7).",
+      "design": "A blinded second coder, human or a separate agent with no access to B's labels, codes events from the same source lines using taxonomy.json.",
+      "costEstimate": "ESTIMATE: 4-6 agent-hours (about $20-40) or 1 human-day.",
+      "decisionValue": "Needed before B-F-03's prevalence counts or DS-B-EVENTS are cited externally.",
+      "dependsOn": [],
+      "evidenceGap": "Single-analyst curation."
+    },
+    {
+      "id": "FX-09",
+      "title": "Reconcile the sprint's own measurement disagreements",
+      "hypothesis": "The differences between A, B, V1 and A2 in merge counts (X-02, X-03), in Actions run counts (A 4,633 vs B 3,222, different repository sets) and in R8 ledger counts (49 vs 48) are explained by window and ref definitions.",
+      "design": "One script that applies a single window and ref-set definition to both Actions fetches and all three merge replays, and reports the residuals.",
+      "costEstimate": "ESTIMATE: 2-3 agent-hours, under $15.",
+      "decisionValue": "Prevents publishing inconsistent counts. A prerequisite for outline 2.",
+      "dependsOn": [
+        "V1, V2, A2 final outputs"
+      ],
+      "evidenceGap": "Unreconciled counts across tracks."
+    },
+    {
+      "id": "FX-10",
+      "title": "Do buyers value an independent, attested definition of done?",
+      "hypothesis": "Engineering leaders at 10 or more target firms rank independent completion verification among their top 3 AI-governance needs and state willingness to pay.",
+      "design": "Structured interviews (owner-led) plus a review of supply-chain attestation tooling (SLSA, in-toto), which G did not survey.",
+      "costEstimate": "ESTIMATE: 15-25 owner-hours; negligible compute.",
+      "decisionValue": "G-F-09 is INCONCLUSIVE, inferred from absence on marketing pages. This decides whether outline 3's positioning is worth pursuing.",
+      "dependsOn": [],
+      "evidenceGap": "No buyer evidence."
+    },
+    {
+      "id": "FX-11",
+      "title": "Range qualification end to end",
+      "hypothesis": "With a trusted Registry key, Conditor's attestedQualification admits a signed set range without a Conditor release and refuses an unsigned or tampered set.",
+      "design": "Scratch key, scratch Registry set, local Conditor build; positive and negative cases (unsigned, wrong key, tampered digest).",
+      "costEstimate": "ESTIMATE: 4-8 agent-hours, about $20-50.",
+      "decisionValue": "ADR-S01 assumes this code path works; it has only been read (C-F-04).",
+      "dependsOn": [],
+      "evidenceGap": "Not executed.",
+      "status": "DONE by C2 (C2-F-02..F-08): the mechanism works with a trusted key; CR-01's 'ends lockstep' claim CONTRADICTED (2/13 avoidable); the Registry side is missing; set integrity is not covered."
+    },
+    {
+      "id": "FX-12",
+      "title": "Chain-level replication of the VAC-001 continuity effect",
+      "hypothesis": "Agent continuity's cost advantage (about -40%) holds with 6 or more independent chains per arm.",
+      "design": "Rerun VAC-001 arms A and B with more chains and analyse at chain level (D's unit-of-independence note). D-F-08: about 5 blocks for B vs A and DR vs D at the observed effects (lower bounds); plan 6+ independent chains per arm.",
+      "costEstimate": "ESTIMATE: $30-80.",
+      "decisionValue": "VAC-001 is one of the few positive results (G-F-08) and it bears on ADR-S05. Its current CI overstates replication precision.",
+      "dependsOn": [],
+      "evidenceGap": "3 chains (B vs A); 1 chain for DR vs D."
+    },
+    {
+      "id": "FX-13",
+      "title": "Live vs fake provider detection",
+      "hypothesis": "Running live-provider checks from the first write detects provider-behaviour defects at least one review round earlier than fakes alone.",
+      "design": "Seeded provider-divergence fixture (rate limit, 422, moved head), with arms using fakes only vs fakes plus a live sandbox repository.",
+      "costEstimate": "ESTIMATE: $30-80 plus sandbox setup.",
+      "decisionValue": "B-F-06 is observational, with no comparison run after R2.",
+      "dependsOn": [],
+      "evidenceGap": "No run without live checks after R2."
+    },
+    {
+      "id": "FX-14",
+      "title": "Prospective (blind) test of semantic pre-T0 checks",
+      "hypothesis": "percepta spec-preflight (with --catalog) plus a C4 slice-cycle check flags at least half of the semantic package defects in a specification its authors have not seen, with a false-alarm rate below 1 per package.",
+      "design": "Hold out the next frozen package (or seed defects into an independent specification written by someone else); run the checks before anyone looks for defects; adjudicate alarms blind. Include the B4-F-07 paraphrase probes as a robustness arm.",
+      "costEstimate": "ESTIMATE: under $10 compute; 1-2 human-days for seeding and adjudication.",
+      "decisionValue": "B3 and B4 coverage is retrospective and answer-informed (B3-F-03, B4-F-06/F-07). This decides whether semantic checks belong in the mandatory dry run (ADR-S04) or remain advisory.",
+      "dependsOn": [],
+      "evidenceGap": "No blind or independent-specification test."
+    },
+    {
+      "id": "FX-15",
+      "title": "Adoption barriers for existing capabilities",
+      "hypothesis": "Unused capabilities (verified completion, Limen view contracts, Folio, spec-preflight --catalog) are unused mainly because they are not in the scaffold defaults or agent briefs, not because they fail.",
+      "design": "For each capability in matrix X-26: check whether it is in the Conditor scaffold, the AGENTS.md/brief, and the CI template; then run one rehearsal-scale slice with it on by default and record friction.",
+      "costEstimate": "ESTIMATE: 1 day of analysis; $20-80 for a slice run.",
+      "decisionValue": "X-26 is the strongest cross-track pattern; its cause is NOT TESTED (F-F-13 limitation).",
+      "dependsOn": [],
+      "evidenceGap": "Barriers not investigated by any track."
+    },
+    {
+      "id": "FX-16",
+      "title": "Authority-contract generality: new domain and capable models over long horizons",
+      "hypothesis": "The authority-contract benefit seen with Haiku (SPR-X-02/X-03) replicates on a new-domain fixture (SPR-X-04), and capable models show a benefit only on long-horizon, multi-agent work.",
+      "design": "SPR-X-04 (in prep: scheduling domain, stage-1 gate). Then a long-horizon multi-agent slice (FX-04 scope) with capable models, C vs M arms.",
+      "costEstimate": "ESTIMATE: X-04 about 24 runs × 80k tokens; the long-horizon arm $150-400.",
+      "decisionValue": "Decides whether the contract is a universal default or a small-model measure.",
+      "dependsOn": [
+        "SPR-X-04"
+      ],
+      "evidenceGap": "One model, two fixtures; short tasks only.",
+      "status": "X-04 DONE (D2 worktree): not significant in the new domain (p=0.077), so generality at the X-02/X-03 effect size is not supported. Remaining: a structural 'unresolved-gap review gate' test, and long-horizon capable-model arms."
+    },
+    {
+      "id": "FX-17",
+      "title": "Review gate for code that decides a gap its own hand-back flags as unresolved",
+      "hypothesis": "An automated or reviewer check that compares hand-back 'open questions' with implemented behaviour reduces silent default-choosing (X4-F-05) more than any prompt arm.",
+      "design": "Reuse the X-04 booking and D2-02/D2-03 fixtures; add a post-run gate that parses the hand-back and refuses completion when a flagged gap is implemented without NotSpecified or an owner decision. Compare violations-at-completion with and without the gate, n=8 per arm, Haiku.",
+      "costEstimate": "ESTIMATE: gate build 0.5-1 day; runs about 16 × 100k tokens.",
+      "decisionValue": "Tests the structural alternative D-046/X-04 point to.",
+      "dependsOn": [],
+      "evidenceGap": "No structural control for plausible-default gaps has been tested."
+    }
+  ]
+}

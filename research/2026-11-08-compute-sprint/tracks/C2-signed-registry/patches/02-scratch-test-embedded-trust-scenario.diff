@@ -1,0 +1,69 @@
+diff --git a/tests/Conditor.Tests/DeclaredWebBindingTests.fs b/tests/Conditor.Tests/DeclaredWebBindingTests.fs
+index d4a8fd9..7c8584f 100644
+--- a/tests/Conditor.Tests/DeclaredWebBindingTests.fs
++++ b/tests/Conditor.Tests/DeclaredWebBindingTests.fs
+@@ -1081,6 +1081,59 @@ let private attested check =
+         "an unparseable qualified range is refused"
+         (ComponentDescriptors.parse "sample" (descriptor "\"qualifiedRange\": \"latest\"," "npm") |> Result.isError)
+ 
++// ---- SPR-C2-01 (EXPERIMENTAL, scratch only) ------------------------------------
++// The production entry points CurrentUpgrade.preview/apply read
++// ReleaseAttestation.embedded, i.e. the trust file compiled into this build.
++// The throwaway TEST-ONLY private key is read from C2_TEST_SIGNING_KEY (PEM);
++// without it the scenario is skipped (reported as a passing SKIP line).
++let private attestedEmbedded check =
++    match Environment.GetEnvironmentVariable "C2_TEST_SIGNING_KEY" |> Option.ofObj with
++    | None -> check "SPR-C2-01 SKIP embedded-trust attestation scenario (no C2_TEST_SIGNING_KEY)" true
++    | Some pemPath ->
++        use key = System.Security.Cryptography.ECDsa.Create()
++        key.ImportFromPem(File.ReadAllText pemPath)
++        let keyId = Environment.GetEnvironmentVariable "C2_TEST_KEY_ID" |> Option.ofObj |> Option.defaultValue "test-only-c2-001-2026-11-08"
++        let contract = [ ReleaseAttestation.WebPackageBindingContract ]
++        let repo = chronaShaped "c2-embedded-0.7.0" "0.6.1" "0.6.1" "0.5.0"
++        File.WriteAllBytes(Path.Combine(repo.Mirror, "echelon-foundry-design-system-0.7.0.tgz"), formaBytes "0.7.0")
++        declare repo "0.6.1"
++        let set = attestedSet repo "c2-embedded-0.7.0.json" "0.7.0" (Some(keyId, sign key "0.7.0" contract, contract))
++
++        check "SPR-C2-01 Forma 0.7.0 is absent from this build's qualifiedVersions" (Registry.qualifiedVersions "forma" |> Option.exists (fun versions -> not (versions.Contains "0.7.0")))
++        check $"SPR-C2-01 embedded trust pins {keyId}" (ReleaseAttestation.embedded.Value |> List.exists (fun trusted -> trusted.KeyId = keyId))
++
++        match preview repo set with
++        | Error errors -> check $"SPR-C2-01 production preview is produced: {joined errors}" false
++        | Ok plan ->
++            Console.WriteLine $"""SPR-C2-01 A4 refusals=[{joined plan.Refusals}] qualifications=[{plan.WebPackageTransitions |> List.map (fun t -> t.Id + ":" + t.Qualification) |> joined}]"""
++            check $"SPR-C2-01 production preview (embedded trust) qualifies Forma 0.7.0 with no refusal: {joined plan.Refusals}" plan.Refusals.IsEmpty
++            check
++                "SPR-C2-01 production preview discloses attested qualification under the TEST-ONLY key"
++                (plan.WebPackageTransitions |> List.exists (fun t -> t.Qualification = $"attested:>=0.2.0 <1.0.0:{keyId}"))
++
++            npmProduces repo "0.7.0"
++
++            withPath repo.Bin (fun () ->
++                match apply repo set plan.Digest with
++                | Error errors -> check $"SPR-C2-01 production apply succeeds: {joined errors}" false
++                | Ok result ->
++                    check "SPR-C2-01 production apply lands Forma 0.7.0 with no drift" (result.NoRemainingVersionChanges && declaredForma repo = Some "0.7.0"))
++
++        // Same scenario, signature by a key this build does not pin, under the pinned keyId.
++        use rogue = System.Security.Cryptography.ECDsa.Create(System.Security.Cryptography.ECCurve.NamedCurves.nistP256)
++        let repo2 = chronaShaped "c2-embedded-rogue" "0.6.1" "0.6.1" "0.5.0"
++        File.WriteAllBytes(Path.Combine(repo2.Mirror, "echelon-foundry-design-system-0.7.0.tgz"), formaBytes "0.7.0")
++        declare repo2 "0.6.1"
++        let set2 = attestedSet repo2 "c2-embedded-rogue.json" "0.7.0" (Some(keyId, sign rogue "0.7.0" contract, contract))
++
++        match preview repo2 set2 with
++        | Error errors -> check $"SPR-C2-01 rogue preview is produced: {joined errors}" false
++        | Ok plan ->
++            Console.WriteLine $"""SPR-C2-01 A4-rogue refusals=[{joined plan.Refusals}]"""
++            check
++                $"SPR-C2-01 production preview refuses a rogue-key signature under the pinned keyId: {joined plan.Refusals}"
++                (plan.Refusals |> List.exists (fun r -> r.Contains("does not verify", StringComparison.Ordinal)))
++
+ let run (check: string -> bool -> unit) =
+     requiredWithoutScaffold check
+ 
+@@ -1092,3 +1145,4 @@ let run (check: string -> bool -> unit) =
+         stepwise check
+         stepwiseRepairFirst check
+         attested check
++        attestedEmbedded check

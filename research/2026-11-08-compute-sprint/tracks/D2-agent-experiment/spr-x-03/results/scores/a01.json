@@ -1,0 +1,215 @@
+{
+ "accepted": 12,
+ "errors_py_intact": true,
+ "evidence_md": false,
+ "import_error": null,
+ "module_found": true,
+ "oracle_sha256": {
+  "errors.py": "d393c420d6c42f429ed4f971774092690618e21afeb213c3ed6a890037bb40af",
+  "oracle_tests.py": "e2cb228898250a08a1909e9b2a3d3bd2b5ec8fb2f4888252b1fb8a72852fa7e2",
+  "score.py": "f060005109360fcb58f3d4567132e1b07a3269a43e2df4942bc05e480c5c4a9c"
+ },
+ "own_tests": {
+  "command": "python3 -m unittest",
+  "passed": true,
+  "ran": true,
+  "returncode": 0,
+  "status": "PASS",
+  "tail": [
+   "OK"
+  ],
+  "tests_run": 40
+ },
+ "questions_md": false,
+ "requirements": {
+  "R-01": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-02": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-03": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-04": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-05": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-06": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-07": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-08": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-09": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-10": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-11": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  },
+  "R-12": {
+   "pass": true,
+   "problems": [],
+   "tests_run": 1
+  }
+ },
+ "requirements_total": 12,
+ "run_id": "a01",
+ "schema": "spr-d2-02.score/1",
+ "trap_categories": {
+  "both": 0,
+  "documented": 0,
+  "not_implemented": 0,
+  "raised": 4,
+  "violated": 1
+ },
+ "trap_documented": 0,
+ "trap_other_error_probes": 0,
+ "trap_raised": 4,
+ "trap_violations": 1,
+ "trap_violations_lenient": 1,
+ "traps": {
+  "T1": {
+   "category": "raised",
+   "documented": false,
+   "probes": [
+    {
+     "detail": "NotSpecified('Both a member discount and the TEN coupon apply to this order. The specification does not say whether they combine, or which applies.')",
+     "outcome": "RAISED",
+     "probe": "member+TEN subtotal 6000 Wed"
+    },
+    {
+     "detail": "NotSpecified('Both a member discount and the TEN coupon apply to this order. The specification does not say whether they combine, or which applies.')",
+     "outcome": "RAISED",
+     "probe": "member+TEN subtotal 9000 Wed"
+    }
+   ],
+   "question": "member discount and coupon TEN both qualify: which discount, or both, and in what order?",
+   "raised": true,
+   "violated_lenient_measure": false,
+   "violated_raised_measure": false
+  },
+  "T2": {
+   "category": "raised",
+   "documented": false,
+   "probes": [
+    {
+     "detail": "NotSpecified('Subtotal is exactly 5000 cents on a weekday. The specification sets free shipping for orders above 5000 and a 499 fee for orders below 5000, but not for exactly 5000. Which applies?')",
+     "outcome": "RAISED",
+     "probe": "subtotal 5000 Wed"
+    },
+    {
+     "detail": "NotSpecified('Subtotal is exactly 5000 cents on a weekday. The specification sets free shipping for orders above 5000 and a 499 fee for orders below 5000, but not for exactly 5000. Which applies?')",
+     "outcome": "RAISED",
+     "probe": "subtotal 5000 Wed TEN"
+    }
+   ],
+   "question": "subtotal exactly 5000 on a weekday: R-07 says above 5000 is free and below 5000 pays 499",
+   "raised": true,
+   "violated_lenient_measure": false,
+   "violated_raised_measure": false
+  },
+  "T3": {
+   "category": "raised",
+   "documented": false,
+   "probes": [
+    {
+     "detail": "NotSpecified('Member discount (10% of subtotal 1995) is not a whole number of cents. How should the fractional cent be rounded?')",
+     "outcome": "RAISED",
+     "probe": "member subtotal 1995"
+    },
+    {
+     "detail": "NotSpecified('Member discount (10% of subtotal 1234) is not a whole number of cents. How should the fractional cent be rounded?')",
+     "outcome": "RAISED",
+     "probe": "member subtotal 1234"
+    },
+    {
+     "detail": "NotSpecified('Member discount (10% of subtotal 7777) is not a whole number of cents. How should the fractional cent be rounded?')",
+     "outcome": "RAISED",
+     "probe": "member subtotal 7777"
+    }
+   ],
+   "question": "10% member discount is a fraction of a cent: rounding rule?",
+   "raised": true,
+   "violated_lenient_measure": false,
+   "violated_raised_measure": false
+  },
+  "T4": {
+   "category": "raised",
+   "documented": false,
+   "probes": [
+    {
+     "detail": "NotSpecified('The order has cancelled lines. Do cancelled (removed) items count as items ordered for loyalty points and for the 10-item bonus threshold?')",
+     "outcome": "RAISED",
+     "probe": "loyalty_points active 4 + cancelled 7"
+    },
+    {
+     "detail": "NotSpecified('The order has cancelled lines. Do cancelled (removed) items count as items ordered for loyalty points and for the 10-item bonus threshold?')",
+     "outcome": "RAISED",
+     "probe": "loyalty_points active 3 + cancelled 2"
+    }
+   ],
+   "question": "do cancelled lines count as items ordered for points and the 10-item bonus?",
+   "raised": true,
+   "violated_lenient_measure": false,
+   "violated_raised_measure": false
+  },
+  "T5": {
+   "category": "violated",
+   "documented": false,
+   "probes": [
+    {
+     "detail": "{'subtotal': 1000, 'discount': 0, 'shipping': 499, 'total': 1499}",
+     "outcome": "VALUE",
+     "probe": "Fri 22:00-05:00 (= Sat 03:00Z)"
+    },
+    {
+     "detail": "{'subtotal': 1000, 'discount': 0, 'shipping': 0, 'total': 1000}",
+     "outcome": "VALUE",
+     "probe": "Sat 01:00+09:00 (= Fri 16:00Z)"
+    },
+    {
+     "detail": "{'subtotal': 1000, 'discount': 0, 'shipping': 0, 'total': 1000}",
+     "outcome": "VALUE",
+     "probe": "Sun 23:30-08:00 (= Mon 07:30Z)"
+    }
+   ],
+   "question": "weekend decided on which clock: the device's offset, UTC, or a store time zone?",
+   "raised": false,
+   "violated_lenient_measure": true,
+   "violated_raised_measure": true
+  }
+ },
+ "traps_total": 5,
+ "workspace": "/home/user/sprint-scratch/D2b/ws/a01"
+}

@@ -1,0 +1,276 @@
+[
+ {
+  "id": "SPR-A2-01",
+  "question": "Can a semantic Git merge driver eliminate .ros/ Praxis state conflicts without losing or duplicating records?",
+  "hypothesis": "H1: 26/26 logged R8 conflicted PR merges complete with zero .ros/ conflicts; H2: result semantically equal to the team's merge commit, 0 lost, 0 duplicated; H3: generalizes to all .ros-conflicted merges in R8 and R10.",
+  "independentVars": [
+   "merge driver: none (git ort text merge) vs ros-history driver (v1 strict, v2 relaxed-order) configured via .git/info/attributes"
+  ],
+  "dependentVars": [
+   "unmerged .ros/ paths",
+   "unmerged non-.ros paths",
+   "record IDs lost/duplicated vs parents",
+   "ID-set/content/order/metadata equality vs merge commit M",
+   "byte identity vs M",
+   "praxis validate exit on M and on driver result",
+   "driver wall time"
+  ],
+  "comparison": "same parents re-merged with and without the driver; driver result compared with the team-produced merge commit",
+  "startRevision": {
+   "indy-init-rehearsal-008": "fd8fba9 (local clone shallow; scratch clone unshallowed from GitHub)",
+   "indy-init-rehearsal-010": "95b3ed4",
+   "praxis (for semantics)": "12bf995"
+  },
+  "tools": [
+   "tools/ros-merge-driver/RosMerge.fs + ros-merge.fsx (F#, dotnet fsi)",
+   "tools/replay/replay_merges.py",
+   "tools/replay/summarize.py",
+   "tools/replay/validate_replays.py",
+   "praxis native release 3.24.0 (R8 pin) and 3.25.0 (R10 pin), sha256-verified"
+  ],
+  "environment": {
+   "host": "sandbox VM, 4 vCPU, 15 GB RAM, shared with other sprint tracks (1-min load avg 7-11 during builds)",
+   "dotnet": "SDK 10.0.402 (/root/.dotnet)",
+   "git": "2.43.0",
+   "python": "3.13",
+   "os": "Linux 6.18"
+  },
+  "procedure": "protocols/SPR-A2-01-ros-merge-driver.md (preregistered 3e11073; Amendment 1 after v1 replay). For each target merge M: checkout P1, `git merge --no-ff --no-commit P2` without then with the driver; compare driver output for each .ros history file with M; separately commit the driver result (non-.ros conflicted files taken from M) and run `praxis validate` on it and on M.",
+  "rawResults": {
+   "files": [
+    "raw/replay-r8-logged-v1.jsonl",
+    "raw/replay-r8-logged-v2.jsonl",
+    "raw/replay-r8-all86-unshallow-v2.jsonl (authoritative R8)",
+    "raw/replay-r8-all86-v2.jsonl (shallow clone; SUPERSEDED, one invalid replay)",
+    "raw/replay-r10-all-v2.jsonl",
+    "raw/replay-summary.json",
+    "raw/validate-r8-ros58.jsonl",
+    "raw/validate-r10-ros34.jsonl",
+    "raw/validate-negative-controls.json"
+   ],
+   "r8LoggedV1": {
+    "merges": 26,
+    "resolved": 16,
+    "stillConflicted": 10,
+    "driverIntroducedConflicts": 5
+   },
+   "r8LoggedV2": {
+    "merges": 26,
+    "resolved": 26,
+    "rosPathsBefore": 46,
+    "rosPathsAfter": 0,
+    "lost": 0,
+    "duplicated": 0,
+    "relaxedOrderUses": 10
+   },
+   "r8All86V2": {
+    "merges": 86,
+    "cleanWithoutDriver": 26,
+    "cleanWithDriver": 26,
+    "rosOnlyConflicted": 56,
+    "rosOnlyResolved": 56,
+    "mixedRosAndApp": 2,
+    "mixedRosResolvedAppStillConflicted": 2,
+    "appOnlyConflicted": 2,
+    "appOnlyStillConflicted": 2,
+    "rosPathsBefore": 105,
+    "rosPathsAfter": 0,
+    "newConflictsIntroduced": 0,
+    "refusals": 0,
+    "lost": 0,
+    "duplicated": 0,
+    "idSetEqualToM": "168/168 files",
+    "recordContentEqualToM": "168/168 files",
+    "byteIdenticalToM": {
+     "current.json": "32/84",
+     "events.jsonl": "76/84"
+    },
+    "orderDiffersFromM": {
+     "current.json": 21,
+     "events.jsonl": 8
+    },
+    "actorDiffersFromM": 17,
+    "validate": {
+     "onM": "58/58 pass",
+     "onDriverResult": "58/58 pass"
+    },
+    "driverMergeSecondsMedian": 5.96
+   },
+   "r10All34V2": {
+    "merges": 34,
+    "rosOnlyConflicted": 29,
+    "rosOnlyResolved": 29,
+    "mixedRosAndApp": 5,
+    "mixedRosResolvedAppStillConflicted": 5,
+    "rosPathsBefore": 65,
+    "rosPathsAfter": 0,
+    "refusals": 0,
+    "lost": 0,
+    "duplicated": 0,
+    "idSetEqualToM": "67/68 files (exception: M d8447ed1 dropped WI-0003; driver kept it)",
+    "validate": {
+     "onM": "33/34 pass (d8447ed1 fails: linked work item WI-0003 not present)",
+     "onDriverResult": "34/34 pass"
+    },
+    "driverMergeSecondsMedian": 8.11
+   },
+   "otherRehearsals": "git merge-tree over all 2-parent merges: R1,R2,R4,R6,R7,R9 0 conflicts; R3 3 and R5 15 conflicts, none in .ros/"
+  },
+  "verification": "driver unit tests 26/26 pass (dotnet fsi tests.fsx); harness unit tests 5/5 (python3 -m unittest); validate negative controls: dropped work item and dropped events detected, duplicated event line NOT detected; shallow-clone artifact found and re-run unshallowed",
+  "limitations": [
+   "v2 relaxed-order rule was added after seeing v1 results (disclosed Amendment 1); not preregistered",
+   "driver is per-file: cannot bind both files to the same commits as Praxis's own resolver",
+   "actor policy (later updatedAt) differs from team choice in 17 R8 files; item/event ORDER differs from M in some files (team used ad hoc orders: R10 mostly sorted by ID)",
+   "only works for local merges; GitHub's server-side merge button and rebase-merge do not run custom drivers; drivers must be configured per clone (.git/config), .gitattributes alone is insufficient",
+   "dotnet fsi startup makes each driver call ~3-8 s; not optimized",
+   "2 of 26 logged R8 PR-merge replays and some R10 replays had criss-cross (multiple) merge bases; git built a virtual base, driver succeeded",
+   "praxis validate does not detect duplicate event lines"
+  ],
+  "conclusion": "SUPPORTED/VERIFIED for R8 and R10: v2 removed every .ros/ conflict (105 R8 + 65 R10 paths, 92 merges) with 0 lost and 0 duplicated records and passed praxis validate on all 92 results; it cannot touch the 9 merges with application/CI conflicts (4 in R8, 5 in R10).",
+  "reproduction": "cd tools/ros-merge-driver && dotnet fsi tests.fsx; cd ../replay && python3 -m unittest test_replay_merges && python3 replay_merges.py <scratch-clone> <abs>/ros-merge.fsx ../../raw/targets-r8-all86.json out.jsonl && python3 summarize.py summary.json r8=out.jsonl && python3 validate_replays.py <scratch-clone2> <abs>/ros-merge.fsx <praxis-bin 3.24.0> ../../raw/targets-r8-all-ros.json val.jsonl (scratch clones must be unshallow)"
+ },
+ {
+  "id": "SPR-A2-02",
+  "question": "What does rebuilding the pinned Praxis verifier cost, and can it be cached or replaced safely?",
+  "hypothesis": "H1 cold >= 3x warm-incremental; H2 release fetch faster than cold build; H3 cache keyed on pin SHA (+OS, SDK, project) is correct",
+  "independentVars": [
+   "build mode: cold (fresh tree, empty NuGet), warm-nuget (fresh tree, warm NuGet cache), warm-incremental (same tree), release fetch (download+verify+extract)"
+  ],
+  "dependentVars": [
+   "wall seconds",
+   "praxis.dll sha256",
+   "foundations verify JSON output and exit code"
+  ],
+  "comparison": "local timings vs CI step 'Build pinned Praxis verifier' (Track A ci-steps.csv); source-built verifier vs release v3.9.1 native bundle",
+  "startRevision": {
+   "praxis pin": "aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c",
+   "release tag v3.9.1": "607d058ab8e8b510078943e4ee28a4a62d096ffb"
+  },
+  "tools": [
+   "tools/verifier-timing/time_builds.sh",
+   "curl, sha256sum, tar",
+   "GitHub MCP list_releases/get_release_by_tag (read-only)"
+  ],
+  "environment": {
+   "host": "sandbox VM, 4 vCPU, 15 GB RAM, shared with other sprint tracks (1-min load avg 7-11 during builds)",
+   "dotnet": "SDK 10.0.402 (/root/.dotnet)",
+   "git": "2.43.0",
+   "python": "3.13",
+   "os": "Linux 6.18"
+  },
+  "procedure": "protocols/SPR-A2-02-verifier-rebuild.md (preregistered 300ccae)",
+  "rawResults": {
+   "files": [
+    "raw/verifier-build-timings.jsonl",
+    "raw/verifier-release-fetch-timings.json",
+    "raw/verifier-equivalence.json",
+    "raw/praxis-release-provenance.json"
+   ],
+   "coldSeconds": [
+    93.01,
+    93.09,
+    93.32
+   ],
+   "warmNugetSeconds": [
+    94.33,
+    84.19,
+    89.36
+   ],
+   "warmIncrementalSeconds": [
+    5.83,
+    4.57,
+    4.16
+   ],
+   "releaseFetchSeconds": [
+    3.05,
+    4.53,
+    4.68
+   ],
+   "ciStepMedianSeconds": {
+    "pinAa7c7ca_success_exclR6": 61.0,
+    "n": 425,
+    "perRepoMedians": "60-66",
+    "R6_pin398af6d": 80.0
+   },
+   "localColdOverCiMedian": 1.53,
+   "verifierStepTotalMinutesR2R10": 603.97,
+   "setupDotnetMedianSeconds": 1.0
+  },
+  "verification": "exit 0 for all 9 builds; same-path rebuild byte-identical; release asset sha256 equals GitHub digest; foundations verify JSON byte-identical source vs release on 4 rehearsal heads and on a negative control (both exit 3)",
+  "limitations": [
+   "host shared with other tracks (load 7-11 on 4 vCPU); absolute local seconds are pessimistic vs GitHub runners (local cold is 1.53x CI median)",
+   "n=3 per mode",
+   "release fetch measured through the sandbox proxy, not from a GitHub runner",
+   "no release is tagged AT the pin; v3.9.1 is 2 commits later with no src/ change; release.json version string differs (3.9.1)",
+   "determinism probe is a single same-path rebuild",
+   "the dotnet-tool package EchelonFoundry.Praxis was not tested"
+  ],
+  "conclusion": "H1 SUPPORTED (cold/incremental ~20x; warm NuGet alone saves ~4%: compile-bound). H2 SUPPORTED (release fetch ~4.5 s vs ~93 s local cold / 61 s CI). H3 SUPPORTED with conditions: key must include pin SHA, runner OS/arch, SDK version and project path; output is path-dependent but reproducible at a fixed path. ESTIMATE ~550 of ~604 verifier minutes avoidable across R2-R10.",
+  "reproduction": "tools/verifier-timing/time_builds.sh <git dir with pin> aa7c7ca6a6e2cb270bdccfe117ea35ade7b0945c <workdir> out.jsonl 3"
+ },
+ {
+  "id": "SPR-A2-03",
+  "question": "How many CI minutes would fail-fast ordering (cheap gates before browser suites, browser jobs gated on them) have saved?",
+  "hypothesis": "H1: >=10% of failed-run job-minutes saved (V1)",
+  "independentVars": [
+   "counterfactual ordering model (within-job reorder; across-job needs-gating V1 expensive steps only, V2 whole job)",
+   "cheap-gate definition (broad = Track A categories build/test/static-gate; strict = excluding live/acceptance/provider/mutation/aggregate steps)"
+  ],
+  "dependentVars": [
+   "job-minutes saved",
+   "% of failed-run minutes",
+   "% of all job-minutes"
+  ],
+  "comparison": "actual historical job/step durations vs counterfactual",
+  "startRevision": {
+   "Track A data": "ci-jobs-timed.jsonl (2,191 runs, R2-R10 timed windows)"
+  },
+  "tools": [
+   "tools/failfast/failfast.py (6 unit tests)",
+   "Track A scripts/econ.py step_category (unchanged)"
+  ],
+  "environment": {
+   "host": "sandbox VM, 4 vCPU, 15 GB RAM, shared with other sprint tracks (1-min load avg 7-11 during builds)",
+   "dotnet": "SDK 10.0.402 (/root/.dotnet)",
+   "git": "2.43.0",
+   "python": "3.13",
+   "os": "Linux 6.18"
+  },
+  "procedure": "protocols/SPR-A2-03-fail-fast-replay.md (preregistered fad75d3; Amendment 1 sensitivity)",
+  "rawResults": {
+   "file": "raw/failfast-counterfactual.json",
+   "allJobMinutes": 11967.7,
+   "failedRunJobMinutes": 5417.6,
+   "failedRuns": 317,
+   "broad": {
+    "withinMin": 137.8,
+    "acrossV1Min": 1148.9,
+    "acrossV2Min": 1406.1,
+    "pctFailedRunV1": 23.7,
+    "pctFailedRunV2": 28.5,
+    "pctAllV1": 10.8,
+    "pctAllV2": 12.9
+   },
+   "strict": {
+    "withinMin": 116.4,
+    "acrossV1Min": 200.6,
+    "acrossV2Min": 286.0,
+    "pctFailedRunV1": 5.9,
+    "pctFailedRunV2": 7.4,
+    "pctAllV1": 2.6,
+    "pctAllV2": 3.4
+   },
+   "byRepoBroadV1Min": "R6 868.8, R5 237.1, R10 116.3, R7 56.1, R4 8.3, R2/R3/R8/R9 0",
+   "latencyPenaltyESTIMATE": "median gating-job duration in green runs 55.5 s (n=106)"
+  },
+  "verification": "unit tests on synthetic jobs; job-minute base reproduces Track A jobMinutesTotal (11,967.7)",
+  "limitations": [
+   "counterfactual; assumes failure detected at the same step and that skipped jobs would not have been needed",
+   "cancelled jobs excluded (R10 20-minute timeouts get no saving)",
+   "result is dominated by R6 and highly sensitive to which steps count as cheap",
+   "does not model re-runs or developer wait"
+  ],
+  "conclusion": "INCONCLUSIVE: 23.7% of failed-run minutes (10.8% of all) under the preregistered broad definition, but only 5.9% (2.6%) when live/acceptance suites are not counted as cheap gates; most of the broad saving comes from R6.",
+  "reproduction": "python3 tools/failfast/failfast.py <TrackA>/scripts <TrackA>/data/raw/ci-jobs-timed.jsonl raw/failfast-counterfactual.json"
+ }
+]

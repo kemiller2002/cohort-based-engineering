@@ -1,0 +1,150 @@
+[
+ {
+  "id": "A2-F-01",
+  "title": "Semantic merge driver removes every .ros/ state conflict in R8 and R10 replays",
+  "classification": "VERIFIED",
+  "statement": "With the ros-history driver (v2), re-merging the parents of all 86 R8 two-parent merge commits and all 34 conflicted R10 merge commits left 0 of 170 previously conflicted .ros/ paths unmerged (R8: 105 paths in 58 merges incl. all 26 logged PR merges; R10: 65 paths in 34 merges). It introduced no new conflict in the 26 R8 merges that were already clean.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/replay-r8-all86-unshallow-v2.jsonl",
+   "raw/replay-r10-all-v2.jsonl",
+   "raw/replay-summary.json"
+  ],
+  "limitations": [
+   "v2's relaxed-order rule was added after v1 (16/26) results; disclosed in protocol Amendment 1",
+   "replay only; not deployed"
+  ]
+ },
+ {
+  "id": "A2-F-02",
+  "title": "Driver output preserves every record and passes praxis validate",
+  "classification": "VERIFIED",
+  "statement": "Across 168 R8 and 68 R10 resolved history files: 0 records lost and 0 duplicated versus the parents; the set of work-item and event IDs, and every record's content, equals the team's merge commit in all files except one where the team's merge was wrong. The pinned praxis validate (3.24.0 R8, 3.25.0 R10) passes on 92/92 driver results.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/replay-summary.json",
+   "raw/validate-r8-ros58.jsonl",
+   "raw/validate-r10-ros34.jsonl",
+   "raw/validate-negative-controls.json"
+  ],
+  "limitations": [
+   "praxis validate does not detect duplicated event lines (negative control); duplicates are checked by the harness",
+   "byte identity with M is lower: current.json 32/84 (R8), events 76/84; differences are item/event order and the top-level actor field"
+  ]
+ },
+ {
+  "id": "A2-F-03",
+  "title": "One team merge in R10 dropped a live work item; the driver would have kept it",
+  "classification": "VERIFIED",
+  "statement": "R10 merge d8447ed1 (SL-T12 into SL-T19) resolved current.json by keeping one side, dropping active work item WI-0003; praxis validate fails on that commit ('linked work item WI-0003 is not present'). The driver's result keeps WI-0003 and validates.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/replay-r10-all-v2.jsonl (label r10-d8447ed1)",
+   "raw/validate-r10-ros34.jsonl"
+  ],
+  "limitations": [
+   "single instance; the item reappears later on main"
+  ]
+ },
+ {
+  "id": "A2-F-04",
+  "title": "A .ros driver cannot remove application-code conflicts",
+  "classification": "VERIFIED",
+  "statement": "9 replayed merges still need human resolution after the driver: R8 4 (2 mixed: .github/workflows/live.yml; Classify.fs+GitHubRequests.fs+StatefulFake.fs; 2 app-only: Program.fs; INV22.fs) and R10 5 (InvestigationList.fs+investigation-list.html x3; Classify.fs+GitHubRequests.fs x2). In R8, 56 of 60 conflicted merges (93%) become conflict-free; in R10 29 of 34 (85%).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/replay-r8-all86-unshallow-v2.jsonl",
+   "raw/replay-r10-all-v2.jsonl"
+  ],
+  "limitations": []
+ },
+ {
+  "id": "A2-F-05",
+  "title": "Strict Praxis ordering rule fails on real rehearsal histories",
+  "classification": "VERIFIED",
+  "statement": "A driver enforcing Praxis's documented rule (base events never reordered) refused 10 of 26 logged R8 merges and made 5 cleanly-text-mergeable events.jsonl files conflict. Cause: the team's DEV-R8-08 fallback ('ours, then theirs' new lines') had already reordered base events on branches. Praxis 3.24.0's own resolver also refused some merges (DEV-R8-08).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/replay-r8-logged-v1.jsonl",
+   "indy-init-rehearsal-008 evidence/DEVIATIONS.md DEV-R8-08"
+  ],
+  "limitations": [
+   "relaxed ordering is a policy decision for Praxis owners"
+  ]
+ },
+ {
+  "id": "A2-F-06",
+  "title": "Praxis prescribes no merge driver; its resolver is manual and post-conflict",
+  "classification": "VERIFIED",
+  "statement": "Praxis docs/work-history-merge.md prescribes `praxis work history merge --apply` after Git stops on a conflict, in an exclusive checkout; no .gitattributes merge driver is installed or documented. R8 agents spent 1,537 s on the 26 conflicted PR merges (Track A); the prototype driver takes a median 6.5 s per merge (dotnet fsi startup dominated) with no agent turn.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "/home/user/praxis docs/work-history-merge.md @12bf995",
+   "raw/replay-summary.json"
+  ],
+  "limitations": [
+   "driver only runs for local merges with per-clone git config; GitHub merge button does not run it"
+  ]
+ },
+ {
+  "id": "A2-F-07",
+  "title": "Cold verifier build is compile-bound; NuGet caching alone barely helps",
+  "classification": "SUPPORTED",
+  "statement": "Local `dotnet build` of Praxis.Cli at the pin: cold 93.0/93.1/93.3 s; warm NuGet with fresh tree 84.2-94.3 s (median 89.4); incremental on the same tree 4.2-5.8 s (median 4.6). CI median for the step is 61 s (n=425, pin aa7c7ca); local cold is 1.53x CI.",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/verifier-build-timings.jsonl"
+  ],
+  "limitations": [
+   "shared host, load 7-11 on 4 vCPU",
+   "n=3"
+  ]
+ },
+ {
+  "id": "A2-F-08",
+  "title": "A published, attested release is source-equivalent to the pin and behaves identically",
+  "classification": "SUPPORTED",
+  "statement": "No release is tagged at aa7c7ca, but v3.9.1 (tag commit 607d058) is 2 commits later with no file under src/ changed. Its praxis-linux-x64.tar.gz (sha256 matches GitHub digest; release states build-provenance attestations) downloads, verifies and extracts in 3.0-4.7 s, and its `foundations verify --json` output is byte-identical to the source-built verifier on R2, R5, R8, R10 heads and on a failing negative control (both exit 3).",
+  "measuredOrEstimate": "MEASURED",
+  "evidence": [
+   "raw/praxis-release-provenance.json",
+   "raw/verifier-release-fetch-timings.json",
+   "raw/verifier-equivalence.json"
+  ],
+  "limitations": [
+   "version string differs (3.9.1); attestation itself not verified with gh attestation verify",
+   "fetch timed through sandbox proxy"
+  ]
+ },
+ {
+  "id": "A2-F-09",
+  "title": "Caching the verifier keyed on the pinned commit is safe if the key is complete",
+  "classification": "SUPPORTED",
+  "statement": "praxis.dll differs between builds in different directories but a clean rebuild in the same directory was byte-identical, so output is a function of (pin SHA, SDK version, OS/arch, project path, build path). A cache key of pin SHA + runner OS/arch + SDK version + project path, with a fixed checkout path, binds the binary to the pinned source. ESTIMATE: replacing the ~61 s CI build with a ~4-5 s cache restore or release fetch would save about 550 of the ~604 verifier minutes in R2-R10.",
+  "measuredOrEstimate": "ESTIMATE (savings); MEASURED (determinism probe)",
+  "evidence": [
+   "raw/verifier-equivalence.json",
+   "raw/verifier-build-timings.jsonl",
+   "Track A data/ci-steps.csv"
+  ],
+  "limitations": [
+   "single determinism probe",
+   "savings assume CI restore ~= local fetch time",
+   "V1 puts verifier minutes at 607 (CI 580-632), consistent with 604 from step data"
+  ]
+ },
+ {
+  "id": "A2-F-10",
+  "title": "Fail-fast ordering savings depend on what counts as a cheap gate",
+  "classification": "INCONCLUSIVE",
+  "statement": "Counterfactual over 2,191 runs (11,968 job-minutes; 5,418 in 317 failed runs): gating browser work behind failing cheap gates would save 1,287 min (23.7% of failed-run minutes, 10.8% of all) under the preregistered broad definition, but 317 min (5.9%, 2.6%) if live/acceptance/provider/mutation suites are not counted as cheap. R6 contributes most of the broad estimate. Latency penalty ESTIMATE: ~56 s median per green run.",
+  "measuredOrEstimate": "ESTIMATE",
+  "evidence": [
+   "raw/failfast-counterfactual.json"
+  ],
+  "limitations": [
+   "assumes the failure is detected at the same step",
+   "cancelled/timeout jobs excluded, so R10's 20-minute timeouts get no saving"
+  ]
+ }
+]

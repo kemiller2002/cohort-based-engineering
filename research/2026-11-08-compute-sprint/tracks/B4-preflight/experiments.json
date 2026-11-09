@@ -1,0 +1,92 @@
+[
+  {
+    "id": "SPR-B4-01-E1",
+    "question": "Does percepta spec-preflight (R9 pin 0.4.0) reproduce Indy-init's documented results on R8 and the three control packages?",
+    "hypothesis": "H1-H5 of protocols/SPR-B4-01.md: exit 3 with INV-04, CommandEnvelope and DEV-R8-12 findings on v4.1.1; exit 0, nothing blocking on v4.1.2/v4.1.5/v4.1.6; no T18<->T20 finding; under 1 s.",
+    "independentVars": [
+      "package (v4.1.1, v4.1.2, v4.1.5, v4.1.6)",
+      "percepta version (4a53688 = v0.4.0 = HEAD; 0ad2bd3 first commit)",
+      "condition (DOC: 4 inputs incl. --catalog; CI: no --catalog, as preflight-tooling.yml)"
+    ],
+    "dependentVars": [
+      "exit code",
+      "findings per section",
+      "per-defect catch per preregistered criteria",
+      "wall seconds (n=5; n=3 for 0ad2bd3)",
+      "report reproducibility across runs"
+    ],
+    "comparison": "B3 C1-loop/C2/C3/C4 on the same packages (B3 committed results, re-run from a scratch copy: identical)",
+    "startRevision": "track 3b7c9f7 (preregistration); percepta 4a53688 and 0ad2bd3; Indy-init 1cb27ec, bc3c381, 89f5840, dae2347",
+    "tools": [
+      "percepta spec-preflight (rebuilt from tag)",
+      "harness/run_preflight.py",
+      "harness/classify.py",
+      "harness/summarize.py"
+    ],
+    "environment": {
+      "host": "linux, load average 9-11 during runs",
+      "dotnet": "SDK 10.0.402 at /root/.dotnet; self-contained linux-x64 publish (bundles .NET 8 runtime)",
+      "python": "python3 stdlib; unittest",
+      "percepta": "/home/user/ext/percepta clone at 4a53688",
+      "indyInit": "read-only clone /home/user/sprint-scratch/B2/indy-init-full"
+    },
+    "procedure": [
+      "Identify the R9 pin from Indy-init toolchain.lock.json (bc3c381) and dependency-lock.json (dae2347): percepta-semantic-v0.4.0 = 4a53688.",
+      "git archive each percepta revision into /home/user/sprint-scratch/B4/src-<rev>; dotnet publish -c Release -r linux-x64 --self-contained (as package.sh), one build at a time.",
+      "Extract inputs with git show into /home/user/sprint-scratch/B4/inputs/<package>; record SHA-256.",
+      "Run each (version, package, condition) n times; record exit, report, stdout/stderr, perf_counter wall time.",
+      "Classify with preregistered matchers; build results.csv and comparison.json."
+    ],
+    "rawResults": [
+      "raw/v0.4.0-4a53688/runs.json and *.json reports",
+      "raw/first-0ad2bd3/",
+      "results.csv",
+      "comparison.json"
+    ],
+    "verification": "harness/tests: 12 unittest tests (classify unit tests; results.csv and comparison.json regenerate exactly from raw; input hashes equal git blobs; all runs reproduced identical reports; preregistered expectations).",
+    "limitations": [
+      "Local rebuild from the tagged source, not the downloaded release archive.",
+      "Controls are successive amendments of one specification and v4.1.2 was co-written with the tool; not independent.",
+      "Timing on a loaded host; includes process start-up."
+    ],
+    "conclusion": "Docs claim reproduced exactly (VERIFIED). Both versions give byte-identical reports. Without --catalog the carrier defect is not detectable.",
+    "reproduction": "cd tracks/B4-preflight; export PATH=/root/.dotnet:$PATH; (build as protocol) ; python3 -I harness/run_preflight.py --exe /home/user/sprint-scratch/B4/bin-4a53688/Percepta.Cli --version-label v0.4.0-4a53688 --out raw --runs 5; python3 -I harness/summarize.py; python3 -m unittest discover -s harness/tests -v"
+  },
+  {
+    "id": "SPR-B4-01-E2",
+    "question": "POST HOC: how general are spec-preflight's and B3's rules under defect-preserving rewrites of the R8 inputs?",
+    "hypothesis": "Both rule sets depend on surface wording; rewrites that keep the defect will defeat some rules.",
+    "independentVars": [
+      "probe P0-P7 (identity, reworded bound, per-minute bound, 2-cycle, effect synonym, irrelevant string field on the carrier, reworded catalog sentence, carrier renamed)"
+    ],
+    "dependentVars": [
+      "per-defect catch for spec-preflight and for B3 C1-loop, C1-cycle, C2, C3"
+    ],
+    "comparison": "spec-preflight v0.4.0 vs B3 checks (scratch copy) on identical mutated inputs",
+    "startRevision": "track 2ee03be",
+    "tools": [
+      "harness/probe.py"
+    ],
+    "environment": {
+      "host": "linux, load average 9-11 during runs",
+      "dotnet": "SDK 10.0.402 at /root/.dotnet; self-contained linux-x64 publish (bundles .NET 8 runtime)",
+      "python": "python3 stdlib; unittest",
+      "percepta": "/home/user/ext/percepta clone at 4a53688",
+      "indyInit": "read-only clone /home/user/sprint-scratch/B2/indy-init-full"
+    },
+    "procedure": [
+      "Apply each rewrite to the extracted R8 inputs (and to B3's .fs stubs for type edits).",
+      "Run both tools; record catches."
+    ],
+    "rawResults": [
+      "raw/probe.json"
+    ],
+    "verification": "test_raw.test_probe_identity_matches_baseline (P0 equals the baseline run).",
+    "limitations": [
+      "Post hoc; probes chosen by B4 after reading both rule sets (adversarial, not a random sample).",
+      "Only the R8 package is mutated; false-alarm generality is not probed."
+    ],
+    "conclusion": "spec-preflight misses P1, P3, P4 (INV-04) and P5, P6 (carrier); survives P2 and P7. B3 C1-loop misses P3, P4 and on P1 alarms only via the wrong clause; C1-cycle survives P3; B3 C2 survives P5-P7 because it keys on type/field names containing 'Command'. Neither is generic.",
+    "reproduction": "python3 -I harness/probe.py --exe /home/user/sprint-scratch/B4/bin-4a53688/Percepta.Cli --b3 /home/user/sprint-scratch/B4/b3-copy/checks --out raw/probe.json"
+  }
+]

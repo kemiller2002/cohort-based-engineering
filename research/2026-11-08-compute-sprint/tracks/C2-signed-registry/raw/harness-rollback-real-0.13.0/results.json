@@ -1,0 +1,249 @@
+{
+  "eligibility": [
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "host-tool",
+      "systemId": "praxis",
+      "version": "3.25.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "host-tool",
+      "systemId": "ordo",
+      "version": "1.20.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "repository-lifecycle",
+      "systemId": "percepta",
+      "version": "0.1.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "host-tool",
+      "systemId": "percepta-semantic",
+      "version": "0.4.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "repository-lifecycle",
+      "systemId": "dokimos",
+      "version": "0.11.1"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "repository-lifecycle",
+      "systemId": "visual-engineering",
+      "version": "1.0.1"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "repository-lifecycle",
+      "systemId": "communication-engineering",
+      "version": "1.0.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "repository-lifecycle",
+      "systemId": "tutela",
+      "version": "0.1.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "project-binding",
+      "systemId": "aegis",
+      "version": "1.0.0"
+    },
+    {
+      "qualifiedRange": "\u003E=0.6.1 \u003C1.0.0",
+      "rangeEligible": true,
+      "role": "project-binding",
+      "systemId": "limen",
+      "version": "0.9.1"
+    },
+    {
+      "qualifiedRange": "\u003E=0.2.0 \u003C1.0.0",
+      "rangeEligible": true,
+      "role": "project-binding",
+      "systemId": "forma",
+      "version": "0.13.0"
+    },
+    {
+      "qualifiedRange": "\u003E=0.3.0 \u003C1.0.0",
+      "rangeEligible": true,
+      "role": "project-binding",
+      "systemId": "folio",
+      "version": "0.4.1"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "repository-lifecycle",
+      "systemId": "strata",
+      "version": "0.1.1"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "project-binding",
+      "systemId": "arca",
+      "version": "0.7.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "project-binding",
+      "systemId": "fides",
+      "version": "0.2.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "project-binding",
+      "systemId": "summa-contracts",
+      "version": "0.1.0"
+    },
+    {
+      "qualifiedRange": "",
+      "rangeEligible": false,
+      "role": "project-binding",
+      "systemId": "limen-fsharp",
+      "version": "0.9.0"
+    }
+  ],
+  "experiment": "SPR-C2-01",
+  "keyId": "test-only-c2-001-2026-11-08",
+  "mode": "real forma 0.13.0, catalog rolled back",
+  "results": [
+    {
+      "Id": "T0",
+      "Description": "embedded (compiled) trust file pins the TEST-ONLY key",
+      "Expected": "keys = [test-only-c2-001-2026-11-08]",
+      "Observed": "test-only-c2-001-2026-11-08",
+      "Pass": true
+    },
+    {
+      "Id": "A0",
+      "Description": "forma 0.13.0 is absent from this build\u0027s built-in catalog (qualifiedVersions)",
+      "Expected": "absent",
+      "Observed": "0.10.0,0.11.0,0.12.0,0.2.0,0.3.0,0.4.1,0.5.0,0.6.1,0.9.0",
+      "Pass": true
+    },
+    {
+      "Id": "A1",
+      "Description": "signed entry verifies and attestedSelections contains (forma, 0.13.0); unsigned set does not",
+      "Expected": "Attested \u002B selected; unsigned not selected",
+      "Observed": "verify=Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1); selected=True; unsignedSelected=False",
+      "Pass": true
+    },
+    {
+      "Id": "A2",
+      "Description": "Compatibility.validateIn (used by doctor) accepts forma via the signed recorded authority; refuses with the unsigned one",
+      "Expected": "signed: no forma error; unsigned: forma not qualified",
+      "Observed": "signed=[]; unsigned=[Component \u0027forma\u0027 version \u00270.13.0\u0027 is not qualified by this Conditor compatibility graph. Qualified versions: 0.10.0, 0.11.0, 0.12.0, 0.2.0, 0.3.0, 0.4.1, 0.5.0, 0.6.1, 0.9.0.]",
+      "Pass": true
+    },
+    {
+      "Id": "A3",
+      "Description": "CLI \u0060conditor doctor --json\u0060: COND-DOC-COMPAT findings about forma",
+      "Expected": "signed: none; unsigned: \u003E= 1",
+      "Observed": "signed(exit 12)=0 ; unsigned(exit 12)=1 {\n      \u0022code\u0022: \u0022COND-DOC-COMPAT\u0022,\n      \u0022severity\u0022: \u0022error\u0022,\n      \u0022area\u0022: \u0022compatibility\u0022,\n      \u0022detail\u0022: \u0022Component \\u0027forma\\u0027 version \\u00270.13.0\\u0027 is not qualified by this Conditor compatibility graph. Qualified versions: 0.10.0, 0.11.0, 0.12.0, 0.2.0, 0.3.0, 0.4.1, 0.5.0, 0.6.1, 0.9.0.\u0022,\n      \u0022remediation\u0022: \u0022Run \\u0027conditor compatibility\\u0027 and edit conditor.json to a qualified component/version/dependency set.\u0022\n    }",
+      "Pass": true
+    },
+    {
+      "Id": "N1",
+      "Description": "one hex character of the signed releaseManifest.sha256 changed",
+      "Expected": "NotAttested: does not verify",
+      "Observed": "NotAttested(the signature does not verify under key \u0027test-only-c2-001-2026-11-08\u0027)",
+      "Pass": true
+    },
+    {
+      "Id": "N2",
+      "Description": "one byte of the signature changed (low bit flipped)",
+      "Expected": "NotAttested: does not verify",
+      "Observed": "NotAttested(the signature does not verify under key \u0027test-only-c2-001-2026-11-08\u0027)",
+      "Pass": true
+    },
+    {
+      "Id": "N3",
+      "Description": "signed by an untrusted throwaway key under the pinned keyId",
+      "Expected": "NotAttested: does not verify",
+      "Observed": "NotAttested(the signature does not verify under key \u0027test-only-c2-001-2026-11-08\u0027)",
+      "Pass": true
+    },
+    {
+      "Id": "N4",
+      "Description": "signed by an untrusted throwaway key under an unknown keyId",
+      "Expected": "NotAttested: not pinned",
+      "Observed": "NotAttested(key \u0027test-only-untrusted-key\u0027 is not pinned by this Conditor build)",
+      "Pass": true
+    },
+    {
+      "Id": "N6",
+      "Description": "replay: a valid attestation for forma 0.12.0 (its statement) copied onto this entry",
+      "Expected": "NotAttested: does not verify",
+      "Observed": "NotAttested(the signature does not verify under key \u0027test-only-c2-001-2026-11-08\u0027)",
+      "Pass": true
+    },
+    {
+      "Id": "N9",
+      "Description": "attestation claims no web-package contract (claims echelon.other/v1)",
+      "Expected": "Attested but not selected",
+      "Observed": "Attested(test-only-c2-001-2026-11-08; echelon.other/v1); selected=False",
+      "Pass": true
+    },
+    {
+      "Id": "S1",
+      "Description": "one hex character of an UNSIGNED field (artifacts[0].sha256) changed",
+      "Expected": "H2b: still Attested (not covered by the statement)",
+      "Observed": "Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1)",
+      "Pass": true
+    },
+    {
+      "Id": "S2",
+      "Description": "attestation carries expiresAt in the past (field not in the format)",
+      "Expected": "H2c: ignored, still Attested",
+      "Observed": "Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1)",
+      "Pass": true
+    },
+    {
+      "Id": "N5",
+      "Description": "same signed set, trust list marks the key revokedAt (parsed by ReleaseAttestation.parseTrust)",
+      "Expected": "NotAttested: was revoked; not selected",
+      "Observed": "NotAttested(key \u0027test-only-c2-001-2026-11-08\u0027 was revoked at 2026-11-01T00:00:00.0000000\u002B00:00); selected=False",
+      "Pass": true
+    },
+    {
+      "Id": "N7",
+      "Description": "forma 1.0.0 (outside qualifiedRange \u003E=0.2.0 \u003C1.0.0), validly signed",
+      "Expected": "Attested but not selected",
+      "Observed": "verify=Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1); selected=False",
+      "Pass": true
+    },
+    {
+      "Id": "N8",
+      "Description": "praxis 3.26.0 (role host-tool, not in catalog), validly signed with the web contract",
+      "Expected": "Attested but not selected (lifecycle tools keep exact qualification, CON-343)",
+      "Observed": "verify=Attested(test-only-c2-001-2026-11-08; echelon.web-package-binding/v1); selected=False; praxisRange=",
+      "Pass": true
+    },
+    {
+      "Id": "S3",
+      "Description": "recorded authority file altered by one byte after its digest was recorded (signature still valid)",
+      "Expected": "authority ignored -\u003E forma not qualified",
+      "Observed": "Component \u0027forma\u0027 version \u00270.13.0\u0027 is not qualified by this Conditor compatibility graph. Qualified versions: 0.10.0, 0.11.0, 0.12.0, 0.2.0, 0.3.0, 0.4.1, 0.5.0, 0.6.1, 0.9.0.",
+      "Pass": true
+    }
+  ],
+  "setSource": "/home/user/ext/echelon-registry/channels/echelon-current/linux-x64.json",
+  "setSourceSha256": "bba3594ad1db8a4cee3550620c4a86dd5cbb5ce2f4bc183ea50951476b29ca91"
+}
