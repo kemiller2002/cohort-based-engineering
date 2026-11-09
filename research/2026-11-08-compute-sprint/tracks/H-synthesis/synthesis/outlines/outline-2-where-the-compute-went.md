@@ -85,7 +85,12 @@ In the one rehearsal with full telemetry (R8), most tokens were cache reads of a
   - V4 **VERIFIED** the primary result exactly. Use V4's corrected descriptives: wall +40.1%, tokens +7.6%.
   - Ablation SPR-X-03 (V5 **VERIFIED**): the one-paragraph Authority contract carries the benefit at roughly baseline token cost. The question/evidence checklist alone does not reduce violations and adds +7–9% tokens and +36–46% wall. "Documenting is not refusing."
   - Candidate framing: "keep a short authority contract; calibrate it per model; do not treat checklists as controls". Matrix X-11, X-30.
-  - **[DO NOT STATE]** this as general across domains. SPR-X-04 is pending; the evidence is one model and two fixtures.
+  - **New-domain replication, SPR-X-04 (NOT YET INDEPENDENTLY VERIFIED).**
+    - Not significant: 4.125 vs 5.0 violations, p=0.077. This is evidence against generality at the X-02/X-03 effect size.
+    - Cost was significant: +9.9% tokens, +38% wall.
+    - The reduction appeared only where the spec visibly leaves a gap open.
+    - In both arms, agents named conflicts in prose and still implemented a default (X4-F-05).
+  - **[DO NOT STATE]** that the contract is a general authorization control. Defensible wording: "a cheap, narrow aid for weaker models at visibly open gaps; it does not replace structural controls".
 
 ## 7. What we cannot measure yet
 

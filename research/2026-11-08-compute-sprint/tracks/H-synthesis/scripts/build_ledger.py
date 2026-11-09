@@ -287,6 +287,13 @@ SUPPLEMENTARY = [
      "caveats": ["V5: robust to excluding T5, to fixture x batch stratification (p=2/729) and to dropping SO-01 runs", "C's T5 'undocumented' only under the QUESTIONS.md rule; C runs state the reading in code comments", "'K worse than M' is descriptive only (p=0.10) and reverses on D2-03", "D2-03 alone p=0.061", "single model, two fixtures; SPR-X-04 new-domain replication pending"],
      "independentVerification": {"by": "V5", "status": "done", "verdict": "VERIFIED (primary and secondaries); PARTIALLY VERIFIED (descriptive and X-F-08 wording)"}, "usedIn": "outline-2",
      "flags": ["VERIFICATION_FOUND_DISCREPANCY"]},
+    {"claimId": "SPR-X-04 (X4-F-01..F-05)", "track": "D2-agent-experiment (RD-000 runs)", "classification": "X4-F-01 INCONCLUSIVE; X4-F-02, X4-F-03 VERIFIED (runtime usage); X4-F-04, X4-F-05 SUPPORTED (post hoc / unscored)",
+     "title": "New-domain replication (booking, Haiku, n=8/arm): contract effect not significant (4.125 vs 5.0, p=0.077), i.e. evidence against generality at the X-02/X-03 effect size; tokens +9.9% and wall +38% (Holm-significant); reduction only at visibly open gaps",
+     "consequence": "high", "consequenceIfWrong": "Narrows D-046/IM-13 from 'keep the contract' to 'keep it as a narrow, calibrated measure'.",
+     "evidence": "research/2026-11-08-compute-sprint/tracks/D2-agent-experiment/spr-x-04/REPORT.md; spr-x-04/results/results.json",
+     "caveats": ["one domain, one model, one wording", "trap legitimacy: T1 and T3 have widely accepted defaults (REPORT section 5)", "usage is runtime-reported", "hand-back re-read covers batches 3-4 only"],
+     "independentVerification": {"by": "V6", "status": "not yet independently verified (V6 assigned, not started at hand-back)"}, "usedIn": "outline-2",
+     "flags": ["NOT_YET_INDEPENDENTLY_VERIFIED", "PRIORITY_FOR_VERIFICATION"]},
 ]
 
 omitted = sorted(
