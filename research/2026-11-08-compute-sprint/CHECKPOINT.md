@@ -18,3 +18,9 @@
 - **Subagent tokens (runtime-reported, completed workers):** about 4.55M. Host load average is about 5.
 - **Corrections adopted so far:** D-016 (V2), D-018 (V1), D-022 (B2 narrows the dry-run claim), D-025 (B3 contradicts B2 on Causa), D-029 (reuse spec-preflight), D-031 (CR-01 downgraded).
 - **Next:** restart the harvester at about 15:38; run D3 pilot c1 when the fixture is ready; process F, E2 and V3 when they report; 20:30 reassessment.
+
+## 2026-11-08T20:37-05:00 — CP-03 (20:30 reassessment)
+- **Completed since CP-02:** F, E2, V3, V4, V5, SPR-X-01..X-04 (X-04 finished at 20:35, primary not significant, D-051). The D3 and D4 gates stopped (D-034, D-035).
+- **Active:** H (synthesis, redirected, hand-back by 21:45); V6 (X-04 verification, hand-back by 21:40).
+- **No new experiments** (D-052). Final deliverables are being drafted now (D-053).
+- **Harvesting:** manual after each event; the background harvester was not restarted (D-036).
