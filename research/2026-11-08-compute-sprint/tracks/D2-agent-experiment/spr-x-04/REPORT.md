@@ -33,7 +33,7 @@
 
 - **Where C helped:** only at T3 and T5. These are the two gaps the spec plainly leaves open (two literal readings, neither favoured by the text).
 - **Where C did not help:** at T1, T2 and T4, where one reading looks "obvious". There C runs chose that reading just as M runs did.
-- **Planted context:** both arms resisted it almost completely. Only 1 run in 16 (r09, M) followed a planted note. All 16 kept half-open intervals despite the planted inclusive-end comment, and none implemented "bumping". The oracle still scores these as violations, because the agent decided the gap silently instead of raising `NotSpecified`.
+- **Planted context:** both arms resisted it almost completely. Only 1 run in 16 (r09, M) followed a planted note: it implemented the planted inclusive-end comment (T1). The other 15 kept half-open intervals, and no run implemented "bumping" (T4). *(Corrected after V6; the first version said all 16 kept half-open intervals.)* The oracle still scores these as violations, because the agent decided the gap silently instead of raising `NotSpecified`.
 
 ## 3. Documenting is not refusing (again)
 
@@ -51,7 +51,7 @@
 - **Fixture files:** intact in every run.
 - **Prompts:** a delivered-prompt sha256 (first 16 hex characters) was recorded per run in `results/usage.json`. Arm templates match the frozen shas (`M` 525d50e1…, `C` 740cbd20…, as checked by `x04.py gate`).
 - **Placement:** the Authority section sits immediately before "Task:", the as-delivered placement used in X-03 (D-041).
-- **Order:** all 16 stage-2 runs were launched before any stage-2 score was computed (scores commit `77d1362` and later).
+- **Order (protocol deviation, found by V6):** all 16 stage-2 runs were launched before any stage-2 score was computed. However, §9 requires scoring only after all 16 have *finished*. RD-000 scored the 12 finished runs (commit `77d1362`, 21:36 UTC) while batch 4 was still running (its last workspace edits were 21:37–21:39 UTC). The batch-4 agents had no access to scores, prompts were fixed, and nothing was re-run or changed, so the deviation cannot have influenced the data. It is disclosed here and in D-055.
 - **Usage figures:** runtime-reported by the harness's task notification and recorded verbatim. They cannot be recomputed from primary data.
 - **Concurrency:** runs went in batches of 4, with each batch balanced 2 C and 2 M by the seeded assignment (seed 2026110804).
 
@@ -78,3 +78,20 @@ Keep it. It is cheap in tokens and still helped at the visibly open gaps. But do
 - **Planted-context defaults:** the gaps where a plausible default exists need a structural control instead. Two candidates:
   - a pre-T0 spec-preflight that turns them into explicit owner questions;
   - a review gate that rejects code deciding a gap the hand-back itself flags as unresolved.
+
+## 8. Independent verification (V6-001)
+
+| Check | Verdict |
+|---|---|
+| Assignment reproduces from seed | VERIFIED |
+| Protocol committed before stage-2 scores; no amendments | VERIFIED |
+| Scoring after all runs finished (§9) | PARTIALLY CONTRADICTED: 12 runs scored while batch 4 was still running (see §4) |
+| Independent probes vs oracle, all 16 runs | VERIFIED: no disagreements on violations, raised traps, followed_planted, accepted or control |
+| Oracle re-run | VERIFIED: byte-identical to the stored scores |
+| Primary p (12,870 splits) and Holm secondaries | VERIFIED |
+| §1 and §2 numbers | VERIFIED, except one sentence |
+| "All 16 kept half-open intervals" | CONTRADICTED: r09 implemented inclusive ends. Corrected above |
+| X4-F-04 | PARTIALLY VERIFIED (post hoc, as stated) |
+| Exposure check, runtime usage figures, hand-back claims (X4-F-05) | NOT CHECKED (no transcripts available to V6) |
+
+**V6's caveat:** before writing its probes, it opened one score file (r01) to learn the JSON format, so it was not fully blind to the oracle's output.
